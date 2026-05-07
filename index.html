@@ -433,6 +433,56 @@
     border-bottom: 2px solid var(--green-pale);
   }
 
+  /* Unit toggle */
+  .st-unit-toggle {
+    display: inline-flex;
+    gap: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .st-unit-btn {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--slate-mid);
+    transition: all 0.15s;
+  }
+  .st-unit-btn.active {
+    background: var(--green-mid);
+    border-color: var(--green-mid);
+    color: var(--white);
+  }
+
+  /* Lab notice banner */
+  .st-lab-notice {
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    border-left: 4px solid;
+  }
+  .st-lab-notice-vce {
+    background: var(--green-mist);
+    border-color: var(--green-mid);
+    color: var(--green-deep);
+  }
+  .st-lab-notice-waypoint {
+    background: #fff8e1;
+    border-color: var(--gold);
+    color: #6d4f00;
+  }
+  .st-lab-notice-other {
+    background: #e8f4fd;
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
   /* ===== SOIL TEST TAB ===== */
   .st-layout {
     display: grid;
@@ -897,12 +947,24 @@
       <div class="card st-input-card">
         <div class="card-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
           <span><span class="icon">🧪</span> Enter Your VCE Soil Test Report Values</span>
-          <button class="st-prefill-btn no-print" onclick="prefillMcElfish()" title="Load the McElfish sample soil test report">📋 Load Sample Report</button>
+          <button class="st-prefill-btn no-print" onclick="prefillMcElfish()" title="Load a VCE sample soil test report">📋 Load Sample Report</button>
         </div>
         <div class="card-body">
-          <p class="about-section-intro">Enter the values exactly as they appear on your Virginia Cooperative Extension Soil Test Report. Each field is explained in the results panel.</p>
+          <p class="about-section-intro">Select your lab above, then enter the values exactly as they appear on your soil test report. The tool supports both Virginia Cooperative Extension (VCE) / Virginia Tech and Waypoint Analytical reports — rating scales, units, and interpretation notes adjust automatically based on your selection. Each field is explained in the results panel.</p>
 
-          <div class="st-section-label">Lab Test Results</div>
+          <div class="st-section-label">Lab &amp; Report Source</div>
+          <div class="st-field-grid" style="margin-bottom:16px;">
+            <div class="st-field st-field-wide">
+              <label>Which laboratory issued your soil test report?</label>
+              <select id="st-lab-source" onchange="onLabSourceChange()" style="font-size:0.9rem;">
+                <option value="vce">Virginia Cooperative Extension / Virginia Tech Soil Testing Lab (VCE)</option>
+                <option value="waypoint">Waypoint Analytical</option>
+                <option value="other">Other lab</option>
+              </select>
+            </div>
+          </div>
+          <div id="st-lab-notice"></div>
+          <div class="st-section-label" style="margin-top:4px;">Lab Test Results</div>
 
           <div class="st-field-grid">
             <div class="st-field">
@@ -910,7 +972,7 @@
               <input type="number" id="st-ph" step="0.1" min="3" max="9" placeholder="e.g. 5.5" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
-              <label>Buffer Index</label>
+              <label>Buffer Index <span style="font-weight:400;color:var(--slate-light);">(also called Buffer pH on Waypoint reports)</span></label>
               <input type="number" id="st-bi" step="0.01" min="5" max="6.9" placeholder="e.g. 6.23" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
@@ -926,13 +988,22 @@
               <input type="number" id="st-p-val" min="0" placeholder="e.g. 12" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
-              <label>P Rating</label>
+              <label>P Rating <span id="p-rating-scale-hint" style="font-weight:400;font-size:0.72rem;color:var(--slate-light);"></span></label>
               <select id="st-p-rating" onchange="interpretSoilTest()">
                 <option value="">—</option>
+                <optgroup label="── VCE / Virginia Tech ──">
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
                 <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
                 <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
                 <option value="VH">VH</option>
+                </optgroup>
+                <optgroup label="── Waypoint Analytical ──">
+                <option value="VL">Very Low</option>
+                <option value="LO">Low</option>
+                <option value="ME">Medium</option>
+                <option value="OP">Optimum</option>
+                <option value="VH2">Very High</option>
+                </optgroup>
               </select>
             </div>
             <div class="st-field">
@@ -940,13 +1011,22 @@
               <input type="number" id="st-k-val" min="0" placeholder="e.g. 48" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
-              <label>K Rating</label>
+              <label>K Rating <span id="k-rating-scale-hint" style="font-weight:400;font-size:0.72rem;color:var(--slate-light);"></span></label>
               <select id="st-k-rating" onchange="interpretSoilTest()">
                 <option value="">—</option>
+                <optgroup label="── VCE / Virginia Tech ──">
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
                 <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
                 <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
                 <option value="VH">VH</option>
+                </optgroup>
+                <optgroup label="── Waypoint Analytical ──">
+                <option value="VL">Very Low</option>
+                <option value="LO">Low</option>
+                <option value="ME">Medium</option>
+                <option value="OP">Optimum</option>
+                <option value="VH2">Very High</option>
+                </optgroup>
               </select>
             </div>
             <div class="st-field">
@@ -957,10 +1037,19 @@
               <label>Ca Rating</label>
               <select id="st-ca-rating" onchange="interpretSoilTest()">
                 <option value="">—</option>
+                <optgroup label="── VCE / Virginia Tech ──">
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
                 <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
                 <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
                 <option value="VH">VH</option>
+                </optgroup>
+                <optgroup label="── Waypoint Analytical ──">
+                <option value="VL">Very Low</option>
+                <option value="LO">Low</option>
+                <option value="ME">Medium</option>
+                <option value="OP">Optimum</option>
+                <option value="VH2">Very High</option>
+                </optgroup>
               </select>
             </div>
             <div class="st-field">
@@ -971,10 +1060,22 @@
               <label>Mg Rating</label>
               <select id="st-mg-rating" onchange="interpretSoilTest()">
                 <option value="">—</option>
+                <optgroup label="── VCE / Virginia Tech ──">
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
                 <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
                 <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
-                <option value="VH">VH</option><option value="DEF">DEF</option><option value="SUFF">SUFF</option>
+                <option value="VH">VH</option>
+                </optgroup>
+                <optgroup label="── Waypoint Analytical ──">
+                <option value="VL">Very Low</option>
+                <option value="LO">Low</option>
+                <option value="ME">Medium</option>
+                <option value="OP">Optimum</option>
+                <option value="VH2">Very High</option>
+                </optgroup>
+                <optgroup label="VCE special">
+                <option value="DEF">DEF</option><option value="SUFF">SUFF</option>
+                </optgroup>
               </select>
             </div>
             <div class="st-field">
@@ -982,8 +1083,14 @@
               <input type="number" id="st-om" step="0.1" min="0" placeholder="e.g. 2.0" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
-              <label>Soluble Salts (ppm)</label>
-              <input type="number" id="st-salts" min="0" placeholder="e.g. 128" oninput="interpretSoilTest()">
+              <label>Soluble Salts
+                <span class="st-unit-toggle">
+                  <button class="st-unit-btn active" id="salt-unit-ppm" onclick="setSaltUnit('ppm')">ppm (VCE)</button>
+                  <button class="st-unit-btn" id="salt-unit-dsm" onclick="setSaltUnit('dsm')">dS/m (Waypoint)</button>
+                </span>
+              </label>
+              <input type="number" id="st-salts" min="0" step="0.01" placeholder="e.g. 128" oninput="interpretSoilTest()">
+              <div id="st-salts-hint" style="font-size:0.75rem;color:var(--slate-light);margin-top:3px;">VCE reports in ppm. Injury threshold: 844 ppm.</div>
             </div>
           </div>
 
@@ -1474,12 +1581,12 @@
         <div class="card">
           <div class="card-header"><span class="icon">📖</span> How to Use This Calculator</div>
           <div class="card-body">
-            <p class="about-section-intro">This tool walks you through the same calculations that appear in the original VCE spreadsheet (SPES-40A), structured as three calculators:</p>
+            <p class="about-section-intro">This tool accepts soil test reports from Virginia Cooperative Extension (VCE) / Virginia Tech and Waypoint Analytical, and walks you through the same calculations that appear in the original VCE spreadsheet (SPES-40A). Start on the <strong>Soil Test Report</strong> tab to interpret your results and carry values into the calculators:</p>
 
             <div class="about-step">
               <div class="about-step-num">1</div>
               <div>
-                <strong>Get a soil test first.</strong> All recommendations in this tool are keyed to your <em>Virginia Cooperative Extension Soil Test Report</em>. You'll need the phosphorus (P) and potassium (K) fertility ratings (L–, L, L+, M–, M, M+, H–, H, H+, or VH), and your lime recommendation in lbs/1,000 sq. ft.
+                <strong>Get a soil test first.</strong> This tool works with reports from <strong>Virginia Cooperative Extension (VCE) / Virginia Tech</strong> and <strong>Waypoint Analytical</strong>. On the Soil Test Report tab, select your lab from the dropdown — the rating scales and units will adjust automatically. For VCE reports you'll need the P and K fertility ratings (L–, L, L+, M–, M, M+, H–, H, H+, or VH) and your lime recommendation in lbs/1,000 sq. ft. For Waypoint reports you'll use their rating scale (Very Low, Low, Medium, Optimum, Very High) — these are agronomically equivalent to VCE ratings and are used directly in all calculations without conversion.
               </div>
             </div>
             <div class="about-step">
@@ -1598,6 +1705,20 @@
               <div class="about-source-title">Soil Test Note 1 (452-701 / SPE-605NP) — Explanation of Soil Tests</div>
               <div class="about-source-meta">Rory Maguire, Professor and Extension Nutrient Management Specialist, Virginia Tech · Steve Heckendorn, Soil Testing Laboratory Manager, Virginia Tech — VCE, 2024</div>
               <p>Defines the rating system (L, M, H, VH) used for phosphorus and potassium fertility levels, explains Mehlich-1 extraction methods, Buffer Index, and provides conversion factors and abbreviations used throughout VCE soil test reports.</p>
+            </div>
+
+            <div class="about-source">
+              <div class="about-source-title">Agronomy Facts 8 — Soil Test Interpretation: Terms and Definitions</div>
+              <div class="about-source-meta">Dr. Richard Large (original) · Revised by Dr. Oscar F. Ruiz Jr. — Waypoint Analytical, May 16, 2023 · www.waypointanalytical.com</div>
+              <p>Source for Waypoint Analytical rating labels (Very Low / Low / Medium / Optimum / Very High), the dS/m unit for soluble salts, Buffer pH terminology, Mehlich 3 extraction context, and CEC and cation saturation reference ranges.</p>
+
+              <p style="margin-top:10px;"><strong>On fertility ratings and lab comparisons:</strong> Waypoint Analytical uses Mehlich 3 extraction; Virginia Tech uses Mehlich-1. These methods extract different amounts of P and K from the same soil, so raw lb/A values are <em>not</em> directly comparable between the two labs. The Commonwealth of Virginia officially addresses this in the <em>Virginia Nutrient Management Standards and Criteria</em> (DCR, revised July 2014), which includes Tables 2-2 and 2-3 providing conversion formulas from Mehlich 3 to Mehlich-1 lb/A values. These conversions are required for certified nutrient management planners producing legally compliant Virginia plans.</p>
+
+              <p style="margin-top:8px;"><strong>However, no conversion is needed for this tool.</strong> The lb/A values are not used in any calculations here — only the fertility ratings drive the recommendations and flags. Waypoint calibrates their rating thresholds (Very Low / Low / Medium / Optimum / Very High) to their own Mehlich 3 extraction, just as VCE calibrates their ratings (L / M / H / VH) to Mehlich-1. Both rating systems are set at the same agronomic decision point: the soil concentration at which plant response to fertilization becomes uncertain. A Waypoint "Medium" and a VCE "M" convey the same agronomic meaning to a homeowner — the soil is in a range where fertilizer may or may not produce a response. Entering Waypoint ratings directly into this tool is therefore valid for the purpose of lawn fertilizer and lime decision-making.</p>
+
+              <p style="margin-top:8px;"><strong>Potassium note:</strong> The DCR correlation tables show that the Mehlich 3-to-Mehlich-1 conversion factor for K varies significantly by laboratory (ranging from 0.31 to 0.71 depending on the lab). No Waypoint-specific K conversion factor is published in the 2014 document. However, since K ratings — not lb/A values — are what this tool uses, this is not a practical concern for homeowners using this calculator.</p>
+
+              <p style="margin-top:8px;font-size:0.8rem;color:var(--slate-light);">Reference: Virginia Department of Conservation and Recreation. <em>Virginia Nutrient Management Standards and Criteria</em>, Revised July 2014. Tables 2-2 and 2-3: Correlation of Soil Analysis Results for Phosphorus and Potassium from Mehlich III to Mehlich I. dcr.virginia.gov</p>
             </div>
 
             <div class="about-note" style="margin-top:16px;">
@@ -2021,7 +2142,92 @@ function calcLime() {
   } else {
     noteEl.style.display = 'none';
   }
-}// ===== SOIL TEST INTERPRETATION =====
+}// ===== LAB SOURCE CHANGE — AUTO-SWITCH RATING SCALES =====
+function onLabSourceChange() {
+  const lab = document.getElementById('st-lab-source').value;
+  const ratingSelects = ['st-p-rating','st-k-rating','st-ca-rating','st-mg-rating'];
+
+  ratingSelects.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const current = el.value;
+    // Determine if current value belongs to the other lab's scale
+    const isWaypointVal = ['VL','LO','ME','OP','VH2'].includes(current);
+    const isVCEVal = ['L-','L','L+','M-','M','M+','H-','H','H+','VH','DEF','SUFF'].includes(current);
+
+    if (lab === 'waypoint' && isVCEVal && current !== '') {
+      // Map VCE → nearest Waypoint rating
+      const vceToWaypoint = {
+        'L-':'VL','L':'LO','L+':'LO',
+        'M-':'ME','M':'ME','M+':'ME',
+        'H-':'OP','H':'OP','H+':'OP',
+        'VH':'VH2','DEF':'VL','SUFF':'OP'
+      };
+      const mapped = vceToWaypoint[current];
+      if (mapped) {
+        for (let i = 0; i < el.options.length; i++) {
+          if (el.options[i].value === mapped) { el.selectedIndex = i; break; }
+        }
+      }
+    } else if (lab !== 'waypoint' && isWaypointVal && current !== '') {
+      // Map Waypoint → nearest VCE rating
+      const waypointToVCE = {
+        'VL':'L','LO':'L','ME':'M','OP':'H-','VH2':'VH'
+      };
+      const mapped = waypointToVCE[current];
+      if (mapped) {
+        for (let i = 0; i < el.options.length; i++) {
+          if (el.options[i].value === mapped) { el.selectedIndex = i; break; }
+        }
+      }
+    }
+  });
+
+  // Update scale hint labels
+  const scaleHint = lab === 'waypoint' ? '(Waypoint scale)' : lab === 'vce' ? '(VCE scale)' : '(select scale above)';
+  ['p','k'].forEach(n => {
+    const el = document.getElementById(n+'-rating-scale-hint');
+    if (el) el.textContent = scaleHint;
+  });
+
+  // Auto-switch soluble salts unit hint
+  if (lab === 'waypoint') {
+    setSaltUnit('dsm');
+  } else {
+    setSaltUnit('ppm');
+  }
+
+  interpretSoilTest();
+}
+
+// ===== SALT UNIT STATE =====
+let saltUnit = 'ppm'; // 'ppm' or 'dsm'
+
+function setSaltUnit(unit) {
+  saltUnit = unit;
+  document.getElementById('salt-unit-ppm').classList.toggle('active', unit === 'ppm');
+  document.getElementById('salt-unit-dsm').classList.toggle('active', unit === 'dsm');
+  const hint = document.getElementById('st-salts-hint');
+  if (unit === 'ppm') {
+    hint.textContent = 'VCE reports in ppm. Injury threshold: 844 ppm.';
+    document.querySelector('label[for="st-salts"], #st-salts').previousElementSibling;
+  } else {
+    hint.textContent = 'Waypoint reports in dS/m. Will be converted to ppm (× 640) for interpretation. Injury threshold: ~1.32 dS/m.';
+  }
+  interpretSoilTest();
+}
+
+// ===== WAYPOINT RATING → VCE RATING MAPPING =====
+// Maps Waypoint labels to the nearest VCE equivalent for flag logic
+const WAYPOINT_TO_VCE = {
+  'VL': 'L-',   // Very Low → L-
+  'LO': 'L',    // Low → L
+  'ME': 'M',    // Medium → M
+  'OP': 'H-',   // Optimum → H- (no fertilizer response expected)
+  'VH2': 'VH',  // Very High → VH
+};
+
+// ===== SOIL TEST INTERPRETATION =====
 function ratingPill(r) {
   if (!r) return '';
   const low  = ['L-','L','L+','DEF'];
@@ -2064,26 +2270,43 @@ function interpCard(icon, title, valueDisplay, body) {
 }
 
 function interpretSoilTest() {
+  const labSource = document.getElementById('st-lab-source').value;
   const ph      = parseFloat(document.getElementById('st-ph').value);
   const bi      = parseFloat(document.getElementById('st-bi').value);
   const pVal    = parseFloat(document.getElementById('st-p-val').value);
-  const pRat    = document.getElementById('st-p-rating').value;
+  const pRatRaw = document.getElementById('st-p-rating').value;
   const kVal    = parseFloat(document.getElementById('st-k-val').value);
-  const kRat    = document.getElementById('st-k-rating').value;
+  const kRatRaw = document.getElementById('st-k-rating').value;
   const caVal   = parseFloat(document.getElementById('st-ca').value);
   const caRat   = document.getElementById('st-ca-rating').value;
   const mgVal   = parseFloat(document.getElementById('st-mg').value);
   const mgRat   = document.getElementById('st-mg-rating').value;
   const om      = parseFloat(document.getElementById('st-om').value);
-  const salts   = parseFloat(document.getElementById('st-salts').value);
+  const saltRaw = parseFloat(document.getElementById('st-salts').value);
   const cec     = parseFloat(document.getElementById('st-cec').value);
   const basesat = parseFloat(document.getElementById('st-basesat').value);
   const limeRec = parseFloat(document.getElementById('st-lime-rec').value);
   const limeTyp = document.getElementById('st-lime-type').value;
   const crop    = document.getElementById('st-crop').value;
 
-  const hasAny = [ph,bi,pVal,kVal,caVal,mgVal,om,salts,cec,limeRec].some(v => !isNaN(v) && v > 0)
-               || pRat || kRat || caRat || mgRat || limeTyp || crop;
+  // Convert salt to ppm if entered in dS/m (Waypoint)
+  const salts = (!isNaN(saltRaw) && saltUnit === 'dsm') ? saltRaw * 640 : saltRaw;
+
+  // Map Waypoint ratings to VCE equivalents for flag logic
+  const pRat = WAYPOINT_TO_VCE[pRatRaw] || pRatRaw;
+  const kRat = WAYPOINT_TO_VCE[kRatRaw] || kRatRaw;
+
+  // Show lab notice
+  const labNoticeEl = document.getElementById('st-lab-notice');
+  const labNotices = {
+    vce: `<div class="st-lab-notice st-lab-notice-vce">✅ <strong>VCE / Virginia Tech:</strong> Ratings (L–/M/H/VH) and thresholds are calibrated for this report. Soluble salts in ppm, extraction method Mehlich-1.</div>`,
+    waypoint: `<div class="st-lab-notice st-lab-notice-waypoint">⚠️ <strong>Waypoint Analytical:</strong> Use the Waypoint rating options (Very Low / Low / Medium / Optimum / Very High) in the dropdowns below. Select <strong>dS/m</strong> for soluble salts if that is how your report shows it. Note: Waypoint's "Buffer pH" is the same as VCE's "Buffer Index." <strong>Ratings are directly comparable between labs</strong> — Waypoint calibrates their thresholds to Mehlich 3 and VCE calibrates theirs to Mehlich-1, but both rating systems identify the same agronomic decision points. Only the raw lb/A values differ and those are not used in any calculations in this tool. See the About &amp; Instructions tab for full details.</div>`,
+    other: `<div class="st-lab-notice st-lab-notice-other">ℹ️ <strong>Other lab:</strong> Enter values as shown on your report. This tool's thresholds are calibrated for VCE's Mehlich-1 extraction method. Results from labs using Mehlich 3, Bray P1, or Olsen extraction will have different lb/A values for the same soil — use the ratings (rather than raw numbers) for the most reliable interpretation.</div>`,
+  };
+  labNoticeEl.innerHTML = labNotices[labSource] || '';
+
+  const hasAny = [ph,bi,pVal,kVal,caVal,mgVal,om,saltRaw,cec,limeRec].some(v => !isNaN(v) && v > 0)
+               || pRatRaw || kRatRaw || caRat || mgRat || limeTyp || crop;
 
   const panel = document.getElementById('st-results-panel');
 
@@ -2145,8 +2368,9 @@ function interpretSoilTest() {
   }
 
   // ---- Phosphorus ----
-  if (!isNaN(pVal) || pRat) {
-    const display = (!isNaN(pVal) ? pVal+' lb/A' : '') + (pRat ? ratingPill(pRat) : '');
+  if (!isNaN(pVal) || pRatRaw) {
+    const pRatLabel = WAYPOINT_TO_VCE[pRatRaw] ? `${pRatRaw} → ${pRat}` : pRat;
+    const display = (!isNaN(pVal) ? pVal+' lb/A' : '') + (pRatRaw ? ratingPill(pRat) + (WAYPOINT_TO_VCE[pRatRaw] ? ` <span style="font-size:0.7rem;opacity:0.7;">(${pRatRaw})</span>` : '') : '');
     let pMsg, pAction;
     const r = pRat;
     if (['L-','L','L+'].includes(r)) {
@@ -2162,16 +2386,20 @@ function interpretSoilTest() {
       pMsg = 'Adequate for your specified crop/plant.';
       pAction = actionBox('action-good', 'Follow your soil test recommendations.');
     }
+    const extractionNote = labSource === 'waypoint'
+      ? '<p style="margin-top:6px;font-size:0.8rem;color:var(--slate-light);">⚠️ <em>Waypoint uses Mehlich 3 extraction — lb/A values differ from VCE\'s Mehlich-1. Use the rating rather than the raw number for guidance.</em></p>'
+      : '';
     cards.push(interpCard('🌱', 'Phosphorus (P)', display,
-      `<p><strong>What it measures:</strong> Extractable phosphorus (as phosphate, P₂O₅) using the Mehlich-1 method. Reported in lbs per acre. Medium = 12–35 lb/A. Phosphorus supports root development and energy transfer in plants.</p>
+      `<p><strong>What it measures:</strong> Extractable phosphorus using the ${labSource === 'waypoint' ? 'Mehlich 3' : 'Mehlich-1'} method. Reported in lbs per acre. VCE medium range = 12–35 lb/A (Mehlich-1). Phosphorus supports root development and energy transfer in plants.</p>
        <p style="margin-top:6px;">${pMsg}</p>
+       ${extractionNote}
        ${pAction}
        ${crop === 'warm' ? gotoBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? gotoBtn('cool','Open Cool-Season Calculator') : ''}`));
   }
 
   // ---- Potassium ----
-  if (!isNaN(kVal) || kRat) {
-    const display = (!isNaN(kVal) ? kVal+' lb/A' : '') + (kRat ? ratingPill(kRat) : '');
+  if (!isNaN(kVal) || kRatRaw) {
+    const display = (!isNaN(kVal) ? kVal+' lb/A' : '') + (kRatRaw ? ratingPill(kRat) + (WAYPOINT_TO_VCE[kRatRaw] ? ` <span style="font-size:0.7rem;opacity:0.7;">(${kRatRaw})</span>` : '') : '');
     let kMsg, kAction;
     const r = kRat;
     if (['L-','L','L+'].includes(r)) {
@@ -2187,9 +2415,13 @@ function interpretSoilTest() {
       kMsg = 'Rated as sufficient for the specified crop.';
       kAction = actionBox('action-good', 'Follow your soil test recommendations.');
     }
+    const kExtractionNote = labSource === 'waypoint'
+      ? '<p style="margin-top:6px;font-size:0.8rem;color:var(--slate-light);">⚠️ <em>Waypoint uses Mehlich 3 extraction — lb/A values differ from VCE\'s Mehlich-1. Use the rating rather than the raw number for guidance.</em></p>'
+      : '';
     cards.push(interpCard('⚡', 'Potassium (K)', display,
-      `<p><strong>What it measures:</strong> Extractable potassium (as potash, K₂O) using the Mehlich-1 method. Reported in lbs per acre. Medium = 76–175 lb/A. Potassium supports drought tolerance, disease resistance, and overall plant vigor.</p>
+      `<p><strong>What it measures:</strong> Extractable potassium using the ${labSource === 'waypoint' ? 'Mehlich 3' : 'Mehlich-1'} method. Reported in lbs per acre. VCE medium range = 76–175 lb/A (Mehlich-1). Potassium supports drought tolerance, disease resistance, and overall plant vigor.</p>
        <p style="margin-top:6px;">${kMsg}</p>
+       ${kExtractionNote}
        ${kAction}
        ${crop === 'warm' ? gotoBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? gotoBtn('cool','Open Cool-Season Calculator') : ''}`));
   }
@@ -2233,20 +2465,25 @@ function interpretSoilTest() {
   }
 
   // ---- Soluble Salts ----
-  if (!isNaN(salts)) {
+  if (!isNaN(saltRaw) && saltRaw > 0) {
+    const saltPpm = saltUnit === 'dsm' ? saltRaw * 640 : saltRaw;
+    const saltDsm = saltUnit === 'dsm' ? saltRaw : saltRaw / 640;
+    const saltDisplay = saltUnit === 'dsm'
+      ? `${saltRaw} dS/m (≈ ${Math.round(saltPpm)} ppm)`
+      : `${saltRaw} ppm (≈ ${saltDsm.toFixed(2)} dS/m)`;
     let saltMsg, saltAction;
-    if (salts > 844) {
-      saltMsg = 'ELEVATED — above the injury threshold of 844 ppm. Plants may show wilting or drought-like symptoms even with adequate soil moisture. Germinating seeds and seedlings are especially vulnerable.';
+    if (saltPpm > 844) {
+      saltMsg = 'ELEVATED — above the injury threshold of 844 ppm (1.32 dS/m). Plants may show wilting or drought-like symptoms even with adequate soil moisture. Germinating seeds and seedlings are especially vulnerable.';
       saltAction = actionBox('action-needed', 'Reduce or eliminate fertilizer applications until salts dissipate. Water thoroughly and frequently to leach salts. Avoid seeding until levels drop.');
-    } else if (salts > 500) {
+    } else if (saltPpm > 500) {
       saltAction = actionBox('action-monitor', 'Monitor — approaching the range where sensitive plants or seedlings could show stress. Avoid over-fertilizing.');
       saltMsg = 'Moderately elevated. Most established plants will be unaffected, but seeds, seedlings, and sensitive species may show stress.';
     } else {
       saltMsg = 'Low — no salt injury risk for established plants or seeds.';
       saltAction = actionBox('action-good', 'Soluble salts are not high enough to cause injury. No action needed.');
     }
-    cards.push(interpCard('🧂', 'Soluble Salts', salts+' ppm',
-      `<p><strong>What it measures:</strong> Electrical conductivity of a 1:2 soil-to-water ratio, used to estimate fertilizer salt accumulation. Primarily relevant for greenhouse, nursery, and home garden soils where high fertilizer rates may have created excessive buildup.</p>
+    cards.push(interpCard('🧂', 'Soluble Salts', saltDisplay,
+      `<p><strong>What it measures:</strong> Electrical conductivity used to estimate fertilizer salt accumulation. VCE reports in ppm; Waypoint reports in dS/m (1 dS/m ≈ 640 ppm). Injury threshold: 844 ppm / 1.32 dS/m for established turf. Primarily relevant where high fertilizer rates may have caused excessive buildup.</p>
        <p style="margin-top:6px;">${saltMsg}</p>
        ${saltAction}`));
   }
@@ -2300,8 +2537,8 @@ function interpretSoilTest() {
   // Render summary bar + cards
   let summaryItems = '';
   if (!isNaN(ph))     summaryItems += `<div class="st-summary-item"><div class="st-summary-label">pH</div><div class="st-summary-val">${ph.toFixed(1)}</div></div>`;
-  if (!isNaN(pVal))   summaryItems += `<div class="st-summary-item"><div class="st-summary-label">P (lb/A)</div><div class="st-summary-val">${pVal}</div><div class="st-summary-rating">${pRat||''}</div></div>`;
-  if (!isNaN(kVal))   summaryItems += `<div class="st-summary-item"><div class="st-summary-label">K (lb/A)</div><div class="st-summary-val">${kVal}</div><div class="st-summary-rating">${kRat||''}</div></div>`;
+  if (!isNaN(pVal))   summaryItems += `<div class="st-summary-item"><div class="st-summary-label">P (lb/A)</div><div class="st-summary-val">${pVal}</div><div class="st-summary-rating">${pRatRaw||''}</div></div>`;
+  if (!isNaN(kVal))   summaryItems += `<div class="st-summary-item"><div class="st-summary-label">K (lb/A)</div><div class="st-summary-val">${kVal}</div><div class="st-summary-rating">${kRatRaw||''}</div></div>`;
   if (!isNaN(om))     summaryItems += `<div class="st-summary-item"><div class="st-summary-label">Org. Matter</div><div class="st-summary-val">${om.toFixed(1)}%</div></div>`;
   if (!isNaN(limeRec)&&limeRec>0) summaryItems += `<div class="st-summary-item"><div class="st-summary-label">Lime Rec.</div><div class="st-summary-val">${limeRec}</div><div class="st-summary-rating">lbs/1K sqft</div></div>`;
 
@@ -2320,8 +2557,11 @@ function interpretSoilTest() {
 
 // ===== CARRY-OVER: Soil Test → Calculators =====
 function carryOverToCalculators() {
-  const pRat     = document.getElementById('st-p-rating').value;
-  const kRat     = document.getElementById('st-k-rating').value;
+  const pRatRaw  = document.getElementById('st-p-rating').value;
+  const kRatRaw  = document.getElementById('st-k-rating').value;
+  // Map Waypoint ratings to VCE equivalents for the calculator selects
+  const pRat = WAYPOINT_TO_VCE[pRatRaw] || pRatRaw;
+  const kRat = WAYPOINT_TO_VCE[kRatRaw] || kRatRaw;
   const limeRec  = document.getElementById('st-lime-rec').value;
   const limeTyp  = document.getElementById('st-lime-type').value;
   const crop     = document.getElementById('st-crop').value;
@@ -2393,7 +2633,7 @@ function printSoilTestResults() {
 
 // ===== PRE-FILL: MCELFISH SOIL TEST REPORT =====
 function prefillMcElfish() {
-  // Lab ID: 26-26039 | 2026-05-01 | Chesterfield/041
+  // Sample VCE soil test (warm-season, Chesterfield County)
   // Crop: Lawn Maintenance - Bermuda, Zoysia (warm-season)
   const fields = {
     'st-ph': '5.5', 'st-bi': '6.23', 'st-cec': '4.1', 'st-basesat': '75.6',
@@ -2423,7 +2663,7 @@ function prefillMcElfish() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // Show a brief toast
-  showToast('Milissa McElfish\'s soil test report loaded — Lab ID 26-26039');
+  showToast('Sample VCE soil test report loaded');
 }
 
 function showToast(msg) {

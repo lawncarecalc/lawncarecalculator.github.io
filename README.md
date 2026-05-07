@@ -1,6 +1,6 @@
 # VCE Lawn Care Calculator
 
-An interactive, browser-based web tool that helps Virginia homeowners calculate fertilizer and lime applications for their lawns based on Virginia Cooperative Extension (VCE) soil test results.
+An interactive, browser-based web tool that helps Virginia homeowners interpret soil test results and calculate fertilizer and lime applications for their lawns. Supports reports from both **Virginia Cooperative Extension (VCE) / Virginia Tech** and **Waypoint Analytical**.
 
 ---
 
@@ -8,7 +8,7 @@ An interactive, browser-based web tool that helps Virginia homeowners calculate 
 
 This project converts the official VCE spreadsheet-based calculator (SPES-40A) into a single-file HTML web application. It adds soil test interpretation, WIN-based nitrogen program detection, real-time flags, and carry-over between tabs — all running entirely in the browser with no server or dependencies required.
 
-The tool is intended for homeowners in Virginia who receive a VCE Soil Test Report and want guided, accurate recommendations for fertilizer and lime applications.
+The tool is intended for homeowners in Virginia who receive a soil test report from VCE/Virginia Tech or Waypoint Analytical and want guided, accurate recommendations for fertilizer and lime applications. Selecting your lab from a dropdown on the Soil Test tab automatically adjusts rating scales, units, and interpretation notes.
 
 ---
 
@@ -16,12 +16,15 @@ The tool is intended for homeowners in Virginia who receive a VCE Soil Test Repo
 
 ### Soil Test Report Tab
 
-- Enter all values from a VCE Soil Test Report (pH, Buffer Index, Est-CEC, P, K, Ca, Mg, Organic Matter, Soluble Salts, Base Saturation)  
+- **Lab source selector** — choose VCE/Virginia Tech or Waypoint Analytical; rating dropdowns, soluble salts units, and interpretation notes update automatically  
+- Enter all values from your soil test report (pH, Buffer Index/Buffer pH, Est-CEC, P, K, Ca, Mg, Organic Matter, Soluble Salts, Base Saturation)  
+- Supports both VCE rating scale (L–/M/H/VH) and Waypoint scale (Very Low/Low/Medium/Optimum/Very High); ratings auto-convert when switching labs  
+- Soluble salts unit toggle: ppm (VCE) or dS/m (Waypoint), with automatic conversion  
 - Live interpretation of every measurement in plain English, sourced from VCE Soil Test Notes  
 - Color-coded action boxes: red (action needed), amber (monitor), green (good)  
 - Lime recommendation card with per-application breakdown (≤ 50 lbs/1,000 sq. ft. rule enforced)  
 - **Apply to Calculators** button carries lawn size, P/K ratings, lime recommendation, and lime type directly into the fertilizer and lime calculator tabs  
-- **Load Sample Report** button pre-fills the McElfish soil test (Lab ID 26-26039) for demonstration  
+- **Load Sample Report** button pre-fills a sample VCE soil test for demonstration  
 - **Print Results** button generates a clean print/PDF view of the interpretation
 
 ### Cool-Season Lawn Fertilizer Calculator
@@ -83,7 +86,28 @@ All calculations, recommendations, timing schedules, and flag thresholds are der
 | 452-718 / SPES-305P | Soil Test Note 18: Lawn Fertilization for Warm-Season Grasses | M. Goatley, E.H. Ervin, S.E. Heckendorn — VCE, 2021 |
 | 452-701 / SPE-605NP | Soil Test Note 1: Explanation of Soil Tests | R. Maguire, S. Heckendorn — VCE, 2024 |
 
+The following additional sources inform the multi-lab support features:
+
+| Publication | Title | Authors |
+| :---- | :---- | :---- |
+| Agronomy Facts 8 | Soil Test Interpretation: Terms and Definitions | Dr. Richard Large (original); revised by Dr. Oscar F. Ruiz Jr. — Waypoint Analytical, 2023 |
+| Standards and Criteria | Virginia Nutrient Management Standards and Criteria, Revised July 2014 | Virginia Department of Conservation and Recreation (DCR) |
+
 This web version was inspired by and built with sincere thanks to the original SPES-40A authors, **Chantel Wilson** and **Michael Goatley Jr.**
+
+---
+
+## Multi-Lab Support and Fertility Rating Equivalence
+
+This tool supports soil test reports from Virginia Cooperative Extension / Virginia Tech and Waypoint Analytical. A lab source selector on the Soil Test tab adjusts rating labels, soluble salts units, and interpretation notes accordingly.
+
+**Fertility ratings are directly comparable between labs.** Waypoint uses Mehlich 3 extraction; VCE uses Mehlich-1. These methods extract different amounts of P and K from the same soil, so raw lb/A values differ between the two labs. However, no conversion is needed in this tool because only the fertility ratings drive recommendations and flags — lb/A values are display-only context. Both labs calibrate their rating thresholds to the same agronomic decision point: the soil concentration at which plant response to fertilization becomes uncertain. A Waypoint "Medium" rating and a VCE "M" rating convey the same meaning for lawn management purposes and can be used interchangeably in this tool.
+
+The Commonwealth of Virginia addresses the Mehlich 3 / Mehlich-1 numeric discrepancy in the *Virginia Nutrient Management Standards and Criteria* (DCR, revised July 2014), Tables 2-2 and 2-3, which provide official conversion formulas from Mehlich 3 to Mehlich-1 lb/A values. These conversions are required for certified nutrient management planners producing legally compliant Virginia nutrient management plans. They are not necessary for homeowner lawn care decisions driven by rating categories, which is the scope of this tool.
+
+**Potassium note:** The DCR correlation tables show that the Mehlich 3-to-Mehlich-1 K conversion factor varies significantly by laboratory (0.31–0.71 depending on the lab). No Waypoint-specific K factor is published in the 2014 document. This is not a practical concern here since ratings — not lb/A values — drive the tool's logic.
+
+**Soluble salts:** Waypoint reports soluble salts in dS/m; VCE reports in ppm. The tool converts automatically when dS/m is selected (1 dS/m ≈ 640 ppm). Injury threshold: 844 ppm / \~1.32 dS/m.
 
 ---
 
@@ -138,11 +162,12 @@ Open `SPES-40A-Calculator.html` in any modern web browser. No installation requi
 
 **Recommended workflow:**
 
-1. Open the **Soil Test Report** tab and enter values from your VCE Soil Test Report  
-2. Click **Apply to Calculators** to carry your ratings and lawn size to the fertilizer and lime tabs  
-3. Open the **Warm-Season** or **Cool-Season** tab, enter your desired N rate and fertilizer grade  
-4. Open the **Lime** tab if lime was recommended on your report  
-5. Use **Print Results** on the Soil Test tab to save a PDF of your interpretation
+1. Open the **Soil Test Report** tab and select your lab (VCE or Waypoint) from the dropdown  
+2. Enter the values from your soil test report — rating dropdowns will show the correct scale for your lab  
+3. Click **Apply to Calculators** to carry your ratings and lawn size to the fertilizer and lime tabs  
+4. Open the **Warm-Season** or **Cool-Season** tab, enter your desired N rate and fertilizer grade  
+5. Open the **Lime** tab if lime was recommended on your report  
+6. Use **Print Results** on the Soil Test tab to save a PDF of your interpretation
 
 ---
 
