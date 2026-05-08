@@ -472,7 +472,7 @@
     border-color: var(--green-mid);
     color: var(--green-deep);
   }
-  .st-lab-notice-waypoint {
+  .st-lab-notice-vce {
     background: #fff8e1;
     border-color: var(--gold);
     color: #6d4f00;
@@ -817,99 +817,31 @@
   /* ===== PRINT STYLES ===== */
   @media print {
     .no-print, .tab-nav, .site-header .header-badge,
-    .st-goto-btn, .st-carryover-box, #st-carryover-bar { display: none !important; }
+    .st-goto-btn, .st-carryover-box, #st-carryover-bar,
+    .st-input-card, .st-prefill-btn, .st-unit-toggle,
+    .st-lab-notice, #st-carryover-bar { display: none !important; }
 
     body { background: white; font-size: 11pt; }
     .site-header { background: white; color: black; border-bottom: 2px solid #333; }
     .header-text h1 { color: black; font-size: 16pt; }
     .header-text .subtitle { color: #555; }
 
-    .main { padding: 10px 0; max-width: 100%; }
+    .main { padding: 10px 0; max-width: 100%; width: 100%; }
     .tab-panel { display: none !important; }
     #tab-soiltest { display: block !important; }
-    .st-input-card { display: none; }
 
-    .st-interp-card { break-inside: avoid; border: 1px solid #ccc; margin-bottom: 10px; }
-    .st-interp-header { background: #f5f5f5 !important; color: black !important; }
+    .st-layout { display: block !important; width: 100% !important; }
+    .st-results { display: block !important; width: 100% !important; }
+
+    .st-interp-card { break-inside: avoid; border: 1px solid #ccc; margin-bottom: 10px; width: 100% !important; box-sizing: border-box; }
+    .st-interp-header { background: #f5f5f5 !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .st-interp-title { color: black !important; }
-    .st-summary-bar { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .st-summary-bar { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; width: 100% !important; }
 
-    .action-needed, .action-monitor, .action-good, .action-info {
+    .action-needed, .action-monitor, .action-good, .action-info, .st-action-box {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
-  }
-
-  /* ===== ABOUT TAB STYLES ===== */
-  .about-layout { max-width: 860px; }
-  .about-hero {
-    background: var(--green-deep);
-    color: var(--white);
-    border-radius: 8px;
-    padding: 28px 28px 24px;
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    margin-bottom: 24px;
-    box-shadow: 0 2px 10px var(--shadow);
-  }
-  .about-hero-icon { font-size: 2.8rem; flex-shrink: 0; line-height: 1; }
-  .about-hero h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    line-height: 1.25;
-  }
-  .about-lead { font-size: 0.925rem; color: rgba(255,255,255,0.78); line-height: 1.55; }
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  .about-grid .card:nth-child(3),
-  .about-grid .card:nth-child(4) { grid-column: 1 / -1; }
-  .about-section-intro { font-size: 0.875rem; color: var(--slate-mid); margin-bottom: 16px; line-height: 1.55; }
-  .about-step { display: flex; gap: 14px; margin-bottom: 16px; font-size: 0.875rem; line-height: 1.55; align-items: flex-start; }
-  .about-step:last-child { margin-bottom: 0; }
-  .about-step-num {
-    background: var(--green-deep); color: var(--white); font-weight: 700; font-size: 0.78rem;
-    width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center;
-    justify-content: center; flex-shrink: 0; margin-top: 1px;
-  }
-  .about-program-box { border-radius: 6px; padding: 14px 16px; margin-bottom: 14px; font-size: 0.86rem; line-height: 1.5; }
-  .about-program-box:last-of-type { margin-bottom: 0; }
-  .prog1-box { background: #e8f4fd; border-left: 4px solid var(--blue); }
-  .prog2-box { background: var(--green-pale); border-left: 4px solid var(--green-mid); }
-  .prog-label { font-weight: 700; font-size: 0.875rem; margin-bottom: 6px; color: var(--slate); }
-  .about-list { margin: 8px 0 0 0; padding-left: 18px; font-size: 0.84rem; }
-  .about-list li { margin-bottom: 3px; }
-  .about-note {
-    background: var(--gold-light); border: 1px solid #e0c87a; border-radius: 6px;
-    padding: 12px 14px; font-size: 0.82rem; color: #6d4f00; line-height: 1.55; margin-top: 14px;
-  }
-  .about-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 4px; }
-  .about-table th {
-    background: var(--green-deep); color: var(--white); padding: 8px 10px; text-align: left;
-    font-weight: 600; font-size: 0.78rem; letter-spacing: 0.03em;
-  }
-  .about-table td { padding: 8px 10px; border-bottom: 1px solid var(--green-mist); vertical-align: top; line-height: 1.45; }
-  .about-table tr:last-child td { border-bottom: none; }
-  .about-table tr:nth-child(even) td { background: var(--green-mist); }
-  .about-source {
-    border-left: 3px solid var(--green-light); padding: 10px 14px; margin-bottom: 16px;
-    background: var(--green-mist); border-radius: 0 5px 5px 0; font-size: 0.86rem; line-height: 1.5;
-  }
-  .about-source:last-of-type { margin-bottom: 0; }
-  .about-source-title { font-weight: 700; color: var(--green-deep); margin-bottom: 2px; font-size: 0.88rem; }
-  .about-source-meta { font-size: 0.78rem; color: var(--slate-light); font-style: italic; margin-bottom: 6px; }
-  @media (max-width: 720px) {
-    .calc-layout { grid-template-columns: 1fr; }
-    .st-layout { grid-template-columns: 1fr; }
-    .about-grid { grid-template-columns: 1fr; }
-    .about-grid .card:nth-child(3),
-    .about-grid .card:nth-child(4) { grid-column: auto; }
-    .about-hero { flex-direction: column; gap: 12px; padding: 20px 18px; }
-    .main { padding: 20px 16px 48px; }
-    .header-inner { padding: 20px 16px 18px; }
-    .tab-nav-inner { padding: 0 16px; overflow-x: auto; }
-    .header-text h1 { font-size: 1.35rem; }
   }
 </style>
 </head>
@@ -920,7 +852,7 @@
     <div class="header-badge">🌿</div>
     <div class="header-text">
       <h1>Lawn Care Calculator</h1>
-      <div class="subtitle">Virginia Cooperative Extension — SPES-40A</div>
+      <div class="subtitle">Virginia Cooperative Extension</div>
     </div>
   </div>
   <nav class="tab-nav">
@@ -943,7 +875,7 @@
       <!-- Input card -->
       <div class="card st-input-card">
         <div class="card-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
-          <span><span class="icon">🧪</span> Enter Your VCE Soil Test Report Values</span>
+          <span><span class="icon">🧪</span> Enter Your Soil Test Report Values</span>
           <button class="st-prefill-btn no-print" onclick="prefillSampleReport()" title="Load a VCE sample soil test report">📋 Load Sample Report</button>
         </div>
         <div class="card-body">
@@ -1193,7 +1125,7 @@
             </div>
           </div>
 
-          <div id="st-carryover-bar" style="display:none; margin-top:20px;">
+          <div id="st-carryover-bar" style="display:none; margin-top:20px; width:100%; box-sizing:border-box;">
             <div class="st-carryover-box">
               <div class="st-carryover-title">✅ Ready to carry over to calculators</div>
               <p class="st-carryover-desc">Your lawn size, P rating, K rating, lime recommendation, and lime type will be pre-filled in the relevant calculator tabs.</p>
@@ -1652,7 +1584,7 @@
         <div class="card">
           <div class="card-header"><span class="icon">📖</span> How to Use This Calculator</div>
           <div class="card-body">
-            <p class="about-section-intro">This tool accepts soil test reports from Virginia Cooperative Extension (VCE) / Virginia Tech and Waypoint Analytical, and walks you through the same calculations that appear in the original VCE spreadsheet (SPES-40A). Start on the <strong>Soil Test Report</strong> tab to interpret your results and carry values into the calculators:</p>
+            <p class="about-section-intro">This tool accepts soil test reports from Virginia Cooperative Extension (VCE) / Virginia Tech and Waypoint Analytical, and walks you through the same calculations that appear in the original VCE spreadsheet. Start on the <strong>Soil Test Report</strong> tab to interpret your results and carry values into the calculators:</p>
 
             <div class="about-step">
               <div class="about-step-num">1</div>
@@ -1741,7 +1673,7 @@
         <div class="card">
           <div class="card-header"><span class="icon">📄</span> Source Documents &amp; Attribution</div>
           <div class="card-body">
-            <p class="about-section-intro">This calculator is derived from the following official Virginia Cooperative Extension publications:</p>
+            <p class="about-section-intro">This calculator is derived from the following official publications from Virginia Cooperative Extension and Waypoint Analytical:</p>
 
             <div class="about-source">
               <div class="about-source-title">SPES-40A — A Spreadsheet-Based Calculator for Lawn Fertilizer and Lime Applications in Virginia</div>
@@ -2382,7 +2314,7 @@ function interpretSoilTest() {
   if (labSource === 'vce') {
     labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#10003; <strong>VCE / Virginia Tech:</strong> Ratings (L\u2013/M/H/VH) and thresholds are calibrated for this report. Soluble salts in ppm, extraction method Mehlich-1.</div>';
   } else if (labSource === 'waypoint') {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-waypoint">&#9888; <strong>Waypoint Analytical:</strong> Use the Waypoint rating options (Very Low / Low / Medium / Optimum / Very High) in the dropdowns below. Select dS/m for soluble salts. Note: Waypoint\'s "Buffer pH" is the same as VCE\'s "Buffer Index." <strong>Ratings are directly comparable between labs</strong> \u2014 see the About &amp; Instructions tab for full details.</div>';
+    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#9888; <strong>Waypoint Analytical:</strong> Use the Waypoint rating options (Very Low / Low / Medium / Optimum / Very High) in the dropdowns. Note: Waypoint\'s "Buffer pH" is the same as VCE\'s "Buffer Index." <strong>Ratings are directly comparable between labs</strong> \u2014 see the About &amp; Instructions tab for full details.</div>';
   } else {
     labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-other">&#8505; <strong>Other lab:</strong> Enter values as shown on your report. This tool\'s thresholds are calibrated for VCE\'s Mehlich-1 extraction. Use the ratings rather than raw lb/A values for the most reliable interpretation.</div>';
   }
