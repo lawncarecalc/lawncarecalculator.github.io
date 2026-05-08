@@ -529,6 +529,21 @@
   }
 
   /* Interpretation cards */
+  .st-interp-ranges {
+    padding: 6px 16px 8px;
+    background: var(--green-mist);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.76rem;
+    color: var(--slate-mid);
+    line-height: 1.5;
+  }
+  .st-range-label {
+    font-weight: 700;
+    color: var(--green-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.68rem;
+  }
   .st-interp-card {
     background: var(--white);
     border: 1px solid var(--border);
@@ -909,7 +924,7 @@
               <input type="number" id="st-cec" step="0.1" min="0" placeholder="e.g. 4.1" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
-              <label>Base Saturation (%)</label>
+              <label>Base Saturation (%) <span style="font-weight:400;color:var(--slate-light);font-size:0.72rem;">— Acidity % = 100 minus this</span></label>
               <input type="number" id="st-basesat" step="0.1" min="0" max="100" placeholder="e.g. 75.6" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
@@ -1655,7 +1670,7 @@
         <div class="card">
           <div class="card-header"><span class="icon">🔬</span> Soil Test Ratings Explained</div>
           <div class="card-body">
-            <p class="about-section-intro">From <em>Soil Test Note 1</em> (VCE 452-701): ratings reflect the relative availability of nutrients extracted by the Mehlich-1 method.</p>
+            <p class="about-section-intro">From <em>Soil Test Note 1</em> (VCE 452-701): ratings reflect the relative availability of nutrients in your soil as measured by the Virginia Tech Soil Testing Laboratory.</p>
             <table class="about-table">
               <thead><tr><th>Rating</th><th>Meaning</th><th>Fertilizer Response</th></tr></thead>
               <tbody>
@@ -1665,7 +1680,7 @@
                 <tr><td><strong>VH</strong></td><td>Very High</td><td>No response expected. Use nitrogen-only fertilizer; retest next year.</td></tr>
               </tbody>
             </table>
-            <p style="font-size:0.82rem;color:var(--slate-light);margin-top:12px;">Medium phosphorus = 12–35 lbs/A (Mehlich-1). Medium potassium = 76–175 lbs/A. No soil test is performed for nitrogen — it is too mobile for lab results to be useful.</p>
+            <p style="font-size:0.82rem;color:var(--slate-light);margin-top:12px;">Medium phosphorus = 12–35 lbs/A. Medium potassium = 76–175 lbs/A. No soil test is performed for nitrogen — it is too mobile in the soil for lab results to be useful.</p>
           </div>
         </div>
 
@@ -2312,11 +2327,11 @@ function interpretSoilTest() {
   // Lab notice
   var labNoticeEl = document.getElementById('st-lab-notice');
   if (labSource === 'vce') {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#10003; <strong>VCE / Virginia Tech:</strong> Ratings (L\u2013/M/H/VH) and thresholds are calibrated for this report. Soluble salts in ppm, extraction method Mehlich-1.</div>';
+    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#10003; <strong>VCE / Virginia Tech:</strong> Ratings (L\u2013/M/H/VH) and thresholds are calibrated for this report. Soluble salts reported in ppm.</div>';
   } else if (labSource === 'waypoint') {
     labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#9888; <strong>Waypoint Analytical:</strong> Use the Waypoint rating options (Very Low / Low / Medium / Optimum / Very High) in the dropdowns. Note: Waypoint\'s "Buffer pH" is the same as VCE\'s "Buffer Index." <strong>Ratings are directly comparable between labs</strong> \u2014 see the About &amp; Instructions tab for full details.</div>';
   } else {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-other">&#8505; <strong>Other lab:</strong> Enter values as shown on your report. This tool\'s thresholds are calibrated for VCE\'s Mehlich-1 extraction. Use the ratings rather than raw lb/A values for the most reliable interpretation.</div>';
+    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-other">&#8505; <strong>Other lab:</strong> Enter values as shown on your report. This tool\'s thresholds are calibrated for the Virginia Tech Soil Testing Laboratory. Use the ratings rather than raw lb/A values for the most reliable interpretation.</div>';
   }
 
   var hasAny = [ph,bi,pVal,kVal,caVal,mgVal,om,saltRaw,cec,limeRec,znVal,mnVal,cuVal,feVal,bVal].some(function(v){return !isNaN(v) && v > 0;})
@@ -2333,10 +2348,20 @@ function interpretSoilTest() {
   var cards = [];
 
   // Helper: build an interp card using string concat (no nested backticks)
-  function card(icon, title, valDisplay, body) {
-    return '<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">' + icon + ' ' + title + '</div><div class="st-interp-value">' + valDisplay + '</div></div><div class="st-interp-body">' + body + '</div></div>';
+  // card(icon, title, range, target, valDisplay, whatMeans, whyMatters, action, extraBtns)
+  function card(icon, title, range, target, valDisplay, whatMeans, whyMatters, action, extraBtns) {
+    var rangeHtml = range ? '<div class="st-interp-range"><span class="st-range-label">Typical range:</span> ' + range + (target ? ' &nbsp;&bull;&nbsp; <span class="st-range-label">Target:</span> ' + target : '') + '</div>' : '';
+    var bodyHtml = '<p><strong>What it means:</strong> ' + whatMeans + '</p>'
+      + (whyMatters ? '<p style="margin-top:8px;"><strong>Why it matters:</strong> ' + whyMatters + '</p>' : '')
+      + (action ? '<div style="margin-top:10px;">' + action + '</div>' : '')
+      + (extraBtns ? '<div style="margin-top:10px;">' + extraBtns + '</div>' : '');
+    return '<div class="st-interp-card">'
+      + '<div class="st-interp-header"><div class="st-interp-title">' + icon + ' ' + title + '</div><div class="st-interp-value">' + valDisplay + '</div></div>'
+      + (rangeHtml ? '<div class="st-interp-ranges">' + rangeHtml + '</div>' : '')
+      + '<div class="st-interp-body">' + bodyHtml + '</div>'
+      + '</div>';
   }
-  function abox(cls, txt) { return '<div class="st-action-box ' + cls + '">&rarr; ' + txt + '</div>'; }
+  function abox(cls, txt) { return '<div class="st-action-box ' + cls + '"><strong>Action:</strong> ' + txt + '</div>'; }
   function goBtn(tab, lbl) { return '<button class="st-goto-btn" onclick="switchToTab(\'' + tab + '\')">&nearr; ' + lbl + '</button>'; }
   function pill(r) {
     if (!r) return '';
@@ -2371,8 +2396,12 @@ function interpretSoilTest() {
       phAction = abox('action-needed', 'Do not apply lime. Consider sulfur to lower pH, or allow it to drop naturally.');
     }
     var phLimeBtn = (!isNaN(limeRec) && limeRec > 0) ? goBtn('lime','Open Lime Calculator') : '';
-    cards.push(card('&#9879;&#65039;', 'Soil pH', '<span class="st-rating-pill ' + phClass + '">' + ph.toFixed(1) + '</span>',
-      '<p><strong>What it means:</strong> pH measures soil acidity or alkalinity on a 0-14 scale (7 = neutral). Virginia soils naturally acidify over time, so periodic lime applications are needed. ' + phMsg + '</p>' + phAction + phLimeBtn));
+    cards.push(card('&#9879;&#65039;', 'Soil pH',
+      'Virginia soils: 4.5–7.5', 'Lawns: 5.8–6.8',
+      '<span class="st-rating-pill ' + phClass + '">' + ph.toFixed(1) + '</span>',
+      'pH measures soil acidity or alkalinity on a 0–14 scale (7 = neutral). Virginia soils naturally acidify over time, so periodic lime applications are needed. ' + phMsg,
+      'Soil pH controls how available nutrients are to your grass. When pH is outside the target range, even well-fertilized soil may not feed your lawn effectively.',
+      phAction, phLimeBtn));
   }
 
   // ---- Buffer Index ----
@@ -2388,8 +2417,12 @@ function interpretSoilTest() {
       biMsg = 'High reserve acidity. This soil needs significantly more lime to raise pH compared to a sandier soil.';
       biAction = abox('action-needed', 'High lime requirement. Apply the full recommended amount in applications of no more than 50 lbs/1,000 sq. ft.');
     }
-    cards.push(card('&#128208;', 'Buffer Index', bi.toFixed(2),
-      '<p><strong>What it means:</strong> Think of this as your soil\'s "resistance to change." A lower number means more built-up acidity that needs neutralizing, so it takes more lime to raise the pH. Two lawns can have the same pH reading, but the one with a lower Buffer Index needs significantly more lime to correct it - especially common in clay-heavy Virginia soils. Also called "Buffer pH" on Waypoint reports.</p><p style="margin-top:6px;">' + biMsg + '</p>' + biAction));
+    cards.push(card('&#128208;', 'Buffer Index',
+      'Scale: 6.00–6.60', 'Higher = less lime needed',
+      bi.toFixed(2),
+      'Think of this as your soil\'s "resistance to change." A lower number means more built-up acidity that needs neutralizing, so it takes more lime to raise the pH. Two lawns can have the same pH reading, but the one with a lower Buffer Index needs significantly more lime to correct it — especially common in clay-heavy Virginia soils. Also called "Buffer pH" on Waypoint reports. ' + biMsg,
+      'It determines how much lime your soil needs to reach the correct pH.',
+      biAction, ''));
   }
 
   // ---- Est-CEC ----
@@ -2402,8 +2435,12 @@ function interpretSoilTest() {
     var cecAction = cec <= 4
       ? abox('action-info', 'Sandy soil detected. Slowly available nitrogen (Program 2) is preferred to reduce leaching risk.')
       : abox('action-info', 'CEC is an estimation and can read artificially high if pH is alkaline (above 7.0) or soluble salts are elevated.');
-    cards.push(card('&#128267;', 'Estimated CEC', cec.toFixed(1) + ' meq/100g',
-      '<p><strong>What it means:</strong> This measures how well your soil holds onto nutrients instead of letting them wash away with rain. A higher number means your soil acts like a better sponge for fertilizer. Sandy soils have low CEC and lose nutrients quickly; clay-rich soils hold nutrients better. If your CEC is low, slow-release (Program 2) fertilizers are especially beneficial.</p><p style="margin-top:6px;">' + cecMsg + '</p>' + cecAction));
+    cards.push(card('&#128267;', 'Estimated CEC',
+      'Virginia soils: 1–12 meq/100g', 'Higher = better nutrient retention',
+      cec.toFixed(1) + ' meq/100g',
+      'This measures how well your soil holds onto nutrients instead of letting them wash away with rain. Sandy soils have low CEC and lose nutrients quickly; clay-rich soils hold nutrients better. ' + cecMsg,
+      'A higher CEC means your soil gets more value from each fertilizer application. Low CEC soils benefit most from slow-release fertilizers.',
+      cecAction, ''));
   }
 
   // ---- Phosphorus ----
@@ -2422,10 +2459,14 @@ function interpretSoilTest() {
     } else {
       pMsg = 'Adequate for your specified crop/plant.'; pAction = abox('action-good', 'Follow your soil test recommendations.');
     }
-    var pExtNote = labSource === 'waypoint' ? '<p style="margin-top:6px;font-size:0.8rem;color:var(--slate-light);"><em>Waypoint uses Mehlich 3 extraction - lb/A values differ from VCE Mehlich-1. Use the rating rather than the raw number.</em></p>' : '';
+    var pExtNote = labSource === 'waypoint' ? ' The lb/A number is for reference only — your rating determines the recommendation.' : '';
     var pCropBtn = crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '';
-    cards.push(card('&#127807;', 'Phosphorus (P)', pDisplay,
-      '<p><strong>What it measures:</strong> Extractable phosphorus using the ' + (labSource === 'waypoint' ? 'Mehlich 3' : 'Mehlich-1') + ' method. Reported in lbs per acre. VCE medium range = 12-35 lb/A (Mehlich-1).</p><p style="margin-top:6px;">' + pMsg + '</p>' + pExtNote + pAction + pCropBtn));
+    cards.push(card('&#127807;', 'Phosphorus (P)',
+      'Medium: 12–35 lb/A (VCE)', '',
+      pDisplay,
+      'The amount of phosphorus available to your plants. ' + pMsg + pExtNote,
+      'Phosphorus supports root development.',
+      pAction, pCropBtn));
   }
 
   // ---- Potassium ----
@@ -2444,10 +2485,14 @@ function interpretSoilTest() {
     } else {
       kMsg = 'Rated as sufficient.'; kAction = abox('action-good', 'Follow your soil test recommendations.');
     }
-    var kExtNote = labSource === 'waypoint' ? '<p style="margin-top:6px;font-size:0.8rem;color:var(--slate-light);"><em>Waypoint uses Mehlich 3 extraction - lb/A values differ from VCE Mehlich-1. Use the rating rather than the raw number.</em></p>' : '';
+    var kExtNote = labSource === 'waypoint' ? '<p style="margin-top:6px;font-size:0.8rem;color:var(--slate-light);"><em>The lb/A number on your report is for reference only and is not used in any calculations. Your rating (Low, Medium, High, etc.) is what determines your fertilizer recommendation.</em></p>' : '';
     var kCropBtn = crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '';
-    cards.push(card('&#9889;', 'Potassium (K)', kDisplay,
-      '<p><strong>What it measures:</strong> Extractable potassium using the ' + (labSource === 'waypoint' ? 'Mehlich 3' : 'Mehlich-1') + ' method. Reported in lbs per acre. VCE medium range = 76-175 lb/A (Mehlich-1). Supports drought tolerance and disease resistance.</p><p style="margin-top:6px;">' + kMsg + '</p>' + kExtNote + kAction + kCropBtn));
+    cards.push(card('&#9889;', 'Potassium (K)',
+      'Medium: 76–175 lb/A (VCE)', '',
+      kDisplay,
+      'The amount of potassium available to your plants. ' + kMsg + kExtNote,
+      'Potassium supports drought tolerance, disease resistance, and overall plant vigor.',
+      kAction, kCropBtn));
   }
 
   // ---- Calcium & Magnesium ----
@@ -2457,8 +2502,12 @@ function interpretSoilTest() {
     var limeNote = (mgRat === 'L-' || mgRat === 'L' || mgRat === 'L+' || mgRat === 'DEF')
       ? abox('action-needed', 'Low magnesium: Dolomitic limestone is recommended as it supplies both calcium and magnesium.')
       : abox('action-info', 'Calcium and magnesium are normally supplied by liming. If neither dolomitic nor calcitic lime is specified, either type may be used.');
-    cards.push(card('&#129704;', 'Calcium &amp; Magnesium', 'Ca: ' + (caDisplay||'&mdash;') + ' &middot; Mg: ' + (mgDisplay||'&mdash;'),
-      '<p><strong>Calcium (Ca):</strong> Medium = 721-1,440 lb/A. <strong>Magnesium (Mg):</strong> Medium = 73-144 lb/A. Both are primarily supplied through limestone applications. The relative levels of Ca and Mg determine whether dolomitic or calcitic limestone is more appropriate.</p>' + limeNote));
+    cards.push(card('&#129704;', 'Calcium &amp; Magnesium',
+      'Ca medium: 721–1,440 lb/A &nbsp;&bull;&nbsp; Mg medium: 73–144 lb/A', '',
+      'Ca: ' + (caDisplay||'&mdash;') + ' &middot; Mg: ' + (mgDisplay||'&mdash;'),
+      'Both calcium and magnesium are primarily supplied through limestone applications rather than fertilizer. Their relative levels determine whether dolomitic or calcitic limestone is recommended.',
+      'Calcium supports cell wall strength and root growth. Magnesium is the central component of chlorophyll and is essential for photosynthesis.',
+      limeNote, ''));
   }
 
   // ---- Organic Matter ----
@@ -2477,8 +2526,12 @@ function interpretSoilTest() {
       omMsg = 'Very high - common in heavily amended garden soils.';
       omAction = abox('action-monitor', 'Check herbicide labels - rates are often adjusted based on % organic matter.');
     }
-    cards.push(card('&#127757;', 'Organic Matter', om.toFixed(1) + '%',
-      '<p><strong>What it measures:</strong> The percentage of decomposed plant and animal residues in the soil. Greater organic matter improves nutrient and water holding capacity, aeration, and microbial activity. Normal range for Virginia soils: 0.5-2.5%.</p><p style="margin-top:6px;">' + omMsg + '</p>' + omAction));
+    cards.push(card('&#127757;', 'Organic Matter',
+      'Virginia soils: 0.5–2.5%', 'Higher end preferred',
+      om.toFixed(1) + '%',
+      'The percentage of decomposed plant and animal residues in the soil. ' + omMsg,
+      'Organic matter improves your soil\'s ability to hold water and nutrients, supports beneficial soil organisms, and contributes to overall lawn health.',
+      omAction, ''));
   }
 
   // ---- Soluble Salts ----
@@ -2497,11 +2550,42 @@ function interpretSoilTest() {
       saltMsg = 'Low - no salt injury risk.';
       saltAction = abox('action-good', 'Soluble salts are not high enough to cause injury. No action needed.');
     }
-    cards.push(card('&#129512;', 'Soluble Salts', saltDisplay,
-      '<p><strong>What it measures:</strong> Electrical conductivity used to estimate fertilizer salt accumulation. VCE reports in ppm; Waypoint reports in dS/m (1 dS/m \u2248 640 ppm). Injury threshold: 844 ppm / 1.32 dS/m for established turf.</p><p style="margin-top:6px;">' + saltMsg + '</p>' + saltAction));
+    cards.push(card('&#129512;', 'Soluble Salts',
+      'Normal: below 500 ppm', 'Injury threshold: 844 ppm / 1.32 dS/m',
+      saltDisplay,
+      'Measures salt accumulation from fertilizer. VCE reports in ppm; Waypoint reports in dS/m (1 dS/m ≈ 640 ppm). ' + saltMsg,
+      'High salt concentrations draw water out of plant roots, causing drought-like stress even when the soil is moist.',
+      saltAction, ''));
   }
 
   // ---- Est-CEC already handled above ----
+
+  // ---- Base Saturation & Acidity ----
+  if (!isNaN(basesat) && basesat > 0) {
+    var acidity = (100 - basesat).toFixed(1);
+    var bsMsg, bsAction, bsCls;
+
+    if (basesat >= 65 && basesat <= 85) {
+      bsCls = 'action-good';
+      bsMsg = 'Base saturation is in the ideal range. The balance of calcium, magnesium, and potassium on your soil\'s exchange sites is good.';
+      bsAction = abox('action-good', 'No corrective action needed. Continue monitoring with periodic soil tests.');
+    } else if (basesat < 65) {
+      bsCls = 'action-needed';
+      bsMsg = 'Base saturation is below the ideal range. A higher proportion of exchange sites are occupied by acid-forming hydrogen ions rather than beneficial nutrients like calcium and magnesium.';
+      bsAction = abox('action-needed', 'Lime application will raise base saturation by replacing acid-forming ions with calcium (and magnesium if dolomitic lime is used). Follow your lime recommendation.');
+    } else {
+      bsCls = 'action-monitor';
+      bsMsg = 'Base saturation is above the typical range. This may indicate an over-limed or naturally calcareous soil. Calcium saturation above 85% can sometimes indicate excess calcium relative to other nutrients.';
+      bsAction = abox('action-monitor', 'Do not apply additional lime. Have your soil retested. If pH is above 7.0, allow it to drop naturally or consult your local VCE office.');
+    }
+
+    cards.push(card('&#9878;', 'Base Saturation &amp; Acidity',
+      'Ideal base saturation: 65\u201385%', 'Acidity %: 100 \u2212 Base Saturation',
+      'Base sat: ' + basesat.toFixed(1) + '% &nbsp;&bull;&nbsp; Acidity: ' + acidity + '%',
+      'Base saturation is the percentage of your soil\'s nutrient-holding sites occupied by beneficial (non-acid) ions \u2014 primarily calcium, magnesium, and potassium. The remainder (' + acidity + '%) is occupied by acid-forming hydrogen ions, expressed as % Acidity on your VCE report. ' + bsMsg,
+      'A higher base saturation means more of your soil\'s capacity is holding the nutrients your grass needs rather than acids. Lime increases base saturation by neutralizing the acidity.',
+      bsAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn('lime', 'Open Lime Calculator') : ''));
+  }
 
   // ---- Lime Recommendation ----
   if (!isNaN(limeRec) && limeRec > 0) {
@@ -2517,8 +2601,13 @@ function interpretSoilTest() {
     var fullApps = Math.floor(limeRec / 50);
     var remLbs = limeRec - (fullApps * 50);
     var scheduleStr = apps === 1 ? limeRec + ' lbs in 1 application' : (fullApps > 0 ? fullApps + '\u00d7 50 lbs' : '') + (remLbs > 0 ? (fullApps > 0 ? ', then ' : '') + remLbs + ' lbs' : '');
-    cards.push(card('&#129704;', 'Lime Recommendation', limeRec + ' lbs / 1,000 sq. ft.',
-      '<p><strong>Why lime is needed:</strong> Virginia soils naturally acidify over time. Lime neutralizes acidity to keep pH in the 5.8-6.8 range. This recommendation covers a 3-year period - retest after 3 years.</p>' + limeTypeNote + '<p style="margin-top:6px;"><strong>Application rule:</strong> Never apply more than 50 lbs per 1,000 sq. ft. at one time. Your total of ' + limeRec + ' lbs requires <strong>' + apps + ' application' + (apps > 1 ? 's' : '') + '</strong> (' + scheduleStr + '), spaced 1-6 months apart.</p>' + abox('action-needed', 'Use the Lime Calculator tab to enter your lawn size, CCE, and bag size for precise quantities.') + goBtn('lime', 'Open Lime Calculator')));
+    cards.push(card('&#129704;', 'Lime Recommendation',
+      '', '',
+      limeRec + ' lbs / 1,000 sq. ft.',
+      'Virginia soils naturally acidify over time. Lime neutralizes acidity to keep pH in the 5.8–6.8 range. This recommendation covers a 3-year period — retest after 3 years. ' + limeTypeNote.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&') + ' Never apply more than 50 lbs per 1,000 sq. ft. at one time. Your total of ' + limeRec + ' lbs requires ' + apps + ' application' + (apps > 1 ? 's' : '') + ' (' + scheduleStr + '), spaced 1–6 months apart.',
+      'Lime restores the soil pH that allows all other nutrients to become available to your grass.',
+      abox('action-needed', 'Use the Lime Calculator tab to enter your lawn size, CCE, and bag size for precise quantities.'),
+      goBtn('lime', 'Open Lime Calculator')));
   }
 
   // ---- Grass Type ----
@@ -2530,35 +2619,38 @@ function interpretSoilTest() {
       ? 'Warm-season grasses are fertilized during their active growing period (spring through summer). Use Soil Test Note 18 guidelines.'
       : 'Cool-season grasses are primarily fertilized in the fall with optional spring applications. Use Soil Test Note 17 guidelines.';
     var cropBtn = goBtn(crop, 'Open ' + (crop === 'warm' ? 'Warm' : 'Cool') + '-Season Calculator');
-    cards.push(card('&#127807;', 'Grass Type &amp; Fertilizer Program', grassLabel,
-      '<p>' + noteText + ' Once you have your fertilizer\'s N-P-K grade and WIN value, enter them in the appropriate fertilizer calculator for per-application amounts and timing.</p>' + cropBtn));
+    cards.push(card('&#127807;', 'Grass Type &amp; Fertilizer Program',
+      '', '',
+      grassLabel,
+      noteText + ' Once you have your fertilizer\'s N-P-K grade and WIN value, enter them in the appropriate fertilizer calculator for per-application amounts and timing.',
+      '', '', cropBtn));
   }
 
   // ---- Micronutrients ----
   (function() {
     var nutrients = [
       { id:'st-zn', rid:'st-zn-rating', name:'Zinc (Zn)',
-        phNote:'Availability decreases above pH 7.0. Most likely deficient with high P, high pH, or low organic matter.',
+        phNote:'Zinc supports enzyme activity and growth regulation. Availability decreases above pH 7.0. Most likely deficient with high P, high pH, or low organic matter.',
         lowMsg:'Ensure pH is in the 5.8-6.8 range first. If deficiency persists at correct pH, foliar or soil-applied zinc sulfate may be considered - consult your local VCE office.',
         suffMsg:'Zinc levels are adequate. No corrective action needed.',
         highMsg:'High zinc can interfere with iron and manganese uptake. Avoid applying zinc-containing products.' },
       { id:'st-mn', rid:'st-mn-rating', name:'Manganese (Mn)',
-        phNote:'Highly pH-sensitive - availability drops sharply above pH 6.5. Over-liming is the most common cause of Mn deficiency in Virginia.',
+        phNote:'Manganese is required for photosynthesis and enzyme function. Highly pH-sensitive - availability drops sharply above pH 6.5. Over-liming is the most common cause of Mn deficiency in Virginia.',
         lowMsg:'Low manganese is almost always a pH problem. Check soil pH first. If pH is correct and deficiency persists, foliar manganese sulfate is most effective - soil applications are less reliable.',
         suffMsg:'Manganese levels are adequate. No corrective action needed.',
         highMsg:'High manganese can occur at low pH (below 5.0-5.5) and may become toxic. Liming to the correct range will reduce availability.' },
       { id:'st-cu', rid:'st-cu-rating', name:'Copper (Cu)',
-        phNote:'Deficiency most likely on sandy, low-organic or highly organic/muck soils.',
+        phNote:'Copper supports enzyme systems involved in plant respiration. Deficiency most likely on sandy, low-organic or highly organic/muck soils.',
         lowMsg:'Low copper may affect turf quality on sandy or high-organic soils. Consult your local VCE office before applying copper - over-application can be toxic.',
         suffMsg:'Copper levels are adequate. No corrective action needed.',
         highMsg:'Very high copper can be toxic to plants and soil organisms. Avoid copper-containing products and fungicides.' },
       { id:'st-fe', rid:'st-fe-rating', name:'Iron (Fe)',
-        phNote:'Strongly pH-dependent - decreases sharply above pH 7.0. Virginia soils contain abundant iron so deficiency is almost always a pH problem.',
+        phNote:'Strongly pH-dependent - decreases sharply above pH 7.0. Iron is essential for chlorophyll production - deficiency causes yellowing between leaf veins. Virginia soils contain abundant iron so deficiency is almost always a pH problem.',
         lowMsg:'Low iron is nearly always caused by high soil pH. Correct pH first. If yellowing persists at correct pH, use foliar-applied chelated iron only.',
         suffMsg:'Iron levels are adequate. No corrective action needed.',
         highMsg:'Very high iron is uncommon in managed lawns. Elevated iron at low pH can interfere with P or Mn uptake.' },
       { id:'st-b', rid:'st-b-rating', name:'Boron (B)',
-        phNote:'Most likely deficient in sandy, low-organic soils. Rarely a practical concern for established turfgrass.',
+        phNote:'Boron supports cell development and pollen formation. Most likely deficient in sandy, low-organic soils. Rarely a practical concern for established turfgrass.',
         lowMsg:'Low boron is uncommon in Virginia lawns. Consult your local VCE office before applying - the margin between deficiency and toxicity is very narrow.',
         suffMsg:'Boron levels are adequate. No corrective action needed.',
         highMsg:'Excessive boron is toxic to plants. Do not apply boron-containing products if levels are at or above optimum.' }
@@ -2604,7 +2696,7 @@ function interpretSoilTest() {
       body += '</div>';
     });
 
-    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only</div></div><div class="st-interp-body">' + body + '</div></div>');
+    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only — no calculation</div></div><div class="st-interp-ranges"><span class="st-range-label">Target:</span> Sufficient at correct soil pH (5.8–6.8)</div><div class="st-interp-body">' + body + '</div></div>');
   })();
 
   // Render
