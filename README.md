@@ -53,7 +53,7 @@ All flags match the original SPES-40A spreadsheet logic:
 Visit: **[https://lawncarecalc.github.io/lawncarecalculator.github.io/](https://lawncarecalc.github.io/lawncarecalculator.github.io/)**
 
 ### Offline
-1. Download `SPES-40A-Calculator.html`
+1. Download `index.html` above
 2. Double-click to open in any modern web browser
 3. Works completely offline — no internet required!
 
