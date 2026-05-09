@@ -1146,12 +1146,14 @@ document.querySelectorAll('.tab-btn').forEach(function(btn) {
   });
 });
 
+// ===== HELPERS =====
 function fmt(n, dec) {
   dec = dec === undefined ? 1 : dec;
   if (n === null || n === undefined || isNaN(n) || !isFinite(n)) return '-';
   return n.toFixed(dec);
 }
 
+// ===== WIN / PROGRAM DETECTION =====
 function detectProgram(fertN, winLbs) {
   if (!fertN || fertN <= 0) return { program: 1, winPct: 0, isSlowRelease: false };
   var winPct = (winLbs / fertN) * 100;
@@ -1159,6 +1161,7 @@ function detectProgram(fertN, winLbs) {
   return { program: isSlowRelease ? 2 : 1, winPct: winPct, isSlowRelease: isSlowRelease };
 }
 
+// ===== COOL-SEASON APPS/MAX =====
 function coolAppsAndMax(nRate, isSlowRelease) {
   if (!nRate || nRate <= 0) return { apps: 0, maxNPerApp: 0 };
   if (isSlowRelease) {
@@ -1170,6 +1173,7 @@ function coolAppsAndMax(nRate, isSlowRelease) {
   }
 }
 
+// ===== WARM-SEASON APPS/MAX =====
 function warmAppsAndMax(nRate, isSlowRelease) {
   if (!nRate || nRate <= 0) return { apps: 0, maxNPerApp: 0 };
   if (isSlowRelease) {
@@ -1181,6 +1185,7 @@ function warmAppsAndMax(nRate, isSlowRelease) {
   }
 }
 
+// ===== P/K RECOMMENDATION MAPS =====
 var P_REC = {
   'L-':{ cls:'rec-p',      icon:'&#10003;', msg:'Use a Fertilizer With Phosphorus (P)' },
   'L': { cls:'rec-p',      icon:'&#10003;', msg:'Use a Fertilizer With Phosphorus (P)' },
@@ -1206,6 +1211,7 @@ var K_REC = {
   'VH':{ cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a Zero Potassium (K) Fertilizer' }
 };
 
+// ===== TIMING SCHEDULES =====
 var COOL_P1_TIMING = {
   1: ['Oct: 0.7 lb N/1,000 sq. ft.'],
   2: ['Sept: 0.7 lb N/1,000 sq. ft.', 'Oct: 0.7 lb N/1,000 sq. ft.'],
@@ -1242,6 +1248,7 @@ function limeApps(adjLbsPerM) {
   return Math.min(Math.ceil(adjLbsPerM / 50), 6);
 }
 
+// ===== SHARED FERTILIZER CALC =====
 function calcFertilizer(prefix, appsAndMaxFn, timingP1Map, timingP2Map) {
   var lawnSize = parseFloat(document.getElementById(prefix+'-lawn-size').value) || 0;
   var nRate    = parseFloat(document.getElementById(prefix+'-n-rate').value) || 0;
@@ -1267,14 +1274,18 @@ function calcFertilizer(prefix, appsAndMaxFn, timingP1Map, timingP2Map) {
           ? '&#9888; < 15% WIN - <strong>Program 1</strong> (quickly available nitrogen) applies.'
           : 'No WIN listed - assumed quickly available. <strong>Program 1</strong> applies.');
     winDisp.innerHTML = '<div class="win-calc-box">WIN = ' + fmt(winLbs,1) + ' / ' + fertN + '% total N x 100 = <span class="win-result">' + pctOfN + '% of N is slowly available</span><br><span style="margin-top:4px;display:block;">' + progMsg + '</span></div>';
-  } else { winDisp.innerHTML = ''; }
+  } else {
+    winDisp.innerHTML = '';
+  }
 
   var progDisp = document.getElementById(prefix+'-program-display');
   if (fertN > 0) {
     progDisp.innerHTML = isSlowRelease
       ? '<span class="program-badge prog2">Program 2 - Slowly Available N (WIN >= 15%)</span>'
       : '<span class="program-badge prog1">Program 1 - Quickly Available N (WIN < 15%)</span>';
-  } else { progDisp.innerHTML = ''; }
+  } else {
+    progDisp.innerHTML = '';
+  }
 
   var nValid = document.getElementById(prefix+'-n-valid');
   var nMaxAnnual = (prefix === 'warm') ? 4.0 : 3.5;
@@ -1282,7 +1293,9 @@ function calcFertilizer(prefix, appsAndMaxFn, timingP1Map, timingP2Map) {
     nValid.innerHTML = '<div class="warning-badge">&#9888; <strong>Nitrogen amount is too high. Please lower.</strong> Max for ' + (prefix==='warm'?'warm':'cool') + '-season grasses is ' + nMaxAnnual + ' lbs / 1,000 sq. ft.</div>';
   } else if (nRate > 0) {
     nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Nitrogen amount is OK</span>';
-  } else { nValid.innerHTML = ''; }
+  } else {
+    nValid.innerHTML = '';
+  }
 
   var am = appsAndMaxFn(nRate, isSlowRelease);
   var apps = am.apps, maxNPerApp = am.maxNPerApp;
@@ -1295,7 +1308,9 @@ function calcFertilizer(prefix, appsAndMaxFn, timingP1Map, timingP2Map) {
   var warnEl = document.getElementById(prefix+'-n-warn');
   if (apps > 0 && nPerAppPerK > maxNPerApp + 0.001) {
     warnEl.innerHTML = '<div class="warning-badge">&#9888; N per application (' + fmt(nPerAppPerK,2) + ' lbs) exceeds the Program ' + program + ' maximum of ' + fmt(maxNPerApp,1) + ' lb/1,000 sq. ft. Consider increasing the number of applications or reducing your total N rate.</div>';
-  } else { warnEl.innerHTML = ''; }
+  } else {
+    warnEl.innerHTML = '';
+  }
 
   var lbsPerApp = (fertN > 0 && nPerAppPerK > 0 && kSq > 0) ? (nPerAppPerK / (fertN / 100)) * kSq : 0;
   document.getElementById(prefix+'-lbs-per-app').textContent = lbsPerApp > 0 ? fmt(lbsPerApp,1) + ' lbs' : '-';
@@ -1308,7 +1323,9 @@ function calcFertilizer(prefix, appsAndMaxFn, timingP1Map, timingP2Map) {
 
   if (lbsTotal > 0 && fertN > 0) {
     document.getElementById(prefix+'-npk-applied').textContent = fmt(lbsTotal*fertN/100,1) + ' / ' + fmt(lbsTotal*fertP/100,1) + ' / ' + fmt(lbsTotal*fertK/100,1) + ' lbs';
-  } else { document.getElementById(prefix+'-npk-applied').textContent = '-'; }
+  } else {
+    document.getElementById(prefix+'-npk-applied').textContent = '-';
+  }
 
   var NEED_RATIO = {'L-':3,'L':2.5,'L+':2,'M-':2,'M':1.5,'M+':1,'H-':1,'H':0.75,'H+':0.5,'VH':0};
   var pAppliedPerK = (fertN > 0 && nRate > 0) ? (nRate / fertN * fertP) : 0;
@@ -1380,6 +1397,7 @@ function calcFertilizer(prefix, appsAndMaxFn, timingP1Map, timingP2Map) {
 function calcCool() { calcFertilizer('cool', coolAppsAndMax, COOL_P1_TIMING, COOL_P2_TIMING); }
 function calcWarm() { calcFertilizer('warm', warmAppsAndMax, WARM_P1_TIMING, WARM_P2_TIMING); }
 
+// ===== LIME CALC =====
 function calcLime() {
   var lawnSize = parseFloat(document.getElementById('lime-lawn-size').value) || 0;
   var limeRec  = parseFloat(document.getElementById('lime-rec').value) || 0;
@@ -1401,7 +1419,8 @@ function calcLime() {
     if (apps === 1) {
       lbsPerAppDisplay = fmt(totalLbs,0) + ' lbs (1 application)';
     } else {
-      var fullLbs = 50 * kSq, remLbs = remainder * kSq;
+      var fullLbs = 50 * kSq;
+      var remLbs  = remainder * kSq;
       lbsPerAppDisplay = remainder > 0
         ? fullApps + 'x ' + fmt(fullLbs,0) + ' lbs, then ' + fmt(remLbs,0) + ' lbs'
         : fmt(fullLbs,0) + ' lbs x ' + apps + ' applications';
@@ -1432,6 +1451,7 @@ function calcLime() {
   else { noteEl.style.display = 'none'; }
 }
 
+// ===== LAB SOURCE CHANGE =====
 function onLabSourceChange() {
   var lab = document.getElementById('st-lab-source').value;
   var ratingSelects = ['st-p-rating','st-k-rating','st-ca-rating','st-mg-rating'];
@@ -1457,7 +1477,25 @@ function onLabSourceChange() {
   var scaleHint = lab === 'waypoint' ? '(Waypoint scale)' : lab === 'vce' ? '(VCE scale)' : '(select scale above)';
   ['p','k'].forEach(function(n) { var el = document.getElementById(n+'-rating-scale-hint'); if (el) el.textContent = scaleHint; });
   if (lab === 'waypoint') setSaltUnit('dsm'); else setSaltUnit('ppm');
+
+  // Update nutrient input labels
+  var unit = nutrientUnit();
+  ['st-p-val','st-k-val','st-ca','st-mg'].forEach(function(id) {
+    var input = document.getElementById(id);
+    if (!input) return;
+    var lbl = input.previousElementSibling;
+    if (lbl && lbl.tagName === 'LABEL') {
+      lbl.textContent = lbl.textContent.replace(/\(lb\/A\)|\(ppm\)/, '(' + unit + ')');
+    }
+  });
+
   interpretSoilTest();
+}
+
+// ===== SALT UNIT TOGGLE =====
+// ===== NUTRIENT UNIT LABEL =====
+function nutrientUnit() {
+  return document.getElementById('st-lab-source').value === 'waypoint' ? 'ppm' : 'lb/A';
 }
 
 var saltUnit = 'ppm';
@@ -1471,8 +1509,10 @@ function setSaltUnit(unit) {
   interpretSoilTest();
 }
 
+// ===== WAYPOINT RATING MAP =====
 var WAYPOINT_TO_VCE = {'VL':'L-','LO':'L','ME':'M','OP':'H-','VH2':'VH'};
 
+// ===== SOIL TEST INTERPRETATION =====
 function interpretSoilTest() {
   var labSource = document.getElementById('st-lab-source').value;
   var ph      = parseFloat(document.getElementById('st-ph').value);
@@ -1507,6 +1547,9 @@ function interpretSoilTest() {
   var pRat  = WAYPOINT_TO_VCE[pRatRaw] || pRatRaw;
   var kRat  = WAYPOINT_TO_VCE[kRatRaw] || kRatRaw;
 
+  // Lab notice
+  var unit = nutrientUnit();
+
   var labNoticeEl = document.getElementById('st-lab-notice');
   if (labSource === 'vce') {
     labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#10003; <strong>VCE / Virginia Tech:</strong> Ratings (L-/M/H/VH) and thresholds are calibrated for this report. Soluble salts reported in ppm.</div>';
@@ -1527,6 +1570,7 @@ function interpretSoilTest() {
 
   var cards = [];
 
+  // ---- LOCAL HELPERS ----
   function card(icon, title, range, target, valDisplay, whatMeans, whyMatters, action, extraBtns) {
     var rangeHtml = range ? '<div class="st-interp-ranges"><span class="st-range-label">Typical range:</span> ' + range + (target ? ' &nbsp;&bull;&nbsp; <span class="st-range-label">Target:</span> ' + target : '') + '</div>' : '';
     var bodyHtml = '<p><strong>What it means:</strong> ' + whatMeans + '</p>'
@@ -1549,196 +1593,388 @@ function interpretSoilTest() {
     return '<span class="st-rating-pill ' + cls + '">' + r + '</span>';
   }
 
+  // ---- pH ----
   if (!isNaN(ph)) {
     var phClass, phMsg, phAction;
-    if (ph < 5.0) { phClass='pill-warn'; phMsg='Strongly acidic. At pH below 5.0, aluminum toxicity limits plant growth.'; phAction=abox('action-needed','Lime application is strongly recommended. Follow your lime recommendation and use the Lime Calculator.'); }
-    else if (ph < 5.8) { phClass='pill-warn'; phMsg='Acidic. Below the ideal range of 5.8-6.8 for most lawn grasses.'; phAction=abox('action-needed','Apply lime per your soil test recommendation. Virginia soils naturally acidify over time.'); }
-    else if (ph <= 6.8) { phClass='pill-suff'; phMsg='Slightly acidic to neutral - the ideal range (5.8-6.8) where most nutrients are available.'; phAction=abox('action-good','No lime action needed based on pH alone. Continue monitoring with periodic soil tests.'); }
-    else if (ph <= 7.0) { phClass='pill-med'; phMsg='Near neutral. Acceptable for most lawn grasses.'; phAction=abox('action-monitor','Do not apply additional lime. Monitor micronutrient availability.'); }
-    else { phClass='pill-warn'; phMsg='Alkaline. Above pH 7.0, micronutrients become less available.'; phAction=abox('action-needed','Do not apply lime. Consider sulfur to lower pH, or allow it to drop naturally.'); }
-    cards.push(card('&#9879;&#65039;','Soil pH','Virginia soils: 4.5-7.5','Lawns: 5.8-6.8','<span class="st-rating-pill '+phClass+'">'+ph.toFixed(1)+'</span>','pH measures soil acidity or alkalinity on a 0-14 scale (7 = neutral). Virginia soils naturally acidify over time. <strong>Your result:</strong> '+phMsg,'Soil pH controls how available nutrients are to your grass. When pH is outside the target range, even well-fertilized soil may not feed your lawn effectively.',phAction,(!isNaN(limeRec)&&limeRec>0)?goBtn('lime','Open Lime Calculator'):''));
+    if (ph < 5.0) {
+      phClass = 'pill-warn'; phMsg = 'Strongly acidic. At pH below 5.0, aluminum toxicity limits plant growth.';
+      phAction = abox('action-needed', 'Lime application is strongly recommended. Follow your lime recommendation and use the Lime Calculator.');
+    } else if (ph < 5.8) {
+      phClass = 'pill-warn'; phMsg = 'Acidic. Below the ideal range of 5.8-6.8 for most lawn grasses.';
+      phAction = abox('action-needed', 'Apply lime per your soil test recommendation. Virginia soils naturally acidify over time.');
+    } else if (ph <= 6.8) {
+      phClass = 'pill-suff'; phMsg = 'Slightly acidic to neutral - the ideal range (5.8-6.8) where most nutrients are available.';
+      phAction = abox('action-good', 'No lime action needed based on pH alone. Continue monitoring with periodic soil tests.');
+    } else if (ph <= 7.0) {
+      phClass = 'pill-med'; phMsg = 'Near neutral. Acceptable for most lawn grasses.';
+      phAction = abox('action-monitor', 'Do not apply additional lime. Monitor micronutrient availability.');
+    } else {
+      phClass = 'pill-warn'; phMsg = 'Alkaline. Above pH 7.0, micronutrients become less available.';
+      phAction = abox('action-needed', 'Do not apply lime. Consider sulfur to lower pH, or allow it to drop naturally.');
+    }
+    cards.push(card('&#9879;&#65039;', 'Soil pH', 'Virginia soils: 4.5-7.5', 'Lawns: 5.8-6.8',
+      '<span class="st-rating-pill ' + phClass + '">' + ph.toFixed(1) + '</span>',
+      'pH measures soil acidity or alkalinity on a 0-14 scale (7 = neutral). Virginia soils naturally acidify over time. <strong>Your result:</strong> ' + phMsg,
+      'Soil pH controls how available nutrients are to your grass. When pH is outside the target range, even well-fertilized soil may not feed your lawn effectively.',
+      phAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn('lime','Open Lime Calculator') : ''));
   }
 
+  // ---- Buffer Index ----
   if (!isNaN(bi)) {
     var biMsg, biAction;
-    if (bi >= 6.5) { biMsg='Relatively low total acidity.'; biAction=abox('action-good','Low lime requirement. Apply per your recommendation.'); }
-    else if (bi >= 6.0) { biMsg='Moderate total acidity.'; biAction=abox('action-monitor','Moderate lime requirement. Follow the lbs/1,000 sq. ft. recommendation precisely.'); }
-    else { biMsg='High reserve acidity. This soil needs significantly more lime.'; biAction=abox('action-needed','High lime requirement. Apply the full recommended amount in applications of no more than 50 lbs/1,000 sq. ft.'); }
-    cards.push(card('&#128208;','Buffer Index','Scale: 6.00-6.60','Higher = less lime needed',bi.toFixed(2),'Think of this as your soil\'s resistance to change. A lower number means more built-up acidity that needs neutralizing, so it takes more lime to raise the pH. Also called "Buffer pH" on Waypoint reports. <strong>Your result:</strong> '+biMsg,'It determines how much lime your soil needs to reach the correct pH.',biAction,(!isNaN(limeRec)&&limeRec>0)?goBtn('lime','Open Lime Calculator'):''));
+    if (bi >= 6.5) {
+      biMsg = 'Relatively low total acidity.'; biAction = abox('action-good', 'Low lime requirement. Apply per your recommendation.');
+    } else if (bi >= 6.0) {
+      biMsg = 'Moderate total acidity.'; biAction = abox('action-monitor', 'Moderate lime requirement. Follow the lbs/1,000 sq. ft. recommendation precisely.');
+    } else {
+      biMsg = 'High reserve acidity. This soil needs significantly more lime.'; biAction = abox('action-needed', 'High lime requirement. Apply the full recommended amount in applications of no more than 50 lbs/1,000 sq. ft.');
+    }
+    cards.push(card('&#128208;', 'Buffer Index', 'Scale: 6.00-6.60', 'Higher = less lime needed', bi.toFixed(2),
+      'Think of this as your soil\'s resistance to change. A lower number means more built-up acidity that needs neutralizing, so it takes more lime to raise the pH. Also called "Buffer pH" on Waypoint reports. <strong>Your result:</strong> ' + biMsg,
+      'It determines how much lime your soil needs to reach the correct pH.',
+      biAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn('lime','Open Lime Calculator') : ''));
   }
 
+  // ---- Base Saturation ----
   if (!isNaN(basesat) && basesat > 0) {
-    var acidity=(100-basesat).toFixed(1), acPct=parseFloat(acidity), bsAction;
-    if (acPct > 40) bsAction=abox('action-needed','Follow your lime recommendation. Lime replaces acid-forming ions with calcium, reducing % Acidity over time.');
-    else if (acPct > 20) bsAction=abox('action-monitor','If lime is recommended on your report, follow it. Monitor pH with periodic retesting every 3 years.');
-    else bsAction=abox('action-good','No corrective action needed based on this reading. Continue monitoring with periodic soil tests.');
-    cards.push(card('&#9878;','Base Saturation &amp; Acidity','Acidity % = 100 minus Base Saturation %','','Base sat: '+basesat.toFixed(1)+'% / Acidity: '+acidity+'%','Base saturation is the percentage of your soil\'s nutrient-holding sites occupied by beneficial ions. The remainder is % Acidity - sites occupied by acid-forming hydrogen ions.','As soil pH drops, % Acidity rises and base saturation falls. Liming reverses this by replacing acid ions with calcium and magnesium.',bsAction,(!isNaN(limeRec)&&limeRec>0)?goBtn('lime','Open Lime Calculator'):''));
+    var acidity  = (100 - basesat).toFixed(1);
+    var acPct    = parseFloat(acidity);
+    var bsAction;
+    if (acPct > 40) {
+      bsAction = abox('action-needed', 'Follow your lime recommendation. Lime replaces acid-forming ions with calcium, reducing % Acidity over time.');
+    } else if (acPct > 20) {
+      bsAction = abox('action-monitor', 'If lime is recommended on your report, follow it. Monitor pH with periodic retesting every 3 years.');
+    } else {
+      bsAction = abox('action-good', 'No corrective action needed based on this reading. Continue monitoring with periodic soil tests.');
+    }
+    cards.push(card('&#9878;', 'Base Saturation &amp; Acidity', 'Acidity % = 100 minus Base Saturation %', '',
+      'Base sat: ' + basesat.toFixed(1) + '% / Acidity: ' + acidity + '%',
+      'Base saturation is the percentage of your soil\'s nutrient-holding sites occupied by beneficial ions. The remainder is % Acidity - sites occupied by acid-forming hydrogen ions.',
+      'As soil pH drops, % Acidity rises and base saturation falls. Liming reverses this by replacing acid ions with calcium and magnesium.',
+      bsAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn('lime','Open Lime Calculator') : ''));
   }
 
+  // ---- Lime Recommendation ----
   if (!isNaN(limeRec) && limeRec > 0) {
-    var lApps=Math.min(Math.ceil(limeRec/50),6);
-    var lTypeNote=limeTyp==='Dolomitic'?'Dolomitic limestone is recommended - it supplies both calcium and magnesium.':limeTyp==='Agricultural'?'Agricultural (calcitic) limestone is recommended. Pelletized lime is practical for lawns.':'No specific lime type listed - either agricultural or dolomitic may be used.';
-    var fApps2=Math.floor(limeRec/50),rLbs2=limeRec-(fApps2*50);
-    var schedStr=lApps===1?limeRec+' lbs in 1 application':(fApps2>0?fApps2+'x 50 lbs':'')+(rLbs2>0?(fApps2>0?', then ':'')+rLbs2+' lbs':'');
-    cards.push(card('&#129704;','Lime Recommendation','','',limeRec+' lbs / 1,000 sq. ft.','Virginia soils naturally acidify over time. '+lTypeNote+' Never apply more than 50 lbs per 1,000 sq. ft. at one time. Your total of '+limeRec+' lbs requires '+lApps+' application'+(lApps>1?'s':'')+' ('+schedStr+'), spaced 1-6 months apart.','Lime restores the soil pH that allows all other nutrients to become available to your grass.',abox('action-needed','Use the Lime Calculator tab to enter your lawn size, CCE, and bag size for precise quantities.'),goBtn('lime','Open Lime Calculator')));
+    var lApps    = Math.min(Math.ceil(limeRec / 50), 6);
+    var lTypeNote = limeTyp === 'Dolomitic' ? 'Dolomitic limestone is recommended - it supplies both calcium and magnesium.'
+      : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone is recommended. Pelletized lime is practical for lawns.'
+      : 'No specific lime type listed - either agricultural or dolomitic may be used.';
+    var fApps2 = Math.floor(limeRec / 50), rLbs2 = limeRec - (fApps2 * 50);
+    var schedStr = lApps === 1 ? limeRec + ' lbs in 1 application'
+      : (fApps2 > 0 ? fApps2 + 'x 50 lbs' : '') + (rLbs2 > 0 ? (fApps2 > 0 ? ', then ' : '') + rLbs2 + ' lbs' : '');
+    cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec + ' lbs / 1,000 sq. ft.',
+      'Virginia soils naturally acidify over time. ' + lTypeNote + ' Never apply more than 50 lbs per 1,000 sq. ft. at one time. Your total of ' + limeRec + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + ' (' + schedStr + '), spaced 1-6 months apart.',
+      'Lime restores the soil pH that allows all other nutrients to become available to your grass.',
+      abox('action-needed', 'Use the Lime Calculator tab to enter your lawn size, CCE, and bag size for precise quantities.'),
+      goBtn('lime','Open Lime Calculator')));
   }
 
+  // ---- Est-CEC ----
   if (!isNaN(cec)) {
     var cecMsg, cecAction;
-    if (cec<=3){cecMsg='Very low nutrient-holding capacity. Nutrients are more likely to leach before your grass can use them.';cecAction=abox('action-info','With low nutrient-holding capacity, nitrogen can leach past the root zone before your grass uses it. Slow-release (Program 2) fertilizers release nutrients gradually, reducing this risk.');}
-    else if(cec<=7){cecMsg='Low to moderate nutrient-holding capacity. Some leaching risk, particularly with quickly available nitrogen.';cecAction=abox('action-monitor','Consider slow-release (Program 2) fertilizers to reduce leaching risk.');}
-    else if(cec<=12){cecMsg='Moderate to high nutrient-holding capacity. Your soil retains nutrients well between applications.';cecAction='<p style="margin-top:8px;font-size:0.82rem;color:var(--slate-mid);"><strong>Note:</strong> CEC is an estimation. If soil pH is above 7.0 or soluble salts are elevated, this value may read higher than your soil\'s true nutrient-holding capacity.</p>';}
-    else{cecMsg='High nutrient-holding capacity. Your soil retains nutrients very well.';cecAction='<p style="margin-top:8px;font-size:0.82rem;color:var(--slate-mid);"><strong>Note:</strong> CEC is an estimation. If soil pH is above 7.0 or soluble salts are elevated, this value may read higher than your soil\'s true nutrient-holding capacity.</p>';}
-    cards.push(card('&#128267;','Estimated CEC','Virginia soils: 1-12 meq/100g','Higher = better nutrient retention',cec.toFixed(1)+' meq/100g','This measures your soil\'s capacity to hold nutrients against leaching. A higher number means more nutrients stay available to your grass between fertilizer applications. <strong>Your result:</strong> '+cecMsg,'A higher CEC means your soil gets more value from each fertilizer application.',cecAction,''));
+    if (cec <= 3) {
+      cecMsg = 'Very low nutrient-holding capacity. Nutrients are more likely to leach before your grass can use them.';
+      cecAction = abox('action-info', 'With low nutrient-holding capacity, nitrogen can leach past the root zone before your grass uses it. Slow-release (Program 2) fertilizers release nutrients gradually, reducing this risk.');
+    } else if (cec <= 7) {
+      cecMsg = 'Low to moderate nutrient-holding capacity. Some leaching risk, particularly with quickly available nitrogen.';
+      cecAction = abox('action-monitor', 'Consider slow-release (Program 2) fertilizers to reduce leaching risk.');
+    } else if (cec <= 12) {
+      cecMsg = 'Moderate to high nutrient-holding capacity. Your soil retains nutrients well between applications.';
+      cecAction = '<p style="margin-top:8px;font-size:0.82rem;color:var(--slate-mid);"><strong>Note:</strong> CEC is an estimation. If soil pH is above 7.0 or soluble salts are elevated, this value may read higher than your soil\'s true nutrient-holding capacity.</p>';
+    } else {
+      cecMsg = 'High nutrient-holding capacity. Your soil retains nutrients very well.';
+      cecAction = '<p style="margin-top:8px;font-size:0.82rem;color:var(--slate-mid);"><strong>Note:</strong> CEC is an estimation. If soil pH is above 7.0 or soluble salts are elevated, this value may read higher than your soil\'s true nutrient-holding capacity.</p>';
+    }
+    cards.push(card('&#128267;', 'Estimated CEC', 'Virginia soils: 1-12 meq/100g', 'Higher = better nutrient retention',
+      cec.toFixed(1) + ' meq/100g',
+      'This measures your soil\'s capacity to hold nutrients against leaching. A higher number means more nutrients stay available to your grass between fertilizer applications. <strong>Your result:</strong> ' + cecMsg,
+      'A higher CEC means your soil gets more value from each fertilizer application.',
+      cecAction, ''));
   }
 
+  // ---- Phosphorus ----
   if (!isNaN(pVal) || pRatRaw) {
-    var pDisplay=(!isNaN(pVal)?pVal+' lb/A ':'')+pill(pRat)+(WAYPOINT_TO_VCE[pRatRaw]?' <span style="font-size:0.7rem;opacity:0.7;">('+pRatRaw+')</span>':'');
-    var pMsg,pAction;
-    if(['L-','L','L+'].indexOf(pRat)>=0){pMsg='Low phosphorus. Plants almost always respond to phosphorus fertilizer at this level.';pAction=abox('action-needed','Use a complete fertilizer containing phosphorus (e.g. 10-10-10, 12-4-8).');}
-    else if(['M-','M','M+'].indexOf(pRat)>=0){pMsg='Medium phosphorus. Plants sometimes respond; a moderate amount is recommended to maintain soil fertility.';pAction=abox('action-monitor','A fertilizer with phosphorus may be used. Retest in 3 years.');}
-    else if(['H-','H','H+','VH'].indexOf(pRat)>=0){pMsg='High to very high phosphorus. Plants usually do not respond.';pAction=abox('action-good','Use a zero-phosphorus (maintenance) fertilizer.');}
-    else{pMsg='Adequate for your specified crop/plant.';pAction=abox('action-good','Follow your soil test recommendations.');}
-    var pCropBtn=crop==='warm'?goBtn('warm','Open Warm-Season Calculator'):crop==='cool'?goBtn('cool','Open Cool-Season Calculator'):'';
-    cards.push(card('&#127807;','Phosphorus (P)','Medium: 12-35 lb/A (VCE)','',pDisplay,'The amount of phosphorus available to your plants. <strong>Your result:</strong> '+pMsg,'Phosphorus supports root development.',pAction,pCropBtn));
+    var pDisplay = (!isNaN(pVal) ? pVal + ' lb/A ' : '') + pill(pRat) + (WAYPOINT_TO_VCE[pRatRaw] ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + pRatRaw + ')</span>' : '');
+    var pMsg, pAction;
+    if (['L-','L','L+'].indexOf(pRat) >= 0) {
+      pMsg = 'Low phosphorus. Plants almost always respond to phosphorus fertilizer at this level.'; pAction = abox('action-needed','Use a complete fertilizer containing phosphorus (e.g. 10-10-10, 12-4-8).');
+    } else if (['M-','M','M+'].indexOf(pRat) >= 0) {
+      pMsg = 'Medium phosphorus. Plants sometimes respond; a moderate amount is recommended to maintain soil fertility.'; pAction = abox('action-monitor','A fertilizer with phosphorus may be used. Retest in 3 years.');
+    } else if (['H-','H','H+','VH'].indexOf(pRat) >= 0) {
+      pMsg = 'High to very high phosphorus. Plants usually do not respond.'; pAction = abox('action-good','Use a zero-phosphorus (maintenance) fertilizer.');
+    } else {
+      pMsg = 'Adequate for your specified crop/plant.'; pAction = abox('action-good','Follow your soil test recommendations.');
+    }
+    var pCropBtn = crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '';
+    cards.push(card('&#127807;', 'Phosphorus (P)', 'Medium: 12-35 lb/A (VCE)', '', pDisplay,
+      'The amount of phosphorus available to your plants. <strong>Your result:</strong> ' + pMsg,
+      'Phosphorus supports root development.', pAction, pCropBtn));
   }
 
+  // ---- Potassium ----
   if (!isNaN(kVal) || kRatRaw) {
-    var kDisplay=(!isNaN(kVal)?kVal+' lb/A ':'')+pill(kRat)+(WAYPOINT_TO_VCE[kRatRaw]?' <span style="font-size:0.7rem;opacity:0.7;">('+kRatRaw+')</span>':'');
-    var kMsg,kAction;
-    if(['L-','L','L+'].indexOf(kRat)>=0){kMsg='Low potassium. Plants almost always respond to potassium fertilizer at this level.';kAction=abox('action-needed','Use a fertilizer containing potassium (K2O).');}
-    else if(['M-','M','M+'].indexOf(kRat)>=0){kMsg='Medium potassium. Plants sometimes respond; a moderate amount is recommended to maintain fertility.';kAction=abox('action-monitor','A fertilizer with potassium may be used. Retest in 3 years.');}
-    else if(['H-','H','H+','VH'].indexOf(kRat)>=0){kMsg='High to very high potassium. Plants usually do not respond to additional applications.';kAction=abox('action-good','Use a zero-potassium fertilizer or one primarily supplying nitrogen.');}
-    else{kMsg='Rated as sufficient.';kAction=abox('action-good','Follow your soil test recommendations.');}
-    var kCropBtn=crop==='warm'?goBtn('warm','Open Warm-Season Calculator'):crop==='cool'?goBtn('cool','Open Cool-Season Calculator'):'';
-    cards.push(card('&#9889;','Potassium (K)','Medium: 76-175 lb/A (VCE)','',kDisplay,'The amount of potassium available to your plants. <strong>Your result:</strong> '+kMsg,'Potassium supports drought tolerance, disease resistance, and overall plant vigor.',kAction,kCropBtn));
+    var kDisplay = (!isNaN(kVal) ? kVal + ' lb/A ' : '') + pill(kRat) + (WAYPOINT_TO_VCE[kRatRaw] ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + kRatRaw + ')</span>' : '');
+    var kMsg, kAction;
+    if (['L-','L','L+'].indexOf(kRat) >= 0) {
+      kMsg = 'Low potassium. Plants almost always respond to potassium fertilizer at this level.'; kAction = abox('action-needed','Use a fertilizer containing potassium (K2O).');
+    } else if (['M-','M','M+'].indexOf(kRat) >= 0) {
+      kMsg = 'Medium potassium. Plants sometimes respond; a moderate amount is recommended to maintain fertility.'; kAction = abox('action-monitor','A fertilizer with potassium may be used. Retest in 3 years.');
+    } else if (['H-','H','H+','VH'].indexOf(kRat) >= 0) {
+      kMsg = 'High to very high potassium. Plants usually do not respond to additional applications.'; kAction = abox('action-good','Use a zero-potassium fertilizer or one primarily supplying nitrogen.');
+    } else {
+      kMsg = 'Rated as sufficient.'; kAction = abox('action-good','Follow your soil test recommendations.');
+    }
+    var kCropBtn = crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '';
+    cards.push(card('&#9889;', 'Potassium (K)', 'Medium: 76-175 lb/A (VCE)', '', kDisplay,
+      'The amount of potassium available to your plants. <strong>Your result:</strong> ' + kMsg,
+      'Potassium supports drought tolerance, disease resistance, and overall plant vigor.', kAction, kCropBtn));
   }
 
-  if (!isNaN(caVal)||caRat||!isNaN(mgVal)||mgRat) {
-    var caDisplay=(!isNaN(caVal)?caVal+' lb/A ':'')+pill(caRat);
-    var mgDisplay=(!isNaN(mgVal)?mgVal+' lb/A ':'')+pill(mgRat);
-    var limeNote2=(['L-','L','L+','DEF'].indexOf(mgRat)>=0)?abox('action-needed','Low magnesium: Dolomitic limestone is recommended as it supplies both calcium and magnesium.'):abox('action-info','Calcium and magnesium are normally supplied by liming.');
-    cards.push(card('&#129704;','Calcium &amp; Magnesium','Ca medium: 721-1,440 lb/A &nbsp;&bull;&nbsp; Mg medium: 73-144 lb/A','','Ca: '+(caDisplay||'-')+' &middot; Mg: '+(mgDisplay||'-'),'Both calcium and magnesium are primarily supplied through limestone applications. Their levels determine whether dolomitic or Agricultural (calcitic) limestone is recommended.','Calcium supports cell wall strength and root growth. Magnesium is the central component of chlorophyll.',limeNote2,''));
+  // ---- Calcium & Magnesium ----
+  if (!isNaN(caVal) || caRat || !isNaN(mgVal) || mgRat) {
+    var caDisplay = (!isNaN(caVal) ? caVal + ' lb/A ' : '') + pill(caRat);
+    var mgDisplay = (!isNaN(mgVal) ? mgVal + ' lb/A ' : '') + pill(mgRat);
+    var limeNote2 = (['L-','L','L+','DEF'].indexOf(mgRat) >= 0)
+      ? abox('action-needed','Low magnesium: Dolomitic limestone is recommended as it supplies both calcium and magnesium.')
+      : abox('action-info','Calcium and magnesium are normally supplied by liming.');
+    cards.push(card('&#129704;', 'Calcium &amp; Magnesium', 'Ca medium: 721-1,440 lb/A &nbsp;&bull;&nbsp; Mg medium: 73-144 lb/A', '',
+      'Ca: ' + (caDisplay||'-') + ' &middot; Mg: ' + (mgDisplay||'-'),
+      'Both calcium and magnesium are primarily supplied through limestone applications. Their levels determine whether dolomitic or calcitic limestone is recommended.',
+      'Calcium supports cell wall strength and root growth. Magnesium is the central component of chlorophyll.',
+      limeNote2, ''));
   }
 
+  // ---- Organic Matter ----
   if (!isNaN(om)) {
-    var omMsg,omAction;
-    if(om<0.5){omMsg='Very low. Below the ordinary range for Virginia soils (0.5-2.5%).';omAction=abox('action-needed','Consider adding organic matter (compost, topdressing) to improve nutrient retention and moisture holding capacity.');}
-    else if(om<=2.5){omMsg='Ordinary range for a natural, well-drained Virginia soil (0.5-2.5%).';omAction=abox('action-good','Maintain through regular organic additions.');}
-    else if(om<=5.0){omMsg='Higher than typical for a cultivated field, but beneficial for a lawn.';omAction=abox('action-good','Good organic matter level. Some herbicide rates may need adjustment at higher OM levels.');}
-    else{omMsg='Very high - common in heavily amended garden soils.';omAction=abox('action-monitor','Check herbicide labels - rates are often adjusted based on % organic matter.');}
-    cards.push(card('&#127757;','Organic Matter','Virginia soils: 0.5-2.5%','Higher end preferred',om.toFixed(1)+'%','The percentage of decomposed plant and animal residues in the soil. <strong>Your result:</strong> '+omMsg,'Organic matter improves your soil\'s ability to hold water and nutrients, supports beneficial soil organisms, and contributes to overall lawn health.',omAction,''));
+    var omMsg, omAction;
+    if (om < 0.5) {
+      omMsg = 'Very low. Below the ordinary range for Virginia soils (0.5-2.5%).'; omAction = abox('action-needed','Consider adding organic matter (compost, topdressing) to improve nutrient retention and moisture holding capacity.');
+    } else if (om <= 2.5) {
+      omMsg = 'Ordinary range for a natural, well-drained Virginia soil (0.5-2.5%).'; omAction = abox('action-good','Maintain through regular organic additions.');
+    } else if (om <= 5.0) {
+      omMsg = 'Higher than typical for a cultivated field, but beneficial for a lawn.'; omAction = abox('action-good','Good organic matter level. Some herbicide rates may need adjustment at higher OM levels.');
+    } else {
+      omMsg = 'Very high - common in heavily amended garden soils.'; omAction = abox('action-monitor','Check herbicide labels - rates are often adjusted based on % organic matter.');
+    }
+    cards.push(card('&#127757;', 'Organic Matter', 'Virginia soils: 0.5-2.5%', 'Higher end preferred', om.toFixed(1) + '%',
+      'The percentage of decomposed plant and animal residues in the soil. <strong>Your result:</strong> ' + omMsg,
+      'Organic matter improves your soil\'s ability to hold water and nutrients, supports beneficial soil organisms, and contributes to overall lawn health.',
+      omAction, ''));
   }
 
+  // ---- Soluble Salts ----
   if (!isNaN(saltRaw) && saltRaw > 0) {
-    var saltPpm=(saltUnit==='dsm')?saltRaw*640:saltRaw;
-    var saltDsm=(saltUnit==='dsm')?saltRaw:saltRaw/640;
-    var saltDisplay=(saltUnit==='dsm')?saltRaw+' dS/m (~'+Math.round(saltPpm)+' ppm)':saltRaw+' ppm (~'+saltDsm.toFixed(2)+' dS/m)';
-    var saltMsg,saltAction;
-    if(saltPpm>844){saltMsg='ELEVATED - above the injury threshold of 844 ppm (1.32 dS/m). Plants may show wilting even with adequate moisture.';saltAction=abox('action-needed','Reduce or eliminate fertilizer applications. Water thoroughly to leach salts. Avoid seeding until levels drop.');}
-    else if(saltPpm>640){saltMsg='Elevated. Above the level where Waypoint flags concern (1.0 dS/m / 640 ppm). Seeds and seedlings may show stress.';saltAction=abox('action-monitor','Avoid additional fertilizer applications until levels drop.');}
-    else if(saltPpm>400){saltMsg='Slightly elevated but within a safe range for established turf.';saltAction=abox('action-good','No action needed for established grass. Avoid over-fertilizing.');}
-    else{saltMsg='Low - no salt injury risk.';saltAction=abox('action-good','Soluble salts are not high enough to cause injury. No action needed.');}
-    cards.push(card('&#128167;','Soluble Salts','Monitor: >640 ppm / 1.0 dS/m','Injury threshold: 844 ppm / 1.32 dS/m',saltDisplay,'Measures dissolved salt accumulation from fertilizer. VCE reports in ppm; Waypoint reports in dS/m (1 dS/m ~ 640 ppm). <strong>Your result:</strong> '+saltMsg,'High salt concentrations draw water out of plant roots, causing drought-like stress even when the soil is moist.',saltAction,''));
+    var saltPpm = (saltUnit === 'dsm') ? saltRaw * 640 : saltRaw;
+    var saltDsm = (saltUnit === 'dsm') ? saltRaw : saltRaw / 640;
+    var saltDisplay = (saltUnit === 'dsm')
+      ? saltRaw + ' dS/m (~' + Math.round(saltPpm) + ' ppm)'
+      : saltRaw + ' ppm (~' + saltDsm.toFixed(2) + ' dS/m)';
+    var saltMsg, saltAction;
+    if (saltPpm > 844) {
+      saltMsg = 'ELEVATED - above the injury threshold of 844 ppm (1.32 dS/m). Plants may show wilting even with adequate moisture.';
+      saltAction = abox('action-needed','Reduce or eliminate fertilizer applications. Water thoroughly to leach salts. Avoid seeding until levels drop.');
+    } else if (saltPpm > 640) {
+      saltMsg = 'Elevated. Above the level where Waypoint flags concern (1.0 dS/m / 640 ppm). Seeds and seedlings may show stress.';
+      saltAction = abox('action-monitor','Avoid additional fertilizer applications until levels drop.');
+    } else if (saltPpm > 400) {
+      saltMsg = 'Slightly elevated but within a safe range for established turf.';
+      saltAction = abox('action-good','No action needed for established grass. Avoid over-fertilizing.');
+    } else {
+      saltMsg = 'Low - no salt injury risk.';
+      saltAction = abox('action-good','Soluble salts are not high enough to cause injury. No action needed.');
+    }
+    cards.push(card('&#128167;', 'Soluble Salts', 'Monitor: >640 ppm / 1.0 dS/m', 'Injury threshold: 844 ppm / 1.32 dS/m',
+      saltDisplay,
+      'Measures dissolved salt accumulation from fertilizer. VCE reports in ppm; Waypoint reports in dS/m (1 dS/m ~ 640 ppm). <strong>Your result:</strong> ' + saltMsg,
+      'High salt concentrations draw water out of plant roots, causing drought-like stress even when the soil is moist.',
+      saltAction, ''));
   }
 
+  // ---- Grass Type ----
   if (crop) {
-    var grassLabel=crop==='warm'?'Warm-Season (bermudagrass, zoysiagrass, centipedegrass, St. Augustinegrass)':'Cool-Season (tall fescue, Kentucky bluegrass, fine fescue, perennial ryegrass)';
-    var grassNote=crop==='warm'?'Warm-season grasses are fertilized during their active growing period (spring through summer). Use Soil Test Note 18 guidelines.':'Cool-season grasses are primarily fertilized in the fall with optional spring applications. Use Soil Test Note 17 guidelines.';
-    cards.push(card('&#127807;','Grass Type &amp; Fertilizer Program','','',grassLabel,grassNote+' Once you have your fertilizer\'s N-P-K grade and WIN value, enter them in the appropriate fertilizer calculator.','','',goBtn(crop,'Open '+(crop==='warm'?'Warm':'Cool')+'-Season Calculator')));
+    var grassLabel = crop === 'warm'
+      ? 'Warm-Season (bermudagrass, zoysiagrass, centipedegrass, St. Augustinegrass)'
+      : 'Cool-Season (tall fescue, Kentucky bluegrass, fine fescue, perennial ryegrass)';
+    var grassNote = crop === 'warm'
+      ? 'Warm-season grasses are fertilized during their active growing period (spring through summer). Use Soil Test Note 18 guidelines.'
+      : 'Cool-season grasses are primarily fertilized in the fall with optional spring applications. Use Soil Test Note 17 guidelines.';
+    cards.push(card('&#127807;', 'Grass Type &amp; Fertilizer Program', '', '', grassLabel,
+      grassNote + ' Once you have your fertilizer\'s N-P-K grade and WIN value, enter them in the appropriate fertilizer calculator.',
+      '', '', goBtn(crop, 'Open ' + (crop==='warm'?'Warm':'Cool') + '-Season Calculator')));
   }
 
+  // ---- Micronutrients (IIFE) ----
   (function() {
     var nutrients = [
-      {id:'st-zn',rid:'st-zn-rating',name:'Zinc (Zn)',phNote:'Zinc availability decreases above pH 7.0. Most likely deficient with high P, high pH, or low organic matter.',lowMsg:'Ensure pH is in the 5.8-6.8 range first. If deficiency persists, consult your local VCE office.',suffMsg:'Zinc levels are adequate. No corrective action needed.',highMsg:'High zinc can interfere with iron and manganese uptake. Avoid applying zinc-containing products.'},
-      {id:'st-mn',rid:'st-mn-rating',name:'Manganese (Mn)',phNote:'Availability drops sharply above pH 6.5. Over-liming is the most common cause of Mn deficiency in Virginia.',lowMsg:'Low manganese is almost always a pH problem. Check soil pH first. Foliar manganese sulfate is most effective.',suffMsg:'Manganese levels are adequate. No corrective action needed.',highMsg:'High manganese can occur at low pH. Liming to the correct range will reduce availability.'},
-      {id:'st-cu',rid:'st-cu-rating',name:'Copper (Cu)',phNote:'Deficiency most likely on sandy, low-organic or highly organic soils.',lowMsg:'Consult your local VCE office before applying copper - over-application can be toxic.',suffMsg:'Copper levels are adequate. No corrective action needed.',highMsg:'Very high copper can be toxic to plants and soil organisms.'},
-      {id:'st-fe',rid:'st-fe-rating',name:'Iron (Fe)',phNote:'Decreases sharply above pH 7.0. Essential for chlorophyll production; deficiency causes yellowing between leaf veins.',lowMsg:'Low iron is nearly always caused by high soil pH. Correct pH first. If yellowing persists at correct pH, use foliar-applied chelated iron only.',suffMsg:'Iron levels are adequate. No corrective action needed.',highMsg:'Elevated iron at low pH can interfere with P or Mn uptake.'},
-      {id:'st-b',rid:'st-b-rating',name:'Boron (B)',phNote:'Rarely a practical concern for established turfgrass.',lowMsg:'Consult your local VCE office before applying - the margin between deficiency and toxicity is very narrow.',suffMsg:'Boron levels are adequate. No corrective action needed.',highMsg:'Excessive boron is toxic to plants. Do not apply boron-containing products.'}
+      { id:'st-zn', rid:'st-zn-rating', name:'Zinc (Zn)',
+        phNote:'Zinc availability decreases above pH 7.0. Most likely deficient with high P, high pH, or low organic matter.',
+        lowMsg:'Ensure pH is in the 5.8-6.8 range first. If deficiency persists, consult your local VCE office.',
+        suffMsg:'Zinc levels are adequate. No corrective action needed.',
+        highMsg:'High zinc can interfere with iron and manganese uptake. Avoid applying zinc-containing products.' },
+      { id:'st-mn', rid:'st-mn-rating', name:'Manganese (Mn)',
+        phNote:'Availability drops sharply above pH 6.5. Over-liming is the most common cause of Mn deficiency in Virginia.',
+        lowMsg:'Low manganese is almost always a pH problem. Check soil pH first. Foliar manganese sulfate is most effective.',
+        suffMsg:'Manganese levels are adequate. No corrective action needed.',
+        highMsg:'High manganese can occur at low pH. Liming to the correct range will reduce availability.' },
+      { id:'st-cu', rid:'st-cu-rating', name:'Copper (Cu)',
+        phNote:'Deficiency most likely on sandy, low-organic or highly organic soils.',
+        lowMsg:'Consult your local VCE office before applying copper - over-application can be toxic.',
+        suffMsg:'Copper levels are adequate. No corrective action needed.',
+        highMsg:'Very high copper can be toxic to plants and soil organisms.' },
+      { id:'st-fe', rid:'st-fe-rating', name:'Iron (Fe)',
+        phNote:'Decreases sharply above pH 7.0. Essential for chlorophyll production; deficiency causes yellowing between leaf veins.',
+        lowMsg:'Low iron is nearly always caused by high soil pH. Correct pH first. If yellowing persists at correct pH, use foliar-applied chelated iron only.',
+        suffMsg:'Iron levels are adequate. No corrective action needed.',
+        highMsg:'Elevated iron at low pH can interfere with P or Mn uptake.' },
+      { id:'st-b', rid:'st-b-rating', name:'Boron (B)',
+        phNote:'Rarely a practical concern for established turfgrass.',
+        lowMsg:'Consult your local VCE office before applying - the margin between deficiency and toxicity is very narrow.',
+        suffMsg:'Boron levels are adequate. No corrective action needed.',
+        highMsg:'Excessive boron is toxic to plants. Do not apply boron-containing products.' }
     ];
-    var hasMicro=nutrients.some(function(m){var el=document.getElementById(m.id),rel=document.getElementById(m.rid);return(el&&!isNaN(parseFloat(el.value))&&parseFloat(el.value)>0)||(rel&&rel.value!=='');});
-    if(!hasMicro)return;
-    var body='<p style="font-size:0.875rem;line-height:1.6;margin-bottom:14px;color:var(--slate-mid);">For established turfgrass, micronutrient deficiencies are uncommon when soil pH is in the 5.8-6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies are suspected.</p>';
-    var ratLabels={'L':'Low/DEF','M':'Medium','SUFF':'Sufficient','H':'High'};
-    nutrients.forEach(function(m){
-      var el=document.getElementById(m.id),rel=document.getElementById(m.rid);
-      if(!el||!rel)return;
-      var val=parseFloat(el.value),rat=rel.value;
-      if(isNaN(val)&&!rat)return;
-      var valStr=(!isNaN(val)&&val>0)?(val+' ppm'):'';
-      var ratLabel=ratLabels[rat]||'';
-      var pillCls=rat==='L'?'pill-low':(rat==='SUFF'||rat==='H')?'pill-suff':'pill-med';
-      var displayStr=valStr+(ratLabel?' <span class="st-rating-pill '+pillCls+'">'+ratLabel+'</span>':'');
-      var msg='',cls='';
-      if(rat==='L'){msg=m.lowMsg;cls='action-needed';}
-      else if(rat==='H'){msg=m.highMsg;cls='action-monitor';}
-      else if(rat==='SUFF'||rat==='M'){msg=m.suffMsg;cls='action-good';}
-      body+='<div style="border-top:1px solid var(--green-mist);padding:12px 0;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><strong style="font-size:0.9rem;color:var(--green-deep);">'+m.name+'</strong><span style="font-size:0.9rem;font-weight:600;">'+(displayStr||'-')+'</span></div><p style="font-size:0.82rem;color:var(--slate-mid);line-height:1.5;margin-bottom:6px;"><em>'+m.phNote+'</em></p>'+(msg?'<div class="st-action-box '+cls+'" style="font-size:0.82rem;">'+msg+'</div>':'')+'</div>';
+
+    var hasMicro = nutrients.some(function(m) {
+      var el = document.getElementById(m.id), rel = document.getElementById(m.rid);
+      return (el && !isNaN(parseFloat(el.value)) && parseFloat(el.value) > 0) || (rel && rel.value !== '');
     });
-    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only - no calculation</div></div><div class="st-interp-ranges"><span class="st-range-label">Target:</span> Sufficient at correct soil pH (5.8-6.8)</div><div class="st-interp-body">'+body+'</div></div>');
+    if (!hasMicro) return;
+
+    var body = '<p style="font-size:0.875rem;line-height:1.6;margin-bottom:14px;color:var(--slate-mid);">For established turfgrass, micronutrient deficiencies are uncommon when soil pH is in the 5.8-6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies are suspected.</p>';
+    var ratLabels = {'L':'Low/DEF','M':'Medium','SUFF':'Sufficient','H':'High'};
+
+    nutrients.forEach(function(m) {
+      var el = document.getElementById(m.id), rel = document.getElementById(m.rid);
+      if (!el || !rel) return;
+      var val = parseFloat(el.value), rat = rel.value;
+      if (isNaN(val) && !rat) return;
+      var valStr   = (!isNaN(val) && val > 0) ? (val + ' ppm') : '';
+      var ratLabel = ratLabels[rat] || '';
+      var pillCls  = rat === 'L' ? 'pill-low' : (rat === 'SUFF' || rat === 'H') ? 'pill-suff' : 'pill-med';
+      var displayStr = valStr + (ratLabel ? ' <span class="st-rating-pill ' + pillCls + '">' + ratLabel + '</span>' : '');
+      var msg = '', cls = '';
+      if (rat === 'L') { msg = m.lowMsg; cls = 'action-needed'; }
+      else if (rat === 'H') { msg = m.highMsg; cls = 'action-monitor'; }
+      else if (rat === 'SUFF' || rat === 'M') { msg = m.suffMsg; cls = 'action-good'; }
+      body += '<div style="border-top:1px solid var(--green-mist);padding:12px 0;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
+        + '<strong style="font-size:0.9rem;color:var(--green-deep);">' + m.name + '</strong>'
+        + '<span style="font-size:0.9rem;font-weight:600;">' + (displayStr || '-') + '</span></div>'
+        + '<p style="font-size:0.82rem;color:var(--slate-mid);line-height:1.5;margin-bottom:6px;"><em>' + m.phNote + '</em></p>'
+        + (msg ? '<div class="st-action-box ' + cls + '" style="font-size:0.82rem;">' + msg + '</div>' : '')
+        + '</div>';
+    });
+
+    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only - no calculation</div></div><div class="st-interp-ranges"><span class="st-range-label">Target:</span> Sufficient at correct soil pH (5.8-6.8)</div><div class="st-interp-body">' + body + '</div></div>');
   })();
 
-  var summaryItems='';
-  if(!isNaN(ph))summaryItems+='<div class="st-summary-item"><div class="st-summary-label">pH</div><div class="st-summary-val">'+ph.toFixed(1)+'</div></div>';
-  if(!isNaN(pVal))summaryItems+='<div class="st-summary-item"><div class="st-summary-label">P (lb/A)</div><div class="st-summary-val">'+pVal+'</div><div class="st-summary-rating">'+(pRatRaw||'')+'</div></div>';
-  if(!isNaN(kVal))summaryItems+='<div class="st-summary-item"><div class="st-summary-label">K (lb/A)</div><div class="st-summary-val">'+kVal+'</div><div class="st-summary-rating">'+(kRatRaw||'')+'</div></div>';
-  if(!isNaN(om))summaryItems+='<div class="st-summary-item"><div class="st-summary-label">Org. Matter</div><div class="st-summary-val">'+om.toFixed(1)+'%</div></div>';
-  if(!isNaN(limeRec)&&limeRec>0)summaryItems+='<div class="st-summary-item"><div class="st-summary-label">Lime Rec.</div><div class="st-summary-val">'+limeRec+'</div><div class="st-summary-rating">lbs/1K sqft</div></div>';
+  // ---- Summary bar ----
+  var summaryItems = '';
+  if (!isNaN(ph))     summaryItems += '<div class="st-summary-item"><div class="st-summary-label">pH</div><div class="st-summary-val">' + ph.toFixed(1) + '</div></div>';
+  if (!isNaN(pVal))   summaryItems += '<div class="st-summary-item"><div class="st-summary-label">P (lb/A)</div><div class="st-summary-val">' + pVal + '</div><div class="st-summary-rating">' + (pRatRaw||'') + '</div></div>';
+  if (!isNaN(kVal))   summaryItems += '<div class="st-summary-item"><div class="st-summary-label">K (lb/A)</div><div class="st-summary-val">' + kVal + '</div><div class="st-summary-rating">' + (kRatRaw||'') + '</div></div>';
+  if (!isNaN(om))     summaryItems += '<div class="st-summary-item"><div class="st-summary-label">Org. Matter</div><div class="st-summary-val">' + om.toFixed(1) + '%</div></div>';
+  if (!isNaN(limeRec) && limeRec > 0) summaryItems += '<div class="st-summary-item"><div class="st-summary-label">Lime Rec.</div><div class="st-summary-val">' + limeRec + '</div><div class="st-summary-rating">lbs/1K sqft</div></div>';
 
-  var canCarryOver=(pRat||kRat)&&crop;
-  var carryBar=document.getElementById('st-carryover-bar');
-  if(carryBar)carryBar.style.display=canCarryOver?'block':'none';
+  var canCarryOver = (pRat || kRat) && crop;
+  var carryBar = document.getElementById('st-carryover-bar');
+  if (carryBar) carryBar.style.display = canCarryOver ? 'block' : 'none';
 
-  var printBtn='<button class="st-print-btn no-print" onclick="printSoilTestResults()">&#128424; Print Results</button>';
-  var summary=summaryItems?'<div class="st-summary-bar">'+summaryItems+printBtn+'</div>':'';
-  panel.innerHTML=summary+cards.join('');
+  var printBtn = '<button class="st-print-btn no-print" onclick="printSoilTestResults()">&#128424; Print Results</button>';
+  var summary  = summaryItems ? '<div class="st-summary-bar">' + summaryItems + printBtn + '</div>' : '';
+  panel.innerHTML = summary + cards.join('');
 }
 
+// ===== CARRY-OVER =====
 function carryOverToCalculators() {
-  var pRatRaw=document.getElementById('st-p-rating').value;
-  var kRatRaw=document.getElementById('st-k-rating').value;
-  var pRat=WAYPOINT_TO_VCE[pRatRaw]||pRatRaw;
-  var kRat=WAYPOINT_TO_VCE[kRatRaw]||kRatRaw;
-  var limeRec=document.getElementById('st-lime-rec').value;
-  var limeTyp=document.getElementById('st-lime-type').value;
-  var crop=document.getElementById('st-crop').value;
-  var lawnSize=document.getElementById('st-lawn-size').value;
-  function setSelect(id,val){var el=document.getElementById(id);if(!el||val==null)return;for(var i=0;i<el.options.length;i++){if(el.options[i].value===val){el.selectedIndex=i;break;}}}
-  function setInput(id,val){var el=document.getElementById(id);if(el&&val!==undefined&&val!==null&&val!=='')el.value=val;}
-  if(crop==='cool'||crop===''){setInput('cool-lawn-size',lawnSize);setSelect('cool-p-rating',pRat);setSelect('cool-k-rating',kRat);calcCool();}
-  if(crop==='warm'||crop===''){setInput('warm-lawn-size',lawnSize);setSelect('warm-p-rating',pRat);setSelect('warm-k-rating',kRat);calcWarm();}
-  setInput('lime-lawn-size',lawnSize);setInput('lime-rec',limeRec);setSelect('lime-type',limeTyp||'');calcLime();
-  var bar=document.getElementById('st-carryover-bar');
-  if(bar){bar.innerHTML='<div class="st-carryover-box st-carryover-done"><div class="st-carryover-title">&#10003; Carried over successfully!</div><p class="st-carryover-desc">Lawn size, P &amp; K ratings, lime recommendation, and lime type have been pre-filled in the calculator tabs.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">'+(crop==='warm'?'<button class="st-goto-btn" onclick="switchToTab(\'warm\')">&#8599; Warm-Season Calculator</button>':'')+(crop==='cool'?'<button class="st-goto-btn" onclick="switchToTab(\'cool\')">&#8599; Cool-Season Calculator</button>':'')+'<button class="st-goto-btn" onclick="switchToTab(\'lime\')" style="background:var(--gold);">&#8599; Lime Calculator</button></div></div>';}
+  var pRatRaw  = document.getElementById('st-p-rating').value;
+  var kRatRaw  = document.getElementById('st-k-rating').value;
+  var pRat     = WAYPOINT_TO_VCE[pRatRaw] || pRatRaw;
+  var kRat     = WAYPOINT_TO_VCE[kRatRaw] || kRatRaw;
+  var limeRec  = document.getElementById('st-lime-rec').value;
+  var limeTyp  = document.getElementById('st-lime-type').value;
+  var crop     = document.getElementById('st-crop').value;
+  var lawnSize = document.getElementById('st-lawn-size').value;
+
+  function setSelect(id, val) {
+    var el = document.getElementById(id);
+    if (!el || val == null) return;
+    for (var i = 0; i < el.options.length; i++) { if (el.options[i].value === val) { el.selectedIndex = i; break; } }
+  }
+  function setInput(id, val) {
+    var el = document.getElementById(id);
+    if (el && val !== undefined && val !== null && val !== '') el.value = val;
+  }
+
+  if (crop === 'cool' || crop === '') { setInput('cool-lawn-size', lawnSize); setSelect('cool-p-rating', pRat); setSelect('cool-k-rating', kRat); calcCool(); }
+  if (crop === 'warm' || crop === '') { setInput('warm-lawn-size', lawnSize); setSelect('warm-p-rating', pRat); setSelect('warm-k-rating', kRat); calcWarm(); }
+  setInput('lime-lawn-size', lawnSize);
+  setInput('lime-rec', limeRec);
+  setSelect('lime-type', limeTyp || '');
+  calcLime();
+
+  var bar = document.getElementById('st-carryover-bar');
+  if (bar) {
+    bar.innerHTML = '<div class="st-carryover-box st-carryover-done">'
+      + '<div class="st-carryover-title">&#10003; Carried over successfully!</div>'
+      + '<p class="st-carryover-desc">Lawn size, P &amp; K ratings, lime recommendation, and lime type have been pre-filled in the calculator tabs.</p>'
+      + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">'
+      + (crop==='warm' ? '<button class="st-goto-btn" onclick="switchToTab(\'warm\')">&#8599; Warm-Season Calculator</button>' : '')
+      + (crop==='cool' ? '<button class="st-goto-btn" onclick="switchToTab(\'cool\')">&#8599; Cool-Season Calculator</button>' : '')
+      + '<button class="st-goto-btn" onclick="switchToTab(\'lime\')" style="background:var(--gold);">&#8599; Lime Calculator</button>'
+      + '</div></div>';
+  }
 }
 
+// ===== TAB SWITCHER =====
 function switchToTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
-  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
-  document.querySelector('[data-tab="'+tab+'"]').classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
-  if(tab==='cool')calcCool();
-  if(tab==='warm')calcWarm();
-  if(tab==='lime')calcLime();
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'cool') calcCool();
+  if (tab === 'warm') calcWarm();
+  if (tab === 'lime') calcLime();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ===== PRINT =====
 function printSoilTestResults() { window.print(); }
 
+// ===== SAMPLE REPORT PRE-FILL =====
 function prefillSampleReport() {
-  var fields={'st-ph':'5.5','st-bi':'6.23','st-cec':'4.1','st-basesat':'75.6','st-p-val':'12','st-p-rating':'M-','st-k-val':'48','st-k-rating':'L','st-ca':'1000','st-ca-rating':'M','st-mg':'140','st-mg-rating':'M+','st-om':'2.0','st-salts':'128','st-zn':'0.8','st-zn-rating':'SUFF','st-mn':'11.1','st-mn-rating':'SUFF','st-cu':'0.6','st-cu-rating':'SUFF','st-fe':'92.4','st-fe-rating':'SUFF','st-b':'0.1','st-b-rating':'SUFF','st-lime-rec':'60','st-lime-type':'Agricultural','st-crop':'warm'};
-  var keys=Object.keys(fields);
-  for(var i=0;i<keys.length;i++){var id=keys[i],val=fields[id],el=document.getElementById(id);if(!el)continue;if(el.tagName==='SELECT'){for(var j=0;j<el.options.length;j++){if(el.options[j].value===val){el.selectedIndex=j;break;}}}else{el.value=val;}}
+  var fields = {
+    'st-ph':'5.5','st-bi':'6.23','st-cec':'4.1','st-basesat':'75.6',
+    'st-p-val':'12','st-p-rating':'M-','st-k-val':'48','st-k-rating':'L',
+    'st-ca':'1000','st-ca-rating':'M','st-mg':'140','st-mg-rating':'M+',
+    'st-om':'2.0','st-salts':'128',
+    'st-zn':'0.8','st-zn-rating':'SUFF','st-mn':'11.1','st-mn-rating':'SUFF',
+    'st-cu':'0.6','st-cu-rating':'SUFF','st-fe':'92.4','st-fe-rating':'SUFF',
+    'st-b':'0.1','st-b-rating':'SUFF',
+    'st-lime-rec':'60','st-lime-type':'Agricultural','st-crop':'warm'
+  };
+  var keys = Object.keys(fields);
+  for (var i = 0; i < keys.length; i++) {
+    var id = keys[i], val = fields[id];
+    var el = document.getElementById(id);
+    if (!el) continue;
+    if (el.tagName === 'SELECT') {
+      for (var j = 0; j < el.options.length; j++) { if (el.options[j].value === val) { el.selectedIndex = j; break; } }
+    } else {
+      el.value = val;
+    }
+  }
   interpretSoilTest();
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   showToast('Sample VCE soil test report loaded');
 }
 
+// ===== TOAST =====
 function showToast(msg) {
-  var t=document.getElementById('st-toast');
-  t.textContent=msg;
+  var t = document.getElementById('st-toast');
+  t.textContent = msg;
   t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},3500);
+  setTimeout(function() { t.classList.remove('show'); }, 3500);
 }
 </script>
 </body>
