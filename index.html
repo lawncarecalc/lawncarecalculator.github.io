@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Virginia Cooperative Extension — Lawn &amp; Garden Care Calculator v1.4</title>
+<title>Virginia Cooperative Extension — Lawn &amp; Garden Care Calculator v1.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -105,11 +105,46 @@
   }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
+  /* ===== SINGLE-COLUMN RESPONSIVE LAYOUT ===== */
   .calc-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
-    align-items: start;
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  /* Results card — shown on screen in single-column flow */
+  .results-card { display: block; }
+  /* Inline plan result — always visible */
+  .inline-plan-result { margin-top: 14px; }
+
+  /* Touch-friendly inputs */
+  input[type="number"], input[type="text"], select {
+    min-height: 44px;
+  }
+
+  /* Scrollable tables on narrow screens */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* ===== RESPONSIVE BREAKPOINTS ===== */
+  @media (max-width: 600px) {
+    .main { padding: 8px 12px; }
+    .card-body { padding: 14px 12px; }
+    .field-group { margin-bottom: 16px; }
+    .app-slot-grid { grid-template-columns: 1fr 1fr; }
+    .app-slot-grid2 { grid-template-columns: 1fr 1fr; }
+    .npk-row { gap: 6px; }
+    .auto-plan-table th, .auto-plan-table td,
+    .season-table th, .season-table td,
+    .fert-grade-table th, .fert-grade-table td { padding: 5px 6px; font-size: 0.75rem; }
+    .plan-mode-btn { font-size: 0.78rem; padding: 8px 6px; }
+    .result-row { flex-direction: column; gap: 2px; }
+    .result-value { text-align: left; }
+  }
+  @media (max-width: 400px) {
+    .app-slot-grid { grid-template-columns: 1fr; }
+    .app-slot-grid2 { grid-template-columns: 1fr; }
+    .field-num { width: 22px; height: 22px; font-size: 0.7rem; }
   }
 
   /* ===== CARDS ===== */
@@ -578,40 +613,46 @@
   .print-plan-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:var(--green-deep); color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600; margin-top:14px; }
   .print-plan-btn:hover { background:var(--green-mid); }
 
-  /* Results cards — hidden on screen, visible only when printing */
-  .results-card { display: none !important; }
-  @media print {
-    .results-card { display: block !important; }
-  }
-  /* Inline plan result — shown on screen, hidden when printing */
-  .inline-plan-result { margin-top: 14px; }
-  @media print { .inline-plan-result { display: none !important; } }
 
   /* ===== PRINT ===== */
   @media print {
     .no-print, .tab-nav, .site-header .header-badge,
     .st-goto-btn, .st-carryover-box, #st-carryover-bar,
     .st-input-card, .st-prefill-btn, .st-unit-toggle,
-    .st-lab-notice, #st-carryover-bar { display: none !important; }
+    .st-lab-notice, #st-carryover-bar,
+    .fert-chooser, .auto-plan-input, .plan-mode-toggle,
+    .field-group, .field-label, .field-hint, .field-num,
+    .leftover-section, .timing-card,
+    #cool-custom-plan .st-unit-btn, #warm-custom-plan .st-unit-btn { display: none !important; }
 
     body { background: white; font-size: 11pt; }
     .site-header { background: white; color: black; border-bottom: 2px solid #333; }
     .header-text h1 { color: black; font-size: 16pt; }
     .header-text .subtitle { color: #555; }
     .main { padding: 10px 0; max-width: 100%; width: 100%; }
-    .tab-panel { display: none !important; }
+    .calc-layout { max-width: 100%; gap: 10px; }
+
     /* Default print = soil test report */
-    body:not(.printing-cool):not(.printing-warm) #tab-soiltest { display: block !important; }
-    /* Plan print modes — show only the target tab */
-    body.printing-cool #tab-cool { display: block !important; }
-    body.printing-warm #tab-warm { display: block !important; }
-    /* Plan tab layout for print */
-    body.printing-cool .calc-layout,
-    body.printing-warm .calc-layout { display: block !important; width: 100% !important; }
-    body.printing-cool .calc-layout > div:first-child,
-    body.printing-warm .calc-layout > div:first-child { display: none !important; }
-    body.printing-cool .calc-layout > div:last-child,
-    body.printing-warm .calc-layout > div:last-child { display: block !important; width: 100% !important; }
+    .tab-panel { display: none !important; }
+    body:not(.printing-cool):not(.printing-warm):not(.printing-lime):not(.printing-garden) #tab-soiltest { display: block !important; }
+
+    /* Plan print modes */
+    body.printing-cool  #tab-cool   { display: block !important; }
+    body.printing-warm  #tab-warm   { display: block !important; }
+    body.printing-lime  #tab-lime   { display: block !important; }
+    body.printing-garden #tab-garden { display: block !important; }
+
+    /* Show inline results and results cards when printing a plan */
+    body.printing-cool  .inline-plan-result,
+    body.printing-warm  .inline-plan-result  { display: block !important; }
+    body.printing-cool  #cool-results-panel,
+    body.printing-warm  #warm-results-panel,
+    body.printing-lime  #lime-results-panel,
+    body.printing-garden #gdn-results        { display: block !important; }
+
+    /* Results card visible for printing */
+    .results-card { display: block !important; }
+
     .st-layout  { display: block !important; width: 100% !important; }
     .st-results { display: block !important; width: 100% !important; }
     .st-interp-card { break-inside: avoid; border: 1px solid #ccc; margin-bottom: 10px; width: 100% !important; box-sizing: border-box; }
@@ -619,6 +660,8 @@
     .st-interp-title  { color: black !important; }
     .st-summary-bar   { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; width: 100% !important; }
     .action-needed, .action-monitor, .action-good, .action-info, .st-action-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .auto-plan-table, .season-table { width: 100%; }
+    .auto-plan-total { background: #f0f7f1 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 </style>
 </head>
@@ -933,6 +976,7 @@
                 </table>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9851; <strong>Returning clippings?</strong> Recycling grass clippings returns up to one-third of the seasonal nitrogen requirement. If you mulch-mow and leave clippings on the lawn, reduce your chosen total by up to one-third — a lawn targeting 3.0 lbs may only need 2.0 lbs when clippings are consistently returned. <em>(VCE 430-011)</em></p>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9729;&#65039; <strong>Sun vs. shade:</strong> Grasses in heavily shaded areas need only one-half to two-thirds as much nitrogen as the same grass in full sun. Use the lower end of the range above and consider reducing further — over-fertilizing shaded turf promotes disease rather than growth. Time fall applications after most leaves have fallen so sunlight can reach the grass blades. <em>(VCE 430-011)</em></p>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:0;">&#9729;&#65039; &#9851; <strong>Both shade and returning clippings?</strong> Apply both reductions together. Start with the shade adjustment (reduce your target to one-half to two-thirds), then reduce that result by up to one-third for clippings. For example, a shaded tall fescue lawn targeting 2.5 lbs would become 1.25–1.67 lbs after the shade adjustment, then 0.8–1.1 lbs after the clipping credit — a single modest fall application may meet the full seasonal need. <em>(VCE 430-011)</em></p>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:0;">&#128197; <strong>When to apply — think "SON":</strong> September, October, November is the primary window for cool-season grasses. Fall applications build density, root growth, and carbohydrate reserves far more effectively than spring fertilization. A single well-timed fall application can meet many lawns' full needs. <em>(VCE 430-520)</em></p>
               </div>
 
@@ -1021,8 +1065,6 @@
       </div>
     </div>
   </div><!-- end tab-cool -->
-
-  <!-- ===== WARM-SEASON TAB ===== -->
   <div class="tab-panel" id="tab-warm">
     <div class="calc-layout">
       <div>
@@ -1066,6 +1108,7 @@
                 </table>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9851; <strong>Returning clippings?</strong> Recycling grass clippings returns up to one-third of the seasonal nitrogen requirement. If you mulch-mow and leave clippings on the lawn, reduce your chosen total by up to one-third. Clippings also contribute organic matter that improves soil structure over time. <em>(VCE 430-011)</em></p>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9729;&#65039; <strong>Sun vs. shade:</strong> Warm-season grasses in shade need significantly less nitrogen than the same grass in full sun — use the lower end of the range and reduce frequency. Shaded warm-season grasses are also more susceptible to winterkill, so avoid late-season N applications entirely in shaded areas. <em>(VCE 430-011)</em></p>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9729;&#65039; &#9851; <strong>Both shade and returning clippings?</strong> Apply both reductions together. Start with the shade adjustment (reduce your target to one-half to two-thirds), then reduce that result by up to one-third for clippings. A shaded bermudagrass lawn targeting 3.0 lbs would become 1.5–2.0 lbs after the shade adjustment, then 1.0–1.3 lbs after the clipping credit. For shaded zoysia or centipede, the combined result may be well under 1.0 lb annually. <em>(VCE 430-011)</em></p>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#10052;&#65039; <strong>Potassium and winter hardiness:</strong> Potassium is the winterizing nutrient for warm-season grasses. If your soil test rates K as Low, address it in your plan — the benefits of adequate K for winter survival are often more significant for warm-season grasses than for cool-season grasses. If K is already Medium or higher, skip extra K to avoid unnecessary leaching. <em>(VCE 430-520)</em></p>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#128197; <strong>When to apply:</strong> April 1 through August 15 is the primary window. A modest September application (up to 1 lb water-soluble N per 1,000 sq. ft.) for bermudagrass followed by light applications every 4–6 weeks until frost can extend the growing season and improve winter hardiness — but keep rates conservative and stop before frost. <em>(VCE 430-520)</em></p>
                 <p style="font-size:0.8rem;color:var(--red);margin-bottom:0;font-weight:600;">&#9940; Do not fertilize after August 15 unless following the specific fall bermudagrass program above. Late-season nitrogen on warm-season grasses increases winterkill risk.</p>
@@ -1146,7 +1189,7 @@
             <div id="warm-results-panel"></div>
           </div>
         </div>
-        <div class="card timing-card" id="warm-timing-card" style="margin-top:20px;display:none;">
+        <div class="card timing-card" id="warm-timing-card" style="margin-top:0;display:none;">
           <div class="card-header"><span class="icon">📅</span> Timing of Applications</div>
           <div class="card-body">
             <div id="warm-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p></div>
@@ -1158,9 +1201,10 @@
   </div><!-- end tab-warm -->
 
   <!-- ===== LIME TAB ===== -->
+
+  <!-- ===== LIME TAB ===== -->
   <div class="tab-panel" id="tab-lime">
     <div class="calc-layout">
-      <div>
         <div class="card">
           <div class="card-header"><span class="icon">🧪</span> Lime Calculator for Lawns</div>
           <div class="card-body">
@@ -1194,33 +1238,27 @@
           </div>
         </div>
         <div class="lime-notes" id="lime-type-note" style="display:none;"></div>
-      </div>
-      <div>
-        <div class="card results-card">
+        <div class="card results-card" id="lime-results-card">
           <div class="card-header"><span class="icon">📊</span> Recommendations</div>
           <div class="card-body">
-            <div class="result-row"><div class="result-label">Number of applications needed</div><div class="result-value large" id="lime-apps">-</div></div>
-            <div class="result-row"><div class="result-label">Adjusted lime rate (lbs. per 1,000 sq. ft.)</div><div class="result-value" id="lime-adj-rate">-</div></div>
-            <div class="result-row"><div class="result-label">Lbs. of lime per application (your lawn)</div><div class="result-value" id="lime-lbs-per-app">-</div></div>
-            <div class="result-row"><div class="result-label">Total lbs. of lime (3-year period)</div><div class="result-value" id="lime-lbs-total">-</div></div>
-            <div class="result-row"><div class="result-label">Total bags needed (3 years)</div><div class="result-value" id="lime-bags-total">-</div></div>
+            <div id="lime-results-panel">
+              <p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see lime recommendations.</p>
+            </div>
           </div>
         </div>
-        <div class="card timing-card" style="margin-top:20px;">
+        <div class="card timing-card" style="margin-top:0;">
           <div class="card-header"><span class="icon">📅</span> Timing of Applications</div>
           <div class="card-body">
             <div id="lime-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p></div>
             <div class="note-banner">ℹ️ Once the full amount of lime is applied, no additional lime is needed for up to three years. Repeat soil testing after three years to determine future needs.</div>
           </div>
         </div>
-      </div>
     </div>
   </div><!-- end tab-lime -->
 
   <!-- ===== GARDEN & FLOWERS TAB ===== -->
   <div class="tab-panel" id="tab-garden">
     <div class="calc-layout">
-      <div>
         <div class="card">
           <div class="card-header"><span class="icon">🌱</span> Garden &amp; Flower Bed Fertilizer Calculator</div>
           <div class="card-body">
@@ -1358,27 +1396,26 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Results column -->
-      <div>
+        <!-- Results — single column, below inputs -->
         <div class="card results-card">
           <div class="card-header"><span class="icon">📊</span> Garden Recommendations</div>
           <div class="card-body" id="gdn-results">
             <p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs to see fertilizer recommendations for your bed.</p>
           </div>
         </div>
-        <div class="card timing-card" style="margin-top:20px;">
+        <div class="card timing-card">
           <div class="card-header"><span class="icon">📅</span> Application Timing</div>
           <div class="card-body">
             <div id="gdn-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Enter garden type and fertilizer inputs to see timing guidance.</p></div>
             <div class="note-banner">ℹ️ Per VCE Soil Test Note 19. Recommendations may be repeated for up to three growing seasons. Retest after three years.</div>
           </div>
         </div>
-        <div class="card" style="margin-top:20px;">
+        <div class="card">
           <div class="card-header"><span class="icon">📐</span> Volume Reference Table</div>
           <div class="card-body">
             <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:12px;">Approximate volumes for common fertilizers. <strong>Weight is always more accurate</strong> — volumes are estimates based on bulk density and vary by brand and moisture content.</p>
+            <div class="table-scroll">
             <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
               <thead><tr style="background:var(--green-deep);color:white;">
                 <th style="padding:6px 8px;text-align:left;">Product</th>
@@ -1402,9 +1439,9 @@
                 <tr style="background:var(--green-mist);"><td style="padding:6px 8px;">Poultry manure (dry)</td><td style="padding:6px 8px;text-align:center;">~3-2-2</td><td style="padding:6px 8px;text-align:center;">1¾ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">Est. bulk density</td></tr>
               </tbody>
             </table>
+            </div>
           </div>
         </div>
-      </div>
     </div>
   </div><!-- end tab-garden -->
 
@@ -1465,8 +1502,10 @@
         <div class="card">
           <div class="card-header"><span class="icon">🔬</span> Soil Test Ratings Explained</div>
           <div class="card-body">
-            <p class="about-section-intro">From <em>Soil Test Note 1</em> (VCE 452-701): ratings reflect the relative availability of nutrients in your soil as measured by the Virginia Tech Soil Testing Laboratory.</p>
-            <table class="about-table">
+            <p class="about-section-intro">Ratings reflect the relative availability of nutrients in your soil. VCE / Virginia Tech and Waypoint Analytical use different scales, but they are directly comparable — this calculator maps them automatically when you select your report type.</p>
+
+            <p style="font-size:0.82rem;font-weight:600;color:var(--green-deep);margin-bottom:6px;">VCE / Virginia Tech scale <span style="font-weight:400;color:var(--slate-light);">(Soil Test Note 1, VCE 452-701)</span></p>
+            <table class="about-table" style="margin-bottom:16px;">
               <thead><tr><th>Rating</th><th>Meaning</th><th>Fertilizer Response</th></tr></thead>
               <tbody>
                 <tr><td><strong>L-, L, L+</strong></td><td>Low</td><td>Plants almost always respond. Use fertilizer containing that nutrient.</td></tr>
@@ -1475,7 +1514,20 @@
                 <tr><td><strong>VH</strong></td><td>Very High</td><td>No response expected. Use nitrogen-only fertilizer; retest next year.</td></tr>
               </tbody>
             </table>
-            <p style="font-size:0.82rem;color:var(--slate-light);margin-top:12px;">Medium phosphorus = 12-35 lbs/A. Medium potassium = 76-175 lbs/A.</p>
+
+            <p style="font-size:0.82rem;font-weight:600;color:var(--green-deep);margin-bottom:6px;">Waypoint Analytical scale <span style="font-weight:400;color:var(--slate-light);">(Agronomy Facts 8, Waypoint Analytical 2023)</span></p>
+            <table class="about-table" style="margin-bottom:16px;">
+              <thead><tr><th>Rating</th><th>Equivalent VCE rating</th><th>Fertilizer Response</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Very Low</strong></td><td>L</td><td>Plants almost always respond. Use fertilizer containing that nutrient.</td></tr>
+                <tr><td><strong>Low</strong></td><td>L / L+</td><td>Plants likely respond. Use fertilizer containing that nutrient.</td></tr>
+                <tr><td><strong>Medium</strong></td><td>M</td><td>Plants sometimes respond. Moderate fertilizer recommended.</td></tr>
+                <tr><td><strong>Optimum</strong></td><td>H-</td><td>Soil supply is adequate. Maintenance applications only.</td></tr>
+                <tr><td><strong>Very High</strong></td><td>VH</td><td>No response expected. Use nitrogen-only fertilizer.</td></tr>
+              </tbody>
+            </table>
+
+            <p style="font-size:0.82rem;color:var(--slate-light);">VCE medium phosphorus = 12–35 lbs/A. Medium potassium = 76–175 lbs/A. Waypoint reports nutrients in ppm; VCE reports in lbs/A. The two labs use different extraction methods, but ratings have been calibrated to be directly comparable for Virginia soils. This calculator maps Waypoint ratings to VCE equivalents automatically when you select your report type.</p>
           </div>
         </div>
         <div class="card">
@@ -1496,6 +1548,8 @@
               <div class="about-source-meta">M. Goatley Jr. · S. Askew · D. McCall — VCE, 2025</div>
               <p>Provides plain-language guidance on fall fertility timing for both cool and warm-season grasses, the "SON" (September–October–November) framework for cool-season nitrogen applications, bermudagrass fall fertility programs, potassium and winter hardiness, and shade adjustments. Used for the N rate guidance tables and timing notes in the Cool-Season and Warm-Season calculator tabs.</p>
             </div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/430/430-011/430-011.html" target="_blank" style="color:var(--green-mid);">Publication 430-011 (SPES-334P) — Lawn Fertilization in Virginia</a></div>
               <div class="about-source-meta">J.M. Goatley Jr. · D. Cataldi · D.R. Chalmers · J.R. Hall III · R.E. Schmidt — VCE, 2021</div>
               <p>The primary source for the three-program nitrogen system (Programs 1, 2, and 3), grass-species-specific N rate ceilings, seasonal timing windows, and clipping recycling guidance used throughout the Cool-Season and Warm-Season calculator tabs.</p>
             </div>
@@ -1720,7 +1774,25 @@ function calcAutoplan(prefix) {
   // Warning if more than 4 applications needed
   var overFourNote = '';
   if (numApps > 4) {
-    overFourNote = '<div class="warning-badge" style="margin-bottom:12px;">&#9888; <strong>Your annual N target requires ' + numApps + ' applications</strong> at the Program 1 per-application limit of ' + maxNApp + ' lbs. Consider switching to a <strong>slow-release fertilizer (Program 2 or 3)</strong> — this allows a higher rate per application and fewer applications per season. See the "Help me choose a fertilizer" section above.</div>';
+    overFourNote = '<div class="warning-badge" style="margin-bottom:12px;">&#9888; <strong>Your annual N target requires ' + numApps + ' applications</strong> at the Program ' + prog.program + ' per-application limit of ' + maxNApp + ' lbs. Consider switching to a <strong>slow-release fertilizer (Program 2 or 3)</strong> — this allows a higher rate per application and fewer applications per season. See the "Help me choose a fertilizer" section above.</div>';
+  }
+
+  // Hard check: can this N total be delivered within the seasonal window for this program?
+  var maxDel = maxDeliverable(speciesKey, prog.program);
+  if (maxDel !== null && nRate > maxDel) {
+    var nextProgNote = '';
+    if (prog.program === 1) {
+      var p2del = maxDeliverable(speciesKey, 2);
+      if (p2del !== null && nRate <= p2del) {
+        nextProgNote = ' Switching to a slow-release fertilizer (Program 2, ≥15% WIN) would allow up to ' + p2del + ' lbs within the seasonal window.';
+      } else {
+        var p3del = maxDeliverable(speciesKey, 3);
+        if (p3del !== null && nRate <= p3del) {
+          nextProgNote = ' A majority slow-release fertilizer (Program 3, ≥50% WIN) would allow up to ' + p3del + ' lbs within the seasonal window.';
+        }
+      }
+    }
+    overFourNote = '<div class="warning-badge" style="margin-bottom:12px;">&#9940; <strong>Your ' + nRate + ' lb annual target cannot be reached with ' + prog.label + ' within the ' + (species ? species.label : '') + ' growing season window.</strong> The maximum deliverable with this program is <strong>' + maxDel + ' lbs</strong> (' + MAX_PRACTICAL_APPS[speciesKey][prog.program] + ' applications × ' + maxNApp + ' lbs/application).' + nextProgNote + '</div>';
   }
   var progCls    = prog.program === 3 ? 'prog3-badge' : prog.program === 2 ? 'prog2-badge' : 'prog1-badge';
   var timingSched = AUTO_TIMING[isCool ? 'cool' : 'warm'][Math.min(numApps, 4)] || [];
@@ -1795,6 +1867,22 @@ function calcAutoplan(prefix) {
 }
 
 // ===== CALC MULTI (custom mode) =====
+// Max practical application slots per species per program
+// Based on active growing season window per 430-011 / 430-520
+var MAX_PRACTICAL_APPS = {
+  tall:    { 1:4, 2:4, 3:2 },  // Sept/Oct/Nov + optional May
+  fine:    { 1:3, 2:3, 3:2 },  // Sept/Oct/Nov
+  bermuda: { 1:4, 2:4, 3:3 },  // Apr/May/Jun/Jul–Aug 1
+  zoysia:  { 1:3, 2:3, 3:2 }   // May/Jun/Jul
+};
+
+function maxDeliverable(speciesKey, program) {
+  var s = SPECIES_CONFIG[speciesKey];
+  if (!s || !MAX_PRACTICAL_APPS[speciesKey]) return null;
+  var apps = MAX_PRACTICAL_APPS[speciesKey][program];
+  return Math.round(s.maxApp[program] * apps * 100) / 100;
+}
+
 var appSlots = { cool: [], warm: [] };
 var slotCounter = { cool: 0, warm: 0 };
 
@@ -1900,8 +1988,34 @@ function calcMulti(prefix) {
   var maxN = species ? species.maxN : (isCool ? 3.5 : 4.0);
   if (nRate > maxN) {
     nValid.innerHTML = '<div class="warning-badge">&#9888; <strong>Exceeds annual ceiling.</strong> Max for ' + (species ? species.label : (isCool ? 'cool-season' : 'warm-season')) + ' is ' + maxN + ' lbs/1,000 sq. ft. (VCE 430-011).</div>';
+  } else if (nRate > 0 && species) {
+    var p1del = maxDeliverable(speciesKey, 1);
+    var p2del = maxDeliverable(speciesKey, 2);
+    var p3del = maxDeliverable(speciesKey, 3);
+
+    var windowWarning = '';
+
+    if (p3del !== null && nRate > p3del) {
+      // Cannot be reached on any program within the seasonal window
+      windowWarning = '<div class="warning-badge" style="margin-top:4px;">&#9940; <strong>' + nRate + ' lbs cannot be delivered within the ' + species.label + ' seasonal window on any program.</strong>'
+        + ' Max deliverable: P1 = ' + p1del + ' lbs, P2 = ' + p2del + ' lbs, P3 = ' + p3del + ' lbs. Reduce your annual N target.</div>';
+    } else if (p2del !== null && nRate > p2del) {
+      // P1 and P2 insufficient — requires P3
+      windowWarning = '<div class="warning-badge" style="margin-top:4px;">&#9888; <strong>' + nRate + ' lbs requires a majority slow-release fertilizer (Program 3, ≥50% WIN).</strong>'
+        + ' Program 1 max: ' + p1del + ' lbs. Program 2 max: ' + p2del + ' lbs. Program 3 max: ' + p3del + ' lbs within the seasonal window.</div>';
+    } else if (p1del !== null && nRate > p1del) {
+      // P1 insufficient — requires P2 or P3
+      var p2note = (p2del !== null && nRate <= p2del) ? ' A slow-release fertilizer (Program 2, ≥15% WIN) can deliver up to ' + p2del + ' lbs.' : '';
+      windowWarning = '<div class="warning-badge" style="margin-top:4px;">&#9888; <strong>' + nRate + ' lbs cannot be reached with a quick-release fertilizer (Program 1) within the ' + species.label + ' seasonal window.</strong>'
+        + ' Program 1 max: ' + p1del + ' lbs (' + MAX_PRACTICAL_APPS[speciesKey][1] + ' applications × ' + species.maxApp[1] + ' lbs).' + p2note + '</div>';
+    } else {
+      // Reachable on P1 — check if user might benefit from knowing all options
+      windowWarning = '';
+    }
+
+    nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Annual N rate is within the ' + maxN + ' lb ceiling for ' + species.label + '</span>' + windowWarning;
   } else if (nRate > 0) {
-    nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Annual N rate is within the ' + maxN + ' lb ceiling</span>';
+    nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Annual N rate is within the ' + maxN + ' lb ceiling for ' + (isCool ? 'cool-season' : 'warm-season') + '</span>';
   } else {
     nValid.innerHTML = '';
   }
@@ -2114,13 +2228,30 @@ function calcLime() {
   var kSq      = lawnSize / 1000;
   var adjRate  = (limeRec > 0 && cce > 0) ? (limeRec * 100) / cce : 0;
   var apps     = limeApps(adjRate);
+  var panelEl  = document.getElementById('lime-results-panel');
 
-  document.getElementById('lime-apps').textContent = apps > 0 ? apps : '-';
-  document.getElementById('lime-adj-rate').textContent = adjRate > 0 ? fmt(adjRate,1) + ' lbs' : '-';
+  // Lime type note
+  var LIME_NOTES = {
+    'Agricultural': '<strong>Agricultural Lime:</strong> Generally refers to calcitic limestone. Pelletized lime is a good choice for lawns. CCE is usually 80-100%.',
+    'Dolomitic':    '<strong>Dolomitic Lime:</strong> Contains magnesium and is recommended when Mg is low. CCE is often 95-108%.',
+    'None Listed':  '<strong>Lime Type Not Listed:</strong> Consult your local Virginia Cooperative Extension office for guidance.'
+  };
+  var noteEl = document.getElementById('lime-type-note');
+  if (limeType && LIME_NOTES[limeType]) { noteEl.style.display = 'block'; noteEl.innerHTML = LIME_NOTES[limeType]; }
+  else { noteEl.style.display = 'none'; }
+
+  if (!lawnSize || !limeRec) {
+    if (panelEl) panelEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your lawn size and lime recommendation to see results.</p>';
+    var timingEl = document.getElementById('lime-timing');
+    if (timingEl) timingEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p>';
+    return;
+  }
+
+  var totalLbs = adjRate > 0 && kSq > 0 ? adjRate * kSq : 0;
+  var bagsTotal = (bagSize > 0 && totalLbs > 0) ? Math.ceil(totalLbs / bagSize) : 0;
 
   var lbsPerAppDisplay = '-';
   if (adjRate > 0 && kSq > 0 && apps > 0) {
-    var totalLbs  = adjRate * kSq;
     var fullApps  = Math.floor(adjRate / 50);
     var remainder = adjRate - (fullApps * 50);
     if (apps === 1) {
@@ -2133,29 +2264,47 @@ function calcLime() {
         : fmt(fullLbs,0) + ' lbs x ' + apps + ' applications';
     }
   }
-  document.getElementById('lime-lbs-per-app').textContent = lbsPerAppDisplay;
 
-  var lbsTotal = (adjRate > 0 && kSq > 0) ? adjRate * kSq : 0;
-  document.getElementById('lime-lbs-total').textContent = lbsTotal > 0 ? fmt(lbsTotal,0) + ' lbs' : '-';
+  if (panelEl) {
+    var html = '';
+    html += '<div class="result-row"><div class="result-label">Number of applications needed</div><div class="result-value large">' + (apps > 0 ? apps : '-') + '</div></div>';
+    html += '<div class="result-row"><div class="result-label">CCE adjusted lime rate (lbs. per 1,000 sq. ft.)</div><div class="result-value">' + (adjRate > 0 ? fmt(adjRate,1) + ' lbs' : '-') + '</div></div>';
+    html += '<div class="result-row"><div class="result-label">Total lbs. of lime per application to your lawn</div><div class="result-value">' + lbsPerAppDisplay + '</div></div>';
+    html += '<div class="result-row"><div class="result-label">Total lbs. of lime (3-year period)</div><div class="result-value">' + (totalLbs > 0 ? fmt(totalLbs,0) + ' lbs' : '-') + '</div></div>';
+    if (bagSize > 0) {
+      html += '<div class="result-row"><div class="result-label">Total bags needed (3 years)</div><div class="result-value">' + (bagsTotal > 0 ? bagsTotal + (bagsTotal===1?' bag':' bags') : '-') + '</div></div>';
+    }
 
-  var bagsTotal = (bagSize > 0 && lbsTotal > 0) ? Math.ceil(lbsTotal / bagSize) : 0;
-  document.getElementById('lime-bags-total').textContent = bagsTotal > 0 ? bagsTotal + (bagsTotal===1?' bag':' bags') : '-';
+    // Per-application spreader rate table
+    if (apps > 0 && adjRate > 0 && kSq > 0) {
+      html += '<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">';
+      html += '<div style="font-weight:600;color:var(--green-deep);margin-bottom:8px;font-size:0.9rem;">&#128290; Application schedule &amp; spreader rates</div>';
+      html += '<p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:10px;">Set your spreader to deliver the lbs/1,000 sq. ft. rate shown for each application. Never apply more than 50 lbs per 1,000 sq. ft. at one time.</p>';
+      html += '<table class="auto-plan-table"><thead><tr><th>#</th><th>Lbs / 1,000 sq. ft.</th><th>Total lbs for your lawn</th><th>Timing</th></tr></thead><tbody>';
 
-  var timingEl = document.getElementById('lime-timing');
-  if (apps > 0 && LIME_TIMING[apps]) {
-    timingEl.innerHTML = '<ul class="timing-list"><li><span class="timing-num">' + apps + '</span><span>' + LIME_TIMING[apps] + '</span></li></ul>';
-  } else {
-    timingEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p>';
+      var fullApps2   = Math.floor(adjRate / 50);
+      var remainder2  = adjRate - (fullApps2 * 50);
+      for (var i = 1; i <= apps; i++) {
+        var rateThisApp  = (i <= fullApps2) ? 50 : (remainder2 > 0 ? Math.round(remainder2 * 10) / 10 : 50);
+        var lbsThisApp   = Math.round(rateThisApp * kSq);
+        var timingNote   = apps === 1 ? 'Any time — fall/winter preferred' : (i === 1 ? 'First application' : 'At least 1–6 months after app ' + (i-1));
+        html += '<tr><td>' + i + '</td><td><strong>' + fmt(rateThisApp,1) + ' lbs</strong></td><td>' + lbsThisApp + ' lbs</td><td style="font-size:0.78rem;color:var(--slate-mid);">' + timingNote + '</td></tr>';
+      }
+      html += '</tbody></table></div>';
+    }
+
+    html += '<button class="print-plan-btn no-print" onclick="printPlan(\'lime\')" style="margin-top:14px;">&#128424; Print Plan</button>';
+    panelEl.innerHTML = html;
   }
 
-  var LIME_NOTES = {
-    'Agricultural': '<strong>Agricultural Lime:</strong> Generally refers to calcitic limestone. Pelletized lime is a good choice for lawns. CCE is usually 80-100%.',
-    'Dolomitic':    '<strong>Dolomitic Lime:</strong> Contains magnesium and is recommended when Mg is low. CCE is often 95-108%.',
-    'None Listed':  '<strong>Lime Type Not Listed:</strong> Consult your local Virginia Cooperative Extension office for guidance.'
-  };
-  var noteEl = document.getElementById('lime-type-note');
-  if (limeType && LIME_NOTES[limeType]) { noteEl.style.display = 'block'; noteEl.innerHTML = LIME_NOTES[limeType]; }
-  else { noteEl.style.display = 'none'; }
+  var timingEl = document.getElementById('lime-timing');
+  if (timingEl) {
+    if (apps > 0 && LIME_TIMING[apps]) {
+      timingEl.innerHTML = '<ul class="timing-list"><li><span class="timing-num">' + apps + '</span><span>' + LIME_TIMING[apps] + '</span></li></ul>';
+    } else {
+      timingEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p>';
+    }
+  }
 }
 
 // ===== REPORT TYPE HELPERS =====

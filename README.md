@@ -2,8 +2,8 @@
 
 An interactive, single-file web calculator that helps Virginia homeowners interpret soil test results and plan fertilizer and lime applications. Built from official Virginia Cooperative Extension publications.
 
-**Current version:** v1.4  
-**File:** `lawn_garden_calc_v1_4.html`  
+**Current version:** v1.5  
+**File:** `lawn_garden_calc_v1_5.html`  
 **No installation required** — open the file in any modern browser.
 
 ---
@@ -56,7 +56,7 @@ Enter your values exactly as they appear on your report. Units, rating scales, a
 
 ### Step 3 — Lime tab
 
-Enter your lawn size, lime recommendation, lime type, CCE (from the bag), and bag size. The calculator shows the number of applications needed, lbs per application, and total bags.
+Enter your lawn size, lime recommendation, lime type, CCE (from the bag), and bag size. The calculator shows the CCE adjusted rate, number of applications, total lbs per application to your lawn, total bags, and an **application schedule with spreader rates** — the lbs per 1,000 sq. ft. for each numbered application, which you use to set your spreader.
 
 ### Step 4 — Garden & Flowers tab
 
@@ -110,7 +110,7 @@ WIN (Water Insoluble Nitrogen) is listed under Guaranteed Analysis on the fertil
 | VCE / Virginia Tech | L-/L/L+/M-/M/M+/H-/H/H+/VH | lb/A | ppm | Buffer Index |
 | Waypoint Analytical | Very Low / Low / Medium / Optimum / Very High | ppm | dS/m (auto-converted) | Buffer pH |
 
-Units, labels, and rating scales switch automatically when you select your report type. Waypoint ratings are mapped to VCE equivalents for all calculations.
+Units, labels, and rating scales switch automatically when you select your report type. Waypoint ratings are mapped to VCE equivalents for all calculations. The two labs use different extraction methods, but their ratings have been calibrated to be directly comparable for Virginia soils.
 
 ---
 
@@ -162,6 +162,6 @@ For more information visit **ext.vt.edu** or **soiltest.vt.edu**.
 
 | File | Description |
 | :---- | :---- |
-| `lawn_garden_calc_v1_4.html` | Main application |
+| `lawn_garden_calc_v1_5.html` | Main application |
 | `CLAUDE.md` | Developer/AI session context |
 | `README.md` | This file |
