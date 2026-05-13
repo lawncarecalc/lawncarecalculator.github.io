@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Virginia Cooperative Extension — Lawn Care Calculator</title>
+<title>Virginia Cooperative Extension — Lawn &amp; Garden Care Calculator v1.4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -485,6 +485,108 @@
     .st-field-wide { grid-column: auto; }
   }
 
+  /* ===== APP SLOT PLANNER ===== */
+  .app-slot {
+    background: var(--green-mist);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .app-slot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--green-deep);
+    font-size: 0.9rem;
+  }
+  .app-slot-remove {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--slate-mid);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+  }
+  .app-slot-remove:hover { background: #fff0f0; border-color: var(--red); color: var(--red); }
+  .app-slot-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .app-slot-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .app-slot-grid label { font-size: 0.78rem; color: var(--slate-mid); display: block; margin-bottom: 3px; }
+  .app-slot-grid input, .app-slot-grid select,
+  .app-slot-grid2 input, .app-slot-grid2 select { width: 100%; }
+  .app-slot-result {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+  .season-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 14px; }
+  .season-table th { background: var(--green-deep); color: white; padding: 7px 8px; text-align: left; font-weight: 500; font-size:0.78rem; }
+  .season-table td { padding: 7px 8px; border-bottom: 1px solid var(--green-mist); vertical-align:top; }
+  .season-table tr:last-child td { border-bottom: none; }
+  .season-table tr:nth-child(even) td { background: var(--green-mist); }
+  .season-totals { background: var(--green-pale); border-radius: 6px; padding: 12px 14px; margin-top: 12px; }
+  .season-totals-row { display: flex; justify-content: space-between; font-size: 0.875rem; padding: 3px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .season-totals-row:last-child { border-bottom: none; }
+  .season-totals-row strong { color: var(--green-deep); }
+  .prog-badge { display:inline-block; padding:1px 7px; border-radius:10px; font-size:0.72rem; font-weight:600; margin-left:4px; vertical-align:middle; }
+  .prog1-badge { background:#e8f4fd; color:#1a5276; }
+  .prog2-badge { background:#eafaf1; color:#1e8449; }
+  .prog3-badge { background:#fdf2e9; color:#784212; }
+
+  /* ===== FERTILIZER CHOOSER ===== */
+  .fert-chooser { border:1px solid var(--border); border-radius:8px; margin-top:14px; overflow:hidden; }
+  .fert-chooser-toggle {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:11px 14px; background:var(--green-pale); cursor:pointer;
+    font-weight:600; color:var(--green-deep); font-size:0.875rem;
+    border:none; width:100%; text-align:left;
+  }
+  .fert-chooser-toggle:hover { background:var(--green-mist); }
+  .fert-chooser-toggle .toggle-arrow { font-size:0.75rem; transition:transform 0.2s; display:inline-block; }
+  .fert-chooser-toggle.open .toggle-arrow { transform:rotate(180deg); }
+  .fert-chooser-body { display:none; padding:14px 16px; background:white; }
+  .fert-chooser-body.open { display:block; }
+  .fert-rec-box { border-radius:6px; padding:10px 14px; margin-bottom:12px; font-size:0.82rem; line-height:1.6; }
+  .fert-rec-box.needs-p  { background:#fff8e1; border-left:3px solid #e0c87a; }
+  .fert-rec-box.needs-none { background:#f0f7f1; border-left:3px solid var(--green-mid); }
+  .fert-grade-table { width:100%; border-collapse:collapse; font-size:0.78rem; margin-top:10px; }
+  .fert-grade-table th { background:var(--green-deep); color:white; padding:6px 8px; text-align:left; font-weight:500; }
+  .fert-grade-table td { padding:6px 8px; border-bottom:1px solid var(--green-mist); }
+  .fert-grade-table tr:last-child td { border-bottom:none; }
+  .fert-grade-table tr:nth-child(even) td { background:var(--green-mist); }
+
+  /* ===== AUTO PLAN MODE ===== */
+  .plan-mode-toggle { display:flex; gap:0; margin-bottom:16px; border:1px solid var(--border); border-radius:6px; overflow:hidden; width:100%; }
+  .plan-mode-btn { flex:1; padding:9px 12px; border:none; background:white; color:var(--slate-mid); cursor:pointer; font-size:0.85rem; font-weight:500; transition:background 0.15s; }
+  .plan-mode-btn.active { background:var(--green-deep); color:white; }
+  .plan-mode-btn:not(.active):hover { background:var(--green-mist); }
+  .auto-plan-input { background:var(--green-mist); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:12px; }
+  .auto-plan-table { width:100%; border-collapse:collapse; font-size:0.85rem; margin:12px 0; }
+  .auto-plan-table th { background:var(--green-deep); color:white; padding:7px 10px; text-align:left; font-weight:500; }
+  .auto-plan-table td { padding:7px 10px; border-bottom:1px solid var(--green-mist); }
+  .auto-plan-table tr:nth-child(even) td { background:var(--green-mist); }
+  .auto-plan-table tr:last-child td { border-bottom:none; }
+  .auto-plan-total { background:var(--green-pale); border-radius:6px; padding:12px 14px; margin-top:10px; font-size:0.9rem; }
+  .print-plan-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:var(--green-deep); color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600; margin-top:14px; }
+  .print-plan-btn:hover { background:var(--green-mid); }
+
+  /* Results cards — hidden on screen, visible only when printing */
+  .results-card { display: none !important; }
+  @media print {
+    .results-card { display: block !important; }
+  }
+  /* Inline plan result — shown on screen, hidden when printing */
+  .inline-plan-result { margin-top: 14px; }
+  @media print { .inline-plan-result { display: none !important; } }
+
   /* ===== PRINT ===== */
   @media print {
     .no-print, .tab-nav, .site-header .header-badge,
@@ -498,7 +600,18 @@
     .header-text .subtitle { color: #555; }
     .main { padding: 10px 0; max-width: 100%; width: 100%; }
     .tab-panel { display: none !important; }
-    #tab-soiltest { display: block !important; }
+    /* Default print = soil test report */
+    body:not(.printing-cool):not(.printing-warm) #tab-soiltest { display: block !important; }
+    /* Plan print modes — show only the target tab */
+    body.printing-cool #tab-cool { display: block !important; }
+    body.printing-warm #tab-warm { display: block !important; }
+    /* Plan tab layout for print */
+    body.printing-cool .calc-layout,
+    body.printing-warm .calc-layout { display: block !important; width: 100% !important; }
+    body.printing-cool .calc-layout > div:first-child,
+    body.printing-warm .calc-layout > div:first-child { display: none !important; }
+    body.printing-cool .calc-layout > div:last-child,
+    body.printing-warm .calc-layout > div:last-child { display: block !important; width: 100% !important; }
     .st-layout  { display: block !important; width: 100% !important; }
     .st-results { display: block !important; width: 100% !important; }
     .st-interp-card { break-inside: avoid; border: 1px solid #ccc; margin-bottom: 10px; width: 100% !important; box-sizing: border-box; }
@@ -515,7 +628,7 @@
   <div class="header-inner">
     <div class="header-badge">🌿</div>
     <div class="header-text">
-      <h1>Lawn Care Calculator</h1>
+      <h1>Lawn &amp; Garden Calculator</h1>
       <div class="subtitle">Virginia Cooperative Extension</div>
     </div>
   </div>
@@ -525,6 +638,7 @@
       <button class="tab-btn" data-tab="cool">Cool-Season Lawns</button>
       <button class="tab-btn" data-tab="warm">Warm-Season Lawns</button>
       <button class="tab-btn" data-tab="lime">Lime</button>
+      <button class="tab-btn" data-tab="garden">Garden &amp; Flowers</button>
       <button class="tab-btn" data-tab="about">About &amp; Instructions</button>
     </div>
   </nav>
@@ -540,19 +654,23 @@
       <div class="card st-input-card">
         <div class="card-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
           <span><span class="icon">🧪</span> Enter Your Soil Test Report Values</span>
-          <button class="st-prefill-btn no-print" onclick="prefillSampleReport()">📋 Load Sample Report</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="st-prefill-btn no-print" onclick="prefillSampleReport('lawn')">📋 Lawn Sample</button>
+            <button class="st-prefill-btn no-print" onclick="prefillSampleReport('garden')" style="background:var(--gold);border-color:var(--gold);">🌱 Garden Sample</button>
+          </div>
         </div>
         <div class="card-body">
-          <p class="about-section-intro">Select your lab, then enter values exactly as they appear on your soil test report. Rating scales, units, and interpretation notes adjust automatically based on your lab selection.</p>
+          <p class="about-section-intro">Select your report type, then enter values exactly as they appear on your soil test report. Units, rating scales, interpretation notes, and carry-over destination all adjust automatically.</p>
 
-          <div class="st-section-label">Lab &amp; Report Source</div>
+          <div class="st-section-label">Report Type</div>
           <div class="st-field-grid" style="margin-bottom:16px;">
             <div class="st-field st-field-wide">
-              <label>Which laboratory issued your soil test report?</label>
-              <select id="st-lab-source" onchange="onLabSourceChange()">
-                <option value="vce">Virginia Cooperative Extension / Virginia Tech Soil Testing Lab (VCE)</option>
-                <option value="waypoint">Waypoint Analytical</option>
-                <option value="other">Other lab</option>
+              <label>Which report type matches your soil test?</label>
+              <select id="st-report-type" onchange="onReportTypeChange()">
+                <option value="vce-lawn">VCE / Virginia Tech — Lawn</option>
+                <option value="waypoint-lawn">Waypoint Analytical — Lawn</option>
+                <option value="vce-garden">VCE / Virginia Tech — Vegetable &amp; Flower Garden</option>
+                <option value="waypoint-garden">Waypoint Analytical — Garden</option>
               </select>
             </div>
           </div>
@@ -565,7 +683,7 @@
               <input type="number" id="st-ph" step="0.1" min="3" max="9" placeholder="e.g. 5.5" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
-              <label>Buffer Index <span style="font-weight:400;color:var(--slate-light);">(also called Buffer pH on Waypoint reports)</span></label>
+              <label id="st-bi-label">Buffer Index</label>
               <input type="number" id="st-bi" step="0.01" min="5" max="6.9" placeholder="e.g. 6.23" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
@@ -668,12 +786,7 @@
               <input type="number" id="st-om" step="0.1" min="0" placeholder="e.g. 2.0" oninput="interpretSoilTest()">
             </div>
             <div class="st-field">
-              <label>Soluble Salts
-                <span class="st-unit-toggle">
-                  <button class="st-unit-btn active" id="salt-unit-ppm" onclick="setSaltUnit('ppm')">ppm (VCE)</button>
-                  <button class="st-unit-btn" id="salt-unit-dsm" onclick="setSaltUnit('dsm')">dS/m (Waypoint)</button>
-                </span>
-              </label>
+              <label>Soluble Salts <span id="st-salts-unit-label" style="font-weight:400;color:var(--slate-light);font-size:0.78rem;">(ppm — VCE)</span></label>
               <input type="number" id="st-salts" min="0" step="0.01" placeholder="e.g. 128" oninput="interpretSoilTest()">
               <div id="st-salts-hint" style="font-size:0.75rem;color:var(--slate-light);margin-top:3px;">VCE reports in ppm. Injury threshold: 844 ppm.</div>
             </div>
@@ -716,11 +829,12 @@
           <div class="st-section-label" style="margin-top:20px;">Lime &amp; Fertilizer Recommendations (from report)</div>
           <div class="st-field-grid">
             <div class="st-field st-field-wide">
-              <label>Lawn Size (sq. ft.) — used to carry over to calculators</label>
-              <input type="number" id="st-lawn-size" min="0" placeholder="e.g. 5000" oninput="interpretSoilTest()">
+              <label id="st-area-size-label">Lawn Size (sq. ft.) — enter this first to enable carry-over</label>
+              <input type="number" id="st-lawn-size" placeholder="e.g. 5000" oninput="interpretSoilTest()">
+              <div id="st-area-hint" style="font-size:0.75rem;margin-top:4px;color:var(--gold);font-weight:600;">&#9888; Enter your lawn size so fertilizer quantities calculate correctly on the calculator tabs.</div>
             </div>
             <div class="st-field st-field-wide">
-              <label>Lime Recommendation (lbs / 1,000 sq. ft.)</label>
+              <label id="st-lime-rec-label">Lime Recommendation (lbs / 1,000 sq. ft.)</label>
               <input type="number" id="st-lime-rec" min="0" step="5" placeholder="e.g. 60" oninput="interpretSoilTest()">
             </div>
             <div class="st-field st-field-wide">
@@ -732,12 +846,22 @@
                 <option value="None Listed">None listed</option>
               </select>
             </div>
-            <div class="st-field st-field-wide">
-              <label>Crop / Grass Type (from report)</label>
+            <div class="st-field st-field-wide" id="st-crop-field">
+              <label>Grass Type (from report)</label>
               <select id="st-crop" onchange="interpretSoilTest()">
                 <option value="">- Select -</option>
                 <option value="cool">Cool-Season (fescue, bluegrass, ryegrass)</option>
                 <option value="warm">Warm-Season (bermuda, zoysia, centipede, St. Augustine)</option>
+              </select>
+            </div>
+            <div class="st-field st-field-wide" id="st-garden-type-field" style="display:none;">
+              <label>Garden Type (from report)</label>
+              <select id="st-garden-type" onchange="interpretSoilTest()">
+                <option value="">- Select -</option>
+                <option value="vegetable">Vegetable Garden</option>
+                <option value="annual">Annual Flower Garden</option>
+                <option value="perennial">Perennial Flower Garden</option>
+                <option value="mixed">Mixed Bed (vegetables &amp; flowers)</option>
               </select>
             </div>
           </div>
@@ -745,7 +869,7 @@
           <div id="st-carryover-bar" style="display:none;margin-top:20px;width:100%;box-sizing:border-box;">
             <div class="st-carryover-box">
               <div class="st-carryover-title">Ready to carry over to calculators</div>
-              <p class="st-carryover-desc">Your lawn size, P rating, K rating, lime recommendation, and lime type will be pre-filled in the relevant calculator tabs.</p>
+              <p class="st-carryover-desc">Your area size, P &amp; K ratings, lime recommendation, and lime type will be pre-filled in the relevant calculator tabs.</p>
               <button class="st-carryover-btn" onclick="carryOverToCalculators()">Apply to Calculators</button>
             </div>
           </div>
@@ -771,24 +895,56 @@
         <div class="card">
           <div class="card-header"><span class="icon">📋</span> Fertilizer Calculator for Cool-Season Lawns</div>
           <div class="card-body">
+
             <div class="field-group">
               <div class="field-label"><span class="field-num">1</span><span class="field-question">What is the size of your lawn in square feet?</span></div>
-              <input type="number" id="cool-lawn-size" min="0" placeholder="e.g. 5000" oninput="calcCool()">
+              <input type="number" id="cool-lawn-size" placeholder="e.g. 5000" oninput="calcCool()">
             </div>
+
             <div class="field-group">
-              <div class="field-label"><span class="field-num">2</span><span class="field-question">How many pounds of N do you want to spread annually (lbs. per 1,000 sq. ft.)?</span></div>
-              <input type="number" id="cool-n-rate" min="0" step="0.1" placeholder="e.g. 2.0" oninput="calcCool()">
-              <div class="field-hint">Use the low end for low-maintenance, high end for high-maintenance:
-                <ul>
-                  <li>Unknown cool-season: 1.0-2.0 lbs.</li>
-                  <li>Tall fescue / Kentucky bluegrass / Perennial ryegrass: 1.0-3.5 lbs.</li>
-                  <li>Fine-leaf fescue: 0.7-2.0 lbs.</li>
-                </ul>
+              <div class="field-label"><span class="field-num">2</span><span class="field-question">What grass species do you have?</span></div>
+              <select id="cool-species" onchange="calcCool()">
+                <option value="tall">Tall fescue / Kentucky bluegrass / Perennial ryegrass</option>
+                <option value="fine">Fine-leaf fescue (creeping red, chewings, hard)</option>
+              </select>
+              <div class="field-hint" id="cool-species-hint"></div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">3</span><span class="field-question">Choose your annual N rate — then enter it below</span></div>
+
+              <!-- N rate guidance table — primary tool -->
+              <div style="background:var(--green-mist);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+                <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.9rem;">&#127807; Choosing your annual N rate</div>
+                <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Your soil test report may include a nitrogen recommendation — use it as a starting point, but verify it against Virginia guidelines. <strong>Waypoint reports sometimes recommend up to 4.0 lbs, which exceeds the VCE limit for cool-season grasses.</strong><br><br>The maximum you can apply in a single application depends on how quickly your fertilizer releases nitrogen. Quick-release fertilizers — like urea or ammonium sulfate (Program 1: no "Water Insoluble Nitrogen" or WIN listed on the bag) — have a lower per-application limit. Slow-release fertilizers — look for "Water Insoluble Nitrogen (WIN)" on the bag label (Program 2: 15–49% WIN; Program 3: 50% or more WIN) — allow a higher per-application rate and fewer applications per season. If your annual target is 2.5 lbs and you are using a quick-release product (Program 1, max 0.7 lbs per application for cool-season), you will need at least 4 separate applications to stay within Virginia's limits.</p>
+                <table style="width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:10px;">
+                  <thead><tr style="background:var(--green-deep);color:white;">
+                    <th style="padding:6px 8px;text-align:left;font-weight:500;">Lawn situation</th>
+                    <th style="padding:6px 8px;text-align:center;font-weight:500;">Suggested Annual Application Total</th>
+                    <th style="padding:6px 8px;text-align:center;font-weight:500;">Max per application</th>
+                    <th style="padding:6px 8px;text-align:center;font-weight:500;">Min. applications</th>
+                  </tr></thead>
+                  <tbody>
+                    <tr><td style="padding:6px 8px;">Low maintenance, established lawn</td><td style="padding:6px 8px;text-align:center;">1.0–1.5 lbs</td><td style="padding:6px 8px;text-align:center;">0.7 (P1) / 0.9 (P2) / 1.5 (P3)</td><td style="padding:6px 8px;text-align:center;">2</td></tr>
+                    <tr style="background:white;"><td style="padding:6px 8px;">Average lawn — tall fescue / bluegrass / ryegrass</td><td style="padding:6px 8px;text-align:center;">2.0–2.5 lbs</td><td style="padding:6px 8px;text-align:center;">0.7 (P1) / 0.9 (P2) / 1.5 (P3)</td><td style="padding:6px 8px;text-align:center;">3</td></tr>
+                    <tr><td style="padding:6px 8px;">Higher quality or recovering lawn</td><td style="padding:6px 8px;text-align:center;">3.0–3.5 lbs</td><td style="padding:6px 8px;text-align:center;">0.7 (P1) / 0.9 (P2) / 1.5 (P3)</td><td style="padding:6px 8px;text-align:center;">4</td></tr>
+                    <tr style="background:white;"><td style="padding:6px 8px;">Fine-leaf fescue — any situation</td><td style="padding:6px 8px;text-align:center;">0.7–1.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.7 (P1) / 0.9 (P2) / 1.0 (P3)</td><td style="padding:6px 8px;text-align:center;">1–2</td></tr>
+                  </tbody>
+                </table>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9851; <strong>Returning clippings?</strong> Recycling grass clippings returns up to one-third of the seasonal nitrogen requirement. If you mulch-mow and leave clippings on the lawn, reduce your chosen total by up to one-third — a lawn targeting 3.0 lbs may only need 2.0 lbs when clippings are consistently returned. <em>(VCE 430-011)</em></p>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9729;&#65039; <strong>Sun vs. shade:</strong> Grasses in heavily shaded areas need only one-half to two-thirds as much nitrogen as the same grass in full sun. Use the lower end of the range above and consider reducing further — over-fertilizing shaded turf promotes disease rather than growth. Time fall applications after most leaves have fallen so sunlight can reach the grass blades. <em>(VCE 430-011)</em></p>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:0;">&#128197; <strong>When to apply — think "SON":</strong> September, October, November is the primary window for cool-season grasses. Fall applications build density, root growth, and carbohydrate reserves far more effectively than spring fertilization. A single well-timed fall application can meet many lawns' full needs. <em>(VCE 430-520)</em></p>
               </div>
+
+              <!-- Input field — confirms the choice made above -->
+              <label style="font-size:0.82rem;color:var(--slate-mid);display:block;margin-bottom:4px;">Enter your chosen annual N rate (lbs per 1,000 sq. ft.)</label>
+              <input type="number" id="cool-n-rate" min="0" step="0.1" placeholder="e.g. 2.0" oninput="calcCool()">
+              <div class="field-hint" id="cool-n-hint">Tall fescue/bluegrass/ryegrass: max 3.5 lbs &nbsp;|&nbsp; Fine-leaf fescue: max 2.0 lbs</div>
               <div id="cool-n-valid" style="margin-top:6px;"></div>
             </div>
+
             <div class="field-group">
-              <div class="field-label"><span class="field-num">3</span><span class="field-question">What is the fertility rating for <strong>P</strong> from your VCE Soil Test Report?</span></div>
+              <div class="field-label"><span class="field-num">4</span><span class="field-question">Fertility rating for <strong>P</strong> (from soil test)?</span></div>
               <select id="cool-p-rating" onchange="calcCool()">
                 <option value="">- Select rating -</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -798,7 +954,7 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question">What is the fertility rating for <strong>K</strong> from your VCE Soil Test Report?</span></div>
+              <div class="field-label"><span class="field-num">5</span><span class="field-question">Fertility rating for <strong>K</strong> (from soil test)?</span></div>
               <select id="cool-k-rating" onchange="calcCool()">
                 <option value="">- Select rating -</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -807,58 +963,59 @@
                 <option value="VH">VH</option>
               </select>
             </div>
-            <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question">What is the grade of the fertilizer you wish to use (N-P-K)?</span></div>
-              <div class="field-hint" style="padding-left:0;margin-bottom:8px;">Three numbers from the bag, e.g. 25-5-10 means 25% N, 5% P, 10% K.</div>
-              <div class="npk-row">
-                <div class="npk-item"><label>N %</label><input type="number" id="cool-fert-n" min="0" max="100" placeholder="0" oninput="calcCool()"></div>
-                <div class="npk-item"><label>P %</label><input type="number" id="cool-fert-p" min="0" max="100" placeholder="0" oninput="calcCool()"></div>
-                <div class="npk-item"><label>K %</label><input type="number" id="cool-fert-k" min="0" max="100" placeholder="0" oninput="calcCool()"></div>
+
+            <div id="cool-fert-chooser"></div>
+
+            <!-- Plan mode toggle + planner -->
+            <div style="margin-top:20px;border-top:2px solid var(--green-pale);padding-top:16px;">
+              <div style="font-weight:600;color:var(--green-deep);font-size:0.95rem;margin-bottom:10px;">&#128197; Application Plan</div>
+              <div class="plan-mode-toggle no-print">
+                <button class="plan-mode-btn active" id="cool-mode-auto" onclick="setPlanMode('cool','auto')">&#128161; Build a plan for me</button>
+                <button class="plan-mode-btn" id="cool-mode-custom" onclick="setPlanMode('cool','custom')">&#9881;&#65039; Custom plan</button>
+              </div>
+
+              <!-- AUTO MODE -->
+              <div id="cool-auto-plan">
+                <div class="auto-plan-input">
+                  <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:12px;">Enter your fertilizer grade and WIN% below. The calculator will divide your annual N target equally across the minimum number of applications needed and suggest timing based on VCE guidelines.</p>
+                  <div class="app-slot-grid" style="margin-bottom:8px;">
+                    <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">N %</label><input type="number" id="cool-auto-n" min="0" max="100" placeholder="e.g. 16" oninput="calcAutoplan('cool')"></div>
+                    <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">P %</label><input type="number" id="cool-auto-p" min="0" max="100" placeholder="0" oninput="calcAutoplan('cool')"></div>
+                    <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">K %</label><input type="number" id="cool-auto-k" min="0" max="100" placeholder="0" oninput="calcAutoplan('cool')"></div>
+                  </div>
+                  <div style="max-width:260px;">
+                    <label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">WIN % (if listed on bag — leave blank if not listed)</label>
+                    <input type="number" id="cool-auto-win" min="0" max="100" step="0.1" placeholder="0" oninput="calcAutoplan('cool')">
+                  </div>
+                </div>
+                <div id="cool-auto-result" class="inline-plan-result"></div>
+              </div>
+
+              <!-- CUSTOM MODE -->
+              <div id="cool-custom-plan" style="display:none;">
+                <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:14px;">Enter up to 4 application slots with different grades per slot — useful when your first application needs P correction and later applications are N-only maintenance.</p>
+                <div id="cool-app-slots"></div>
+                <button class="st-unit-btn no-print" onclick="addAppSlot('cool')" style="margin-top:10px;padding:6px 14px;font-size:0.82rem;">+ Add Application</button>
+                <div id="cool-custom-summary" style="margin-top:14px;"></div>
+                <button class="print-plan-btn no-print" onclick="printPlan('cool')" style="margin-top:14px;">&#128424; Print Plan</button>
               </div>
             </div>
-            <div class="field-group">
-              <div class="field-label"><span class="field-num">5b</span><span class="field-question">Water Insoluble Nitrogen (WIN) — if listed on the bag</span></div>
-              <input type="number" id="cool-win" min="0" max="100" step="0.1" placeholder="e.g. 5.6 (leave blank if not listed)" oninput="calcCool()">
-              <div class="field-hint">Listed under "Guaranteed Analysis" as "Water Insoluble Nitrogen (WIN)" or "Slowly Available Nitrogen." Leave blank if not listed (assumed 0%).</div>
-              <div id="cool-win-display"></div>
-            </div>
-            <div class="field-group">
-              <div class="field-label"><span class="field-num">6</span><span class="field-question">What is the size of the fertilizer bag (lbs.)?</span></div>
-              <input type="number" id="cool-bag-size" min="0" placeholder="e.g. 40" oninput="calcCool()">
-            </div>
-          </div>
-        </div>
-        <div class="leftover-section" style="margin-top:20px;">
-          <h4>🗃 Leftover Fertilizer from Last Year?</h4>
-          <p style="font-size:0.8rem;color:#7d5a00;margin-bottom:10px;">Only use if the old fertilizer is the same grade as the new fertilizer.</p>
-          <div class="leftover-grid">
-            <div class="leftover-item"><label>Pounds leftover</label><input type="number" id="cool-leftover" min="0" placeholder="0" oninput="calcCool()" style="background:#fff;border:1px solid #e0c87a;border-radius:4px;padding:7px 12px;font-size:0.925rem;width:100%;"></div>
-            <div class="leftover-item"><label>Pounds still needed</label><div class="leftover-result" id="cool-leftover-needed">-</div></div>
-            <div class="leftover-item" style="grid-column:1/-1;"><label>New bags needed (adjusted)</label><div class="leftover-result" id="cool-leftover-bags">-</div></div>
+
           </div>
         </div>
       </div>
       <div>
         <div class="card results-card">
-          <div class="card-header"><span class="icon">📊</span> Recommendations</div>
+          <div class="card-header"><span class="icon">📊</span> Your Application Plan — Cool-Season Lawn</div>
           <div class="card-body">
-            <div style="margin-bottom:14px;" id="cool-program-display"></div>
-            <div class="result-row"><div class="result-label">Applications needed per year</div><div class="result-value large" id="cool-apps">-</div></div>
-            <div class="result-row"><div class="result-label">Max N per application (per 1,000 sq. ft.)</div><div class="result-value" id="cool-max-n-app">-</div></div>
-            <div class="result-row"><div class="result-label">Amount of N per 1,000 sq. ft.</div><div class="result-value" id="cool-n-per-k">-</div></div>
-            <div id="cool-n-warn"></div>
-            <div class="result-row"><div class="result-label">Lbs. of fertilizer per application</div><div class="result-value" id="cool-lbs-per-app">-</div></div>
-            <div class="result-row"><div class="result-label">Total lbs. of fertilizer (all apps)</div><div class="result-value" id="cool-lbs-total">-</div></div>
-            <div class="result-row"><div class="result-label">Total bags needed for the year</div><div class="result-value" id="cool-bags-total">-</div></div>
-            <div class="result-row"><div class="result-label">Nutrients applied: N / P / K (lbs.)</div><div class="result-value" id="cool-npk-applied">-</div></div>
-            <div style="margin-top:18px;"><div id="cool-p-rec"></div><div id="cool-k-rec"></div></div>
+            <div id="cool-results-panel"></div>
           </div>
         </div>
-        <div class="card timing-card" style="margin-top:20px;">
+        <div class="card timing-card" id="cool-timing-card" style="margin-top:20px;display:none;">
           <div class="card-header"><span class="icon">📅</span> Timing of Applications</div>
           <div class="card-body">
             <div id="cool-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p></div>
-            <div class="note-banner">ℹ️ Recommendations can be repeated for up to three growing seasons. New soil testing is recommended after three years.</div>
+            <div class="note-banner">ℹ️ Per VCE 430-011 &amp; Soil Test Note 17. Primary window: mid-August through early November. Recommendations can be repeated for up to three growing seasons.</div>
           </div>
         </div>
       </div>
@@ -872,22 +1029,57 @@
         <div class="card">
           <div class="card-header"><span class="icon">☀️</span> Fertilizer Calculator for Warm-Season Lawns</div>
           <div class="card-body">
+
             <div class="field-group">
               <div class="field-label"><span class="field-num">1</span><span class="field-question">What is the size of your lawn in square feet?</span></div>
-              <input type="number" id="warm-lawn-size" min="0" placeholder="e.g. 5000" oninput="calcWarm()">
+              <input type="number" id="warm-lawn-size" placeholder="e.g. 5000" oninput="calcWarm()">
             </div>
+
             <div class="field-group">
-              <div class="field-label"><span class="field-num">2</span><span class="field-question">How many pounds of N do you want to spread (lbs. per 1,000 sq. ft.)?</span></div>
+              <div class="field-label"><span class="field-num">2</span><span class="field-question">What grass species do you have?</span></div>
+              <select id="warm-species" onchange="calcWarm()">
+                <option value="bermuda">Bermudagrass / St. Augustinegrass</option>
+                <option value="zoysia">Zoysiagrass / Centipedegrass</option>
+              </select>
+              <div class="field-hint" id="warm-species-hint"></div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">3</span><span class="field-question">Choose your annual N rate — then enter it below</span></div>
+
+              <!-- N rate guidance table — primary tool -->
+              <div style="background:var(--green-mist);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+                <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.9rem;">&#9728;&#65039; Choosing your annual N rate</div>
+                <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Your soil test report may include a nitrogen recommendation — use it as a starting point, but verify it against Virginia guidelines. <strong>Waypoint rates can reach the upper end of the Virginia range — appropriate for bermudagrass but too high for zoysiagrass or centipedegrass.</strong><br><br>The maximum you can apply in a single application depends on how quickly your fertilizer releases nitrogen. Quick-release fertilizers — like urea or ammonium sulfate (Program 1: no "Water Insoluble Nitrogen" or WIN listed on the bag) — have a lower per-application limit. Slow-release fertilizers — look for "Water Insoluble Nitrogen (WIN)" on the bag label (Program 2: 15–49% WIN; Program 3: 50% or more WIN) — allow a higher per-application rate and fewer applications per season. If your annual target is 3.0 lbs and you are using a quick-release product (Program 1, max 0.9 lbs per application for warm-season), you will need at least 4 separate applications to stay within Virginia's limits.</p>
+                <table style="width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:10px;">
+                  <thead><tr style="background:var(--green-deep);color:white;">
+                    <th style="padding:6px 8px;text-align:left;font-weight:500;">Lawn situation</th>
+                    <th style="padding:6px 8px;text-align:center;font-weight:500;">Suggested Annual Application Total</th>
+                    <th style="padding:6px 8px;text-align:center;font-weight:500;">Max per application</th>
+                    <th style="padding:6px 8px;text-align:center;font-weight:500;">Min. applications</th>
+                  </tr></thead>
+                  <tbody>
+                    <tr><td style="padding:6px 8px;">Zoysiagrass / centipedegrass — any situation</td><td style="padding:6px 8px;text-align:center;">1.0–1.5 lbs</td><td style="padding:6px 8px;text-align:center;">0.7 (P1) / 1.0 (P2/P3)</td><td style="padding:6px 8px;text-align:center;">2</td></tr>
+                    <tr style="background:white;"><td style="padding:6px 8px;">Bermudagrass / St. Augustine — average lawn</td><td style="padding:6px 8px;text-align:center;">2.0–3.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.9 (P1) / 1.0 (P2) / 1.5 (P3)</td><td style="padding:6px 8px;text-align:center;">3</td></tr>
+                    <tr><td style="padding:6px 8px;">Bermudagrass / St. Augustine — higher quality</td><td style="padding:6px 8px;text-align:center;">3.0–4.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.9 (P1) / 1.0 (P2) / 1.5 (P3)</td><td style="padding:6px 8px;text-align:center;">4</td></tr>
+                  </tbody>
+                </table>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9851; <strong>Returning clippings?</strong> Recycling grass clippings returns up to one-third of the seasonal nitrogen requirement. If you mulch-mow and leave clippings on the lawn, reduce your chosen total by up to one-third. Clippings also contribute organic matter that improves soil structure over time. <em>(VCE 430-011)</em></p>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9729;&#65039; <strong>Sun vs. shade:</strong> Warm-season grasses in shade need significantly less nitrogen than the same grass in full sun — use the lower end of the range and reduce frequency. Shaded warm-season grasses are also more susceptible to winterkill, so avoid late-season N applications entirely in shaded areas. <em>(VCE 430-011)</em></p>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#10052;&#65039; <strong>Potassium and winter hardiness:</strong> Potassium is the winterizing nutrient for warm-season grasses. If your soil test rates K as Low, address it in your plan — the benefits of adequate K for winter survival are often more significant for warm-season grasses than for cool-season grasses. If K is already Medium or higher, skip extra K to avoid unnecessary leaching. <em>(VCE 430-520)</em></p>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#128197; <strong>When to apply:</strong> April 1 through August 15 is the primary window. A modest September application (up to 1 lb water-soluble N per 1,000 sq. ft.) for bermudagrass followed by light applications every 4–6 weeks until frost can extend the growing season and improve winter hardiness — but keep rates conservative and stop before frost. <em>(VCE 430-520)</em></p>
+                <p style="font-size:0.8rem;color:var(--red);margin-bottom:0;font-weight:600;">&#9940; Do not fertilize after August 15 unless following the specific fall bermudagrass program above. Late-season nitrogen on warm-season grasses increases winterkill risk.</p>
+              </div>
+
+              <!-- Input field — confirms the choice made above -->
+              <label style="font-size:0.82rem;color:var(--slate-mid);display:block;margin-bottom:4px;">Enter your chosen annual N rate (lbs per 1,000 sq. ft.)</label>
               <input type="number" id="warm-n-rate" min="0" step="0.1" placeholder="e.g. 2.0" oninput="calcWarm()">
-              <div class="field-hint"><ul>
-                <li>Unknown warm-season: 2.0 lbs.</li>
-                <li>Bermudagrass / St. Augustinegrass: 2.0-3.5 lbs.</li>
-                <li>Zoysiagrass / Centipedegrass: 1.0-2.0 lbs.</li>
-              </ul></div>
+              <div class="field-hint" id="warm-n-hint">Bermudagrass/St. Augustine: max 4.0 lbs &nbsp;|&nbsp; Zoysiagrass/Centipedegrass: max 2.0 lbs</div>
               <div id="warm-n-valid" style="margin-top:6px;"></div>
             </div>
+
             <div class="field-group">
-              <div class="field-label"><span class="field-num">3</span><span class="field-question">Fertility rating for <strong>P</strong> (VCE Soil Test Report)?</span></div>
+              <div class="field-label"><span class="field-num">4</span><span class="field-question">Fertility rating for <strong>P</strong> (from soil test)?</span></div>
               <select id="warm-p-rating" onchange="calcWarm()">
                 <option value="">- Select rating -</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -897,7 +1089,7 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question">Fertility rating for <strong>K</strong> (VCE Soil Test Report)?</span></div>
+              <div class="field-label"><span class="field-num">5</span><span class="field-question">Fertility rating for <strong>K</strong> (from soil test)?</span></div>
               <select id="warm-k-rating" onchange="calcWarm()">
                 <option value="">- Select rating -</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -906,57 +1098,59 @@
                 <option value="VH">VH</option>
               </select>
             </div>
-            <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question">Fertilizer grade (N-P-K)?</span></div>
-              <div class="npk-row">
-                <div class="npk-item"><label>N %</label><input type="number" id="warm-fert-n" min="0" max="100" placeholder="0" oninput="calcWarm()"></div>
-                <div class="npk-item"><label>P %</label><input type="number" id="warm-fert-p" min="0" max="100" placeholder="0" oninput="calcWarm()"></div>
-                <div class="npk-item"><label>K %</label><input type="number" id="warm-fert-k" min="0" max="100" placeholder="0" oninput="calcWarm()"></div>
+
+            <div id="warm-fert-chooser"></div>
+
+            <!-- Plan mode toggle + planner -->
+            <div style="margin-top:20px;border-top:2px solid var(--green-pale);padding-top:16px;">
+              <div style="font-weight:600;color:var(--green-deep);font-size:0.95rem;margin-bottom:10px;">&#128197; Application Plan</div>
+              <div class="plan-mode-toggle no-print">
+                <button class="plan-mode-btn active" id="warm-mode-auto" onclick="setPlanMode('warm','auto')">&#128161; Build a plan for me</button>
+                <button class="plan-mode-btn" id="warm-mode-custom" onclick="setPlanMode('warm','custom')">&#9881;&#65039; Custom plan</button>
+              </div>
+
+              <!-- AUTO MODE -->
+              <div id="warm-auto-plan">
+                <div class="auto-plan-input">
+                  <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:12px;">Enter your fertilizer grade and WIN% below. The calculator will divide your annual N target equally across the minimum number of applications needed and suggest timing based on VCE guidelines.</p>
+                  <div class="app-slot-grid" style="margin-bottom:8px;">
+                    <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">N %</label><input type="number" id="warm-auto-n" min="0" max="100" placeholder="e.g. 29" oninput="calcAutoplan('warm')"></div>
+                    <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">P %</label><input type="number" id="warm-auto-p" min="0" max="100" placeholder="0" oninput="calcAutoplan('warm')"></div>
+                    <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">K %</label><input type="number" id="warm-auto-k" min="0" max="100" placeholder="0" oninput="calcAutoplan('warm')"></div>
+                  </div>
+                  <div style="max-width:260px;">
+                    <label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">WIN % (if listed on bag — leave blank if not listed)</label>
+                    <input type="number" id="warm-auto-win" min="0" max="100" step="0.1" placeholder="0" oninput="calcAutoplan('warm')">
+                  </div>
+                </div>
+                <div id="warm-auto-result" class="inline-plan-result"></div>
+              </div>
+
+              <!-- CUSTOM MODE -->
+              <div id="warm-custom-plan" style="display:none;">
+                <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:14px;">Enter up to 4 application slots with different grades per slot — useful when your first application needs P correction and later applications are N-only maintenance.</p>
+                <div id="warm-app-slots"></div>
+                <button class="st-unit-btn no-print" onclick="addAppSlot('warm')" style="margin-top:10px;padding:6px 14px;font-size:0.82rem;">+ Add Application</button>
+                <div id="warm-custom-summary" style="margin-top:14px;"></div>
+                <button class="print-plan-btn no-print" onclick="printPlan('warm')" style="margin-top:14px;">&#128424; Print Plan</button>
               </div>
             </div>
-            <div class="field-group">
-              <div class="field-label"><span class="field-num">5b</span><span class="field-question">Water Insoluble Nitrogen (WIN) — if listed on the bag</span></div>
-              <input type="number" id="warm-win" min="0" max="100" step="0.1" placeholder="e.g. 5.6 (leave blank if not listed)" oninput="calcWarm()">
-              <div class="field-hint">Listed under "Guaranteed Analysis" as "Water Insoluble Nitrogen (WIN)." Leave blank if not listed (assumed 0%).</div>
-              <div id="warm-win-display"></div>
-            </div>
-            <div class="field-group">
-              <div class="field-label"><span class="field-num">6</span><span class="field-question">Size of the fertilizer bag (lbs.)?</span></div>
-              <input type="number" id="warm-bag-size" min="0" placeholder="e.g. 40" oninput="calcWarm()">
-            </div>
-          </div>
-        </div>
-        <div class="leftover-section" style="margin-top:20px;">
-          <h4>🗃 Leftover Fertilizer from Last Year?</h4>
-          <p style="font-size:0.8rem;color:#7d5a00;margin-bottom:10px;">Only use if the old fertilizer is the same grade.</p>
-          <div class="leftover-grid">
-            <div class="leftover-item"><label>Pounds leftover</label><input type="number" id="warm-leftover" min="0" placeholder="0" oninput="calcWarm()" style="background:#fff;border:1px solid #e0c87a;border-radius:4px;padding:7px 12px;font-size:0.925rem;width:100%;"></div>
-            <div class="leftover-item"><label>Pounds still needed</label><div class="leftover-result" id="warm-leftover-needed">-</div></div>
-            <div class="leftover-item" style="grid-column:1/-1;"><label>New bags needed (adjusted)</label><div class="leftover-result" id="warm-leftover-bags">-</div></div>
+
           </div>
         </div>
       </div>
       <div>
         <div class="card results-card">
-          <div class="card-header"><span class="icon">📊</span> Recommendations</div>
+          <div class="card-header"><span class="icon">📊</span> Your Application Plan — Warm-Season Lawn</div>
           <div class="card-body">
-            <div style="margin-bottom:14px;" id="warm-program-display"></div>
-            <div class="result-row"><div class="result-label">Applications needed per year</div><div class="result-value large" id="warm-apps">-</div></div>
-            <div class="result-row"><div class="result-label">Max N per application (per 1,000 sq. ft.)</div><div class="result-value" id="warm-max-n-app">-</div></div>
-            <div class="result-row"><div class="result-label">Amount of N per 1,000 sq. ft.</div><div class="result-value" id="warm-n-per-k">-</div></div>
-            <div id="warm-n-warn"></div>
-            <div class="result-row"><div class="result-label">Lbs. of fertilizer per application</div><div class="result-value" id="warm-lbs-per-app">-</div></div>
-            <div class="result-row"><div class="result-label">Total lbs. of fertilizer (all apps)</div><div class="result-value" id="warm-lbs-total">-</div></div>
-            <div class="result-row"><div class="result-label">Total bags needed for the year</div><div class="result-value" id="warm-bags-total">-</div></div>
-            <div class="result-row"><div class="result-label">Nutrients applied: N / P / K (lbs.)</div><div class="result-value" id="warm-npk-applied">-</div></div>
-            <div style="margin-top:18px;"><div id="warm-p-rec"></div><div id="warm-k-rec"></div></div>
+            <div id="warm-results-panel"></div>
           </div>
         </div>
-        <div class="card timing-card" style="margin-top:20px;">
+        <div class="card timing-card" id="warm-timing-card" style="margin-top:20px;display:none;">
           <div class="card-header"><span class="icon">📅</span> Timing of Applications</div>
           <div class="card-body">
             <div id="warm-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p></div>
-            <div class="note-banner">ℹ️ Recommendations can be repeated for up to three growing seasons. New soil testing is recommended after three years.</div>
+            <div class="note-banner">ℹ️ Per VCE 430-011 &amp; Soil Test Note 18. Primary window: April 1 – August 15. Recommendations can be repeated for up to three growing seasons.</div>
           </div>
         </div>
       </div>
@@ -972,7 +1166,7 @@
           <div class="card-body">
             <div class="field-group">
               <div class="field-label"><span class="field-num">1</span><span class="field-question">What is the size of your lawn in square feet?</span></div>
-              <input type="number" id="lime-lawn-size" min="0" placeholder="e.g. 5000" oninput="calcLime()">
+              <input type="number" id="lime-lawn-size" placeholder="e.g. 5000" oninput="calcLime()">
             </div>
             <div class="field-group">
               <div class="field-label"><span class="field-num">2</span><span class="field-question">How much lime is recommended on your VCE Soil Test Report?</span></div>
@@ -1023,6 +1217,197 @@
     </div>
   </div><!-- end tab-lime -->
 
+  <!-- ===== GARDEN & FLOWERS TAB ===== -->
+  <div class="tab-panel" id="tab-garden">
+    <div class="calc-layout">
+      <div>
+        <div class="card">
+          <div class="card-header"><span class="icon">🌱</span> Garden &amp; Flower Bed Fertilizer Calculator</div>
+          <div class="card-body">
+            <p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:16px;line-height:1.5;">Based on VCE Soil Test Note 19 (SPES-687NP) — Vegetable and Flower Gardens. Enter your bed size and soil test values to calculate fertilizer needs.</p>
+
+            <!-- Garden type -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">1</span><span class="field-question">What type of garden or bed?</span></div>
+              <select id="gdn-type" onchange="calcGarden()">
+                <option value="">- Select type -</option>
+                <option value="vegetable">Vegetable Garden</option>
+                <option value="annual">Annual Flower Bed</option>
+                <option value="perennial">Perennial Flower Bed</option>
+                <option value="mixed">Mixed Bed (vegetables &amp; flowers)</option>
+              </select>
+            </div>
+
+            <!-- Bed size -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">2</span><span class="field-question">What is the size of your bed?</span></div>
+              <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <button id="gdn-size-mode-rect" class="st-unit-btn active" onclick="setGardenSizeMode('rect')" style="padding:5px 14px;font-size:0.82rem;">L × W</button>
+                <button id="gdn-size-mode-area" class="st-unit-btn" onclick="setGardenSizeMode('area')" style="padding:5px 14px;font-size:0.82rem;">Enter Area Directly</button>
+              </div>
+              <div id="gdn-size-rect">
+                <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;">
+                  <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Length (ft)</label>
+                    <input type="number" id="gdn-length" min="0" placeholder="e.g. 10" oninput="calcGardenDimensions()"></div>
+                  <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Width (ft)</label>
+                    <input type="number" id="gdn-width" min="0" placeholder="e.g. 8" oninput="calcGardenDimensions()"></div>
+                  <div style="padding-top:20px;color:var(--slate-mid);font-size:0.875rem;" id="gdn-area-display">—</div>
+                </div>
+              </div>
+              <div id="gdn-size-area" style="display:none;">
+                <label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Area (sq. ft.) — for circular, L-shaped, or irregular beds</label>
+                <input type="number" id="gdn-area-direct" min="0" placeholder="e.g. 80" oninput="calcGarden()">
+              </div>
+            </div>
+
+            <!-- N recommendation -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">3</span><span class="field-question">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</span></div>
+              <input type="number" id="gdn-n-rec" min="0" step="0.1" placeholder="e.g. 0.2" oninput="calcGarden()">
+              <div class="field-hint">Enter from the fertilizer section of your VCE or Waypoint soil test report. Typical range: 0.1–0.3 lbs N per 100 sq. ft. for most gardens.</div>
+            </div>
+
+            <!-- P and K ratings -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">4</span><span class="field-question">Phosphorus (P) rating from your soil test?</span></div>
+              <select id="gdn-p-rating" onchange="calcGarden()">
+                <option value="">- Select rating -</option>
+                <optgroup label="VCE / Virginia Tech">
+                  <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
+                  <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
+                  <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
+                  <option value="VH">VH</option>
+                </optgroup>
+                <optgroup label="Waypoint Analytical">
+                  <option value="VL">Very Low</option><option value="LO">Low</option>
+                  <option value="ME">Medium</option><option value="OP">Optimum</option>
+                  <option value="VH2">Very High</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">5</span><span class="field-question">Potassium (K) rating from your soil test?</span></div>
+              <select id="gdn-k-rating" onchange="calcGarden()">
+                <option value="">- Select rating -</option>
+                <optgroup label="VCE / Virginia Tech">
+                  <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
+                  <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
+                  <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
+                  <option value="VH">VH</option>
+                </optgroup>
+                <optgroup label="Waypoint Analytical">
+                  <option value="VL">Very Low</option><option value="LO">Low</option>
+                  <option value="ME">Medium</option><option value="OP">Optimum</option>
+                  <option value="VH2">Very High</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <!-- Fertilizer product -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">6</span><span class="field-question">Fertilizer: enter N-P-K grade or choose a common product</span></div>
+              <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <button id="gdn-fert-mode-npk" class="st-unit-btn active" onclick="setGardenFertMode('npk')" style="padding:5px 14px;font-size:0.82rem;">Enter N-P-K</button>
+                <button id="gdn-fert-mode-product" class="st-unit-btn" onclick="setGardenFertMode('product')" style="padding:5px 14px;font-size:0.82rem;">Choose Product</button>
+              </div>
+              <div id="gdn-fert-npk">
+                <div class="npk-row">
+                  <div class="npk-item"><label>N %</label><input type="number" id="gdn-fert-n" min="0" max="100" placeholder="0" oninput="calcGarden()"></div>
+                  <div class="npk-item"><label>P %</label><input type="number" id="gdn-fert-p" min="0" max="100" placeholder="0" oninput="calcGarden()"></div>
+                  <div class="npk-item"><label>K %</label><input type="number" id="gdn-fert-k" min="0" max="100" placeholder="0" oninput="calcGarden()"></div>
+                </div>
+              </div>
+              <div id="gdn-fert-product" style="display:none;">
+                <select id="gdn-product-select" onchange="onGardenProductSelect()">
+                  <option value="">- Select a product -</option>
+                  <optgroup label="Synthetic — Nitrogen Only (VCE Note 19)">
+                    <option value="nitrate-soda">Nitrate of Soda (16-0-0)</option>
+                    <option value="calcium-nitrate">Calcium Nitrate (15-0-0)</option>
+                    <option value="ammonium-sulfate">Ammonium Sulfate (21-0-0)</option>
+                    <option value="urea">Urea (46-0-0)</option>
+                  </optgroup>
+                  <optgroup label="Synthetic — Complete Fertilizers">
+                    <option value="10-10-10">10-10-10 (General Purpose)</option>
+                    <option value="5-10-5">5-10-5</option>
+                  </optgroup>
+                  <optgroup label="Organic Sources">
+                    <option value="blood-meal">Blood Meal (~13-0-0)</option>
+                    <option value="fish-meal">Fish Meal (~10-6-2)</option>
+                    <option value="soybean-meal">Soybean Seed Meal (~7-2-1)</option>
+                    <option value="cottonseed-meal">Cottonseed Meal (~6-2-1)</option>
+                    <option value="feather-meal">Feather Meal (~12-0-0)</option>
+                    <option value="poultry-manure">Poultry Manure (~3-2-2)</option>
+                  </optgroup>
+                </select>
+                <div id="gdn-product-note" style="font-size:0.8rem;color:var(--slate-mid);margin-top:6px;"></div>
+              </div>
+            </div>
+
+            <!-- Lime rec -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">7</span><span class="field-question">Lime recommendation from your report (lbs per 100 sq. ft.)?</span></div>
+              <input type="number" id="gdn-lime-rec" min="0" step="0.5" placeholder="e.g. 5" oninput="calcGarden()">
+              <div class="field-hint">Leave blank if no lime was recommended. Garden lime is in lbs per 100 sq. ft. (not 1,000).</div>
+            </div>
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">7b</span><span class="field-question">Is this a new (preplant) or established bed?</span></div>
+              <select id="gdn-bed-status" onchange="calcGarden()">
+                <option value="established">Established bed</option>
+                <option value="preplant">New / preplant (preparing for first planting)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results column -->
+      <div>
+        <div class="card results-card">
+          <div class="card-header"><span class="icon">📊</span> Garden Recommendations</div>
+          <div class="card-body" id="gdn-results">
+            <p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs to see fertilizer recommendations for your bed.</p>
+          </div>
+        </div>
+        <div class="card timing-card" style="margin-top:20px;">
+          <div class="card-header"><span class="icon">📅</span> Application Timing</div>
+          <div class="card-body">
+            <div id="gdn-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Enter garden type and fertilizer inputs to see timing guidance.</p></div>
+            <div class="note-banner">ℹ️ Per VCE Soil Test Note 19. Recommendations may be repeated for up to three growing seasons. Retest after three years.</div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:20px;">
+          <div class="card-header"><span class="icon">📐</span> Volume Reference Table</div>
+          <div class="card-body">
+            <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:12px;">Approximate volumes for common fertilizers. <strong>Weight is always more accurate</strong> — volumes are estimates based on bulk density and vary by brand and moisture content.</p>
+            <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+              <thead><tr style="background:var(--green-deep);color:white;">
+                <th style="padding:6px 8px;text-align:left;">Product</th>
+                <th style="padding:6px 8px;text-align:center;">N-P-K</th>
+                <th style="padding:6px 8px;text-align:center;">1 lb ≈</th>
+                <th style="padding:6px 8px;text-align:left;">Source</th>
+              </tr></thead>
+              <tbody id="gdn-vol-table">
+                <tr style="background:var(--green-mist);"><td colspan="4" style="padding:6px 8px;color:var(--slate-mid);font-style:italic;">Synthetic — from VCE garden report (exact)</td></tr>
+                <tr><td style="padding:6px 8px;">Nitrate of soda</td><td style="padding:6px 8px;text-align:center;">16-0-0</td><td style="padding:6px 8px;text-align:center;">1¾ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">VCE Note 19</td></tr>
+                <tr style="background:var(--green-mist);"><td style="padding:6px 8px;">Calcium nitrate</td><td style="padding:6px 8px;text-align:center;">15-0-0</td><td style="padding:6px 8px;text-align:center;">2 cups</td><td style="padding:6px 8px;color:var(--slate-mid);">VCE Note 19</td></tr>
+                <tr><td style="padding:6px 8px;">Ammonium sulfate</td><td style="padding:6px 8px;text-align:center;">21-0-0</td><td style="padding:6px 8px;text-align:center;">2½ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">VCE Note 19</td></tr>
+                <tr style="background:var(--green-mist);"><td style="padding:6px 8px;">Urea</td><td style="padding:6px 8px;text-align:center;">46-0-0</td><td style="padding:6px 8px;text-align:center;">2½ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">VCE Note 19</td></tr>
+                <tr><td style="padding:6px 8px;">10-10-10</td><td style="padding:6px 8px;text-align:center;">10-10-10</td><td style="padding:6px 8px;text-align:center;">1¾ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">Est. (granular)</td></tr>
+                <tr style="background:var(--green-mist);"><td colspan="4" style="padding:6px 8px;color:var(--slate-mid);font-style:italic;">Organic — estimated from bulk density data</td></tr>
+                <tr><td style="padding:6px 8px;">Blood meal</td><td style="padding:6px 8px;text-align:center;">~13-0-0</td><td style="padding:6px 8px;text-align:center;">2¾ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">FAO bulk density</td></tr>
+                <tr style="background:var(--green-mist);"><td style="padding:6px 8px;">Fish meal</td><td style="padding:6px 8px;text-align:center;">~10-6-2</td><td style="padding:6px 8px;text-align:center;">2½ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">Est. bulk density</td></tr>
+                <tr><td style="padding:6px 8px;">Feather meal</td><td style="padding:6px 8px;text-align:center;">~12-0-0</td><td style="padding:6px 8px;text-align:center;">3 cups</td><td style="padding:6px 8px;color:var(--slate-mid);">Est. bulk density</td></tr>
+                <tr style="background:var(--green-mist);"><td style="padding:6px 8px;">Soybean meal</td><td style="padding:6px 8px;text-align:center;">~7-2-1</td><td style="padding:6px 8px;text-align:center;">2 cups</td><td style="padding:6px 8px;color:var(--slate-mid);">Est. bulk density</td></tr>
+                <tr><td style="padding:6px 8px;">Cottonseed meal</td><td style="padding:6px 8px;text-align:center;">~6-2-1</td><td style="padding:6px 8px;text-align:center;">2¼ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">Est. bulk density</td></tr>
+                <tr style="background:var(--green-mist);"><td style="padding:6px 8px;">Poultry manure (dry)</td><td style="padding:6px 8px;text-align:center;">~3-2-2</td><td style="padding:6px 8px;text-align:center;">1¾ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">Est. bulk density</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end tab-garden -->
+
   <!-- ===== ABOUT TAB ===== -->
   <div class="tab-panel" id="tab-about">
     <div class="about-layout">
@@ -1039,18 +1424,18 @@
           <div class="card-body">
             <p class="about-section-intro">This tool accepts soil test reports from Virginia Cooperative Extension (VCE) / Virginia Tech and Waypoint Analytical. Start on the <strong>Soil Test Report</strong> tab to interpret your results and carry values into the calculators:</p>
             <div class="about-step"><div class="about-step-num">1</div><div><strong>Get a soil test first.</strong> This tool works with reports from <strong>VCE / Virginia Tech</strong> and <strong>Waypoint Analytical</strong>. Select your lab from the dropdown — rating scales and units adjust automatically.</div></div>
-            <div class="about-step"><div class="about-step-num">2</div><div><strong>Choose your tab.</strong> Select <em>Cool-Season Lawns</em> or <em>Warm-Season Lawns</em>. Use the <em>Lime</em> tab whenever lime is recommended on your soil test.</div></div>
-            <div class="about-step"><div class="about-step-num">3</div><div><strong>Enter your fertilizer's N-P-K and WIN.</strong> The three numbers on the bag give the percentage of nitrogen (N), phosphate (P), and potash (K). If the bag lists <em>Water Insoluble Nitrogen (WIN)</em>, enter it in field 5b — this determines whether you follow Program 1 or Program 2.</div></div>
-            <div class="about-step"><div class="about-step-num">4</div><div><strong>Read your results.</strong> The calculator shows number of applications, lbs of fertilizer per application, total bags needed, and the correct timing schedule.</div></div>
+            <div class="about-step"><div class="about-step-num">2</div><div><strong>Choose your tab.</strong> Select <em>Cool-Season Lawns</em> or <em>Warm-Season Lawns</em> and pick your specific grass species — this sets the correct N ceiling and per-application limits. Use the <em>Lime</em> tab whenever lime is recommended. Use <em>Garden &amp; Flowers</em> for vegetable or flower beds.</div></div>
+            <div class="about-step"><div class="about-step-num">3</div><div><strong>Build your application plan.</strong> Add up to 4 application slots, each with its own N-P-K grade and WIN%. Different grades per slot let you use a P-correcting fertilizer early in the season and N-only maintenance fertilizers later. The Season Summary tracks cumulative N, P, and K against soil test recommendations.</div></div>
+            <div class="about-step"><div class="about-step-num">4</div><div><strong>Adjust for clipping recycling.</strong> If you mulch-mow and return clippings, reduce your total annual N rate by up to one-third — clippings return significant nitrogen to the lawn. <em>(VCE 430-011)</em></div></div>
             <div class="about-step"><div class="about-step-num">5</div><div><strong>Retest after 3 years.</strong> All fertilizer recommendations are valid for up to three growing seasons. Lime recommendations cover a three-year period.</div></div>
           </div>
         </div>
         <div class="card">
           <div class="card-header"><span class="icon">🧬</span> Understanding WIN &amp; Nitrogen Programs</div>
           <div class="card-body">
-            <p class="about-section-intro">The nitrogen source in your fertilizer affects how it should be applied. This calculator uses the program system defined in VCE Soil Test Notes 17 and 18.</p>
+            <p class="about-section-intro">The nitrogen source in your fertilizer affects how it should be applied. This calculator uses the three-program system defined in VCE Publication 430-011 and Soil Test Notes 17 and 18.</p>
             <div class="about-program-box prog1-box">
-              <div class="prog-label">Program 1 - Quickly Available Nitrogen</div>
+              <div class="prog-label">Program 1 — Quickly Available Nitrogen</div>
               <p>Fertilizers with <strong>less than 15% WIN</strong>. Includes urea, ammonium sulfate, and calcium nitrate.</p>
               <ul class="about-list">
                 <li>Cool-season max: <strong>0.7 lb N / 1,000 sq. ft.</strong> per application</li>
@@ -1058,13 +1443,23 @@
               </ul>
             </div>
             <div class="about-program-box prog2-box">
-              <div class="prog-label">Program 2 - Slowly Available Nitrogen</div>
-              <p>Fertilizers with <strong>15% or more WIN</strong>. Includes urea formaldehyde, sulfur-coated urea, polymer-coated urea, IBDU, and natural organics.</p>
+              <div class="prog-label">Program 2 — Slowly Available Nitrogen</div>
+              <p>Fertilizers with <strong>15–49% WIN</strong>. Includes urea formaldehyde, sulfur-coated urea, polymer-coated urea, IBDU, and natural organics.</p>
               <ul class="about-list">
                 <li>Cool-season max: <strong>0.9 lb N / 1,000 sq. ft.</strong> per application</li>
                 <li>Warm-season max: <strong>1.0 lb N / 1,000 sq. ft.</strong> per application</li>
               </ul>
             </div>
+            <div class="about-program-box" style="background:#fdf2e9;border-left:4px solid #e67e22;">
+              <div class="prog-label" style="color:#784212;">Program 3 — Majority Slowly Available Nitrogen</div>
+              <p>Fertilizers with <strong>50% or more WIN</strong>. Includes highly processed slow-release products and most natural organics.</p>
+              <ul class="about-list">
+                <li>Cool-season max: <strong>1.0–1.5 lb N / 1,000 sq. ft.</strong> per application</li>
+                <li>Warm-season max: <strong>1.0–1.5 lb N / 1,000 sq. ft.</strong> per application</li>
+                <li>Lower seasonal totals apply (2.0–2.8 lbs cool-season) due to higher per-application rates</li>
+              </ul>
+            </div>
+            <p style="font-size:0.82rem;color:var(--slate-light);margin-top:12px;">Note: Sulfur-coated and polymer-coated urea fertilizers provide slowly available N but the bag label does not list it as WIN. If the fertilizer contains sulfur-coated urea, count that portion as WIN when determining your program. <em>(VCE 430-011)</em></p>
           </div>
         </div>
         <div class="card">
@@ -1088,7 +1483,7 @@
           <div class="card-body">
             <p class="about-section-intro">This calculator is derived from the following official publications from Virginia Cooperative Extension and Waypoint Analytical:</p>
             <div class="about-source">
-              <div class="about-source-title">SPES-40A — A Spreadsheet-Based Calculator for Lawn Fertilizer and Lime Applications in Virginia</div>
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/SPES/spes-40/spes-40.html" target="_blank" style="color:var(--green-mid);">SPES-40A — A Spreadsheet-Based Calculator for Lawn Fertilizer and Lime Applications in Virginia</a></div>
               <div class="about-source-meta">Virginia Cooperative Extension · Virginia Tech &amp; Virginia State University</div>
               <p>The original Excel spreadsheet. This web tool faithfully reproduces those calculations in an accessible, interactive HTML format.</p>
               <div class="about-source-authors">
@@ -1097,22 +1492,30 @@
               </div>
             </div>
             <div class="about-source">
-              <div class="about-source-title">Soil Test Note 17 (452-717 / SPES-306P) — Lawn Fertilization for Cool-Season Grasses</div>
-              <div class="about-source-meta">M. Goatley · E.H. Ervin · S.E. Heckendorn — VCE, 2021</div>
-              <p>Defines Program 1 and Program 2 for cool-season grasses including per-application nitrogen limits and seasonal timing schedules.</p>
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/430/430-520/430-520.html" target="_blank" style="color:var(--green-mid);">Publication 430-520 (SPES-223P) — Fall Lawn Care</a></div>
+              <div class="about-source-meta">M. Goatley Jr. · S. Askew · D. McCall — VCE, 2025</div>
+              <p>Provides plain-language guidance on fall fertility timing for both cool and warm-season grasses, the "SON" (September–October–November) framework for cool-season nitrogen applications, bermudagrass fall fertility programs, potassium and winter hardiness, and shade adjustments. Used for the N rate guidance tables and timing notes in the Cool-Season and Warm-Season calculator tabs.</p>
+            </div>
+              <div class="about-source-meta">J.M. Goatley Jr. · D. Cataldi · D.R. Chalmers · J.R. Hall III · R.E. Schmidt — VCE, 2021</div>
+              <p>The primary source for the three-program nitrogen system (Programs 1, 2, and 3), grass-species-specific N rate ceilings, seasonal timing windows, and clipping recycling guidance used throughout the Cool-Season and Warm-Season calculator tabs.</p>
             </div>
             <div class="about-source">
-              <div class="about-source-title">Soil Test Note 18 (452-718 / SPES-305P) — Lawn Fertilization for Warm-Season Grasses</div>
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-717/452-717.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 17 (452-717 / SPES-306P) — Lawn Fertilization for Cool-Season Grasses</a></div>
               <div class="about-source-meta">M. Goatley · E.H. Ervin · S.E. Heckendorn — VCE, 2021</div>
-              <p>Defines Program 1 and Program 2 for warm-season grasses and grass-specific N rate guidance.</p>
+              <p>Per-application nitrogen limits, seasonal timing schedules, and P/K rate guidance for cool-season grasses.</p>
             </div>
             <div class="about-source">
-              <div class="about-source-title">Soil Test Note 1 (452-701 / SPE-605NP) — Explanation of Soil Tests</div>
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-718/452-718.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 18 (452-718 / SPES-305P) — Lawn Fertilization for Warm-Season Grasses</a></div>
+              <div class="about-source-meta">M. Goatley · E.H. Ervin · S.E. Heckendorn — VCE, 2021</div>
+              <p>Per-application nitrogen limits, seasonal timing schedules, and grass-specific N rate guidance for warm-season grasses.</p>
+            </div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-701/452-701.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 1 (452-701 / SPE-605NP) — Explanation of Soil Tests</a></div>
               <div class="about-source-meta">Rory Maguire · Steve Heckendorn — VCE, 2024</div>
               <p>Defines the L/M/H/VH rating system, Buffer Index, and provides conversion factors used throughout VCE soil test reports.</p>
             </div>
             <div class="about-source">
-              <div class="about-source-title">Agronomy Facts 8 — Soil Test Interpretation: Terms and Definitions</div>
+              <div class="about-source-title"><a href="https://www.waypointanalytical.com/Docs/technicalarticles/howtointerpretasoiltestreport.pdf" target="_blank" style="color:var(--green-mid);">Agronomy Facts 8 — Soil Test Interpretation: Terms and Definitions</a></div>
               <div class="about-source-meta">Dr. Richard Large (original) · Revised by Dr. Oscar F. Ruiz Jr. — Waypoint Analytical, May 16, 2023</div>
               <p>Source for Waypoint rating labels, dS/m salt units, Buffer pH terminology, and CEC reference ranges.</p>
             </div>
@@ -1153,39 +1556,514 @@ function fmt(n, dec) {
   return n.toFixed(dec);
 }
 
-// ===== WIN / PROGRAM DETECTION =====
+// ===== WIN / PROGRAM DETECTION (3-way per 430-011) =====
 function detectProgram(fertN, winLbs) {
-  if (!fertN || fertN <= 0) return { program: 1, winPct: 0, isSlowRelease: false };
+  if (!fertN || fertN <= 0) return { program: 1, winPct: 0, label: 'Program 1' };
   var winPct = (winLbs / fertN) * 100;
-  var isSlowRelease = winPct >= 15;
-  return { program: isSlowRelease ? 2 : 1, winPct: winPct, isSlowRelease: isSlowRelease };
+  var program, label;
+  if (winPct >= 50)      { program = 3; label = 'Program 3'; }
+  else if (winPct >= 15) { program = 2; label = 'Program 2'; }
+  else                   { program = 1; label = 'Program 1'; }
+  return { program: program, winPct: winPct, label: label };
 }
 
-// ===== COOL-SEASON APPS/MAX =====
-function coolAppsAndMax(nRate, isSlowRelease) {
-  if (!nRate || nRate <= 0) return { apps: 0, maxNPerApp: 0 };
-  if (isSlowRelease) {
-    var maxNPerApp = 0.9;
-    return { apps: Math.min(Math.ceil(nRate / maxNPerApp), 3), maxNPerApp: maxNPerApp };
+// ===== SPECIES CONFIG (from 430-011 Tables 2-4) =====
+var SPECIES_CONFIG = {
+  // Cool-season
+  tall:    { label:'Tall fescue / Bluegrass / Ryegrass', maxN:3.5, maxApp:{1:0.7, 2:0.9, 3:1.5}, type:'cool' },
+  fine:    { label:'Fine-leaf fescue',                   maxN:2.0, maxApp:{1:0.7, 2:0.9, 3:1.0}, type:'cool' },
+  // Warm-season
+  bermuda: { label:'Bermudagrass / St. Augustinegrass',  maxN:4.0, maxApp:{1:0.9, 2:1.0, 3:1.5}, type:'warm' },
+  zoysia:  { label:'Zoysiagrass / Centipedegrass',       maxN:2.0, maxApp:{1:0.7, 2:1.0, 3:1.0}, type:'warm' }
+};
+
+// ===== TIMING GUIDANCE (per 430-011 Tables 2-4) =====
+var TIMING_GUIDANCE = {
+  cool: {
+    primary:  'Mid-August through early November — primary fertilization window.',
+    optional: 'Optional light spring application (April–May) when exceptional N loss has occurred or grass is pale green.',
+    p1apps: { 1:['October'], 2:['September','October'], 3:['September','October','November'], 4:['September','October','November','May (optional)'] },
+    p2apps: { 1:['August 15–September 15'], 2:['August 15–September 15','October 1–November 1'], 3:['August 15–September 15','October 1–November 1','May 15–June 15 (optional)'] },
+    p3apps: { 1:['September–October'], 2:['September','October–November'] }
+  },
+  warm: {
+    primary:  'April 1 through August 15 — primary fertilization window.',
+    optional: 'Do not fertilize after August 15 — late-season N increases winter injury risk.',
+    p1apps: { 1:['June'], 2:['May','June–July'], 3:['April–May','June','July–August'], 4:['April','May','June','July–August'] },
+    p2apps: { 1:['June 1–July 15'], 2:['May–June','July–August 15'], 3:['April–May','June','July–August 15'] },
+    p3apps: { 1:['May–June'], 2:['April–May','June–July'], 3:['April','May–June','July–August 15'] }
+  }
+};
+
+// ===== PRINT PLAN =====
+function printPlan(prefix) {
+  document.body.classList.add('printing-' + prefix);
+  window.print();
+  document.body.classList.remove('printing-' + prefix);
+}
+
+// ===== PLAN MODE =====
+var planMode = { cool: 'auto', warm: 'auto' };
+
+function setPlanMode(prefix, mode) {
+  planMode[prefix] = mode;
+  document.getElementById(prefix + '-mode-auto').classList.toggle('active', mode === 'auto');
+  document.getElementById(prefix + '-mode-custom').classList.toggle('active', mode === 'custom');
+  document.getElementById(prefix + '-auto-plan').style.display   = mode === 'auto'   ? '' : 'none';
+  document.getElementById(prefix + '-custom-plan').style.display = mode === 'custom' ? '' : 'none';
+  // Timing card only relevant in custom mode — auto mode includes timing in the plan table
+  var timingCard = document.getElementById(prefix + '-timing-card');
+  if (timingCard) timingCard.style.display = mode === 'custom' ? '' : 'none';
+  if (mode === 'auto') {
+    calcAutoplan(prefix);
   } else {
-    var maxNPerApp = 0.7;
-    return { apps: Math.min(Math.ceil(nRate / maxNPerApp), 4), maxNPerApp: maxNPerApp };
+    prePopulateCustom(prefix);
+    calcMulti(prefix);
   }
 }
 
-// ===== WARM-SEASON APPS/MAX =====
-function warmAppsAndMax(nRate, isSlowRelease) {
-  if (!nRate || nRate <= 0) return { apps: 0, maxNPerApp: 0 };
-  if (isSlowRelease) {
-    var maxNPerApp = 1.0;
-    return { apps: Math.min(Math.ceil(nRate / maxNPerApp), 3), maxNPerApp: maxNPerApp };
-  } else {
-    var maxNPerApp = 0.9;
-    return { apps: Math.min(Math.ceil(nRate / maxNPerApp), 4), maxNPerApp: maxNPerApp };
+function prePopulateCustom(prefix) {
+  var autoN   = parseFloat(document.getElementById(prefix + '-auto-n').value) || 0;
+  var autoP   = parseFloat(document.getElementById(prefix + '-auto-p').value) || 0;
+  var autoK   = parseFloat(document.getElementById(prefix + '-auto-k').value) || 0;
+  var autoWin = parseFloat(document.getElementById(prefix + '-auto-win').value) || 0;
+  var nRate   = parseFloat(document.getElementById(prefix + '-n-rate').value) || 0;
+  var speciesKey = document.getElementById(prefix + '-species').value;
+  var species = SPECIES_CONFIG[speciesKey];
+  if (!autoN || !nRate || !species) return;
+
+  var prog = detectProgram(autoN, autoWin);
+  var maxNApp = species.maxApp[prog.program];
+  var numApps = Math.ceil(nRate / maxNApp);
+  var nPerApp = Math.round((nRate / numApps) * 1000) / 1000; // 3 decimal places to avoid display rounding issues
+  var cappedApps = Math.min(numApps, 4); // cap slots at 4 for the custom planner
+  var isCool  = prefix === 'cool';
+  var months  = isCool
+    ? ['Sep','Oct','Nov','Apr','May'].slice(0, cappedApps)
+    : ['Apr','May','Jun','Jul','Aug'].slice(0, cappedApps);
+
+  // Clear existing slots and rebuild
+  appSlots[prefix] = [];
+  slotCounter[prefix] = 0;
+  for (var i = 0; i < cappedApps; i++) {
+    slotCounter[prefix]++;
+    appSlots[prefix].push(slotCounter[prefix]);
+  }
+  renderAppSlots(prefix);
+
+  // Fill each slot's values
+  for (var i = 0; i < cappedApps; i++) {
+    var sid = appSlots[prefix][i];
+    var setV = function(field, val) {
+      var el = document.getElementById(prefix + '-s' + sid + '-' + field);
+      if (el) el.value = val;
+    };
+    setV('n', autoN); setV('p', autoP); setV('k', autoK);
+    setV('win', autoWin || ''); setV('napp', nPerApp);
+    var mEl = document.getElementById(prefix + '-s' + sid + '-month');
+    if (mEl && months[i]) {
+      for (var j = 0; j < mEl.options.length; j++) {
+        if (mEl.options[j].value === months[i]) { mEl.selectedIndex = j; break; }
+      }
+    }
   }
 }
 
-// ===== P/K RECOMMENDATION MAPS =====
+// ===== AUTO PLAN CALCULATOR =====
+var AUTO_TIMING = {
+  cool: { 1:['October'], 2:['September','October'], 3:['September','October','November'], 4:['September','October','November','May (optional)'] },
+  warm: { 1:['June'], 2:['May','July'], 3:['April','June','August 1'], 4:['April','May','June','July–August 1'] }
+};
+
+function calcAutoplan(prefix) {
+  var lawnSize   = parseFloat(document.getElementById(prefix + '-lawn-size').value) || 0;
+  var nRate      = parseFloat(document.getElementById(prefix + '-n-rate').value) || 0;
+  var pRating    = document.getElementById(prefix + '-p-rating').value;
+  var kRating    = document.getElementById(prefix + '-k-rating').value;
+  var autoN      = parseFloat(document.getElementById(prefix + '-auto-n').value) || 0;
+  var autoP      = parseFloat(document.getElementById(prefix + '-auto-p').value) || 0;
+  var autoK      = parseFloat(document.getElementById(prefix + '-auto-k').value) || 0;
+  var autoWin    = parseFloat(document.getElementById(prefix + '-auto-win').value) || 0;
+  var speciesKey = document.getElementById(prefix + '-species').value;
+  var species    = SPECIES_CONFIG[speciesKey];
+  var kSq        = lawnSize / 1000;
+  var isCool     = prefix === 'cool';
+  var resultEl   = document.getElementById(prefix + '-auto-result');
+  var panelEl    = document.getElementById(prefix + '-results-panel');
+
+  if (!resultEl) return;
+
+  // Validation
+  if (!lawnSize) {
+    resultEl.innerHTML = '<div class="warning-badge">&#9888; Enter your lawn size (field 1) to generate a plan.</div>';
+    if (panelEl) panelEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your lawn size to see your plan.</p>';
+    return;
+  }
+  if (!nRate) {
+    resultEl.innerHTML = '<div class="warning-badge">&#9888; Enter your annual N target (field 3) to generate a plan.</div>';
+    if (panelEl) panelEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your annual N rate to see your plan.</p>';
+    return;
+  }
+  if (!autoN) {
+    resultEl.innerHTML = '<p style="font-size:0.82rem;color:var(--slate-light);">Enter your fertilizer\'s N% above to generate a plan.</p>';
+    if (panelEl) panelEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter fertilizer grade above to see your plan.</p>';
+    return;
+  }
+
+  var prog       = detectProgram(autoN, autoWin);
+  var maxNApp    = species ? species.maxApp[prog.program] : (isCool ? {1:0.7,2:0.9,3:1.5} : {1:0.9,2:1.0,3:1.5})[prog.program];
+  var numApps    = Math.ceil(nRate / maxNApp);
+  var nPerApp    = Math.round((nRate / numApps) * 1000) / 1000;
+  var lbsPerApp  = autoN > 0 ? (nPerApp / (autoN / 100)) * kSq : 0;
+  var totalLbs   = lbsPerApp * numApps;
+
+  // Warning if more than 4 applications needed
+  var overFourNote = '';
+  if (numApps > 4) {
+    overFourNote = '<div class="warning-badge" style="margin-bottom:12px;">&#9888; <strong>Your annual N target requires ' + numApps + ' applications</strong> at the Program 1 per-application limit of ' + maxNApp + ' lbs. Consider switching to a <strong>slow-release fertilizer (Program 2 or 3)</strong> — this allows a higher rate per application and fewer applications per season. See the "Help me choose a fertilizer" section above.</div>';
+  }
+  var progCls    = prog.program === 3 ? 'prog3-badge' : prog.program === 2 ? 'prog2-badge' : 'prog1-badge';
+  var timingSched = AUTO_TIMING[isCool ? 'cool' : 'warm'][Math.min(numApps, 4)] || [];
+  // For more than 4 apps, extend timing with generic labels
+  while (timingSched.length < numApps) {
+    timingSched = timingSched.concat(['App ' + (timingSched.length + 1)]);
+  }
+  var grade      = autoN + '-' + autoP + '-' + autoK;
+
+  // P/K flags
+  var NEED_RATIO = {'L-':3,'L':2.5,'L+':2,'M-':2,'M':1.5,'M+':1,'H-':1,'H':0.75,'H+':0.5,'VH':0};
+  var pLow = ['L-','L','L+'].indexOf(pRating) >= 0;
+  var kLow = ['L-','L','L+'].indexOf(kRating) >= 0;
+  var pTotalPerK = autoN > 0 ? (nRate / autoN * autoP) : 0;
+  var kTotalPerK = autoN > 0 ? (nRate / autoN * autoK) : 0;
+
+  // P correction note
+  var pNote = '';
+  if (pLow && autoP === 0) {
+    pNote = '<div class="warning-badge" style="margin-top:8px;">&#9888; <strong>Phosphorus:</strong> Your soil rates Low for P but your chosen fertilizer contains no phosphorus. Consider using a complete fertilizer (e.g. 10-20-10 or 10-10-10) for Application 1, then switch to your chosen grade for the remaining applications.</div>';
+  } else if (pRating && P_REC[pRating]) {
+    var pr = P_REC[pRating];
+    pNote = '<div class="rec-box ' + pr.cls + '" style="margin-top:8px;"><span class="rec-icon">' + pr.icon + '</span><span><strong>Phosphorus:</strong> ' + pr.msg + '</span></div>';
+  }
+  var kNote = '';
+  if (kRating && K_REC[kRating]) {
+    var kr = K_REC[kRating];
+    kNote = '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
+  }
+
+  // Build table
+  var rows = '';
+  for (var i = 0; i < numApps; i++) {
+    var timing = timingSched[i] || 'App ' + (i+1);
+    rows += '<tr><td>' + (i+1) + '</td><td>' + timing + '</td>'
+      + '<td>' + fmt(lbsPerApp, 1) + ' lbs</td>'
+      + '<td>' + fmt(nPerApp, 2) + ' lbs/1K sqft</td></tr>';
+  }
+
+  var autoHtml = '<div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">'
+    + 'Fertilizer: <strong>' + grade + '</strong>'
+    + ' &nbsp;<span class="prog-badge ' + progCls + '">' + prog.label + '</span>'
+    + (prog.program === 1 ? ' (quick-release — no WIN listed)' : ' (slow-release — WIN ' + fmt(autoWin > 0 ? (autoWin/autoN*100) : autoWin, 0) + '% of N)')
+    + '</div>';
+
+  resultEl.innerHTML = autoHtml;
+
+  // Build plan HTML — shared between inline (screen) and right panel (print)
+  var planHtml = '<div style="margin-bottom:10px;font-size:0.875rem;">'
+    + '<strong>' + lawnSize.toLocaleString() + ' sq. ft.</strong> lawn &nbsp;|&nbsp; '
+    + '<strong>' + nRate + ' lbs N</strong> annual target &nbsp;|&nbsp; '
+    + '<strong>' + (species ? species.label : speciesKey) + '</strong>'
+    + '</div>';
+
+  planHtml += '<table class="auto-plan-table">'
+    + '<thead><tr><th>#</th><th>Suggested timing</th><th>Lbs of ' + grade + ' to apply</th><th>N this application</th></tr></thead>'
+    + '<tbody>' + rows + '</tbody></table>';
+
+  planHtml += '<div class="auto-plan-total">'
+    + '&#128722; <strong>Total fertilizer to purchase: ' + fmt(totalLbs, 1) + ' lbs</strong> of ' + grade
+    + '<br><span style="font-size:0.8rem;color:var(--slate-mid);">(' + numApps + ' applications of ' + fmt(lbsPerApp,1) + ' lbs each — ' + fmt(nPerApp,2) + ' lbs N per 1,000 sq. ft. per application)</span>'
+    + '</div>';
+
+  planHtml += pNote + kNote;
+
+  // Write to inline result (screen) — includes print button
+  resultEl.innerHTML = autoHtml + overFourNote + planHtml
+    + '<button class="print-plan-btn no-print" onclick="printPlan(\'' + prefix + '\')" style="margin-top:14px;">&#128424; Print Plan</button>';
+
+  // Write to right panel (print only)
+  if (panelEl) panelEl.innerHTML = planHtml;
+}
+
+// ===== CALC MULTI (custom mode) =====
+var appSlots = { cool: [], warm: [] };
+var slotCounter = { cool: 0, warm: 0 };
+
+function addAppSlot(prefix) {
+  if (appSlots[prefix].length >= 4) return;
+  slotCounter[prefix]++;
+  var id = slotCounter[prefix];
+  appSlots[prefix].push(id);
+  renderAppSlots(prefix);
+  calcMulti(prefix);
+}
+
+function removeAppSlot(prefix, id) {
+  appSlots[prefix] = appSlots[prefix].filter(function(x) { return x !== id; });
+  renderAppSlots(prefix);
+  calcMulti(prefix);
+}
+
+function renderAppSlots(prefix) {
+  var container = document.getElementById(prefix + '-app-slots');
+  if (!container) return;
+  var html = '';
+  var isCool = prefix === 'cool';
+  var monthOpts = isCool
+    ? '<option value="">- Month -</option><option value="Aug">August (optional)</option><option value="Sep">September</option><option value="Oct">October</option><option value="Nov">November</option><option value="Apr">April (optional)</option><option value="May">May (optional)</option>'
+    : '<option value="">- Month -</option><option value="Apr">April</option><option value="May">May</option><option value="Jun">June</option><option value="Jul">July</option><option value="Aug">August</option>';
+
+  for (var i = 0; i < appSlots[prefix].length; i++) {
+    var sid = appSlots[prefix][i];
+    var num = i + 1;
+    html += '<div class="app-slot" id="slot-' + prefix + '-' + sid + '">';
+    html += '<div class="app-slot-header"><span>Application ' + num + '</span>';
+    html += '<button class="app-slot-remove" onclick="removeAppSlot(\'' + prefix + '\',' + sid + ')">Remove</button></div>';
+    html += '<div class="app-slot-grid">';
+    html += '<div><label>Month</label><select id="' + prefix + '-s' + sid + '-month" onchange="calcMulti(\'' + prefix + '\')">' + monthOpts + '</select></div>';
+    html += '<div><label>N %</label><input type="number" id="' + prefix + '-s' + sid + '-n" min="0" max="100" placeholder="e.g. 16" oninput="calcMulti(\'' + prefix + '\')"></div>';
+    html += '<div><label>P %</label><input type="number" id="' + prefix + '-s' + sid + '-p" min="0" max="100" placeholder="0" oninput="calcMulti(\'' + prefix + '\')"></div>';
+    html += '</div>';
+    html += '<div class="app-slot-grid2" style="margin-top:6px;">';
+    html += '<div><label>K %</label><input type="number" id="' + prefix + '-s' + sid + '-k" min="0" max="100" placeholder="0" oninput="calcMulti(\'' + prefix + '\')"></div>';
+    html += '<div><label>WIN % (if listed)</label><input type="number" id="' + prefix + '-s' + sid + '-win" min="0" max="100" step="0.1" placeholder="0" oninput="calcMulti(\'' + prefix + '\')"></div>';
+    html += '</div>';
+    html += '<div class="app-slot-grid2" style="margin-top:6px;">';
+    html += '<div><label>N this application (lbs/1K sqft)</label><input type="number" id="' + prefix + '-s' + sid + '-napp" min="0" step="0.1" placeholder="e.g. 0.9" oninput="calcMulti(\'' + prefix + '\')"></div>';
+    html += '<div><label>WIN % (if listed on bag)</label><input type="number" id="' + prefix + '-s' + sid + '-win" min="0" max="100" step="0.1" placeholder="0" oninput="calcMulti(\'' + prefix + '\')"></div>';
+    html += '</div>';
+    html += '<div id="' + prefix + '-s' + sid + '-result" class="app-slot-result"></div>';
+    html += '</div>';
+  }
+  if (appSlots[prefix].length === 0) {
+    html = '<p style="font-size:0.82rem;color:var(--slate-light);padding:8px 0;">No applications added yet. Click "+ Add Application" to plan your season.</p>';
+  }
+  container.innerHTML = html;
+}
+
+function getSlotVal(prefix, sid, field) {
+  var el = document.getElementById(prefix + '-s' + sid + '-' + field);
+  return el ? (parseFloat(el.value) || 0) : 0;
+}
+function getSlotStr(prefix, sid, field) {
+  var el = document.getElementById(prefix + '-s' + sid + '-' + field);
+  return el ? el.value : '';
+}
+
+function calcMulti(prefix) {
+  var lawnSize = parseFloat(document.getElementById(prefix + '-lawn-size').value) || 0;
+  var nRate    = parseFloat(document.getElementById(prefix + '-n-rate').value) || 0;
+  var pRating  = document.getElementById(prefix + '-p-rating').value;
+  var kRating  = document.getElementById(prefix + '-k-rating').value;
+  var speciesKey = document.getElementById(prefix + '-species').value;
+  var species  = SPECIES_CONFIG[speciesKey];
+  var kSq      = lawnSize / 1000;
+  var isCool   = prefix === 'cool';
+
+  // Species hint
+  var hintEl = document.getElementById(prefix + '-species-hint');
+  if (hintEl && species) {
+    hintEl.textContent = 'Annual N ceiling: ' + species.maxN + ' lbs/1,000 sq. ft. per VCE Publication 430-011.';
+  }
+
+  // Re-render fertilizer chooser so P/K dynamic recommendation stays current
+  var chooserEl = document.getElementById(prefix + '-fert-chooser');
+  if (chooserEl) {
+    var wasOpen = document.getElementById(prefix + '-fert-chooser-body') &&
+                  document.getElementById(prefix + '-fert-chooser-body').classList.contains('open');
+    chooserEl.outerHTML = fertChooserHTML(prefix);
+    if (wasOpen) {
+      var newBody = document.getElementById(prefix + '-fert-chooser-body');
+      var newBtn  = document.getElementById(prefix + '-fert-chooser-btn');
+      if (newBody) newBody.classList.add('open');
+      if (newBtn)  newBtn.classList.add('open');
+    }
+  } else {
+    // Chooser not yet rendered — insert it now (first load)
+    var placeholder = document.getElementById(prefix + '-fert-chooser');
+    if (placeholder) placeholder.outerHTML = fertChooserHTML(prefix);
+  }
+  // Refresh auto plan when in auto mode (P/K changes affect the recommendation)
+  if (planMode[prefix] === 'auto') { calcAutoplan(prefix); return; }
+
+  // N rate validation
+  var nValid = document.getElementById(prefix + '-n-valid');
+  var maxN = species ? species.maxN : (isCool ? 3.5 : 4.0);
+  if (nRate > maxN) {
+    nValid.innerHTML = '<div class="warning-badge">&#9888; <strong>Exceeds annual ceiling.</strong> Max for ' + (species ? species.label : (isCool ? 'cool-season' : 'warm-season')) + ' is ' + maxN + ' lbs/1,000 sq. ft. (VCE 430-011).</div>';
+  } else if (nRate > 0) {
+    nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Annual N rate is within the ' + maxN + ' lb ceiling</span>';
+  } else {
+    nValid.innerHTML = '';
+  }
+
+  // Process each slot
+  var totalNApplied = 0, totalPApplied = 0, totalKApplied = 0, totalFertLbs = 0;
+  var tableRows = '';
+
+  var NEED_RATIO = {'L-':3,'L':2.5,'L+':2,'M-':2,'M':1.5,'M+':1,'H-':1,'H':0.75,'H+':0.5,'VH':0};
+
+  for (var i = 0; i < appSlots[prefix].length; i++) {
+    var sid    = appSlots[prefix][i];
+    var sN     = getSlotVal(prefix, sid, 'n');
+    var sP     = getSlotVal(prefix, sid, 'p');
+    var sK     = getSlotVal(prefix, sid, 'k');
+    var sWin   = getSlotVal(prefix, sid, 'win');
+    var sNapp  = getSlotVal(prefix, sid, 'napp');
+    var sMonth = getSlotStr(prefix, sid, 'month');
+    var resultEl = document.getElementById(prefix + '-s' + sid + '-result');
+
+    if (sN <= 0 || sNapp <= 0) {
+      if (resultEl) resultEl.innerHTML = '<span style="color:var(--slate-light);">Enter N% and N per application to see results for this slot.</span>';
+      continue;
+    }
+
+    // Can't compute lbs without a lawn size — show a prompt instead of 0.0
+    if (kSq <= 0) {
+      if (resultEl) resultEl.innerHTML = '<span style="color:var(--gold);font-weight:600;">&#9888; Enter your lawn size (field 1) to calculate fertilizer quantities for this slot.</span>';
+      continue;
+    }
+
+    var prog = detectProgram(sN, sWin);
+    var maxNPerApp = species ? species.maxApp[prog.program] : (isCool ? {1:0.7,2:0.9,3:1.5} : {1:0.9,2:1.0,3:1.5})[prog.program];
+    var lbsPerApp  = kSq > 0 ? (sNapp / (sN / 100)) * kSq : 0;
+    var nDelivered = lbsPerApp > 0 ? lbsPerApp * (sN / 100) : 0;
+    var pDelivered = lbsPerApp > 0 ? lbsPerApp * (sP / 100) : 0;
+    var kDelivered = lbsPerApp > 0 ? lbsPerApp * (sK / 100) : 0;
+
+    totalNApplied += nDelivered;
+    totalPApplied += pDelivered;
+    totalKApplied += kDelivered;
+    totalFertLbs  += lbsPerApp;
+
+    var overLimit = sNapp > maxNPerApp + 0.001;
+    var progCls = prog.program === 3 ? 'prog3-badge' : prog.program === 2 ? 'prog2-badge' : 'prog1-badge';
+    var slotHtml = '<strong>' + (sMonth || 'App ' + (i+1)) + ':</strong> ';
+    slotHtml += '<strong>' + fmt(lbsPerApp, 1) + ' lbs</strong> of ' + sN + '-' + sP + '-' + sK + ' fertilizer';
+    if (kSq > 0) slotHtml += ' for your ' + lawnSize.toLocaleString() + ' sq. ft. lawn';
+    slotHtml += ' <span class="prog-badge ' + progCls + '">' + prog.label + '</span>';
+    slotHtml += '<br>N this application: ' + fmt(sNapp, 2) + ' lbs / 1,000 sq. ft.';
+    if (overLimit) {
+      slotHtml += ' &nbsp;<span style="color:var(--red);font-weight:600;">&#9888; Exceeds ' + prog.label + ' max of ' + fmt(maxNPerApp,1) + ' lb/1K sqft</span>';
+    } else if (sNapp > 0) {
+      slotHtml += ' &nbsp;<span style="color:var(--green-mid);">&#10003; Within ' + prog.label + ' limit (' + fmt(maxNPerApp,1) + ' lb)</span>';
+    }
+    if (resultEl) resultEl.innerHTML = slotHtml;
+
+    // Table row
+    var grade = sN + '-' + sP + '-' + sK;
+    tableRows += '<tr><td>' + (i+1) + '</td><td>' + (sMonth || '-') + '</td><td>' + grade + '</td><td>' + fmt(sNapp,2) + '</td>'
+      + '<td>' + (lbsPerApp > 0 ? fmt(lbsPerApp,1) + ' lbs' : '-') + '</td>'
+      + '<td><span class="prog-badge ' + progCls + '">' + prog.label + '</span>' + (overLimit ? ' &#9888;' : '') + '</td></tr>';
+  }
+
+  // Season summary — output to results panel
+  var summaryEl = document.getElementById(prefix + '-results-panel');
+  var customSumEl = document.getElementById(prefix + '-custom-summary');
+  if (!summaryEl) return;
+
+  if (appSlots[prefix].length === 0 || totalFertLbs === 0) {
+    if (kSq <= 0 && appSlots[prefix].length > 0) {
+      summaryEl.innerHTML = '<div class="warning-badge">&#9888; <strong>Lawn size not entered.</strong> Enter your lawn size in field 1 above to calculate fertilizer quantities.</div>';
+    } else {
+      summaryEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Add applications above to build your season plan.</p>';
+    }
+  } else {
+    var nOver = nRate > 0 && totalNApplied > 0 && kSq > 0 && (totalNApplied / kSq) > maxN + 0.01;
+    var nUnder = nRate > 0 && kSq > 0 && totalNApplied > 0 && (totalNApplied / kSq) < nRate - 0.05;
+    var nTotalPerK = kSq > 0 && totalNApplied > 0 ? totalNApplied / kSq : 0;
+    var pTotalPerK = kSq > 0 && totalPApplied > 0 ? totalPApplied / kSq : 0;
+    var kTotalPerK = kSq > 0 && totalKApplied > 0 ? totalKApplied / kSq : 0;
+
+    var html = '<table class="season-table"><thead><tr>'
+      + '<th>#</th><th>Month</th><th>Grade</th><th>N/1K sqft</th><th>Lbs needed</th><th>Program</th>'
+      + '</tr></thead><tbody>' + tableRows + '</tbody></table>';
+
+    html += '<div class="season-totals">';
+    html += '<div style="font-weight:600;color:var(--green-deep);margin-bottom:8px;">Season Totals</div>';
+    if (nTotalPerK > 0) {
+      var nStatus = nOver ? ' <span style="color:var(--red);">&#9888; over ' + maxN + ' lb ceiling</span>'
+        : nUnder ? ' <span style="color:var(--gold);">&#9888; below target ' + nRate + ' lbs</span>'
+        : ' <span style="color:var(--green-mid);">&#10003;</span>';
+      html += '<div class="season-totals-row"><span>Total N applied</span><strong>' + fmt(nTotalPerK, 2) + ' lbs / 1,000 sq. ft.' + nStatus + '</strong></div>';
+    }
+    if (pTotalPerK > 0) html += '<div class="season-totals-row"><span>Total P applied</span><strong>' + fmt(pTotalPerK, 2) + ' lbs / 1,000 sq. ft.</strong></div>';
+    if (kTotalPerK > 0) html += '<div class="season-totals-row"><span>Total K applied</span><strong>' + fmt(kTotalPerK, 2) + ' lbs / 1,000 sq. ft.</strong></div>';
+    html += '<div class="season-totals-row"><span>Total fertilizer (all apps)</span><strong>' + fmt(totalFertLbs, 1) + ' lbs</strong></div>';
+    html += '</div>';
+
+    // P/K flags
+    var NEED_RATIO2 = {'L-':3,'L':2.5,'L+':2,'M-':2,'M':1.5,'M+':1,'H-':1,'H':0.75,'H+':0.5,'VH':0};
+    var pRec = '', kRec = '';
+    if (pRating && P_REC[pRating]) {
+      var pr = P_REC[pRating];
+      pRec = '<div class="rec-box ' + pr.cls + '" style="margin-top:8px;"><span class="rec-icon">' + pr.icon + '</span><span><strong>Phosphorus:</strong> ' + pr.msg + '</span></div>';
+      if (['L-','L','L+'].indexOf(pRating) >= 0 && pTotalPerK === 0) {
+        pRec += '<div class="warning-badge">&#9888; No P in your plan. Your soil rates Low — add a fertilizer with P for at least the first application.</div>';
+      }
+      var pMax = NEED_RATIO2[pRating];
+      if (pTotalPerK > pMax && pMax !== undefined) {
+        pRec += '<div class="warning-badge">&#9888; Total P applied (' + fmt(pTotalPerK,2) + ' lbs/1K sqft) exceeds the max of ' + pMax + ' for rating ' + pRating + '.</div>';
+      }
+    }
+    if (kRating && K_REC[kRating]) {
+      var kr = K_REC[kRating];
+      kRec = '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
+      if (['L-','L','L+'].indexOf(kRating) >= 0 && kTotalPerK === 0) {
+        kRec += '<div class="warning-badge">&#9888; No K in your plan. Your soil rates Low — add a fertilizer with K for at least the first application.</div>';
+      }
+    }
+    html += pRec + kRec;
+    summaryEl.innerHTML = html;
+  }
+
+  // Timing
+  var timingEl = document.getElementById(prefix + '-timing');
+  if (timingEl && species) {
+    var tg = TIMING_GUIDANCE[isCool ? 'cool' : 'warm'];
+    var timingHtml = '<p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">' + tg.primary + '</p>';
+    timingHtml += '<p style="font-size:0.82rem;color:var(--slate-light);margin-bottom:12px;font-style:italic;">' + tg.optional + '</p>';
+
+    var nApps = appSlots[prefix].length;
+    if (nApps > 0) {
+      var progForTiming = 1;
+      if (appSlots[prefix].length > 0) {
+        var firstSlotN = getSlotVal(prefix, appSlots[prefix][0], 'n');
+        var firstSlotWin = getSlotVal(prefix, appSlots[prefix][0], 'win');
+        progForTiming = detectProgram(firstSlotN, firstSlotWin).program;
+      }
+      var pMap = progForTiming === 3 ? tg.p3apps : progForTiming === 2 ? tg.p2apps : tg.p1apps;
+      var sched = pMap[Math.min(nApps, Object.keys(pMap).length)];
+      if (sched) {
+        timingHtml += '<ul class="timing-list">';
+        for (var j = 0; j < sched.length; j++) {
+          timingHtml += '<li><span class="timing-num">' + (j+1) + '</span><span>' + sched[j] + '</span></li>';
+        }
+        timingHtml += '</ul>';
+      }
+    }
+    timingEl.innerHTML = timingHtml;
+  }
+
+}
+
+function calcCool() {
+  if (planMode['cool'] === 'auto') calcAutoplan('cool');
+  else calcMulti('cool');
+}
+function calcWarm() {
+  if (planMode['warm'] === 'auto') calcAutoplan('warm');
+  else calcMulti('warm');
+}
 var P_REC = {
   'L-':{ cls:'rec-p',      icon:'&#10003;', msg:'Use a Fertilizer With Phosphorus (P)' },
   'L': { cls:'rec-p',      icon:'&#10003;', msg:'Use a Fertilizer With Phosphorus (P)' },
@@ -1211,29 +2089,14 @@ var K_REC = {
   'VH':{ cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a Zero Potassium (K) Fertilizer' }
 };
 
-// ===== TIMING SCHEDULES =====
-var COOL_P1_TIMING = {
-  1: ['Oct: 0.7 lb N/1,000 sq. ft.'],
-  2: ['Sept: 0.7 lb N/1,000 sq. ft.', 'Oct: 0.7 lb N/1,000 sq. ft.'],
-  3: ['Sept: 0.7 lb N/1,000 sq. ft.', 'Oct: 0.7 lb N/1,000 sq. ft.', 'Nov: 0.7 lb N/1,000 sq. ft.'],
-  4: ['Sept: 0.7 lb N/1,000 sq. ft.', 'Oct: 0.7 lb N/1,000 sq. ft.', 'Nov: 0.7 lb N/1,000 sq. ft.', 'May 15-Jun 15: up to 0.7 lb N/1,000 sq. ft.']
-};
-var COOL_P2_TIMING = {
-  1: ['Aug 15-Sep 15: 0.9 lb N/1,000 sq. ft.'],
-  2: ['Aug 15-Sep 15: 0.9 lb N/1,000 sq. ft.', 'Oct 1-Nov 1: 0.9 lb N/1,000 sq. ft.'],
-  3: ['Aug 15-Sep 15: 0.9 lb N/1,000 sq. ft.', 'Oct 1-Nov 1: 0.9 lb N/1,000 sq. ft.', 'May 15-Jun 15: up to 0.9 lb N/1,000 sq. ft.']
-};
-var WARM_P1_TIMING = {
-  1: ['May: 0.9 lb N/1,000 sq. ft.'],
-  2: ['May: 0.9 lb N/1,000 sq. ft.', 'Jun: 0.9 lb N/1,000 sq. ft.'],
-  3: ['May: 0.9 lb N/1,000 sq. ft.', 'Jun: 0.9 lb N/1,000 sq. ft.', 'Jul/Aug: 0.9 lb N/1,000 sq. ft.'],
-  4: ['Apr: 0.9 lb N/1,000 sq. ft.', 'May: 0.9 lb N/1,000 sq. ft.', 'Jun: 0.9 lb N/1,000 sq. ft.', 'Jul/Aug: 0.9 lb N/1,000 sq. ft.']
-};
-var WARM_P2_TIMING = {
-  1: ['Jun 1-Jul 15: 1.0 lb N/1,000 sq. ft.'],
-  2: ['Jun 1-Jul 15: 1.0 lb N/1,000 sq. ft.', 'Jul 16-Aug 15: 1.0 lb N/1,000 sq. ft.'],
-  3: ['Apr 15-May 31: 1.0 lb N/1,000 sq. ft.', 'Jun 1-Jul 15: 1.0 lb N/1,000 sq. ft.', 'Jul 16-Aug 15: 1.0 lb N/1,000 sq. ft.']
-};
+// ===== P/K RECOMMENDATION MAPS =====
+
+function limeApps(adjLbsPerM) {
+  if (!adjLbsPerM || adjLbsPerM <= 0) return 0;
+  return Math.min(Math.ceil(adjLbsPerM / 50), 6);
+}
+
+// ===== LIME CALC =====
 var LIME_TIMING = {
   1: 'Apply the full amount at one time (less than 50 lbs/1,000 sq. ft.). Best applied after lawn aeration or in fall/winter when ground is not frozen.',
   2: 'Apply in 2 applications of up to 50 lbs/1,000 sq. ft. each, at least 1 month apart.',
@@ -1242,162 +2105,6 @@ var LIME_TIMING = {
   5: 'Apply in 5 applications of up to 50 lbs/1,000 sq. ft. each, 1-6 months apart.',
   6: 'Apply in 6 applications of up to 50 lbs/1,000 sq. ft. each, 1-6 months apart.'
 };
-
-function limeApps(adjLbsPerM) {
-  if (!adjLbsPerM || adjLbsPerM <= 0) return 0;
-  return Math.min(Math.ceil(adjLbsPerM / 50), 6);
-}
-
-// ===== SHARED FERTILIZER CALC =====
-function calcFertilizer(prefix, appsAndMaxFn, timingP1Map, timingP2Map) {
-  var lawnSize = parseFloat(document.getElementById(prefix+'-lawn-size').value) || 0;
-  var nRate    = parseFloat(document.getElementById(prefix+'-n-rate').value) || 0;
-  var pRating  = document.getElementById(prefix+'-p-rating').value;
-  var kRating  = document.getElementById(prefix+'-k-rating').value;
-  var fertN    = parseFloat(document.getElementById(prefix+'-fert-n').value) || 0;
-  var fertP    = parseFloat(document.getElementById(prefix+'-fert-p').value) || 0;
-  var fertK    = parseFloat(document.getElementById(prefix+'-fert-k').value) || 0;
-  var winLbs   = parseFloat(document.getElementById(prefix+'-win').value) || 0;
-  var bagSize  = parseFloat(document.getElementById(prefix+'-bag-size').value) || 0;
-  var leftover = parseFloat(document.getElementById(prefix+'-leftover').value) || 0;
-  var kSq      = lawnSize / 1000;
-
-  var prog = detectProgram(fertN, winLbs);
-  var program = prog.program, winPct = prog.winPct, isSlowRelease = prog.isSlowRelease;
-
-  var winDisp = document.getElementById(prefix+'-win-display');
-  if (fertN > 0) {
-    var pctOfN = winPct.toFixed(1);
-    var progMsg = isSlowRelease
-      ? '&#10003; >= 15% WIN - <strong>Program 2</strong> (slowly available nitrogen) applies.'
-      : (winLbs > 0
-          ? '&#9888; < 15% WIN - <strong>Program 1</strong> (quickly available nitrogen) applies.'
-          : 'No WIN listed - assumed quickly available. <strong>Program 1</strong> applies.');
-    winDisp.innerHTML = '<div class="win-calc-box">WIN = ' + fmt(winLbs,1) + ' / ' + fertN + '% total N x 100 = <span class="win-result">' + pctOfN + '% of N is slowly available</span><br><span style="margin-top:4px;display:block;">' + progMsg + '</span></div>';
-  } else {
-    winDisp.innerHTML = '';
-  }
-
-  var progDisp = document.getElementById(prefix+'-program-display');
-  if (fertN > 0) {
-    progDisp.innerHTML = isSlowRelease
-      ? '<span class="program-badge prog2">Program 2 - Slowly Available N (WIN >= 15%)</span>'
-      : '<span class="program-badge prog1">Program 1 - Quickly Available N (WIN < 15%)</span>';
-  } else {
-    progDisp.innerHTML = '';
-  }
-
-  var nValid = document.getElementById(prefix+'-n-valid');
-  var nMaxAnnual = (prefix === 'warm') ? 4.0 : 3.5;
-  if (nRate > nMaxAnnual) {
-    nValid.innerHTML = '<div class="warning-badge">&#9888; <strong>Nitrogen amount is too high. Please lower.</strong> Max for ' + (prefix==='warm'?'warm':'cool') + '-season grasses is ' + nMaxAnnual + ' lbs / 1,000 sq. ft.</div>';
-  } else if (nRate > 0) {
-    nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Nitrogen amount is OK</span>';
-  } else {
-    nValid.innerHTML = '';
-  }
-
-  var am = appsAndMaxFn(nRate, isSlowRelease);
-  var apps = am.apps, maxNPerApp = am.maxNPerApp;
-  document.getElementById(prefix+'-apps').textContent = apps > 0 ? apps : '-';
-  document.getElementById(prefix+'-max-n-app').textContent = maxNPerApp > 0 ? 'max ' + fmt(maxNPerApp,1) + ' lbs (Program ' + program + ')' : '-';
-
-  var nPerAppPerK = apps > 0 ? nRate / apps : 0;
-  document.getElementById(prefix+'-n-per-k').textContent = apps > 0 ? fmt(nPerAppPerK,2) + ' lbs' : '-';
-
-  var warnEl = document.getElementById(prefix+'-n-warn');
-  if (apps > 0 && nPerAppPerK > maxNPerApp + 0.001) {
-    warnEl.innerHTML = '<div class="warning-badge">&#9888; N per application (' + fmt(nPerAppPerK,2) + ' lbs) exceeds the Program ' + program + ' maximum of ' + fmt(maxNPerApp,1) + ' lb/1,000 sq. ft. Consider increasing the number of applications or reducing your total N rate.</div>';
-  } else {
-    warnEl.innerHTML = '';
-  }
-
-  var lbsPerApp = (fertN > 0 && nPerAppPerK > 0 && kSq > 0) ? (nPerAppPerK / (fertN / 100)) * kSq : 0;
-  document.getElementById(prefix+'-lbs-per-app').textContent = lbsPerApp > 0 ? fmt(lbsPerApp,1) + ' lbs' : '-';
-
-  var lbsTotal = lbsPerApp * apps;
-  document.getElementById(prefix+'-lbs-total').textContent = lbsTotal > 0 ? fmt(lbsTotal,1) + ' lbs' : '-';
-
-  var bagsTotal = (bagSize > 0 && lbsTotal > 0) ? Math.ceil(lbsTotal / bagSize) : 0;
-  document.getElementById(prefix+'-bags-total').textContent = bagsTotal > 0 ? bagsTotal + (bagsTotal===1?' bag':' bags') : '-';
-
-  if (lbsTotal > 0 && fertN > 0) {
-    document.getElementById(prefix+'-npk-applied').textContent = fmt(lbsTotal*fertN/100,1) + ' / ' + fmt(lbsTotal*fertP/100,1) + ' / ' + fmt(lbsTotal*fertK/100,1) + ' lbs';
-  } else {
-    document.getElementById(prefix+'-npk-applied').textContent = '-';
-  }
-
-  var NEED_RATIO = {'L-':3,'L':2.5,'L+':2,'M-':2,'M':1.5,'M+':1,'H-':1,'H':0.75,'H+':0.5,'VH':0};
-  var pAppliedPerK = (fertN > 0 && nRate > 0) ? (nRate / fertN * fertP) : 0;
-  var kAppliedPerK = (fertN > 0 && nRate > 0) ? (nRate / fertN * fertK) : 0;
-
-  var pRec = document.getElementById(prefix+'-p-rec');
-  var pHtml = '';
-  if (pRating && P_REC[pRating]) {
-    var pr = P_REC[pRating];
-    pHtml = '<div class="rec-box ' + pr.cls + '"><span class="rec-icon">' + pr.icon + '</span><span><strong>Phosphorus:</strong> ' + pr.msg + '</span></div>';
-    var pMax = NEED_RATIO[pRating];
-    if (['L-','L','L+'].indexOf(pRating) >= 0 && fertN > 0 && fertP === 0) {
-      pHtml += '<div class="warning-badge">&#9888; <strong>Fertilizer does not contain P.</strong> Your soil rates Low for phosphorus - choose a fertilizer with phosphorus.</div>';
-    }
-    if (pAppliedPerK > pMax) {
-      var pMsg = pMax === 0
-        ? '<strong>P amount is too high.</strong> Your soil rates Very High - no P should be applied. Your fertilizer applies ' + fmt(pAppliedPerK,2) + ' lbs P / 1,000 sq. ft.'
-        : '<strong>P amount is too high.</strong> Your fertilizer applies ' + fmt(pAppliedPerK,2) + ' lbs P / 1,000 sq. ft. - max for <strong>' + pRating + '</strong> is ' + pMax + ' lbs (over by ' + fmt(pAppliedPerK-pMax,2) + ' lbs / 1,000 sq. ft.).';
-      pHtml += '<div class="warning-badge">' + (pMax===0?'&#9940;':'&#9888;') + ' ' + pMsg + '</div>';
-    }
-  }
-  pRec.innerHTML = pHtml;
-
-  var kRec = document.getElementById(prefix+'-k-rec');
-  var kHtml = '';
-  if (kRating && K_REC[kRating]) {
-    var kr = K_REC[kRating];
-    kHtml = '<div class="rec-box ' + kr.cls + '"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
-    var kMax = NEED_RATIO[kRating];
-    if (['L-','L','L+'].indexOf(kRating) >= 0 && fertN > 0 && fertK === 0) {
-      kHtml += '<div class="warning-badge">&#9888; <strong>Fertilizer does not contain K.</strong> Your soil rates Low for potassium - choose a fertilizer with potassium.</div>';
-    }
-    if (kAppliedPerK > kMax) {
-      var kMsg = kMax === 0
-        ? '<strong>K amount is too high.</strong> Your soil rates Very High - no K should be applied. Your fertilizer applies ' + fmt(kAppliedPerK,2) + ' lbs K / 1,000 sq. ft.'
-        : '<strong>K amount is too high.</strong> Your fertilizer applies ' + fmt(kAppliedPerK,2) + ' lbs K / 1,000 sq. ft. - max for <strong>' + kRating + '</strong> is ' + kMax + ' lbs (over by ' + fmt(kAppliedPerK-kMax,2) + ' lbs / 1,000 sq. ft.).';
-      kHtml += '<div class="warning-badge">' + (kMax===0?'&#9940;':'&#9888;') + ' ' + kMsg + '</div>';
-    }
-  }
-  kRec.innerHTML = kHtml;
-
-  var timingEl = document.getElementById(prefix+'-timing');
-  var timingMap = isSlowRelease ? timingP2Map : timingP1Map;
-  var schedule  = timingMap[apps];
-  if (apps > 0 && schedule) {
-    var label = isSlowRelease ? 'Program 2 (slowly available N)' : 'Program 1 (quickly available N)';
-    var rows = '';
-    for (var i = 0; i < schedule.length; i++) {
-      rows += '<li><span class="timing-num">' + (i+1) + '</span><span>' + schedule[i] + '</span></li>';
-    }
-    timingEl.innerHTML = '<p style="font-size:0.8rem;color:var(--slate-light);margin-bottom:10px;">' + label + ' - applications ~4 weeks apart</p><ul class="timing-list">' + rows + '</ul>';
-  } else if (apps > 0) {
-    timingEl.innerHTML = '<p style="font-size:0.875rem;color:var(--slate-mid);">Enter fertilizer N% to determine your program and see timing.</p>';
-  } else {
-    timingEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p>';
-  }
-
-  if (leftover > 0 && lbsTotal > 0) {
-    var lbsNeeded = Math.max(0, lbsTotal - leftover);
-    document.getElementById(prefix+'-leftover-needed').textContent = fmt(lbsNeeded,1) + ' lbs';
-    var newBags = bagSize > 0 ? Math.ceil(lbsNeeded / bagSize) : 0;
-    document.getElementById(prefix+'-leftover-bags').textContent = lbsNeeded <= 0 ? 'None needed' : newBags > 0 ? newBags + (newBags===1?' bag':' bags') : '-';
-  } else {
-    document.getElementById(prefix+'-leftover-needed').textContent = '-';
-    document.getElementById(prefix+'-leftover-bags').textContent = '-';
-  }
-}
-
-function calcCool() { calcFertilizer('cool', coolAppsAndMax, COOL_P1_TIMING, COOL_P2_TIMING); }
-function calcWarm() { calcFertilizer('warm', warmAppsAndMax, WARM_P1_TIMING, WARM_P2_TIMING); }
-
-// ===== LIME CALC =====
 function calcLime() {
   var lawnSize = parseFloat(document.getElementById('lime-lawn-size').value) || 0;
   var limeRec  = parseFloat(document.getElementById('lime-rec').value) || 0;
@@ -1451,13 +2158,41 @@ function calcLime() {
   else { noteEl.style.display = 'none'; }
 }
 
-// ===== LAB SOURCE CHANGE =====
-function onLabSourceChange() {
-  var lab = document.getElementById('st-lab-source').value;
-  var ratingSelects = ['st-p-rating','st-k-rating','st-ca-rating','st-mg-rating'];
-  var vceToWaypoint  = {'L-':'VL','L':'LO','L+':'LO','M-':'ME','M':'ME','M+':'ME','H-':'OP','H':'OP','H+':'OP','VH':'VH2','DEF':'VL','SUFF':'OP'};
-  var waypointToVCE  = {'VL':'L','LO':'L','ME':'M','OP':'H-','VH2':'VH'};
+// ===== REPORT TYPE HELPERS =====
+function getReportType() {
+  var el = document.getElementById('st-report-type');
+  return el ? el.value : 'vce-lawn';
+}
+function isGardenReport() { return getReportType().indexOf('garden') >= 0; }
+function isWaypointReport() { return getReportType().indexOf('waypoint') >= 0; }
 
+function onReportTypeChange() {
+  var rt = getReportType();
+  var isGarden = rt.indexOf('garden') >= 0;
+  var isWaypoint = rt.indexOf('waypoint') >= 0;
+
+  // Show/hide crop vs garden-type selector
+  var cropField = document.getElementById('st-crop-field');
+  var gardenField = document.getElementById('st-garden-type-field');
+  if (cropField) cropField.style.display = isGarden ? 'none' : '';
+  if (gardenField) gardenField.style.display = isGarden ? '' : 'none';
+
+  // Switch Buffer Index / Buffer pH label
+  var biLabel = document.getElementById('st-bi-label');
+  if (biLabel) biLabel.textContent = isWaypoint ? 'Buffer pH' : 'Buffer Index';
+
+  // Update lime label and placeholder
+  var limeLabel = document.getElementById('st-lime-rec-label');
+  var limeInput = document.getElementById('st-lime-rec');
+  var areaLabel = document.getElementById('st-area-size-label');
+  if (limeLabel) limeLabel.textContent = isGarden ? 'Lime Recommendation (lbs / 100 sq. ft.)' : 'Lime Recommendation (lbs / 1,000 sq. ft.)';
+  if (limeInput) { limeInput.step = isGarden ? '1' : '5'; limeInput.placeholder = isGarden ? 'e.g. 5' : 'e.g. 60'; }
+  if (areaLabel) areaLabel.textContent = isGarden ? 'Area Size (sq. ft.) — enter this first to enable carry-over' : 'Lawn Size (sq. ft.) — enter this first to enable carry-over';
+
+  // Remap rating selects when switching between VCE and Waypoint
+  var ratingSelects = ['st-p-rating','st-k-rating','st-ca-rating','st-mg-rating'];
+  var vceToWaypoint = {'L-':'VL','L':'LO','L+':'LO','M-':'ME','M':'ME','M+':'ME','H-':'OP','H':'OP','H+':'OP','VH':'VH2','DEF':'VL','SUFF':'OP'};
+  var waypointToVCE = {'VL':'L','LO':'L','ME':'M','OP':'H-','VH2':'VH'};
   ratingSelects.forEach(function(id) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -1465,8 +2200,8 @@ function onLabSourceChange() {
     var isWaypointVal = ['VL','LO','ME','OP','VH2'].indexOf(current) >= 0;
     var isVCEVal = ['L-','L','L+','M-','M','M+','H-','H','H+','VH','DEF','SUFF'].indexOf(current) >= 0;
     var mapped = null;
-    if (lab === 'waypoint' && isVCEVal && current !== '') mapped = vceToWaypoint[current];
-    else if (lab !== 'waypoint' && isWaypointVal && current !== '') mapped = waypointToVCE[current];
+    if (isWaypoint && isVCEVal && current !== '') mapped = vceToWaypoint[current];
+    else if (!isWaypoint && isWaypointVal && current !== '') mapped = waypointToVCE[current];
     if (mapped) {
       for (var i = 0; i < el.options.length; i++) {
         if (el.options[i].value === mapped) { el.selectedIndex = i; break; }
@@ -1474,12 +2209,12 @@ function onLabSourceChange() {
     }
   });
 
-  var scaleHint = lab === 'waypoint' ? '(Waypoint scale)' : lab === 'vce' ? '(VCE scale)' : '(select scale above)';
+  var scaleHint = isWaypoint ? '(Waypoint scale)' : '(VCE scale)';
   ['p','k'].forEach(function(n) { var el = document.getElementById(n+'-rating-scale-hint'); if (el) el.textContent = scaleHint; });
-  if (lab === 'waypoint') setSaltUnit('dsm'); else setSaltUnit('ppm');
+  if (isWaypoint) setSaltUnit('dsm'); else setSaltUnit('ppm');
 
   // Update nutrient input labels
-  var unit = nutrientUnit();
+  var unit = isWaypoint ? 'ppm' : 'lb/A';
   ['st-p-val','st-k-val','st-ca','st-mg'].forEach(function(id) {
     var input = document.getElementById(id);
     if (!input) return;
@@ -1492,20 +2227,28 @@ function onLabSourceChange() {
   interpretSoilTest();
 }
 
-// ===== SALT UNIT TOGGLE =====
+// Legacy alias so any residual references don't break
+function onLabSourceChange() { onReportTypeChange(); }
+
 // ===== NUTRIENT UNIT LABEL =====
 function nutrientUnit() {
-  return document.getElementById('st-lab-source').value === 'waypoint' ? 'ppm' : 'lb/A';
+  return isWaypointReport() ? 'ppm' : 'lb/A';
 }
 
 var saltUnit = 'ppm';
 function setSaltUnit(unit) {
   saltUnit = unit;
-  document.getElementById('salt-unit-ppm').classList.toggle('active', unit === 'ppm');
-  document.getElementById('salt-unit-dsm').classList.toggle('active', unit === 'dsm');
+  // Update the auto label
+  var unitLabel = document.getElementById('st-salts-unit-label');
+  if (unitLabel) unitLabel.textContent = unit === 'dsm' ? '(dS/m — Waypoint)' : '(ppm — VCE)';
+  // Update placeholder to match unit
+  var saltsInput = document.getElementById('st-salts');
+  if (saltsInput) saltsInput.placeholder = unit === 'dsm' ? 'e.g. 0.15' : 'e.g. 128';
   var hint = document.getElementById('st-salts-hint');
-  if (unit === 'ppm') hint.textContent = 'VCE reports in ppm. Injury threshold: 844 ppm.';
-  else hint.textContent = 'Waypoint reports in dS/m. Converted to ppm (x640) for interpretation. Injury threshold: ~1.32 dS/m.';
+  if (hint) {
+    if (unit === 'ppm') hint.textContent = 'VCE reports in ppm. Injury threshold: 844 ppm.';
+    else hint.textContent = 'Waypoint reports in dS/m. Converted to ppm (x640) for interpretation. Injury threshold: ~1.32 dS/m.';
+  }
   interpretSoilTest();
 }
 
@@ -1514,7 +2257,10 @@ var WAYPOINT_TO_VCE = {'VL':'L-','LO':'L','ME':'M','OP':'H-','VH2':'VH'};
 
 // ===== SOIL TEST INTERPRETATION =====
 function interpretSoilTest() {
-  var labSource = document.getElementById('st-lab-source').value;
+  var rt        = getReportType();
+  var isGarden  = rt.indexOf('garden') >= 0;
+  var isWaypoint= rt.indexOf('waypoint') >= 0;
+  var labSource = isWaypoint ? 'waypoint' : 'vce';
   var ph      = parseFloat(document.getElementById('st-ph').value);
   var bi      = parseFloat(document.getElementById('st-bi').value);
   var cec     = parseFloat(document.getElementById('st-cec').value);
@@ -1531,7 +2277,9 @@ function interpretSoilTest() {
   var saltRaw = parseFloat(document.getElementById('st-salts').value);
   var limeRec = parseFloat(document.getElementById('st-lime-rec').value);
   var limeTyp = document.getElementById('st-lime-type').value;
-  var crop    = document.getElementById('st-crop').value;
+  var crop    = isGarden
+    ? (document.getElementById('st-garden-type') ? document.getElementById('st-garden-type').value : '')
+    : (document.getElementById('st-crop') ? document.getElementById('st-crop').value : '');
   var znVal   = parseFloat(document.getElementById('st-zn').value);
   var znRat   = document.getElementById('st-zn-rating').value;
   var mnVal   = parseFloat(document.getElementById('st-mn').value);
@@ -1550,13 +2298,24 @@ function interpretSoilTest() {
   // Lab notice
   var unit = nutrientUnit();
 
+  // Nutrient ranges — switch between VCE lb/A and Waypoint ppm (ppm = lb/A / 2)
+  var pRange  = unit === 'ppm' ? 'Medium: 6-18 ppm (Waypoint)'       : 'Medium: 12-35 lb/A (VCE)';
+  var kRange  = unit === 'ppm' ? 'Medium: 38-88 ppm (Waypoint)'      : 'Medium: 76-175 lb/A (VCE)';
+  var caMgRange = unit === 'ppm'
+    ? 'Ca medium: 361-720 ppm &nbsp;&bull;&nbsp; Mg adequate: &ge;64 ppm (Waypoint)'
+    : 'Ca medium: 721-1,440 lb/A &nbsp;&bull;&nbsp; Mg medium: 73-144 lb/A (VCE)';
+
   var labNoticeEl = document.getElementById('st-lab-notice');
-  if (labSource === 'vce') {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#10003; <strong>VCE / Virginia Tech:</strong> Ratings (L-/M/H/VH) and thresholds are calibrated for this report. Soluble salts reported in ppm.</div>';
-  } else if (labSource === 'waypoint') {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#9888; <strong>Waypoint Analytical:</strong> Use the Waypoint rating options in the dropdowns. Waypoint\'s "Buffer pH" is the same as VCE\'s "Buffer Index." <strong>Ratings are directly comparable between labs</strong> - see the About tab for full details.</div>';
+  if (rt === 'vce-lawn') {
+    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#10003; <strong>VCE / Virginia Tech — Lawn:</strong> Ratings (L-/M/H/VH) and thresholds are calibrated for this report. Soluble salts reported in ppm.</div>';
+  } else if (rt === 'waypoint-lawn') {
+    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#9888; <strong>Waypoint Analytical — Lawn:</strong> Use Waypoint rating options in the dropdowns. Waypoint\'s "Buffer pH" = VCE\'s "Buffer Index." Salts reported in dS/m.</div>';
+  } else if (rt === 'vce-garden') {
+    labNoticeEl.innerHTML = '<div class="st-lab-notice" style="background:#f0f7f1;border-color:var(--green-mid);color:var(--green-deep);">&#127807; <strong>VCE / Virginia Tech — Garden:</strong> Lime in lbs/100 sq. ft. pH target 6.0–6.8. Organic matter target 5–10%. Carry-over routes to the Garden &amp; Flowers tab.</div>';
+  } else if (rt === 'waypoint-garden') {
+    labNoticeEl.innerHTML = '<div class="st-lab-notice" style="background:#f0f7f1;border-color:var(--green-mid);color:var(--green-deep);">&#127807; <strong>Waypoint Analytical — Garden:</strong> Use Waypoint rating options. Lime in lbs/100 sq. ft. pH target 6.0–6.8. Carry-over routes to the Garden &amp; Flowers tab.</div>';
   } else {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-other">&#8505; <strong>Other lab:</strong> Enter values as shown on your report. Thresholds are calibrated for the Virginia Tech Soil Testing Laboratory.</div>';
+    labNoticeEl.innerHTML = '';
   }
 
   var hasAny = [ph,bi,pVal,kVal,caVal,mgVal,om,saltRaw,cec,limeRec,znVal,mnVal,cuVal,feVal,bVal].some(function(v){ return !isNaN(v) && v > 0; })
@@ -1596,27 +2355,28 @@ function interpretSoilTest() {
   // ---- pH ----
   if (!isNaN(ph)) {
     var phClass, phMsg, phAction;
+    var phLow = isGarden ? 6.0 : 5.8;
     if (ph < 5.0) {
       phClass = 'pill-warn'; phMsg = 'Strongly acidic. At pH below 5.0, aluminum toxicity limits plant growth.';
-      phAction = abox('action-needed', 'Lime application is strongly recommended. Follow your lime recommendation and use the Lime Calculator.');
-    } else if (ph < 5.8) {
-      phClass = 'pill-warn'; phMsg = 'Acidic. Below the ideal range of 5.8-6.8 for most lawn grasses.';
+      phAction = abox('action-needed', 'Lime application is strongly recommended. Follow your lime recommendation and use the ' + (isGarden ? 'Garden Calculator' : 'Lime Calculator') + '.');
+    } else if (ph < phLow) {
+      phClass = 'pill-warn'; phMsg = 'Acidic. Below the ideal range of ' + phLow + '–6.8 for ' + (isGarden ? 'vegetable and flower gardens' : 'most lawn grasses') + '.';
       phAction = abox('action-needed', 'Apply lime per your soil test recommendation. Virginia soils naturally acidify over time.');
     } else if (ph <= 6.8) {
-      phClass = 'pill-suff'; phMsg = 'Slightly acidic to neutral - the ideal range (5.8-6.8) where most nutrients are available.';
+      phClass = 'pill-suff'; phMsg = 'Slightly acidic to neutral — the ideal range (' + phLow + '–6.8) where most nutrients are available.';
       phAction = abox('action-good', 'No lime action needed based on pH alone. Continue monitoring with periodic soil tests.');
     } else if (ph <= 7.0) {
-      phClass = 'pill-med'; phMsg = 'Near neutral. Acceptable for most lawn grasses.';
+      phClass = 'pill-med'; phMsg = 'Near neutral. Acceptable for most ' + (isGarden ? 'garden plants' : 'lawn grasses') + '.';
       phAction = abox('action-monitor', 'Do not apply additional lime. Monitor micronutrient availability.');
     } else {
       phClass = 'pill-warn'; phMsg = 'Alkaline. Above pH 7.0, micronutrients become less available.';
       phAction = abox('action-needed', 'Do not apply lime. Consider sulfur to lower pH, or allow it to drop naturally.');
     }
-    cards.push(card('&#9879;&#65039;', 'Soil pH', 'Virginia soils: 4.5-7.5', 'Lawns: 5.8-6.8',
+    cards.push(card('&#9879;&#65039;', 'Soil pH', 'Virginia soils: 4.5-7.5', isGarden ? 'Gardens: 6.0-6.8' : 'Lawns: 5.8-6.8',
       '<span class="st-rating-pill ' + phClass + '">' + ph.toFixed(1) + '</span>',
       'pH measures soil acidity or alkalinity on a 0-14 scale (7 = neutral). Virginia soils naturally acidify over time. <strong>Your result:</strong> ' + phMsg,
-      'Soil pH controls how available nutrients are to your grass. When pH is outside the target range, even well-fertilized soil may not feed your lawn effectively.',
-      phAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn('lime','Open Lime Calculator') : ''));
+      isGarden ? 'Soil pH controls nutrient availability to your plants. The target for vegetable and flower gardens (6.0-6.8) is slightly higher than for lawns.' : 'Soil pH controls how available nutrients are to your grass. When pH is outside the target range, even well-fertilized soil may not feed your lawn effectively.',
+      phAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn(isGarden ? 'garden' : 'lime', isGarden ? 'Open Garden Calculator' : 'Open Lime Calculator') : ''));
   }
 
   // ---- Buffer Index ----
@@ -1656,18 +2416,32 @@ function interpretSoilTest() {
 
   // ---- Lime Recommendation ----
   if (!isNaN(limeRec) && limeRec > 0) {
-    var lApps    = Math.min(Math.ceil(limeRec / 50), 6);
-    var lTypeNote = limeTyp === 'Dolomitic' ? 'Dolomitic limestone is recommended - it supplies both calcium and magnesium.'
-      : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone is recommended. Pelletized lime is practical for lawns.'
-      : 'No specific lime type listed - either agricultural or dolomitic may be used.';
-    var fApps2 = Math.floor(limeRec / 50), rLbs2 = limeRec - (fApps2 * 50);
-    var schedStr = lApps === 1 ? limeRec + ' lbs in 1 application'
-      : (fApps2 > 0 ? fApps2 + 'x 50 lbs' : '') + (rLbs2 > 0 ? (fApps2 > 0 ? ', then ' : '') + rLbs2 + ' lbs' : '');
-    cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec + ' lbs / 1,000 sq. ft.',
-      'Virginia soils naturally acidify over time. ' + lTypeNote + ' Never apply more than 50 lbs per 1,000 sq. ft. at one time. Your total of ' + limeRec + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + ' (' + schedStr + '), spaced 1-6 months apart.',
-      'Lime restores the soil pH that allows all other nutrients to become available to your grass.',
-      abox('action-needed', 'Use the Lime Calculator tab to enter your lawn size, CCE, and bag size for precise quantities.'),
-      goBtn('lime','Open Lime Calculator')));
+    if (isGarden) {
+      var bedStatus = document.getElementById('st-bed-status') ? document.getElementById('st-bed-status').value : 'established';
+      var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
+      var lApps = Math.max(1, Math.ceil(limeRec / limeMaxPer));
+      var lTypeNote = limeTyp === 'Dolomitic' ? 'Dolomitic limestone is recommended — it supplies both calcium and magnesium.'
+        : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone is recommended.'
+        : 'No specific lime type listed.';
+      cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec + ' lbs / 100 sq. ft.',
+        'Virginia soils naturally acidify. ' + lTypeNote + ' Per Note 19: never apply more than ' + limeMaxPer + ' lbs per 100 sq. ft. at one time (' + (bedStatus==='preplant'?'preplant':'established bed') + '). Your total of ' + limeRec + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + '.',
+        'Lime restores the pH needed for nutrients to be available to garden plants.',
+        abox('action-needed', 'Use the Garden &amp; Flowers tab to calculate lime for your specific bed size.'),
+        goBtn('garden', 'Open Garden Calculator')));
+    } else {
+      var lApps    = Math.min(Math.ceil(limeRec / 50), 6);
+      var lTypeNote = limeTyp === 'Dolomitic' ? 'Dolomitic limestone is recommended - it supplies both calcium and magnesium.'
+        : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone is recommended. Pelletized lime is practical for lawns.'
+        : 'No specific lime type listed - either agricultural or dolomitic may be used.';
+      var fApps2 = Math.floor(limeRec / 50), rLbs2 = limeRec - (fApps2 * 50);
+      var schedStr = lApps === 1 ? limeRec + ' lbs in 1 application'
+        : (fApps2 > 0 ? fApps2 + 'x 50 lbs' : '') + (rLbs2 > 0 ? (fApps2 > 0 ? ', then ' : '') + rLbs2 + ' lbs' : '');
+      cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec + ' lbs / 1,000 sq. ft.',
+        'Virginia soils naturally acidify over time. ' + lTypeNote + ' Never apply more than 50 lbs per 1,000 sq. ft. at one time. Your total of ' + limeRec + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + ' (' + schedStr + '), spaced 1-6 months apart.',
+        'Lime restores the soil pH that allows all other nutrients to become available to your grass.',
+        abox('action-needed', 'Use the Lime Calculator tab to enter your lawn size, CCE, and bag size for precise quantities.'),
+        goBtn('lime','Open Lime Calculator')));
+    }
   }
 
   // ---- Est-CEC ----
@@ -1706,7 +2480,7 @@ function interpretSoilTest() {
     } else {
       pMsg = 'Adequate for your specified crop/plant.'; pAction = abox('action-good','Follow your soil test recommendations.');
     }
-    var pCropBtn = crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '';
+    var pCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : (crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '');
     cards.push(card('&#127807;', 'Phosphorus (P)', 'Medium: 12-35 lb/A (VCE)', '', pDisplay,
       'The amount of phosphorus available to your plants. <strong>Your result:</strong> ' + pMsg,
       'Phosphorus supports root development.', pAction, pCropBtn));
@@ -1725,7 +2499,7 @@ function interpretSoilTest() {
     } else {
       kMsg = 'Rated as sufficient.'; kAction = abox('action-good','Follow your soil test recommendations.');
     }
-    var kCropBtn = crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '';
+    var kCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : (crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '');
     cards.push(card('&#9889;', 'Potassium (K)', 'Medium: 76-175 lb/A (VCE)', '', kDisplay,
       'The amount of potassium available to your plants. <strong>Your result:</strong> ' + kMsg,
       'Potassium supports drought tolerance, disease resistance, and overall plant vigor.', kAction, kCropBtn));
@@ -1748,19 +2522,35 @@ function interpretSoilTest() {
   // ---- Organic Matter ----
   if (!isNaN(om)) {
     var omMsg, omAction;
-    if (om < 0.5) {
-      omMsg = 'Very low. Below the ordinary range for Virginia soils (0.5-2.5%).'; omAction = abox('action-needed','Consider adding organic matter (compost, topdressing) to improve nutrient retention and moisture holding capacity.');
-    } else if (om <= 2.5) {
-      omMsg = 'Ordinary range for a natural, well-drained Virginia soil (0.5-2.5%).'; omAction = abox('action-good','Maintain through regular organic additions.');
-    } else if (om <= 5.0) {
-      omMsg = 'Higher than typical for a cultivated field, but beneficial for a lawn.'; omAction = abox('action-good','Good organic matter level. Some herbicide rates may need adjustment at higher OM levels.');
+    if (isGarden) {
+      if (om < 2.0) {
+        omMsg = 'Below the desirable range for a vegetable or flower garden (5-10%).'; omAction = abox('action-needed','Add organic matter through compost applications before planting. Work 2-4 inches of compost into the top 6-8 inches of soil.');
+      } else if (om < 5.0) {
+        omMsg = 'Below the ideal range for a garden (5-10%), though manageable.'; omAction = abox('action-monitor','Continue adding compost annually to build organic matter over time.');
+      } else if (om <= 10.0) {
+        omMsg = 'Good organic matter level — within the ideal range for vegetable and flower gardens (5-10%).'; omAction = abox('action-good','Maintain through annual compost additions.');
+      } else {
+        omMsg = 'Very high — common in heavily amended garden soils.'; omAction = abox('action-monitor','Excellent for plant growth. Check herbicide labels if applicable — rates are often adjusted at higher OM levels.');
+      }
+      cards.push(card('&#127757;', 'Organic Matter', 'Garden target: 5-10%', 'Higher end preferred', om.toFixed(1) + '%',
+        'The percentage of decomposed plant and animal residues in the soil. <strong>Your result:</strong> ' + omMsg,
+        'Organic matter improves moisture retention, nutrient availability, and supports beneficial soil life — all especially important in productive garden beds.',
+        omAction, ''));
     } else {
-      omMsg = 'Very high - common in heavily amended garden soils.'; omAction = abox('action-monitor','Check herbicide labels - rates are often adjusted based on % organic matter.');
+      if (om < 0.5) {
+        omMsg = 'Very low. Below the ordinary range for Virginia soils (0.5-2.5%).'; omAction = abox('action-needed','Consider adding organic matter (compost, topdressing) to improve nutrient retention and moisture holding capacity.');
+      } else if (om <= 2.5) {
+        omMsg = 'Ordinary range for a natural, well-drained Virginia soil (0.5-2.5%).'; omAction = abox('action-good','Maintain through regular organic additions.');
+      } else if (om <= 5.0) {
+        omMsg = 'Higher than typical for a cultivated field, but beneficial for a lawn.'; omAction = abox('action-good','Good organic matter level. Some herbicide rates may need adjustment at higher OM levels.');
+      } else {
+        omMsg = 'Very high - common in heavily amended garden soils.'; omAction = abox('action-monitor','Check herbicide labels - rates are often adjusted based on % organic matter.');
+      }
+      cards.push(card('&#127757;', 'Organic Matter', 'Virginia soils: 0.5-2.5%', 'Higher end preferred', om.toFixed(1) + '%',
+        'The percentage of decomposed plant and animal residues in the soil. <strong>Your result:</strong> ' + omMsg,
+        'Organic matter improves your soil\'s ability to hold water and nutrients, supports beneficial soil organisms, and contributes to overall plant health.',
+        omAction, ''));
     }
-    cards.push(card('&#127757;', 'Organic Matter', 'Virginia soils: 0.5-2.5%', 'Higher end preferred', om.toFixed(1) + '%',
-      'The percentage of decomposed plant and animal residues in the soil. <strong>Your result:</strong> ' + omMsg,
-      'Organic matter improves your soil\'s ability to hold water and nutrients, supports beneficial soil organisms, and contributes to overall lawn health.',
-      omAction, ''));
   }
 
   // ---- Soluble Salts ----
@@ -1773,10 +2563,10 @@ function interpretSoilTest() {
     var saltMsg, saltAction;
     if (saltPpm > 844) {
       saltMsg = 'ELEVATED - above the injury threshold of 844 ppm (1.32 dS/m). Plants may show wilting even with adequate moisture.';
-      saltAction = abox('action-needed','Reduce or eliminate fertilizer applications. Water thoroughly to leach salts. Avoid seeding until levels drop.');
+      saltAction = abox('action-needed','Reduce or eliminate fertilizer applications. Water thoroughly to leach salts. Avoid seeding until levels drop.' + (isGarden ? ' <strong>Vegetable seedlings are especially sensitive — do not transplant until levels drop below 640 ppm.</strong>' : ''));
     } else if (saltPpm > 640) {
       saltMsg = 'Elevated. Above the level where Waypoint flags concern (1.0 dS/m / 640 ppm). Seeds and seedlings may show stress.';
-      saltAction = abox('action-monitor','Avoid additional fertilizer applications until levels drop.');
+      saltAction = abox('action-monitor','Avoid additional fertilizer applications until levels drop.' + (isGarden ? ' Delay transplanting seedlings until salts decrease.' : ''));
     } else if (saltPpm > 400) {
       saltMsg = 'Slightly elevated but within a safe range for established turf.';
       saltAction = abox('action-good','No action needed for established grass. Avoid over-fertilizing.');
@@ -1791,17 +2581,25 @@ function interpretSoilTest() {
       saltAction, ''));
   }
 
-  // ---- Grass Type ----
+  // ---- Grass / Garden Type ----
   if (crop) {
-    var grassLabel = crop === 'warm'
-      ? 'Warm-Season (bermudagrass, zoysiagrass, centipedegrass, St. Augustinegrass)'
-      : 'Cool-Season (tall fescue, Kentucky bluegrass, fine fescue, perennial ryegrass)';
-    var grassNote = crop === 'warm'
-      ? 'Warm-season grasses are fertilized during their active growing period (spring through summer). Use Soil Test Note 18 guidelines.'
-      : 'Cool-season grasses are primarily fertilized in the fall with optional spring applications. Use Soil Test Note 17 guidelines.';
-    cards.push(card('&#127807;', 'Grass Type &amp; Fertilizer Program', '', '', grassLabel,
-      grassNote + ' Once you have your fertilizer\'s N-P-K grade and WIN value, enter them in the appropriate fertilizer calculator.',
-      '', '', goBtn(crop, 'Open ' + (crop==='warm'?'Warm':'Cool') + '-Season Calculator')));
+    if (isGarden) {
+      var gdnLabels = { vegetable:'Vegetable Garden', annual:'Annual Flower Bed', perennial:'Perennial Flower Bed', mixed:'Mixed Bed (Vegetables & Flowers)' };
+      var gdnLabel = gdnLabels[crop] || crop;
+      cards.push(card('&#127807;', 'Garden Type &amp; Fertilizer Program', '', '', gdnLabel,
+        'Per VCE Soil Test Note 19, use the Garden &amp; Flowers tab to calculate precise fertilizer and lime quantities for your bed size.',
+        '', '', goBtn('garden', 'Open Garden Calculator')));
+    } else {
+      var grassLabel = crop === 'warm'
+        ? 'Warm-Season (bermudagrass, zoysiagrass, centipedegrass, St. Augustinegrass)'
+        : 'Cool-Season (tall fescue, Kentucky bluegrass, fine fescue, perennial ryegrass)';
+      var grassNote = crop === 'warm'
+        ? 'Warm-season grasses are fertilized during their active growing period (spring through summer). Use Soil Test Note 18 guidelines.'
+        : 'Cool-season grasses are primarily fertilized in the fall with optional spring applications. Use Soil Test Note 17 guidelines.';
+      cards.push(card('&#127807;', 'Grass Type &amp; Fertilizer Program', '', '', grassLabel,
+        grassNote + ' Once you have your fertilizer\'s N-P-K grade and WIN value, enter them in the appropriate fertilizer calculator.',
+        '', '', goBtn(crop, 'Open ' + (crop==='warm'?'Warm':'Cool') + '-Season Calculator')));
+    }
   }
 
   // ---- Micronutrients (IIFE) ----
@@ -1840,7 +2638,7 @@ function interpretSoilTest() {
     });
     if (!hasMicro) return;
 
-    var body = '<p style="font-size:0.875rem;line-height:1.6;margin-bottom:14px;color:var(--slate-mid);">For established turfgrass, micronutrient deficiencies are uncommon when soil pH is in the 5.8-6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies are suspected.</p>';
+    var body = '<p style="font-size:0.875rem;line-height:1.6;margin-bottom:14px;color:var(--slate-mid);">' + (isGarden ? 'For vegetable and flower gardens, micronutrient deficiencies are uncommon when soil pH is in the 6.0–6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies persist.' : 'For established turfgrass, micronutrient deficiencies are uncommon when soil pH is in the 5.8-6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies are suspected.') + '</p>';
     var ratLabels = {'L':'Low/DEF','M':'Medium','SUFF':'Sufficient','H':'High'};
 
     nutrients.forEach(function(m) {
@@ -1865,64 +2663,135 @@ function interpretSoilTest() {
         + '</div>';
     });
 
-    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only - no calculation</div></div><div class="st-interp-ranges"><span class="st-range-label">Target:</span> Sufficient at correct soil pH (5.8-6.8)</div><div class="st-interp-body">' + body + '</div></div>');
+    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only - no calculation</div></div><div class="st-interp-ranges"><span class="st-range-label">Target:</span> Sufficient at correct soil pH (' + (isGarden ? '6.0-6.8' : '5.8-6.8') + ')</div><div class="st-interp-body">' + body + '</div></div>');
   })();
 
-  // ---- Summary bar ----
-  var summaryItems = '';
-  if (!isNaN(ph))     summaryItems += '<div class="st-summary-item"><div class="st-summary-label">pH</div><div class="st-summary-val">' + ph.toFixed(1) + '</div></div>';
-  if (!isNaN(pVal))   summaryItems += '<div class="st-summary-item"><div class="st-summary-label">P (lb/A)</div><div class="st-summary-val">' + pVal + '</div><div class="st-summary-rating">' + (pRatRaw||'') + '</div></div>';
-  if (!isNaN(kVal))   summaryItems += '<div class="st-summary-item"><div class="st-summary-label">K (lb/A)</div><div class="st-summary-val">' + kVal + '</div><div class="st-summary-rating">' + (kRatRaw||'') + '</div></div>';
-  if (!isNaN(om))     summaryItems += '<div class="st-summary-item"><div class="st-summary-label">Org. Matter</div><div class="st-summary-val">' + om.toFixed(1) + '%</div></div>';
-  if (!isNaN(limeRec) && limeRec > 0) summaryItems += '<div class="st-summary-item"><div class="st-summary-label">Lime Rec.</div><div class="st-summary-val">' + limeRec + '</div><div class="st-summary-rating">lbs/1K sqft</div></div>';
-
-  var canCarryOver = (pRat || kRat) && crop;
+  // ---- Show/hide carry-over bar ----
+  var canCarryOver = (pRatRaw || kRatRaw) && (isGarden || crop);
   var carryBar = document.getElementById('st-carryover-bar');
   if (carryBar) carryBar.style.display = canCarryOver ? 'block' : 'none';
 
+  // Update the carry-over bar description based on whether area is entered
+  var areaVal = document.getElementById('st-lawn-size').value;
+  var areaHint = document.getElementById('st-area-hint');
+  if (areaHint) areaHint.style.display = areaVal ? 'none' : 'block';
+
+  if (carryBar && canCarryOver) {
+    var areaWarning = areaVal ? '' : '<div style="font-size:0.8rem;color:#b8892a;margin-top:6px;">&#9888; <strong>Lawn size not entered.</strong> Fertilizer quantities on the calculator tabs will not compute until you enter a lawn size above.</div>';
+    var barDesc = carryBar.querySelector('.st-carryover-desc');
+    if (barDesc) barDesc.innerHTML = 'Your P &amp; K ratings, lime recommendation, and lime type will be pre-filled in the relevant calculator tabs.' + areaWarning;
+  }
+
+  // ---- Summary bar ----
   var printBtn = '<button class="st-print-btn no-print" onclick="printSoilTestResults()">&#128424; Print Results</button>';
-  var summary  = summaryItems ? '<div class="st-summary-bar">' + summaryItems + printBtn + '</div>' : '';
+  var limeUnit = isGarden ? 'lbs/100 sqft' : 'lbs/1K sqft';
+  var summaryItems = '';
+  if (!isNaN(ph))     summaryItems += '<div class="st-summary-item"><div class="st-summary-label">pH</div><div class="st-summary-val">' + ph.toFixed(1) + '</div></div>';
+  if (!isNaN(pVal))   summaryItems += '<div class="st-summary-item"><div class="st-summary-label">P (' + (isWaypoint ? 'ppm' : 'lb/A') + ')</div><div class="st-summary-val">' + pVal + '</div><div class="st-summary-rating">' + (pRatRaw||'') + '</div></div>';
+  if (!isNaN(kVal))   summaryItems += '<div class="st-summary-item"><div class="st-summary-label">K (' + (isWaypoint ? 'ppm' : 'lb/A') + ')</div><div class="st-summary-val">' + kVal + '</div><div class="st-summary-rating">' + (kRatRaw||'') + '</div></div>';
+  if (!isNaN(om))     summaryItems += '<div class="st-summary-item"><div class="st-summary-label">Org. Matter</div><div class="st-summary-val">' + om.toFixed(1) + '%</div></div>';
+  if (!isNaN(limeRec) && limeRec > 0) summaryItems += '<div class="st-summary-item"><div class="st-summary-label">Lime Rec.</div><div class="st-summary-val">' + limeRec + '</div><div class="st-summary-rating">' + limeUnit + '</div></div>';
+
+  var summary = summaryItems ? '<div class="st-summary-bar">' + summaryItems + printBtn + '</div>' : '';
   panel.innerHTML = summary + cards.join('');
 }
 
 // ===== CARRY-OVER =====
 function carryOverToCalculators() {
+  var rt       = getReportType();
+  var isGarden = rt.indexOf('garden') >= 0;
   var pRatRaw  = document.getElementById('st-p-rating').value;
   var kRatRaw  = document.getElementById('st-k-rating').value;
   var pRat     = WAYPOINT_TO_VCE[pRatRaw] || pRatRaw;
   var kRat     = WAYPOINT_TO_VCE[kRatRaw] || kRatRaw;
   var limeRec  = document.getElementById('st-lime-rec').value;
   var limeTyp  = document.getElementById('st-lime-type').value;
-  var crop     = document.getElementById('st-crop').value;
-  var lawnSize = document.getElementById('st-lawn-size').value;
+  var areaSize = document.getElementById('st-lawn-size').value;
+  var crop     = isGarden
+    ? (document.getElementById('st-garden-type') ? document.getElementById('st-garden-type').value : '')
+    : (document.getElementById('st-crop') ? document.getElementById('st-crop').value : '');
 
+  // setSelect: sets a select to the matching option value; '' resets to first option
   function setSelect(id, val) {
     var el = document.getElementById(id);
     if (!el || val == null) return;
-    for (var i = 0; i < el.options.length; i++) { if (el.options[i].value === val) { el.selectedIndex = i; break; } }
+    for (var i = 0; i < el.options.length; i++) {
+      if (el.options[i].value === val) { el.selectedIndex = i; return; }
+    }
+    // If val not found and it's empty string, reset to index 0
+    if (val === '') el.selectedIndex = 0;
   }
+  // setInput writes a value; skips only null/undefined
   function setInput(id, val) {
     var el = document.getElementById(id);
-    if (el && val !== undefined && val !== null && val !== '') el.value = val;
+    if (el && val !== undefined && val !== null) el.value = val;
+  }
+  // clearInput explicitly clears to empty string
+  function clearInput(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
   }
 
-  if (crop === 'cool' || crop === '') { setInput('cool-lawn-size', lawnSize); setSelect('cool-p-rating', pRat); setSelect('cool-k-rating', kRat); calcCool(); }
-  if (crop === 'warm' || crop === '') { setInput('warm-lawn-size', lawnSize); setSelect('warm-p-rating', pRat); setSelect('warm-k-rating', kRat); calcWarm(); }
-  setInput('lime-lawn-size', lawnSize);
-  setInput('lime-rec', limeRec);
-  setSelect('lime-type', limeTyp || '');
-  calcLime();
+  if (isGarden) {
+    if (crop) setSelect('gdn-type', crop);
+    setSelect('gdn-p-rating', pRat);
+    setSelect('gdn-k-rating', kRat);
+    if (limeRec) setInput('gdn-lime-rec', limeRec); else clearInput('gdn-lime-rec');
+    if (areaSize) { setInput('gdn-area-direct', areaSize); setGardenSizeMode('area'); } else clearInput('gdn-area-direct');
+    setTimeout(function() { calcGarden(); }, 0);
+  } else {
+    // Cool-season tab
+    if (areaSize) setInput('cool-lawn-size', areaSize); else clearInput('cool-lawn-size');
+    setSelect('cool-p-rating', pRat);
+    setSelect('cool-k-rating', kRat);
+    if (crop === 'cool') setSelect('cool-species', 'tall');
+    else if (crop === 'warm') setSelect('cool-species', 'tall');
+
+    // Warm-season tab
+    if (areaSize) setInput('warm-lawn-size', areaSize); else clearInput('warm-lawn-size');
+    setSelect('warm-p-rating', pRat);
+    setSelect('warm-k-rating', kRat);
+    if (crop === 'warm') setSelect('warm-species', 'bermuda');
+    else if (crop === 'cool') setSelect('warm-species', 'bermuda');
+
+    // Lime tab
+    if (areaSize) setInput('lime-lawn-size', areaSize); else clearInput('lime-lawn-size');
+    if (limeRec) setInput('lime-rec', limeRec); else clearInput('lime-rec');
+    setSelect('lime-type', limeTyp);
+
+    // Defer all calcs until after DOM writes settle
+    setTimeout(function() {
+      calcMulti('cool');
+      calcMulti('warm');
+      calcLime();
+    }, 0);
+  }
+
+  // Build success bar
+  var destBtns = '';
+  if (isGarden) {
+    destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'garden\')">&#8599; Garden &amp; Flowers Calculator</button>';
+  } else {
+    destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'cool\')">&#8599; Cool-Season Calculator</button>'
+      + '<button class="st-goto-btn" onclick="switchToTab(\'warm\')">&#8599; Warm-Season Calculator</button>'
+      + '<button class="st-goto-btn" onclick="switchToTab(\'lime\')" style="background:var(--gold);">&#8599; Lime Calculator</button>';
+  }
+
+  var cropLabel = crop === 'cool' ? 'Cool-Season' : crop === 'warm' ? 'Warm-Season' : '';
+  var areaStr   = areaSize ? areaSize + ' sq. ft.' : 'not entered';
+  var limeStr   = limeRec  ? limeRec + ' lbs/1,000 sq. ft.' + (limeTyp ? ' (' + limeTyp + ')' : '') : 'none';
+  var grassStr  = cropLabel ? cropLabel : 'not specified';
+
+  var desc = isGarden
+    ? 'Garden type: ' + (crop || 'not set') + ' &nbsp;|&nbsp; P: ' + (pRat||'–') + ' &nbsp;|&nbsp; K: ' + (kRat||'–') + ' &nbsp;|&nbsp; Lime: ' + limeStr + ' &nbsp;|&nbsp; Area: ' + areaStr
+    : 'Area: ' + areaStr + ' &nbsp;|&nbsp; P: ' + (pRat||'–') + ' &nbsp;|&nbsp; K: ' + (kRat||'–') + ' &nbsp;|&nbsp; Lime: ' + limeStr + ' &nbsp;|&nbsp; Grass: ' + grassStr;
 
   var bar = document.getElementById('st-carryover-bar');
   if (bar) {
     bar.innerHTML = '<div class="st-carryover-box st-carryover-done">'
       + '<div class="st-carryover-title">&#10003; Carried over successfully!</div>'
-      + '<p class="st-carryover-desc">Lawn size, P &amp; K ratings, lime recommendation, and lime type have been pre-filled in the calculator tabs.</p>'
-      + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">'
-      + (crop==='warm' ? '<button class="st-goto-btn" onclick="switchToTab(\'warm\')">&#8599; Warm-Season Calculator</button>' : '')
-      + (crop==='cool' ? '<button class="st-goto-btn" onclick="switchToTab(\'cool\')">&#8599; Cool-Season Calculator</button>' : '')
-      + '<button class="st-goto-btn" onclick="switchToTab(\'lime\')" style="background:var(--gold);">&#8599; Lime Calculator</button>'
-      + '</div></div>';
+      + '<p class="st-carryover-desc">' + desc + '</p>'
+      + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' + destBtns + '</div></div>';
   }
 }
 
@@ -1932,27 +2801,338 @@ function switchToTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'cool') calcCool();
-  if (tab === 'warm') calcWarm();
+  if (tab === 'cool') { calcCool(); var c = document.getElementById('cool-fert-chooser'); if (c && !c.querySelector('.fert-chooser')) c.outerHTML = fertChooserHTML('cool'); }
+  if (tab === 'warm') { calcWarm(); var w = document.getElementById('warm-fert-chooser'); if (w && !w.querySelector('.fert-chooser')) w.outerHTML = fertChooserHTML('warm'); }
   if (tab === 'lime') calcLime();
+  if (tab === 'garden') calcGarden();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ===== PRINT =====
 function printSoilTestResults() { window.print(); }
 
+function fertChooserHTML(prefix) {
+  var pRating = document.getElementById(prefix + '-p-rating') ? document.getElementById(prefix + '-p-rating').value : '';
+  var kRating = document.getElementById(prefix + '-k-rating') ? document.getElementById(prefix + '-k-rating').value : '';
+
+  var pLow  = ['L-','L','L+'].indexOf(pRating) >= 0;
+  var kLow  = ['L-','L','L+'].indexOf(kRating) >= 0;
+  var pHigh = ['H-','H','H+','VH'].indexOf(pRating) >= 0;
+  var kHigh = ['H-','H','H+','VH'].indexOf(kRating) >= 0;
+  var pMed  = pRating && !pLow;
+  var kMed  = kRating && !kLow;
+
+  // Dynamic recommendation based on P and K ratings
+  var recHtml = '';
+  if (!pRating && !kRating) {
+    recHtml = '<div class="fert-rec-box needs-p"><strong>Enter your P and K ratings (fields 4 &amp; 5)</strong> to get a personalised fertilizer recommendation here.</div>';
+  } else if (pLow && kLow) {
+    recHtml = '<div class="fert-rec-box needs-p">&#127807; <strong>Your soil needs both phosphorus and potassium.</strong> For your first application, choose a <strong>complete fertilizer</strong> with meaningful P and K — grades like <strong>10-10-10</strong> or <strong>16-4-8</strong> work well. Once P and K levels improve (retest in 3 years), switch to a maintenance fertilizer.</div>';
+  } else if (pLow && !kLow) {
+    recHtml = '<div class="fert-rec-box needs-p">&#127807; <strong>Your soil needs phosphorus but not potassium.</strong> For your first application, look for a fertilizer with elevated P — grades like <strong>10-20-10</strong> or <strong>5-10-5</strong>. For subsequent applications, switch to a low-P or no-P maintenance fertilizer.</div>';
+  } else if (!pLow && kLow) {
+    recHtml = '<div class="fert-rec-box needs-p">&#127807; <strong>Your soil needs potassium but not phosphorus.</strong> Choose a <strong>high-N, low/no-P fertilizer with K</strong> — grades like <strong>29-0-7</strong>, <strong>32-0-10</strong>, or <strong>28-0-4</strong> are widely available at garden centers.</div>';
+  } else if (pMed && kMed) {
+    recHtml = '<div class="fert-rec-box needs-none">&#10003; <strong>Your soil does not need phosphorus or potassium.</strong> Choose an <strong>N-only or N+K lawn maintenance fertilizer</strong> — phosphate-free grades like <strong>29-0-7</strong>, <strong>32-0-10</strong>, <strong>28-0-4</strong>, <strong>38-0-0</strong>, or <strong>46-0-0</strong> (urea). Most standard lawn fertilizers at large retailers are now phosphate-free.</div>';
+  }
+
+  return '<div class="fert-chooser" id="' + prefix + '-fert-chooser">'
+    + '<button class="fert-chooser-toggle no-print" id="' + prefix + '-fert-chooser-btn" onclick="toggleFertChooser(\'' + prefix + '\')">'
+    + '<span>&#128722; Help me choose a fertilizer at the garden center</span><span class="toggle-arrow">&#9660;</span></button>'
+    + '<div class="fert-chooser-body" id="' + prefix + '-fert-chooser-body">'
+
+    // Part 1 — What the three numbers mean
+    + '<p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:12px;line-height:1.6;"><strong>The three numbers on every bag</strong> — for example <strong>16-4-8</strong> — are the percentages by weight of nitrogen (N), phosphorus (P), and potassium (K). A 40 lb bag of 16-4-8 contains 6.4 lbs of actual nitrogen. The calculator works from these percentages — you enter them, it does the math.</p>'
+
+    // Part 2 — Dynamic P/K recommendation
+    + recHtml
+
+    // Part 3 — Slow-release explainer
+    + '<div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;line-height:1.6;">'
+    + '<strong>Quick-release vs. slow-release — how to tell on the bag:</strong><br>'
+    + 'Look under <em>Guaranteed Analysis</em> for a line that says <strong>"Water Insoluble Nitrogen (WIN)"</strong> with a percentage. Divide WIN by total N% to get your slowly-available fraction. No WIN listed means quick-release (Program 1).<br><br>'
+    + '&#9888; <strong>Label claims to ignore:</strong> "Contains 50% organic fertilizer" or "slow-feed formula" do not mean 50% slowly available. Only the WIN calculation is reliable. <em>(VCE 430-011)</em><br><br>'
+    + '&#128204; <strong>Sulfur-coated or polymer-coated urea</strong> products provide slow-release N but may not list WIN explicitly — the ingredient list will say so. Count that portion as slowly available when choosing your program.'
+    + '</div>'
+
+    // Part 4 — Common grades table
+    + '<p style="font-size:0.82rem;font-weight:600;color:var(--green-deep);margin-bottom:6px;">Common grades at a glance</p>'
+    + '<table class="fert-grade-table">'
+    + '<thead><tr><th>Grade</th><th>Best use</th><th>Typical WIN</th><th>Program</th></tr></thead>'
+    + '<tbody>'
+    + '<tr><td><strong>10-10-10</strong></td><td>P &amp; K deficient soil, first application or establishment</td><td>0%</td><td>P1</td></tr>'
+    + '<tr><td><strong>16-4-8</strong></td><td>Moderate P need, general maintenance</td><td>0%</td><td>P1</td></tr>'
+    + '<tr><td><strong>5-10-5</strong></td><td>Low P, starter or first application</td><td>0%</td><td>P1</td></tr>'
+    + '<tr><td><strong>29-0-7</strong></td><td>P adequate, moderate K, standard maintenance</td><td>0%</td><td>P1</td></tr>'
+    + '<tr><td><strong>32-0-10</strong></td><td>P adequate, moderate K, standard maintenance</td><td>0%</td><td>P1</td></tr>'
+    + '<tr><td><strong>28-0-4</strong></td><td>P adequate, low K, standard maintenance</td><td>0%</td><td>P1</td></tr>'
+    + '<tr><td><strong>38-0-0 / 46-0-0</strong></td><td>P &amp; K adequate, N correction only</td><td>0%</td><td>P1</td></tr>'
+    + '<tr><td><strong>Slow-release blend</strong><br><em style="font-size:0.72rem;">(e.g. 32-3-8 type with WIN listed)</em></td><td>Any situation — fewer applications, lower burn risk</td><td>15–49%</td><td>P2</td></tr>'
+    + '<tr><td><strong>High-WIN organic blend</strong><br><em style="font-size:0.72rem;">(WIN &ge;50% on label)</em></td><td>Any situation — fewest applications per season</td><td>&ge;50%</td><td>P3</td></tr>'
+    + '</tbody></table>'
+    + '<p style="font-size:0.75rem;color:var(--slate-light);margin-top:8px;">Grades sourced from VCE 430-011 Table 1 and common retail availability. This calculator does not endorse specific brands.</p>'
+    + '</div></div>';
+}
+
+function toggleFertChooser(prefix) {
+  var btn  = document.getElementById(prefix + '-fert-chooser-btn');
+  var body = document.getElementById(prefix + '-fert-chooser-body');
+  if (!btn || !body) return;
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+
+// ===== GARDEN CALCULATOR =====
+
+// Bulk density data: cups per pound (verified sources)
+// Synthetic: from VCE Note 19 / actual VCE garden report
+// Organic: calculated from FAO/extension bulk density data
+var GARDEN_PRODUCTS = {
+  'nitrate-soda':    { name:'Nitrate of Soda', npk:[16,0,0], cupsPerLb: 1.75, source:'VCE Note 19', organic:false },
+  'calcium-nitrate': { name:'Calcium Nitrate', npk:[15,0,0], cupsPerLb: 2.0,  source:'VCE Note 19', organic:false },
+  'ammonium-sulfate':{ name:'Ammonium Sulfate', npk:[21,0,0], cupsPerLb: 2.5,  source:'VCE Note 19', organic:false },
+  'urea':            { name:'Urea',             npk:[46,0,0], cupsPerLb: 2.5,  source:'VCE Note 19', organic:false },
+  '10-10-10':        { name:'10-10-10',         npk:[10,10,10], cupsPerLb: 1.75, source:'Est. (granular)', organic:false },
+  '5-10-5':          { name:'5-10-5',           npk:[5,10,5],  cupsPerLb: 1.75, source:'Est. (granular)', organic:false },
+  'blood-meal':      { name:'Blood Meal',       npk:[13,0,0], cupsPerLb: 2.75, source:'FAO bulk density', organic:true },
+  'fish-meal':       { name:'Fish Meal',        npk:[10,6,2], cupsPerLb: 2.5,  source:'Est. bulk density', organic:true },
+  'soybean-meal':    { name:'Soybean Meal',     npk:[7,2,1],  cupsPerLb: 2.0,  source:'Est. bulk density', organic:true },
+  'cottonseed-meal': { name:'Cottonseed Meal',  npk:[6,2,1],  cupsPerLb: 2.25, source:'Est. bulk density', organic:true },
+  'feather-meal':    { name:'Feather Meal',     npk:[12,0,0], cupsPerLb: 3.0,  source:'Est. bulk density', organic:true },
+  'poultry-manure':  { name:'Poultry Manure (dry)', npk:[3,2,2], cupsPerLb: 1.75, source:'Est. bulk density', organic:true }
+};
+
+var gardenSizeMode = 'rect';
+var gardenFertMode = 'npk';
+
+function setGardenSizeMode(mode) {
+  gardenSizeMode = mode;
+  document.getElementById('gdn-size-mode-rect').classList.toggle('active', mode === 'rect');
+  document.getElementById('gdn-size-mode-area').classList.toggle('active', mode === 'area');
+  document.getElementById('gdn-size-rect').style.display = mode === 'rect' ? '' : 'none';
+  document.getElementById('gdn-size-area').style.display = mode === 'area' ? '' : 'none';
+  calcGarden();
+}
+
+function setGardenFertMode(mode) {
+  gardenFertMode = mode;
+  document.getElementById('gdn-fert-mode-npk').classList.toggle('active', mode === 'npk');
+  document.getElementById('gdn-fert-mode-product').classList.toggle('active', mode === 'product');
+  document.getElementById('gdn-fert-npk').style.display = mode === 'npk' ? '' : 'none';
+  document.getElementById('gdn-fert-product').style.display = mode === 'product' ? '' : 'none';
+  calcGarden();
+}
+
+function onGardenProductSelect() {
+  var key = document.getElementById('gdn-product-select').value;
+  var noteEl = document.getElementById('gdn-product-note');
+  if (key && GARDEN_PRODUCTS[key]) {
+    var p = GARDEN_PRODUCTS[key];
+    var isOrganic = p.organic;
+    noteEl.innerHTML = '<span style="color:var(--green-mid);font-weight:600;">' + p.name + '</span> — '
+      + p.npk[0] + '% N / ' + p.npk[1] + '% P / ' + p.npk[2] + '% K'
+      + (isOrganic ? ' &nbsp;&#127807; <em>Organic source — volume is an estimate; weigh when possible.</em>' : ' &nbsp;&#10003; Volume sourced from: ' + p.source);
+  } else {
+    noteEl.innerHTML = '';
+  }
+  calcGarden();
+}
+
+function calcGardenDimensions() {
+  var l = parseFloat(document.getElementById('gdn-length').value) || 0;
+  var w = parseFloat(document.getElementById('gdn-width').value) || 0;
+  var area = l > 0 && w > 0 ? l * w : 0;
+  var disp = document.getElementById('gdn-area-display');
+  if (disp) disp.textContent = area > 0 ? '= ' + area + ' sq. ft.' : '—';
+  calcGarden();
+}
+
+function fmtVolume(cups) {
+  if (cups <= 0) return '-';
+  if (cups < 0.0625) return 'less than 1 tsp';
+  if (cups < 0.125) {
+    var tsps = Math.round(cups * 48);
+    return tsps + ' tsp';
+  }
+  if (cups < 0.25) {
+    var tbsps = Math.round(cups * 16 * 10) / 10;
+    if (tbsps <= 1) return '1 tbsp';
+    return tbsps.toFixed(tbsps % 1 === 0 ? 0 : 1) + ' tbsp';
+  }
+  if (cups < 1) {
+    var tbsps = Math.round(cups * 16);
+    return tbsps + ' tbsp (' + fmt(cups, 2) + ' cup)';
+  }
+  var whole = Math.floor(cups);
+  var frac = cups - whole;
+  var fracStr = '';
+  if (frac >= 0.875) { whole++; }
+  else if (frac >= 0.625) fracStr = '¾';
+  else if (frac >= 0.375) fracStr = '½';
+  else if (frac >= 0.125) fracStr = '¼';
+  var str = whole > 0 ? whole + '' : '';
+  if (fracStr) str += (whole > 0 ? ' ' : '') + fracStr;
+  return str + ' cup' + (cups >= 2 ? 's' : '');
+}
+
+function calcGarden() {
+  var gardenType  = document.getElementById('gdn-type').value;
+  var nRec        = parseFloat(document.getElementById('gdn-n-rec').value) || 0;
+  var pRating     = document.getElementById('gdn-p-rating').value;
+  var kRating     = document.getElementById('gdn-k-rating').value;
+  var limeRec     = parseFloat(document.getElementById('gdn-lime-rec').value) || 0;
+  var bedStatus   = document.getElementById('gdn-bed-status').value;
+
+  var area = 0;
+  if (gardenSizeMode === 'rect') {
+    var l = parseFloat(document.getElementById('gdn-length').value) || 0;
+    var w = parseFloat(document.getElementById('gdn-width').value) || 0;
+    area = l * w;
+  } else {
+    area = parseFloat(document.getElementById('gdn-area-direct').value) || 0;
+  }
+
+  // Get fertilizer N/P/K
+  var fertN = 0, fertP = 0, fertK = 0, productKey = '', cupsPerLb = 0, isOrganic = false;
+  if (gardenFertMode === 'product') {
+    productKey = document.getElementById('gdn-product-select').value;
+    if (productKey && GARDEN_PRODUCTS[productKey]) {
+      var pd = GARDEN_PRODUCTS[productKey];
+      fertN = pd.npk[0]; fertP = pd.npk[1]; fertK = pd.npk[2];
+      cupsPerLb = pd.cupsPerLb;
+      isOrganic = pd.organic;
+    }
+  } else {
+    fertN = parseFloat(document.getElementById('gdn-fert-n').value) || 0;
+    fertP = parseFloat(document.getElementById('gdn-fert-p').value) || 0;
+    fertK = parseFloat(document.getElementById('gdn-fert-k').value) || 0;
+    // Estimate cupsPerLb for generic fertilizers
+    cupsPerLb = fertN > 30 ? 2.5 : 1.75;
+  }
+
+  var resultsEl = document.getElementById('gdn-results');
+  var timingEl  = document.getElementById('gdn-timing');
+
+  if (!area || area <= 0) {
+    resultsEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your bed dimensions or area above to see recommendations.</p>';
+    return;
+  }
+
+  var hundredths = area / 100; // Number of 100 sq. ft. units
+  var html = '';
+
+  // Fertilizer amount
+  if (nRec > 0 && fertN > 0) {
+    var lbsPerHundred = nRec / (fertN / 100);  // lbs of product per 100 sq ft
+    var lbsTotal = lbsPerHundred * hundredths;
+    var cupsTotal = lbsTotal * cupsPerLb;
+    var volStr = cupsPerLb > 0 ? ' ≈ <strong>' + fmtVolume(cupsTotal) + '</strong>' + (isOrganic ? ' <em style="font-size:0.78rem;">(estimate)</em>' : '') : '';
+
+    html += '<div class="result-row"><div class="result-label">Total fertilizer for your bed (' + area + ' sq. ft.)</div><div class="result-value large">' + fmt(lbsTotal, 2) + ' lbs</div></div>';
+    if (cupsPerLb > 0) {
+      html += '<div class="result-row"><div class="result-label">Approximate volume</div><div class="result-value">' + fmtVolume(cupsTotal) + (isOrganic ? '<br><span style="font-size:0.72rem;color:var(--slate-light);">organic — estimate only; weigh when possible</span>' : '') + '</div></div>';
+    }
+    html += '<div class="result-row"><div class="result-label">Rate per 100 sq. ft.</div><div class="result-value">' + fmt(lbsPerHundred, 2) + ' lbs' + (cupsPerLb > 0 ? ' ≈ ' + fmtVolume(lbsPerHundred * cupsPerLb) : '') + '</div></div>';
+
+    // Sidedress for vegetables/mixed
+    if (gardenType === 'vegetable' || gardenType === 'mixed') {
+      var sideLbs = 1 * hundredths; // 1 lb 10-10-10 per 100 sq ft of row
+      var sideCups = sideLbs * 1.75;
+      html += '<div style="background:var(--green-mist);border-radius:6px;padding:12px 14px;margin-top:12px;">';
+      html += '<div style="font-weight:600;color:var(--green-deep);margin-bottom:6px;">&#127807; Sidedress Recommendation (Note 19)</div>';
+      html += '<p style="font-size:0.85rem;color:var(--slate-mid);">About 1 month after planting, apply 1 lb of 10-10-10 per 100 sq. ft. of row (not total bed area).</p>';
+      html += '<div style="margin-top:8px;font-size:0.85rem;">Estimated for your bed: <strong>' + fmt(sideLbs, 1) + ' lbs 10-10-10 ≈ ' + fmtVolume(sideCups) + '</strong></div>';
+      html += '</div>';
+    }
+  } else if (area > 0) {
+    html += '<div class="result-row"><div class="result-label">Fertilizer needed</div><div class="result-value" style="color:var(--slate-light);">Enter N rec. &amp; fertilizer grade</div></div>';
+  }
+
+  // P/K flags
+  var pRat = WAYPOINT_TO_VCE[pRating] || pRating;
+  var kRat = WAYPOINT_TO_VCE[kRating] || kRating;
+  var pkHtml = '';
+  if (pRat && P_REC[pRat]) {
+    var pr = P_REC[pRat];
+    pkHtml += '<div class="rec-box ' + pr.cls + '" style="margin-top:8px;"><span class="rec-icon">' + pr.icon + '</span><span><strong>Phosphorus:</strong> ' + pr.msg + '</span></div>';
+  }
+  if (kRat && K_REC[kRat]) {
+    var kr = K_REC[kRat];
+    pkHtml += '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
+  }
+  if (pkHtml) html += '<div style="margin-top:12px;">' + pkHtml + '</div>';
+
+  // Lime
+  if (limeRec > 0) {
+    var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
+    var limeLbsTotal = limeRec * hundredths;
+    var limeAppsNeeded = Math.max(1, Math.ceil(limeRec / limeMaxPer));
+    var limeLbsPerApp  = limeLbsTotal / limeAppsNeeded;
+    html += '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-top:16px;">';
+    html += '<div style="font-weight:600;color:#7d5a00;margin-bottom:8px;">&#129704; Lime for Your Bed</div>';
+    html += '<div style="font-size:0.875rem;color:var(--slate-mid);">Total: <strong>' + fmt(limeLbsTotal, 1) + ' lbs</strong> in ' + limeAppsNeeded + ' application' + (limeAppsNeeded > 1 ? 's' : '') + ' of up to ' + limeMaxPer + ' lbs/100 sq. ft. (' + (bedStatus==='preplant'?'preplant limit':'established bed limit') + ').</div>';
+    if (limeAppsNeeded > 1) {
+      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">' + fmt(limeLbsPerApp, 1) + ' lbs per application, spaced 1-6 months apart.</div>';
+    }
+    html += '</div>';
+  }
+
+  resultsEl.innerHTML = html || '<p style="color:var(--slate-light);font-size:0.875rem;">Enter nitrogen recommendation and fertilizer grade to see quantities.</p>';
+
+  // Timing
+  var timingHtml = '';
+  if (gardenType) {
+    if (gardenType === 'vegetable' || gardenType === 'mixed') {
+      timingHtml = '<ul class="timing-list">'
+        + '<li><span class="timing-num">1</span><span><strong>Preplant (spring):</strong> Apply lime and fertilizer and incorporate into top 6-8 inches of soil before planting.</span></li>'
+        + '<li><span class="timing-num">2</span><span><strong>Sidedress (~1 month after planting):</strong> Apply 1 lb of 10-10-10 per 100 sq. ft. of planted row alongside plants. Do not let fertilizer touch foliage.</span></li>'
+        + '<li><span class="timing-num">3</span><span><strong>Note:</strong> Avoid high-N applications in hot weather — can encourage lush growth susceptible to disease.</span></li>'
+        + '</ul>';
+    } else if (gardenType === 'annual') {
+      timingHtml = '<ul class="timing-list">'
+        + '<li><span class="timing-num">1</span><span><strong>Preplant:</strong> Incorporate fertilizer and lime before planting each season.</span></li>'
+        + '<li><span class="timing-num">2</span><span><strong>Mid-season:</strong> A light additional application may benefit heavy bloomers. Use a balanced fertilizer at half rate.</span></li>'
+        + '</ul>';
+    } else if (gardenType === 'perennial') {
+      timingHtml = '<ul class="timing-list">'
+        + '<li><span class="timing-num">1</span><span><strong>Early spring:</strong> Apply fertilizer as new growth emerges. Avoid late-season N applications that promote tender growth before frost.</span></li>'
+        + '<li><span class="timing-num">2</span><span><strong>Lime:</strong> Apply lime to the soil surface in fall or early spring; topdress carefully around established crowns.</span></li>'
+        + '</ul>';
+    }
+  }
+  timingEl.innerHTML = timingHtml || '<p style="color:var(--slate-light);font-size:0.875rem;">Select garden type to see timing guidance.</p>';
+}
+
 // ===== SAMPLE REPORT PRE-FILL =====
-function prefillSampleReport() {
-  var fields = {
-    'st-ph':'5.5','st-bi':'6.23','st-cec':'4.1','st-basesat':'75.6',
-    'st-p-val':'12','st-p-rating':'M-','st-k-val':'48','st-k-rating':'L',
-    'st-ca':'1000','st-ca-rating':'M','st-mg':'140','st-mg-rating':'M+',
-    'st-om':'2.0','st-salts':'128',
-    'st-zn':'0.8','st-zn-rating':'SUFF','st-mn':'11.1','st-mn-rating':'SUFF',
-    'st-cu':'0.6','st-cu-rating':'SUFF','st-fe':'92.4','st-fe-rating':'SUFF',
-    'st-b':'0.1','st-b-rating':'SUFF',
-    'st-lime-rec':'60','st-lime-type':'Agricultural','st-crop':'warm'
-  };
+function prefillSampleReport(type) {
+  var fields;
+  if (type === 'garden') {
+    // Based on actual VCE garden report Lab 23-15911, Vegetable Garden
+    fields = {
+      'st-report-type':'vce-garden',
+      'st-ph':'5.9','st-bi':'6.15','st-cec':'8.2','st-basesat':'68.4',
+      'st-p-val':'18','st-p-rating':'M+','st-k-val':'95','st-k-rating':'M',
+      'st-ca':'1100','st-ca-rating':'M','st-mg':'130','st-mg-rating':'M',
+      'st-om':'8.8','st-salts':'1216',
+      'st-zn':'1.2','st-zn-rating':'SUFF','st-mn':'8.4','st-mn-rating':'SUFF',
+      'st-cu':'0.5','st-cu-rating':'SUFF','st-fe':'110','st-fe-rating':'SUFF',
+      'st-b':'0.2','st-b-rating':'SUFF',
+      'st-lime-rec':'5','st-lime-type':'Agricultural','st-garden-type':'vegetable'
+    };
+  } else {
+    fields = {
+      'st-report-type':'vce-lawn',
+      'st-ph':'5.5','st-bi':'6.23','st-cec':'4.1','st-basesat':'75.6',
+      'st-p-val':'12','st-p-rating':'M-','st-k-val':'48','st-k-rating':'L',
+      'st-ca':'1000','st-ca-rating':'M','st-mg':'140','st-mg-rating':'M+',
+      'st-om':'2.0','st-salts':'128',
+      'st-zn':'0.8','st-zn-rating':'SUFF','st-mn':'11.1','st-mn-rating':'SUFF',
+      'st-cu':'0.6','st-cu-rating':'SUFF','st-fe':'92.4','st-fe-rating':'SUFF',
+      'st-b':'0.1','st-b-rating':'SUFF',
+      'st-lime-rec':'60','st-lime-type':'Agricultural','st-crop':'warm'
+    };
+  }
   var keys = Object.keys(fields);
   for (var i = 0; i < keys.length; i++) {
     var id = keys[i], val = fields[id];
@@ -1964,9 +3144,13 @@ function prefillSampleReport() {
       el.value = val;
     }
   }
+  onReportTypeChange();
+  // Always clear the area field — user must enter their own
+  var areaEl = document.getElementById('st-lawn-size');
+  if (areaEl) areaEl.value = '';
   interpretSoilTest();
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  showToast('Sample VCE soil test report loaded');
+  showToast(type === 'garden' ? 'Sample VCE garden soil test loaded (Lab 23-15911)' : 'Sample VCE lawn soil test report loaded');
 }
 
 // ===== TOAST =====
