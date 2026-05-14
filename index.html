@@ -874,7 +874,56 @@
             <div class="st-field st-field-wide">
               <label id="st-area-size-label">Lawn Size (sq. ft.) — enter this first to enable carry-over</label>
               <input type="number" id="st-lawn-size" placeholder="e.g. 5000" oninput="interpretSoilTest()">
-              <div id="st-area-hint" style="font-size:0.75rem;margin-top:4px;color:var(--gold);font-weight:600;">&#9888; Enter your lawn size so fertilizer quantities calculate correctly on the calculator tabs.</div>
+              <div id="st-area-hint" style="font-size:0.75rem;margin-top:4px;color:var(--gold);font-weight:600;">&#9888; Enter your lawn or garden size so fertilizer quantities calculate correctly on the calculator tabs.</div>
+
+              <!-- How to measure collapsible -->
+              <div style="margin-top:8px;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                <button class="fert-chooser-toggle no-print" id="measure-btn" onclick="toggleMeasure()" style="font-size:0.78rem;padding:8px 12px;">
+                  <span>&#128207; Not sure of your lawn or garden size? How to measure</span><span class="toggle-arrow">&#9660;</span>
+                </button>
+                <div class="fert-chooser-body" id="measure-body">
+                  <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:12px;">You need to measure just the grass or garden area — not the full lot. Exclude the house, driveway, and any paved areas. For most properties, one of these three methods takes under 5 minutes.</p>
+
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:10px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">&#127758; Method 1 — Google Earth (recommended for irregular lawns)</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:6px;">Google Earth lets you trace your lawn outline directly on satellite imagery and calculates the area automatically. Works well for irregular shapes and areas obscured by trees (use 3D mode to see under tree canopy).</p>
+                    <ol style="font-size:0.82rem;color:var(--slate-mid);margin:0;padding-left:18px;line-height:1.8;">
+                      <li>Go to <a href="https://earth.google.com" target="_blank" style="color:var(--green-mid);">earth.google.com</a> and enter your address</li>
+                      <li>Click the <strong>ruler icon</strong> in the toolbar to open the measure tool</li>
+                      <li>Click around the outside edge of your grass area to drop pins — the area highlights in yellow and updates automatically</li>
+                      <li>Change the units to <strong>square feet</strong> using the dropdown if needed</li>
+                      <li>For areas under trees, switch to <strong>3D view</strong> (lower right corner) to pan around and place pins accurately</li>
+                      <li>Round up to the nearest 100 sq. ft. for a safe estimate</li>
+                    </ol>
+                    <p style="font-size:0.78rem;color:var(--slate-light);margin-top:6px;">Full step-by-step instructions with screenshots: <a href="https://turf.umn.edu/how-measure-area-your-lawn" target="_blank" style="color:var(--green-mid);">University of Minnesota Turfgrass Science</a></p>
+                  </div>
+
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:10px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">&#128205; Method 2 — Google Maps (quick, no download needed)</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:6px;">Google Maps has a built-in measurement tool that works in any browser — no account or app required.</p>
+                    <ol style="font-size:0.82rem;color:var(--slate-mid);margin:0;padding-left:18px;line-height:1.8;">
+                      <li>Go to <a href="https://maps.google.com" target="_blank" style="color:var(--green-mid);">maps.google.com</a> and search your address</li>
+                      <li>Switch to <strong>Satellite view</strong> (bottom left)</li>
+                      <li><strong>Right-click</strong> on a corner of your lawn and choose <strong>"Measure distance"</strong></li>
+                      <li>Click around the perimeter of your grass area — avoid driveways, beds, and paved areas</li>
+                      <li>Click your starting point again to close the shape — the area appears in the info box in sq. ft.</li>
+                      <li>For multiple separate lawn areas (front and back), measure each separately and add the totals</li>
+                    </ol>
+                    <p style="font-size:0.78rem;color:var(--slate-light);margin-top:6px;">Tip: zoom in close before placing points for the most accurate outline.</p>
+                  </div>
+
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">&#128207; Method 3 — Tape measure (most accurate for simple shapes)</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:6px;">For rectangular or L-shaped lawns a tape measure is fast and precise.</p>
+                    <ul style="font-size:0.82rem;color:var(--slate-mid);margin:0;padding-left:18px;line-height:1.8;">
+                      <li><strong>Rectangle:</strong> length × width = sq. ft.</li>
+                      <li><strong>L-shape:</strong> divide into two rectangles, calculate each, add together</li>
+                      <li><strong>Triangle:</strong> ½ × base × height</li>
+                      <li>A 100-foot tape measure handles most residential lawns in one pass</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="st-field st-field-wide">
               <label id="st-lime-rec-label">Lime Recommendation (lbs / 1,000 sq. ft.)</label>
@@ -1746,6 +1795,15 @@ var TIMING_GUIDANCE = {
   }
 };
 
+function toggleMeasure() {
+  var btn  = document.getElementById('measure-btn');
+  var body = document.getElementById('measure-body');
+  if (!btn || !body) return;
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+
 // ===== PRINT PLAN =====
 function printPlan(prefix) {
   document.body.classList.add('printing-' + prefix);
@@ -2616,7 +2674,7 @@ function interpretSoilTest() {
       phAction = abox('action-monitor', 'Do not apply additional lime. Monitor micronutrient availability.');
     } else {
       phClass = 'pill-warn'; phMsg = 'Alkaline. Above pH 7.0, micronutrients become less available.';
-      phAction = abox('action-needed', 'Do not apply lime. Consider sulfur to lower pH, or allow it to drop naturally.');
+      phAction = abox('action-needed', 'Do not apply lime. Sulfur may be recommended for certain crops to lower pH — check your soil test report or consult your local VCE office.');
     }
     cards.push(card('&#9879;&#65039;', 'Soil pH', 'Virginia soils: 4.5-7.5', isGarden ? 'Gardens: 6.0-6.8' : 'Lawns: 5.8-6.8',
       '<span class="st-rating-pill ' + phClass + '">' + ph.toFixed(1) + '</span>',
@@ -2726,7 +2784,7 @@ function interpretSoilTest() {
     } else if (['H-','H','H+','VH'].indexOf(pRat) >= 0) {
       pMsg = 'High to very high phosphorus. Plants usually do not respond.'; pAction = abox('action-good','Use a zero-phosphorus (maintenance) fertilizer.');
     } else {
-      pMsg = 'Adequate for your specified crop/plant.'; pAction = abox('action-good','Follow your soil test recommendations.');
+      pMsg = 'Optimum — your soil has adequate phosphorus for good plant growth.'; pAction = abox('action-good','Maintenance applications only. Choose a fertilizer with low or no phosphorus to avoid buildup. Retest in 3 years.');
     }
     var pCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : (crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '');
     cards.push(card('&#127807;', 'Phosphorus (P)', 'Medium: 12-35 lb/A (VCE)', '', pDisplay,
@@ -2745,7 +2803,7 @@ function interpretSoilTest() {
     } else if (['H-','H','H+','VH'].indexOf(kRat) >= 0) {
       kMsg = 'High to very high potassium. Plants usually do not respond to additional applications.'; kAction = abox('action-good','Use a zero-potassium fertilizer or one primarily supplying nitrogen.');
     } else {
-      kMsg = 'Rated as sufficient.'; kAction = abox('action-good','Follow your soil test recommendations.');
+      kMsg = 'Optimum — your soil has adequate potassium for good plant growth.'; kAction = abox('action-good','Maintenance applications only. A fertilizer with low or no potassium is appropriate. Retest in 3 years.');
     }
     var kCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : (crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '');
     cards.push(card('&#9889;', 'Potassium (K)', 'Medium: 76-175 lb/A (VCE)', '', kDisplay,
@@ -2789,7 +2847,7 @@ function interpretSoilTest() {
       } else if (om <= 10.0) {
         omMsg = 'Good organic matter level — within the ideal range for vegetable and flower gardens (5-10%).'; omAction = abox('action-good','Maintain through annual compost additions.');
       } else {
-        omMsg = 'Very high — common in heavily amended garden soils.'; omAction = abox('action-monitor','Excellent for plant growth. Check herbicide labels if applicable — rates are often adjusted at higher OM levels.');
+        omMsg = 'Very high — common in heavily amended garden soils. Excellent for plant growth.'; omAction = abox('action-good','Excellent organic matter level. Continue adding compost annually or every time you till to maintain. <em>(SPES-384, Note 19)</em>');
       }
       cards.push(card('&#127757;', 'Organic Matter', 'Garden target: 5-10%', 'Higher end preferred', om.toFixed(1) + '%',
         'The percentage of plant and animal residues — at all stages of decomposition — in your soil.</p><p><strong>Your result:</strong> ' + omMsg,
@@ -2801,9 +2859,9 @@ function interpretSoilTest() {
       } else if (om <= 2.5) {
         omMsg = 'Ordinary range for a natural, well-drained Virginia soil (0.5-2.5%).'; omAction = abox('action-good','Maintain through regular organic additions.');
       } else if (om <= 5.0) {
-        omMsg = 'Higher than typical for a cultivated field, but beneficial for a lawn.'; omAction = abox('action-good','Good organic matter level. Some herbicide rates may need adjustment at higher OM levels.');
+        omMsg = 'Higher than typical for a Virginia lawn — beneficial for nutrient retention, moisture holding, and soil life.'; omAction = abox('action-good','Above average organic matter. Maintain through returning clippings and occasional compost topdressing. <em>(SPES-384)</em>');
       } else {
-        omMsg = 'Very high - common in heavily amended garden soils.'; omAction = abox('action-monitor','Check herbicide labels - rates are often adjusted based on % organic matter.');
+        omMsg = 'Very high — well above typical for a Virginia lawn, but excellent for plant health.'; omAction = abox('action-good','Excellent organic matter level. Continue returning clippings and topdressing with compost to maintain. <em>(SPES-384)</em>');
       }
       cards.push(card('&#127757;', 'Organic Matter', 'Virginia soils: 0.5-2.5%', 'Higher end preferred', om.toFixed(1) + '%',
         'The percentage of plant and animal residues — at all stages of decomposition — in your soil.</p><p><strong>Your result:</strong> ' + omMsg,
@@ -2827,8 +2885,10 @@ function interpretSoilTest() {
       saltMsg = 'Elevated. Above the level where Waypoint flags concern (1.0 dS/m / 640 ppm). Seeds and seedlings may show stress.';
       saltAction = abox('action-monitor','Avoid additional fertilizer applications until levels drop.' + (isGarden ? ' Delay transplanting seedlings until salts decrease.' : ''));
     } else if (saltPpm > 400) {
-      saltMsg = 'Slightly elevated but within a safe range for established turf.';
-      saltAction = abox('action-good','No action needed for established grass. Avoid over-fertilizing.');
+      saltMsg = 'Slightly elevated but within a safe range for established plants.';
+      saltAction = abox('action-good', isGarden
+        ? 'No action needed for established plants. Avoid over-fertilizing. Monitor seedling sensitivity — delay transplanting if possible until levels drop.'
+        : 'No action needed for established grass. Avoid over-fertilizing to prevent further buildup.');
     } else {
       saltMsg = 'Low - no salt injury risk.';
       saltAction = abox('action-good','Soluble salts are not high enough to cause injury. No action needed.');
@@ -2936,7 +2996,7 @@ function interpretSoilTest() {
   if (areaHint) areaHint.style.display = areaVal ? 'none' : 'block';
 
   if (carryBar && canCarryOver) {
-    var areaWarning = areaVal ? '' : '<div style="font-size:0.8rem;color:#b8892a;margin-top:6px;">&#9888; <strong>Lawn size not entered.</strong> Fertilizer quantities on the calculator tabs will not compute until you enter a lawn size above.</div>';
+    var areaWarning = areaVal ? '' : '<div style="font-size:0.8rem;color:#b8892a;margin-top:6px;">&#9888; <strong>Lawn or garden size not entered.</strong> Fertilizer quantities on the calculator tabs will not compute until you enter a lawn or garden size above.</div>';
     var barDesc = carryBar.querySelector('.st-carryover-desc');
     if (barDesc) barDesc.innerHTML = 'Your P &amp; K ratings, lime recommendation, and lime type will be pre-filled in the relevant calculator tabs.' + areaWarning;
   }
@@ -3419,17 +3479,17 @@ function calcGarden() {
 function prefillSampleReport(type) {
   var fields;
   if (type === 'garden') {
-    // Based on actual VCE garden report Lab 23-15911, Vegetable Garden
+    // Based on real Waypoint garden report, Midlothian VA — Annual Flowers / Perennials
     fields = {
-      'st-report-type':'vce-garden',
-      'st-ph':'5.9','st-bi':'6.15','st-cec':'8.2','st-basesat':'68.4',
-      'st-p-val':'18','st-p-rating':'M+','st-k-val':'95','st-k-rating':'M',
-      'st-ca':'1100','st-ca-rating':'M','st-mg':'130','st-mg-rating':'M',
-      'st-om':'8.8','st-salts':'1216',
-      'st-zn':'1.2','st-zn-rating':'SUFF','st-mn':'8.4','st-mn-rating':'SUFF',
-      'st-cu':'0.5','st-cu-rating':'SUFF','st-fe':'110','st-fe-rating':'SUFF',
-      'st-b':'0.2','st-b-rating':'SUFF',
-      'st-lime-rec':'5','st-lime-type':'Agricultural','st-garden-type':'vegetable'
+      'st-report-type':'waypoint-garden',
+      'st-ph':'5.2','st-bi':'6.61',
+      'st-cec':'9.4','st-basesat':'66',
+      'st-p-val':'61','st-p-rating':'LO',
+      'st-k-val':'147','st-k-rating':'OP',
+      'st-ca':'865','st-ca-rating':'OP',
+      'st-mg':'180','st-mg-rating':'OP',
+      'st-om':'5.6',
+      'st-lime-rec':'87','st-lime-type':'Agricultural','st-garden-type':'annual'
     };
   } else {
     fields = {
