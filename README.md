@@ -31,7 +31,7 @@ Select your report type:
 - VCE / Virginia Tech — Vegetable & Flower Garden
 - Waypoint Analytical — Garden
 
-Enter your values exactly as they appear on your report. Units, rating scales, and interpretation language adjust automatically. The tool interprets every measurement with a color-coded action recommendation.
+Enter your values exactly as they appear on your report. Units, rating scales, and interpretation language adjust automatically. The tool interprets every measurement with a color-coded action recommendation. All card content is grounded in VCE and Waypoint source documents — thresholds, ranges, and action language are sourced, not estimated.
 
 **Enter your lawn or bed size first** — this is required for fertilizer quantities to calculate. Once P and K ratings and grass type are entered, a green "Apply to Calculators" bar appears. Click it to pre-fill all the calculator tabs at once.
 
@@ -58,9 +58,14 @@ Enter your values exactly as they appear on your report. Units, rating scales, a
 
 Enter your lawn size, lime recommendation, lime type, CCE (from the bag), and bag size. The calculator shows the CCE adjusted rate, number of applications, total lbs per application to your lawn, total bags, and an **application schedule with spreader rates** — the lbs per 1,000 sq. ft. for each numbered application, which you use to set your spreader.
 
-### Step 4 — Garden & Flowers tab
+### Step 4 — Vegetable & Flower Gardens tab
 
-Enter bed dimensions (or area directly for irregular beds), N recommendation, P and K ratings, fertilizer grade or product, and lime recommendation. Shows fertilizer weight, approximate volume, lime for your bed, and timing guidance by garden type.
+Enter bed dimensions (or area directly for irregular beds), N recommendation, P and K ratings, fertilizer grade or product, and lime recommendation. The calculator shows fertilizer weight, approximate volume, lime for your bed, and timing guidance by garden type.
+
+**Vegetable-specific guidance** is available in collapsible sections below the fertilizer selector:
+- **Vegetable crop fertilizer guidance** (vegetable and mixed beds) — crop-specific N timing rules for tomatoes, corn, leafy vegetables, root crops, and fruit-set crops; the 3–4 week N timing rule; banding technique for transplants. *(VCE 426-323)*
+- **Nutrient deficiency symptoms reference** (all garden types) — visual symptoms for all major nutrients and trace elements with Virginia context. Most deficiency problems in Virginia are pH-related. *(VCE 426-323)*
+- **Can't find the recommended grade?** — fertilizer substitution table from Note 19.
 
 ---
 
@@ -139,7 +144,8 @@ The calculator does not recommend specific brands. The "Help me choose a fertili
 | 430-520 / SPES-223P | Fall Lawn Care — VCE 2025 |
 | 452-717 / SPES-306P | Soil Test Note 17: Lawn Fertilization for Cool-Season Grasses — VCE 2021 |
 | 452-718 / SPES-305P | Soil Test Note 18: Lawn Fertilization for Warm-Season Grasses — VCE 2021 |
-| 452-719 / SPES-687NP | Soil Test Note 19: Vegetable and Flower Gardens — VCE |
+| 452-719 / SPES-687P | Soil Test Note 19: Vegetable and Flower Gardens — VCE 2025 |
+| 426-323 / SPES-803P | Fertilizing the Vegetable Garden — VCE 2026 |
 | 452-701 / SPE-605NP | Soil Test Note 1: Explanation of Soil Tests — VCE 2024 |
 | Agronomy Facts 8 | Soil Test Interpretation: Terms and Definitions — Waypoint Analytical 2023 |
 | DCR 2014 | Virginia Nutrient Management Standards and Criteria |
