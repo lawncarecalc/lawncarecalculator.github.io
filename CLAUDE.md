@@ -21,6 +21,8 @@ All calculations, thresholds, and interpretation language must be grounded in th
 | SPES-40A | Spreadsheet-Based Calculator for Lawn Fertilizer and Lime Applications in Virginia | Chantel Wilson (VSU); Michael Goatley Jr. (VT) |
 | 430-011 / SPES-334P | Lawn Fertilization in Virginia | Goatley, Cataldi, Chalmers, Hall, Schmidt — VCE 2021 |
 | 430-520 / SPES-223P | Fall Lawn Care | Goatley, Askew, McCall — VCE 2025 |
+| 430-522 / SPES-669P | Maintenance Calendar for Warm-Season Turfgrasses in Virginia | Goatley, Askew, McCall (VT); Wilson (Penn State Extension) — VCE 2025 |
+| 430-523 / SPES-670P | Maintenance Calendar for Cool-Season Turfgrasses in Virginia | Goatley, Askew, McCall (VT); Wilson (Penn State Extension) — VCE 2025 |
 | 452-717 / SPES-306P | Soil Test Note 17: Lawn Fertilization for Cool-Season Grasses | Goatley, Ervin, Heckendorn — VCE 2021 |
 | 452-718 / SPES-305P | Soil Test Note 18: Lawn Fertilization for Warm-Season Grasses | Goatley, Ervin, Heckendorn — VCE 2021 |
 | 452-719 / SPES-687P | Soil Test Note 19: Vegetable and Flower Gardens | Latimer (retired), Heckendorn — VCE 2025 |
@@ -28,6 +30,7 @@ All calculations, thresholds, and interpretation language must be grounded in th
 | 452-701 / SPE-605NP | Soil Test Note 1: Explanation of Soil Tests | Maguire, Heckendorn — VCE 2024 |
 | Agronomy Facts 8 | Soil Test Interpretation: Terms and Definitions | Large / Ruiz Jr. — Waypoint Analytical 2023 |
 | DCR 2014 | Virginia Nutrient Management Standards and Criteria | Virginia DCR (Tables 2-2 and 2-3) |
+| SPES-384NP | Your Soil Test Report Simplified: A Guide for Homeowners | Bolles — VCE 2021 |
 
 **Critical rule:** Never infer soil texture (sandy/clay) from CEC or Buffer Index values.
 

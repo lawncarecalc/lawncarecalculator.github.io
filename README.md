@@ -142,6 +142,8 @@ The calculator does not recommend specific brands. The "Help me choose a fertili
 | SPES-40A | Spreadsheet-Based Calculator for Lawn Fertilizer and Lime Applications in Virginia |
 | 430-011 / SPES-334P | Lawn Fertilization in Virginia — VCE 2021 |
 | 430-520 / SPES-223P | Fall Lawn Care — VCE 2025 |
+| 430-522 / SPES-669P | Maintenance Calendar for Warm-Season Turfgrasses in Virginia — VCE 2025 |
+| 430-523 / SPES-670P | Maintenance Calendar for Cool-Season Turfgrasses in Virginia — VCE 2025 |
 | 452-717 / SPES-306P | Soil Test Note 17: Lawn Fertilization for Cool-Season Grasses — VCE 2021 |
 | 452-718 / SPES-305P | Soil Test Note 18: Lawn Fertilization for Warm-Season Grasses — VCE 2021 |
 | 452-719 / SPES-687P | Soil Test Note 19: Vegetable and Flower Gardens — VCE 2025 |
@@ -149,6 +151,7 @@ The calculator does not recommend specific brands. The "Help me choose a fertili
 | 452-701 / SPE-605NP | Soil Test Note 1: Explanation of Soil Tests — VCE 2024 |
 | Agronomy Facts 8 | Soil Test Interpretation: Terms and Definitions — Waypoint Analytical 2023 |
 | DCR 2014 | Virginia Nutrient Management Standards and Criteria |
+| SPES-384NP | Your Soil Test Report Simplified: A Guide for Homeowners — VCE 2021 |
 
 ---
 
