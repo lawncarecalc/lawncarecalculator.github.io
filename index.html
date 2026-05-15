@@ -3031,29 +3031,35 @@ function interpretSoilTest() {
     var nutrients = [
       { id:'st-zn', rid:'st-zn-rating', name:'Zinc (Zn)',
         phNote:'Zinc availability decreases above pH 7.0. Most likely deficient with high P, high pH, or low organic matter.',
-        lowMsg:'Ensure pH is in the 5.8-6.8 range first. If deficiency persists, consult your local VCE office.',
+        lowMsg: isGarden
+          ? 'Low zinc: Ensure pH is in the 6.0–6.8 range first — zinc deficiency is most common on high pH or recently limed soils. Corn is especially sensitive. If deficiency persists at correct pH, apply zinc sulfate at 1–2 lbs per 1,000 sq. ft. before planting. <em>(426-323, 426-405)</em>'
+          : 'Ensure pH is in the 5.8–6.8 range first. If deficiency persists, consult your local VCE office.',
         suffMsg:'Zinc levels are adequate. No corrective action needed.',
         highMsg:'High zinc can interfere with iron and manganese uptake. Avoid applying zinc-containing products.' },
       { id:'st-mn', rid:'st-mn-rating', name:'Manganese (Mn)',
         phNote:'Availability drops sharply above pH 6.5. Over-liming is the most common cause of Mn deficiency in Virginia.',
-        lowMsg:'Low manganese is almost always a pH problem. Check soil pH first. Foliar manganese sulfate is most effective.',
+        lowMsg:'Low manganese is almost always a pH problem. Check soil pH first — Mn deficiency rarely occurs in well-limed soils at pH 6.0–6.8. Foliar-applied manganese sulfate is most effective when soil correction is not possible. <em>(426-323)</em>',
         suffMsg:'Manganese levels are adequate. No corrective action needed.',
-        highMsg:'High manganese can occur at low pH. Liming to the correct range will reduce availability.' },
+        highMsg:'High manganese can occur at low pH. Liming to the correct range will reduce availability to safe levels.' },
       { id:'st-cu', rid:'st-cu-rating', name:'Copper (Cu)',
         phNote:'Deficiency most likely on sandy, low-organic or highly organic soils.',
-        lowMsg:'Consult your local VCE office before applying copper - over-application can be toxic.',
+        lowMsg:'Consult your local VCE office before applying copper — over-application can be toxic and the correction is difficult to reverse. Copper deficiency is rare in Virginia gardens. <em>(426-323)</em>',
         suffMsg:'Copper levels are adequate. No corrective action needed.',
-        highMsg:'Very high copper can be toxic to plants and soil organisms.' },
+        highMsg:'Very high copper can be toxic to plants and soil organisms. Do not apply additional copper-containing products.' },
       { id:'st-fe', rid:'st-fe-rating', name:'Iron (Fe)',
-        phNote:'Decreases sharply above pH 7.0. Essential for chlorophyll production; deficiency causes yellowing between leaf veins.',
-        lowMsg:'Low iron is nearly always caused by high soil pH. Correct pH first. If yellowing persists at correct pH, use foliar-applied chelated iron only.',
+        phNote:'Availability decreases sharply above pH 7.0. Essential for chlorophyll production — deficiency causes yellowing between leaf veins (interveinal chlorosis) on young leaves.',
+        lowMsg:'Low iron is almost always caused by high soil pH. Correct pH first — iron deficiency at pH 6.0–6.8 is uncommon. If yellowing persists after pH correction, apply foliar-applied chelated iron only (not iron sulfate as a soil drench). <em>(426-323)</em>',
         suffMsg:'Iron levels are adequate. No corrective action needed.',
-        highMsg:'Elevated iron at low pH can interfere with P or Mn uptake.' },
+        highMsg:'Elevated iron at low pH can interfere with phosphorus or manganese uptake. Liming to correct pH will reduce iron availability.' },
       { id:'st-b', rid:'st-b-rating', name:'Boron (B)',
-        phNote:'Rarely a practical concern for established turfgrass.',
-        lowMsg:'Consult your local VCE office before applying - the margin between deficiency and toxicity is very narrow.',
+        phNote: isGarden
+          ? 'Important for fruit and seed development, cell wall formation, and pollen tube growth. Deficient soils are most common in sandy or highly leached Virginia soils. Cole crops (broccoli, cabbage, cauliflower) and root crops are especially sensitive.'
+          : 'Rarely a practical concern for established turfgrass. Organic matter additions are the best long-term management tool.',
+        lowMsg: isGarden
+          ? 'Low boron: Broadcast <strong>Borax</strong> evenly and mix into the soil before planting. <strong>Do not apply in a band near plants</strong> — the margin between deficiency and toxicity is narrow and concentrated boron can injure roots. Use the minimum effective rate: typically 1–2 lbs of Borax per 1,000 sq. ft. (about 0.1–0.2 lbs per 100 sq. ft.). Cole crops showing hollow broccoli stems or browning cauliflower curds, and root crops with cracked or distorted growth, are classic boron deficiency signs. Retest after one season before reapplying. <em>(426-403, 426-323, Waypoint Agronomy Facts 8)</em>'
+          : 'Consult your local VCE office before applying — the margin between deficiency and toxicity is very narrow. Organic matter additions are the best long-term management approach. <em>(426-323)</em>',
         suffMsg:'Boron levels are adequate. No corrective action needed.',
-        highMsg:'Excessive boron is toxic to plants. Do not apply boron-containing products.' }
+        highMsg:'Excessive boron is toxic to plants — more so than any other micronutrient. Do not apply boron-containing products. Boron toxicity is difficult to reverse and persists in soil.' }
     ];
 
     var hasMicro = nutrients.some(function(m) {
@@ -3839,11 +3845,11 @@ function prefillSampleReport(type) {
       'st-ca':'865','st-ca-rating':'OP',
       'st-mg':'180','st-mg-rating':'OP',
       'st-s':'25',
-      'st-b':'1.0','st-b-rating':'ME',
-      'st-cu':'6.4','st-cu-rating':'VH',
-      'st-fe':'266','st-fe-rating':'OP',
-      'st-mn':'27','st-mn-rating':'ME',
-      'st-zn':'44.9','st-zn-rating':'VH',
+      'st-b':'1.0','st-b-rating':'M',
+      'st-cu':'6.4','st-cu-rating':'H',
+      'st-fe':'266','st-fe-rating':'SUFF',
+      'st-mn':'27','st-mn-rating':'M',
+      'st-zn':'44.9','st-zn-rating':'H',
       'st-om':'5.6',
       'st-lime-rec':'87','st-lime-type':'Agricultural','st-garden-type':'annual'
     };
@@ -3859,11 +3865,11 @@ function prefillSampleReport(type) {
       'st-ca':'3201','st-ca-rating':'VH',
       'st-mg':'435','st-mg-rating':'OP',
       'st-s':'28',
-      'st-b':'1.8','st-b-rating':'ME',
-      'st-cu':'5.5','st-cu-rating':'VH',
-      'st-fe':'273','st-fe-rating':'OP',
-      'st-mn':'27','st-mn-rating':'ME',
-      'st-zn':'56.6','st-zn-rating':'VH',
+      'st-b':'1.8','st-b-rating':'M',
+      'st-cu':'5.5','st-cu-rating':'H',
+      'st-fe':'273','st-fe-rating':'SUFF',
+      'st-mn':'27','st-mn-rating':'M',
+      'st-zn':'56.6','st-zn-rating':'H',
       'st-om':'11.4',
       'st-lime-rec':'0','st-lime-type':'','st-garden-type':'vegetable'
     };
