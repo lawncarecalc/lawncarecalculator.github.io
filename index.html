@@ -348,15 +348,6 @@
   }
   .st-field-wide { grid-column: 1 / -1; }
 
-  /* Lab notice */
-  .st-lab-notice {
-    border-radius: 6px; padding: 10px 14px;
-    font-size: 0.82rem; line-height: 1.5;
-    margin-bottom: 12px; border-left: 4px solid;
-  }
-  .st-lab-notice-vce   { background: #fff8e1; border-color: var(--gold);  color: #6d4f00; }
-  .st-lab-notice-other { background: #e8f4fd; border-color: var(--blue);  color: var(--blue); }
-
   /* Placeholder */
   .st-placeholder {
     background: var(--white); border: 1.5px dashed var(--border);
@@ -619,7 +610,7 @@
     .no-print, .tab-nav, .site-header .header-badge,
     .st-goto-btn, .st-carryover-box, #st-carryover-bar,
     .st-input-card, .st-prefill-btn, .st-unit-toggle,
-    .st-lab-notice, #st-carryover-bar,
+    #st-carryover-bar,
     .fert-chooser, .auto-plan-input, .plan-mode-toggle,
     .field-group, .field-label, .field-hint, .field-num,
     .leftover-section, .timing-card,
@@ -717,7 +708,6 @@
               </select>
             </div>
           </div>
-          <div id="st-lab-notice"></div>
 
           <div class="st-section-label">Lab Test Results</div>
           <div class="st-field-grid">
@@ -2608,19 +2598,6 @@ function interpretSoilTest() {
   var caMgRange = unit === 'ppm'
     ? 'Ca medium: 361-720 ppm &nbsp;&bull;&nbsp; Mg adequate: &ge;64 ppm (Waypoint)'
     : 'Ca medium: 721-1,440 lb/A &nbsp;&bull;&nbsp; Mg medium: 73-144 lb/A (VCE)';
-
-  var labNoticeEl = document.getElementById('st-lab-notice');
-  if (rt === 'vce-lawn') {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#10003; <strong>VCE / Virginia Tech — Lawn:</strong> Ratings (L-/M/H/VH) and thresholds are calibrated for this report. Soluble salts reported in ppm.</div>';
-  } else if (rt === 'waypoint-lawn') {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice st-lab-notice-vce">&#9888; <strong>Waypoint Analytical — Lawn:</strong> Use Waypoint rating options in the dropdowns. Waypoint\'s "Buffer pH" = VCE\'s "Buffer Index." Salts reported in dS/m.</div>';
-  } else if (rt === 'vce-garden') {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice" style="background:#f0f7f1;border-color:var(--green-mid);color:var(--green-deep);">&#127807; <strong>VCE / Virginia Tech — Garden:</strong> Lime in lbs/100 sq. ft. pH target 6.0–6.8. Organic matter target 5–10%. Carry-over routes to the Vegetable &amp; Flower Gardens tab.</div>';
-  } else if (rt === 'waypoint-garden') {
-    labNoticeEl.innerHTML = '<div class="st-lab-notice" style="background:#f0f7f1;border-color:var(--green-mid);color:var(--green-deep);">&#127807; <strong>Waypoint Analytical — Vegetable &amp; Flower Gardens:</strong> Use Waypoint rating options. Lime in lbs/100 sq. ft. pH target 6.0–6.8. Carry-over routes to the Vegetable &amp; Flower Gardens tab.</div>';
-  } else {
-    labNoticeEl.innerHTML = '';
-  }
 
   var hasAny = [ph,bi,pVal,kVal,caVal,mgVal,om,saltRaw,cec,limeRec,znVal,mnVal,cuVal,feVal,bVal].some(function(v){ return !isNaN(v) && v > 0; })
     || pRatRaw || kRatRaw || caRat || mgRat || limeTyp || crop || znRat || mnRat || cuRat || feRat || bRat;
