@@ -3354,6 +3354,9 @@ function calcGarden() {
     vegSection.style.display = (gardenType === 'vegetable' || gardenType === 'mixed') ? '' : 'none';
   }
 
+  var resultsEl = document.getElementById('gdn-results');
+  var timingEl  = document.getElementById('gdn-timing');
+
   if (!area || area <= 0) {
     resultsEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your bed dimensions or area above to see recommendations.</p>';
     return;
