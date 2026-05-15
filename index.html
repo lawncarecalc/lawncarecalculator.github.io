@@ -3732,10 +3732,10 @@ function calcGarden() {
     }
     html += '<div class="result-row"><div class="result-label">Rate per 100 sq. ft.</div><div class="result-value">' + fmt(lbsPerHundred, 2) + ' lbs' + (cupsPerLb > 0 ? ' ≈ ' + fmtVolume(lbsPerHundred * cupsPerLb) : '') + '</div></div>';
 
-    // Sidedress for vegetables/mixed
-    if (gardenType === 'vegetable' || gardenType === 'mixed') {
-      var sideLbs1010 = 1 * hundredths;    // 1 lb 10-10-10 per 100 sq ft of row
-      var sideLbs5105 = 2 * hundredths;    // 2 lbs 5-10-5 per 100 sq ft of row
+    // Sidedress for vegetables/mixed — suppress when user is already on N-only fertilizer
+    if ((gardenType === 'vegetable' || gardenType === 'mixed') && !(fertP === 0 && fertK === 0 && fertN > 0)) {
+      var sideLbs1010 = 1 * hundredths;
+      var sideLbs5105 = 2 * hundredths;
       var sideCups = sideLbs1010 * 1.75;
       var sideCups5105 = sideLbs5105 * 1.75;
       html += '<div style="background:var(--green-mist);border-radius:6px;padding:12px 14px;margin-top:12px;">';
@@ -3758,8 +3758,13 @@ function calcGarden() {
   var pHigh = pRat && ['H-','H','H+','VH'].indexOf(pRat) >= 0;
   var kHigh = kRat && ['H-','H','H+','VH'].indexOf(kRat) >= 0;
   if ((pHigh || kHigh) && (gardenType === 'vegetable' || gardenType === 'mixed') && nRec > 0 && fertN > 0) {
-    var halfLbs = (lbsTotal / 2) || 0;
-    pkHtml += '<div class="warning-badge" style="margin-top:8px;">&#127813; <strong>Tomatoes, green peppers, and lima beans:</strong> Your soil tests ' + (pHigh ? 'High or Very High for phosphorus' : '') + (pHigh && kHigh ? ' and ' : '') + (kHigh ? 'High or Very High for potassium' : '') + '. Per Note 19, apply <strong>half the fertilizer before planting</strong> (' + fmt(halfLbs, 2) + ' lbs) and the <strong>remaining half after fruit set</strong>. Too much fertilizer early encourages vegetative growth and reduces fruit set.</div>';
+    pkHtml += '<div style="background:#fff0f0;border:1px solid #e07070;border-radius:6px;padding:10px 14px;margin-top:8px;font-size:0.85rem;line-height:1.6;">'
+      + '&#127813; <strong>Tomatoes, green peppers, and lima beans:</strong> Your soil tests '
+      + (pHigh ? 'High or Very High for phosphorus' : '')
+      + (pHigh && kHigh ? ' and ' : '')
+      + (kHigh ? 'High or Very High for potassium' : '')
+      + '. Per Note 19, apply <strong>half the total fertilizer before planting</strong> and the <strong>remaining half after fruit set</strong>. Too much fertilizer applied early encourages vegetative growth and reduces fruit set.'
+      + '</div>';
   }
   if (pRat && P_REC[pRat]) {
     var pr = P_REC[pRat];
