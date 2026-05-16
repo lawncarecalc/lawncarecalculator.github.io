@@ -60,14 +60,30 @@ Enter your lawn size, lime recommendation, lime type, CCE (from the bag), and ba
 
 ### Step 4 — Vegetable & Flower Gardens tab
 
-Enter bed dimensions (or area directly for irregular beds), N recommendation, P and K ratings, fertilizer grade or product, and lime recommendation. The calculator shows fertilizer weight, approximate volume, lime for your bed, and timing guidance by garden type.
+Enter bed dimensions (or area directly), N recommendation, P and K ratings, fertilizer grade or product, and lime recommendation.
 
-**Waypoint garden reports:** Enter N and lime exactly as shown on your Waypoint report — Waypoint reports garden recommendations in lbs/1,000 sq. ft. The calculator converts automatically. VCE garden reports use lbs/100 sq. ft. (per Note 19) — enter directly.
+**Waypoint garden reports:** Enter N and lime exactly as shown — Waypoint reports garden values in lbs/1,000 sq. ft. The calculator converts automatically. VCE garden reports use lbs/100 sq. ft. — enter directly.
 
-**Vegetable-specific guidance** is available in collapsible sections below the fertilizer selector:
-- **Vegetable crop fertilizer guidance** (vegetable and mixed beds) — includes a **crop selector** with sidedress rates and timing triggers from VCE crop-specific publications for 13 crop types (tomatoes, corn, cole crops, leafy greens, cucumbers, root crops, beans, onions, and more). Also covers the 3–4 week N timing rule and banding. *(VCE 426-323 and crop pubs)*
-- **Nutrient deficiency symptoms reference** (all garden types) — visual symptoms for all major nutrients and trace elements with Virginia-specific context. Boron guidance includes specific Borax application rates and the "do not band near plants" caution. *(VCE 426-323)*
-- **Can't find the recommended grade?** — fertilizer substitution table from Note 19.
+**Step 3 — What are you growing?** Select your crop to see the recommended seasonal N rate shown in both lbs/100 sq. ft. and lbs/1,000 sq. ft., the target pH for that crop, and a "Use recommended N" button. Crops are grouped by feeding level:
+- **Heavy feeders** (tomatoes, corn, broccoli, onions…): 0.30 lbs/100 sq. ft. = 3 lbs/1,000 sq. ft.
+- **Medium feeders** (leafy greens, cucumbers, squash…): 0.20 lbs/100 sq. ft. = 2 lbs/1,000 sq. ft.
+- **Light feeders** (beans, carrots, root crops): 0.10 lbs/100 sq. ft. = 1 lb/1,000 sq. ft.
+
+*(UMD Extension, Clemson HGIC, Rutgers FS626 — confirmed across all regional sources)*
+
+**Application plan:** The calculator generates a step-by-step plan with specific quantities for your bed size, shown in both weight (lbs) and volume (tablespoons/cups) based on bulk density:
+- **Slow-release organics** (feather meal, soybean meal, cottonseed meal, poultry manure, bone meal, dried cow manure): full amount preplant — nutrients release gradually, no sidedress needed
+- **Fast-release organics** (blood meal, fish meal, fish emulsion, bat guano) with warm-season crops (tomatoes, peppers, corn, squash): 35% preplant / 65% sidedress — in warm soil above 60°F these release comparably to a medium-speed synthetic
+- **Fast-release organics** with cool-season crops (broccoli, kale, root vegetables planted March–April): full amount preplant — soil too cool for microbial release to act as sidedress
+- **Synthetic fertilizers**: 35% preplant / 65% sidedress *(Clemson HGIC, UMD Extension)*
+
+**Tomatoes and peppers** get a three-step plan: preplant → sidedress #1 when first fruit cluster reaches the size of a half dollar → sidedress #2 four weeks later. Long-season tomato varieties may need a fourth application. *(VCE 426-418, Rutgers FS626)*
+
+**Vegetable-specific guidance** collapsible — synced from your crop selection but browsable independently. Shows crop-specific sidedress rates and timing triggers from VCE crop publications. Below that: the 3–4 week timing rule and banding technique. *(VCE 426-323 and crop-specific publications)*
+
+**Nutrient deficiency symptoms reference** (all garden types) — visual symptoms with Virginia context. Boron guidance: liquid Borax method (1 tbsp per gallon per 100 sq. ft.) — do not apply in a band near plants. *(VCE 426-323, UMD Extension)*
+
+**Can't find the recommended grade?** — fertilizer substitution table from Note 19.
 
 ---
 
@@ -163,6 +179,13 @@ The calculator does not recommend specific brands. The "Help me choose a fertili
 | Agronomy Facts 8 | Soil Test Interpretation: Terms and Definitions — Waypoint Analytical 2023 |
 | DCR 2014 | Virginia Nutrient Management Standards and Criteria |
 | SPES-384NP | Your Soil Test Report Simplified: A Guide for Homeowners — VCE 2021 |
+| Mid-Atlantic Commercial Vegetable Production Recommendations 2026/2027 | VCE/UMD/Rutgers/PSU joint publication — cited for pH targets and principles |
+
+**Supplementary regional sources** (used where VCE is silent on home garden guidance):
+- University of Maryland Extension — Fertilizing Vegetables (N rates by feeding level, liquid Borax method)
+- Clemson HGIC — Fertilizing Vegetables (preplant/sidedress split, sandy soil guidance, calcium nitrate as preferred sidedress)
+- Rutgers NJAES FS626 — Fertilizing the Home Vegetable Garden (organic fertilizer table, sidedress schedule, blood meal release rate)
+- NC State Cooperative Extension — confirms calcium nitrate reduces blossom end rot and tip burn
 
 ---
 

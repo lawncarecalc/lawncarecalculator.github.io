@@ -6,421 +6,249 @@ Use this file to bring a new Claude session up to speed on the project.
 
 ## Project Overview
 
-A single-file interactive HTML web calculator (`lawn_garden_calc_v1_5.html`) that helps Virginia homeowners interpret soil test results and calculate fertilizer and lime applications. It supports reports from both **Virginia Cooperative Extension (VCE) / Virginia Tech** and **Waypoint Analytical**, for both **lawn** and **vegetable/flower garden** contexts.
+A single-file interactive HTML web calculator (`lawn_garden_calc_v1_5.html`) that helps Virginia homeowners interpret soil test results and calculate fertilizer and lime applications. Supports **VCE / Virginia Tech** and **Waypoint Analytical** reports for both **lawn** and **vegetable/flower garden** contexts.
 
-No server, no build step — single self-contained HTML file. Single-column responsive layout on all calculator tabs (Cool, Warm, Lime, Garden). Soil Test tab retains its two-column `st-layout`.
+**Primary audience:** Chesterfield County, Virginia (Zone 7b, Piedmont clay soils). Secondary: all of Virginia.
+
+No server, no build step — single self-contained HTML file. Single-column responsive layout on all calculator tabs. Soil Test tab retains two-column `st-layout`.
 
 ---
 
 ## Source Documents
 
-All calculations, thresholds, and interpretation language must be grounded in these sources. Do not infer or add content beyond what they support.
+### VCE Primary Sources
 
 | Publication | Title | Authors |
 | :---- | :---- | :---- |
-| SPES-40A | Spreadsheet-Based Calculator for Lawn Fertilizer and Lime Applications in Virginia | Chantel Wilson (VSU); Michael Goatley Jr. (VT) |
-| 430-011 / SPES-334P | Lawn Fertilization in Virginia | Goatley, Cataldi, Chalmers, Hall, Schmidt — VCE 2021 |
+| SPES-40A | Spreadsheet-Based Calculator | Wilson (VSU); Goatley (VT) |
+| 430-011 / SPES-334P | Lawn Fertilization in Virginia | Goatley et al. — VCE 2021 |
 | 430-520 / SPES-223P | Fall Lawn Care | Goatley, Askew, McCall — VCE 2025 |
-| 430-522 / SPES-669P | Maintenance Calendar for Warm-Season Turfgrasses in Virginia | Goatley, Askew, McCall (VT); Wilson (Penn State Extension) — VCE 2025 |
-| 430-523 / SPES-670P | Maintenance Calendar for Cool-Season Turfgrasses in Virginia | Goatley, Askew, McCall (VT); Wilson (Penn State Extension) — VCE 2025 |
-| 452-717 / SPES-306P | Soil Test Note 17: Lawn Fertilization for Cool-Season Grasses | Goatley, Ervin, Heckendorn — VCE 2021 |
-| 452-718 / SPES-305P | Soil Test Note 18: Lawn Fertilization for Warm-Season Grasses | Goatley, Ervin, Heckendorn — VCE 2021 |
-| 452-719 / SPES-687P | Soil Test Note 19: Vegetable and Flower Gardens | Latimer (retired), Heckendorn — VCE 2025 |
-| 426-323 / SPES-803P | Fertilizing the Vegetable Garden | Relf, McDaniel, Donohue; reviewed by Olsen — VCE 2026 |
+| 430-522 / SPES-669P | Maintenance Calendar for Warm-Season Turfgrasses | Goatley, Askew, McCall, Wilson — VCE 2025 |
+| 430-523 / SPES-670P | Maintenance Calendar for Cool-Season Turfgrasses | Goatley, Askew, McCall, Wilson — VCE 2025 |
+| 452-717 / SPES-306P | Soil Test Note 17: Cool-Season Grasses | Goatley, Ervin, Heckendorn — VCE 2021 |
+| 452-718 / SPES-305P | Soil Test Note 18: Warm-Season Grasses | Goatley, Ervin, Heckendorn — VCE 2021 |
+| 452-719 / SPES-687P | Soil Test Note 19: Vegetable and Flower Gardens | Latimer, Heckendorn — VCE 2025 |
+| 426-323 / SPES-803P | Fertilizing the Vegetable Garden | Relf, McDaniel, Donohue — VCE 2026 |
 | 452-701 / SPE-605NP | Soil Test Note 1: Explanation of Soil Tests | Maguire, Heckendorn — VCE 2024 |
-| Agronomy Facts 8 | Soil Test Interpretation: Terms and Definitions | Large / Ruiz Jr. — Waypoint Analytical 2023 |
-| DCR 2014 | Virginia Nutrient Management Standards and Criteria | Virginia DCR (Tables 2-2 and 2-3) |
-| SPES-384NP | Your Soil Test Report Simplified: A Guide for Homeowners | Bolles — VCE 2021 |
+| Agronomy Facts 8 | Soil Test Interpretation | Large/Ruiz Jr. — Waypoint 2023 |
+| DCR 2014 | Virginia Nutrient Management Standards | Virginia DCR |
+| SPES-384NP | Your Soil Test Report Simplified | Bolles — VCE 2021 |
 
-**Critical rule:** Never infer soil texture (sandy/clay) from CEC or Buffer Index values.
+### VCE Crop-Specific Sources
+
+| Publication | Crop | Key sidedress guidance |
+| :---- | :---- | :---- |
+| 426-418 / SPES-795P | Tomatoes | Sidedress #1 when first fruit = half dollar; #2 after first ripe tomato; #3 for long-season |
+| 426-413 / SPES-794 | Peppers, eggplant, potatoes | After fruit set; avoid excess N on potatoes |
+| 426-405 / SPES-780P | Sweet corn | 3 tbsp 10-10-10/10-ft row at 12–18 inches |
+| 426-403 / SPES-792P | Cole crops | 3 tbsp 10-10-10/10-ft row at 3 weeks after transplanting |
+| 426-408 / SPES-785P | Leafy greens, spinach, lettuce | 1 lb 10-10-10 or 2 lbs 5-10-5 per 100 ft of row |
+| 426-406 / SPES-779P | Cucumbers, squash, melons | 3 tbsp 33-0-0/10-ft row 1 week after blossoming |
+| 426-422 / SPES-789P | Root crops | 0.5–2 lbs 10-10-10/100 sq. ft. at 4–6 inches tall |
+| 426-402 / SPES-676NP | Beans, peas | Legumes fix own N; modest sidedress only at pod set |
+| 426-411 / SPES-788P | Onions, garlic, shallots | Stop N when bulbing starts |
+
+### Supplementary Regional Sources (Tier 2)
+
+| Source | Used for |
+| :---- | :---- |
+| University of Maryland Extension | N rates by feeding level (0.10/0.20/0.30 lbs/100 sq. ft.); liquid Borax method; OM-to-N credit; fish emulsion in cool soils |
+| Clemson HGIC | 35% preplant / 65% sidedress split; sandy soil flag; calcium nitrate as preferred sidedress |
+| Rutgers NJAES FS626 | Organic fertilizer N% and release rates (Table 1); tomato sidedress schedule (Table 2); blood meal as medium-rapid; bat guano/bone meal/dried cow manure |
+| NC State Cooperative Extension | Calcium nitrate reduces blossom end rot and tip burn |
+| Mid-Atlantic Commercial Veg Guide 2026/2027 | Per-crop pH targets (Table B-1); soil testing 1–3 years. **Commercial guide — principles only, not home garden rates** |
+| SARE LS16-269 | Blood meal >80% available N within 2–4 weeks in warm soil |
+| GitHub Fertilizer Calculator | Bulk density data; Borax sodium accumulation note |
+
+**Source policy:** VCE always primary. UMD and Clemson co-primary for home garden where VCE is silent. Rutgers FS626 and NC State supporting. Mid-Atlantic Veg Guide principles only. Never cite OSU, UNH, or non-regional extensions.
+
+**Critical rule:** Never infer soil texture from CEC or Buffer Index values.
 
 ---
 
 ## File Structure
 
-Single HTML file — all CSS, JS, and HTML inline. No external dependencies except Google Fonts CDN.
+Single HTML file — all CSS, JS, HTML inline. No external dependencies except Google Fonts CDN.
 
 ### Tabs (6)
 
-1. **Soil Test Report** (`tab-soiltest`) — enter report values, get interpretation cards, carry over to calculators
-2. **Cool-Season Lawns** (`tab-cool`) — species-aware fertilizer calculator with two-mode application planner
-3. **Warm-Season Lawns** (`tab-warm`) — species-aware fertilizer calculator with two-mode application planner
-4. **Lime** (`tab-lime`) — lime calculator with CCE adjustment
-5. **Vegetable & Flower Gardens** (`tab-garden`) — fertilizer and lime calculator for vegetable and flower gardens (Note 19, 426-323)
-6. **About & Instructions** (`tab-about`) — source docs, attributions, how-to
+1. **Soil Test Report** (`tab-soiltest`) — interpretation cards, carry-over
+2. **Cool-Season Lawns** (`tab-cool`)
+3. **Warm-Season Lawns** (`tab-warm`)
+4. **Lime** (`tab-lime`)
+5. **Vegetable & Flower Gardens** (`tab-garden`)
+6. **About & Instructions** (`tab-about`)
 
 ### Key JavaScript Functions
 
 | Function | Purpose |
 | :---- | :---- |
-| `interpretSoilTest()` | Builds all soil test interpretation cards — zero backtick template literals, all string concatenation |
-| `calcMulti(prefix)` | Custom plan engine for cool/warm tabs — processes up to 4 manual application slots |
-| `calcAutoplan(prefix)` | Auto plan engine — divides annual N target equally across minimum applications needed, no cap at 4 |
-| `calcCool()` / `calcWarm()` | Route to calcAutoplan or calcMulti depending on planMode[prefix] |
-| `calcLime()` | Lime calculator logic |
-| `calcGarden()` | Vegetable & Flower Gardens calculator logic (Note 19) |
-| `detectProgram(fertN, winLbs)` | Three-way WIN branch: returns program 1/2/3 and label |
-| `setPlanMode(prefix, mode)` | Switches between 'auto' and 'custom' modes; pre-populates custom from auto on switch; shows/hides timing card |
-| `prePopulateCustom(prefix)` | Fills custom plan slots from auto plan inputs when user switches to custom mode |
-| `addAppSlot(prefix)` / `removeAppSlot(prefix, id)` | Add/remove manual application slots (max 4) |
-| `renderAppSlots(prefix)` | Renders application slot HTML |
-| `fertChooserHTML(prefix)` | Generates collapsible fertilizer chooser HTML — dynamic P/K recommendation based on current ratings |
-| `toggleFertChooser(prefix)` | Expands/collapses the fertilizer chooser section |
-| `printPlan(prefix)` | Adds `printing-{prefix}` class to body, calls window.print(), removes class. Handles cool, warm, lime, and garden tabs. Never call window.print() directly from plan print buttons. |
-| `onReportTypeChange()` | Switches rating scales, salt units, lime labels, Buffer Index/pH label, crop/garden-type visibility, carry-over routing |
-| `onLabSourceChange()` | Legacy alias for onReportTypeChange() |
-| `setGardenSizeMode(mode)` | Toggles garden bed size between L x W and direct area entry |
-| `setGardenFertMode(mode)` | Toggles garden fertilizer between N-P-K entry and product selector |
-| `onGardenProductSelect()` | Fills product details when a garden product is chosen |
-| `calcGardenDimensions()` | Auto-calculates area from L x W inputs |
-| `setSaltUnit(unit)` | Auto-switches ppm/dS/m label and placeholder based on report type |
-| `carryOverToCalculators()` | Copies soil test values into all relevant calculator tabs; uses setTimeout to defer calc calls |
-| `prefillSampleReport(type)` | Loads sample report: 'lawn' or 'garden'. Never writes st-lawn-size |
-| `switchToTab(tab)` | Tab navigation — re-runs calc on reveal |
-| `getReportType()` / `isGardenReport()` / `isWaypointReport()` | Report type helpers |
-| `fmtVolume(cups)` | Converts decimal cup value to human-readable volume string |
-| `fmt(n, dec)` | Number formatter — returns '-' for NaN/null/Infinity |
-
-### Helper functions inside interpretSoilTest()
-
-Defined locally right after `var cards = [];`. Must always be present:
-
-    card(icon, title, range, target, valDisplay, whatMeans, whyMatters, action, extraBtns)
-    abox(cls, txt)       // action box
-    goBtn(tab, lbl)      // navigate-to-calculator button
-    pill(r)              // rating pill
+| `interpretSoilTest()` | All soil test cards — string concatenation only, no backticks |
+| `calcMulti(prefix)` | Custom plan engine for cool/warm |
+| `calcAutoplan(prefix)` | Auto plan — no cap at 4 apps |
+| `calcCool()` / `calcWarm()` | Route to auto or custom |
+| `calcLime()` | Lime calculator — writes to `lime-results-panel` |
+| `calcGarden()` | Garden calculator — two/three-step application plan with volumetric output |
+| `onCropTypeChange()` | Step 3 crop change: updates N hint (both units), syncs `gdn-guidance-crop`, calls `updateCropGuidancePanel()` and `calcGarden()` |
+| `useRecommendedN(cropKey)` | Pre-fills N rec field from CROP_FEEDING_LEVELS |
+| `updateCropGuidancePanel()` | Renders crop-specific guidance in collapsible — reads from `gdn-guidance-crop` (not step 3) |
+| `fmtMeasure(lbs, cupsPerLb)` | tsp / tbsp / cup fractions based on bulk density |
+| `detectProgram(fertN, winLbs)` | P1/P2/P3 WIN branch |
+| `setPlanMode(prefix, mode)` | Toggle auto/custom |
+| `printPlan(prefix)` | Always use this — never call window.print() directly |
+| `onReportTypeChange()` | Switches scales, units, labels; calls calcGarden() for garden reports |
+| `carryOverToCalculators()` | Copies soil test values to calculators; uses setTimeout |
+| `prefillSampleReport(type)` | Types: 'lawn', 'garden' (flower), 'veggie' |
+| `showCropGuidance()` | **REMOVED** — use `updateCropGuidancePanel()` |
 
 ---
 
-## Soil Test Tab — Report Type Selector
+## Vegetable & Flower Gardens Tab
 
-| Option value | Lab | Context | Lime unit | Carry-over to | pH target | OM target |
-| :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| vce-lawn | VCE / Virginia Tech | Lawn | lbs/1,000 sq. ft. | Cool + Warm + Lime | 5.8-6.8 | 0.5-2.5% |
-| waypoint-lawn | Waypoint Analytical | Lawn | lbs/1,000 sq. ft. | Cool + Warm + Lime | 5.8-6.8 | 0.5-2.5% |
-| vce-garden | VCE / Virginia Tech | Garden | lbs/100 sq. ft. | Vegetable & Flower Gardens | 6.0-6.8 | 5-10% |
-| waypoint-garden | Waypoint Analytical | Garden | lbs/100 sq. ft. | Vegetable & Flower Gardens | 6.0-6.8 | 5-10% |
+### Field numbering
 
-**Carry-over bar behavior:**
-- Appears as soon as P or K rating AND crop/garden type are entered — area not required to show bar
-- Amber warning inside bar if area is blank; amber hint below area field hides once value entered
-- Lawn reports carry to ALL three tabs (Cool, Warm, Lime)
-- DOM writes deferred via setTimeout(..., 0) before calc calls — do not remove this
+1. Garden type
+2. Bed size
+3. Crop selector (`gdn-crop-type`) — syncs collapsible, shows N rate hint in both units
+4. N recommendation
+5. P rating
+6. K rating
+7. Fertilizer
+8. Lime recommendation
 
-**Buffer Index / Buffer pH:** Label on the input field switches automatically — VCE = "Buffer Index", Waypoint = "Buffer pH". The interpretation card title also switches. See Soil Test Card Accuracy Notes section.
+### Report type and N/lime units
 
-**Soluble Salts unit:** auto-switches ppm (VCE) / dS/m (Waypoint) — manual toggle buttons were removed
+| Report type | N unit | Lime unit | calcGarden() handling |
+| :---- | :---- | :---- | :---- |
+| vce-garden | lbs/100 sq. ft. | lbs/100 sq. ft. | direct |
+| waypoint-garden | lbs/1,000 sq. ft. | lbs/1,000 sq. ft. | ÷ 10 before calculating |
 
----
+### CROP_FEEDING_LEVELS — seasonal N rates
 
-## Layout Architecture (v1.5)
-
-### Single-column responsive layout (calculator tabs)
-
-`calc-layout` on Cool, Warm, Lime, and Garden tabs is now `display:flex; flex-direction:column; max-width:780px; margin:0 auto`. Results cards, timing cards, and plan outputs stack below inputs in a single vertical flow. The Soil Test tab retains its `st-layout` two-column grid — leave it unchanged.
-
-Responsive breakpoints:
-- < 600px: compact padding, smaller table text, app slot grids go two-column
-- < 400px: app slot grids go single-column
-
-Tables that may overflow on narrow screens are wrapped in `.table-scroll` (`overflow-x:auto`). All inputs have `min-height:44px` for touch targets.
-
-### Print CSS (v1.5)
-
-The two-column "hide left, show right" print trick is gone. Print CSS now:
-- Hides inputs, guidance boxes, field groups, fertilizer chooser, plan mode toggle via targeted rules
-- Shows inline results when `printing-{prefix}` class is on body
-- `body:not(.printing-cool):not(.printing-warm):not(.printing-lime):not(.printing-garden)` shows soil test by default
-- `results-card` is `display:block` (visible on screen in single-column flow; also renders for print)
-
-### Lime calculator rewrite (v1.5)
-
-`calcLime()` was rewritten from writing to individual element IDs (`lime-apps`, `lime-adj-rate`, etc.) to writing a complete HTML block to `lime-results-panel` — same pattern as `calcAutoplan`. Key changes:
-- Label "Adjusted lime rate" → **"CCE adjusted lime rate"**
-- Label "Lbs. of lime per application (your lawn)" → **"Total lbs. of lime per application to your lawn"**
-- New **Application schedule & spreader rates table** — shows lbs/1,000 sq. ft. per application (the spreader setting rate) and total lbs for the user's lawn, for each numbered application with timing notes
-- Print Plan button included in the lime results output
-- Old individual IDs (`lime-apps`, `lime-adj-rate`, `lime-lbs-per-app`, `lime-lbs-total`, `lime-bags-total`) no longer exist in HTML
-
-### About tab — Soil Test Ratings Explained card (v1.5)
-
-Expanded from VCE-only to show both scales:
-- **VCE / Virginia Tech scale** — L-/M/H/VH with fertilizer response (Soil Test Note 1, VCE 452-701)
-- **Waypoint Analytical scale** — Very Low/Low/Medium/Optimum/Very High with equivalent VCE rating column (Agronomy Facts 8, Waypoint 2023)
-- Footer note: "The two labs use different extraction methods, but ratings have been calibrated to be directly comparable for Virginia soils." — **Do not say they use the same extraction method.** VCE uses Mehlich-1; Waypoint uses Mehlich-3. These are different. The equivalence is calibrated, not inherent.
-
-## Cool and Warm Season Calculator Tabs — Architecture (v1.4/v1.5)
-
-### Two-mode planner
-
-Both tabs have a toggle: **"Build a plan for me"** (default) / **"Custom plan"**.
-
-**Build a plan for me (auto mode):**
-- User enters fertilizer N-P-K and WIN%
-- `calcAutoplan(prefix)` detects program, calculates minimum applications needed (no cap at 4), divides N equally
-- Results render **inline** directly below the grade inputs — not in the right column
-- If more than 4 applications needed, amber warning suggests switching to slow-release (Program 2/3)
-- Right column card (`results-card`) is hidden on screen, visible only when printing
-
-**Custom plan mode:**
-- Up to 4 manual slots, each with N-P-K, WIN%, N per application, month
-- Pre-populated from auto plan inputs when user switches to custom mode
-- Timing card shown in custom mode, hidden in auto mode (timing is in the plan table)
-- Season summary writes to right column card for printing
-
-**Print plan:**
-- `printPlan(prefix)` adds `printing-cool` or `printing-warm` class to body before `window.print()`
-- CSS shows only the target tab when these classes are present
-- Without these classes, print defaults to soil test report (existing behaviour preserved)
-- Print button appears in both auto and custom modes
-
-### N rate guidance table (static, in Step 3)
-
-Both tabs show a guidance table above the N rate input field. Table-first layout: the user reads the table to choose a rate, then enters it in the subordinate input field below. Contains:
-- Suggested Annual Application Total by lawn situation
-- Max per application by program (P1/P2/P3)
-- Minimum applications needed
-- Clipping recycling note (up to 1/3 N reduction per 430-011)
-- Shade adjustment note (1/2 to 2/3 N rate for heavy shade per 430-011)
-- Timing guidance: "SON" for cool-season (430-520); April–August 15 + fall bermudagrass program for warm-season (430-520)
-
-### Fertilizer chooser (collapsible)
-
-Between K rating field and Application Plan on both tabs. Collapsed by default. Contains:
-- Plain-language explanation of N-P-K percentages
-- Dynamic P/K recommendation driven by current ratings (updates when ratings change)
-- Quick-release vs slow-release explainer with WIN instructions
-- Common grades at a glance table (grades from 430-011 Table 1 + common retail)
-- Disclaimer: calculator does not endorse specific brands
-
-### Species config (SPECIES_CONFIG object)
-
-    tall:    maxN:3.5, maxApp:{1:0.7, 2:0.9, 3:1.5}  — Tall fescue / Bluegrass / Ryegrass
-    fine:    maxN:2.0, maxApp:{1:0.7, 2:0.9, 3:1.0}  — Fine-leaf fescue
-    bermuda: maxN:4.0, maxApp:{1:0.9, 2:1.0, 3:1.5}  — Bermudagrass / St. Augustinegrass
-    zoysia:  maxN:2.0, maxApp:{1:0.7, 2:1.0, 3:1.0}  — Zoysiagrass / Centipedegrass
-
-### WIN / Program Detection (3-way per 430-011)
-
-    >= 50% WIN  → Program 3 (majority slowly available)
-    >= 15% WIN  → Program 2 (slowly available)
-    <  15% WIN  → Program 1 (quickly available)
-
-### P/K Flags
-
-NEED_RATIO = {L-:3, L:2.5, L+:2, M-:2, M:1.5, M+:1, H-:1, H:0.75, H+:0.5, VH:0}
-Flag fires when total P applied > NEED_RATIO[rating]
-
-### Lime Calculator
-
-Applications = ceil(adjusted_rate / 50), max 50 lbs/1,000 sq. ft. per app.
-CCE adjustment: adjusted_rate = recommended_lbs x (100 / CCE%)
-
----
-
-## Vegetable & Flower Gardens Calculator (Note 19, 426-323)
-
-Lime limits: 5 lbs/100 sq. ft. established, 10 lbs/100 sq. ft. preplant.
-Sidedress: 1 lb 10-10-10 **or** 2 lbs 5-10-5/5-10-10 per 100 sq. ft. of row, ~1 month after planting. Applies to corn and leafy vegetables (broccoli, cabbage, celery, kale, lettuce, spinach). Scratch into top inch of soil. *(Note 19)*
-
-Tomato/pepper/lima bean rule: when P or K is rated High or VH, apply half fertilizer before planting and half after fruit set. Fires automatically from P/K ratings. *(Note 19)*
-
-Preplant lime >10 lbs: disk/rototill half 5 inches deep, work remainder into top 2 inches. Shown in timing output when bedStatus is preplant and limeRec > 10. *(Note 19)*
-
-Bed size: L x W mode or direct area entry. Fertilizer: N-P-K entry or product selector.
-
-### Collapsible sections on the Vegetable & Flower Gardens tab
-
-| Section | Shown for | Source |
+| Level | Rate | Crops |
 | :---- | :---- | :---- |
-| Help me choose a fertilizer | All | 430-011 |
-| Can't find the recommended grade? (substitution table) | All | Note 19 |
-| Vegetable crop fertilizer guidance | Vegetable / Mixed only (auto show/hide) | 426-323, Note 19 |
-| Nutrient deficiency symptoms reference | All | 426-323 |
+| Heavy | 0.30 lbs/100 sq. ft. = 3 lbs/1,000 sq. ft. | Tomato, pepper, potato, broccoli, cabbage, corn, beet, spinach, onion, okra |
+| Medium | 0.20 lbs/100 sq. ft. = 2 lbs/1,000 sq. ft. | Leafy greens, lettuce, cucumber, squash, melon, sweet potato, asparagus |
+| Light | 0.10 lbs/100 sq. ft. = 1 lb/1,000 sq. ft. | Beans/peas, carrot, root crops |
 
-**Vegetable crop guidance** (426-323): nutrient roles (N=leaves, P=roots/fruit, K=hardiness), 3–4 week N timing rule, crop-specific N table (tomatoes/peppers/potatoes, corn, leafy vegetables, root crops, fruit-set crops), banding technique for phosphorus. Section visibility controlled by `calcGarden()` via `gdn-veg-guidance-section` display style.
+### Application plan logic
 
-**Deficiency symptoms table** (426-323): all major nutrients and trace elements with visual symptoms and Virginia context. Key note: most deficiency problems are pH-related — correct pH first.
+**Slow-release organics** (`fastOrganic: false` — feather, soybean, cottonseed, poultry, bone, dried cow manure):
+→ 100% preplant, no sidedress
 
-### GARDEN_PRODUCTS object
+**Fast-release organics** (`fastOrganic: true` — blood meal, fish meal, fish emulsion, bat guano) **+ warm-season crops**:
+→ 35% preplant / 65% sidedress
+Warm-season crops: tomato, pepper, potato, corn, squash, cucumber, melon, okra, beans, sweetpotato
 
-`note19Rate` field on organic products shows Note 19 application rate in the product note. Synthetic products have `note19Rate:null`.
+**Fast-release organics + cool-season crops** (broccoli, cabbage, leafy, root veg, carrot etc.):
+→ 100% preplant (soil too cool for microbial release to act as sidedress)
+Note: fish emulsion is fast even in cool soil — can be used for early-season boost
 
-Organic rates (Note 19 p.2): blood-meal 5 lbs/100 sqft, fish-meal 5 lbs/100 sqft, soybean-meal 10 lbs/100 sqft, cottonseed-meal 10 lbs/100 sqft, poultry-manure 15–25 lbs/100 sqft.
+**Synthetic fertilizers:**
+→ 35% preplant / 65% sidedress
 
-Volumes (cups/lb): nitrate-soda 1.75, calcium-nitrate 2.0, ammonium-sulfate 2.5, urea 2.5, 10-10-10 1.75, 5-10-5 1.75, blood-meal 2.75, fish-meal 2.5, soybean-meal 2.0, cottonseed-meal 2.25, feather-meal 3.0, poultry-manure 1.75. Synthetic volumes from Note 19 (exact). Organic volumes from bulk density (flagged as estimates).
+### Tomato/pepper 3-step plan
 
-### Garden timing output by garden type
+- Step 1 — Preplant (~35%)
+- Step 2 — Sidedress #1: first fruit cluster = size of a half dollar
+- Step 3 — Sidedress #2: 4 weeks later; long-season varieties may need 4th
 
-- vegetable/mixed: preplant, optional preplant lime note (>10 lbs), sidedress, hot-weather caution
-- annual: preplant, mid-season, excessive fertilizer caution (Note 19)
-- perennial: early spring, lime, excessive fertilizer caution, rose monthly March–August (Note 19)
+**P/K High override:** collapses to 2-step: half preplant / half at fruit set (VCE Note 19). P/K High red box suppressed for tomato/pepper when crop is selected.
 
----
+### Vegetable guidance collapsible
 
-## Sample Report Pre-fill
+- `gdn-guidance-crop` selector — synced from step 3 but user can change to browse
+- Label: "Showing guidance for — change to browse other crops"
+- `updateCropGuidancePanel()` reads from `gdn-guidance-crop`
+- General timing rule and banding note always visible below
 
-prefillSampleReport('lawn'): pH 5.5, K Low, lime 60 lbs, warm-season.
-prefillSampleReport('garden'): pH 5.9, OM 8.8%, salts 1216 ppm, lime 5 lbs, vegetable (real VCE Lab 23-15911).
-Neither sample writes st-lawn-size. Area field is explicitly cleared on load.
+### GARDEN_PRODUCTS — key fields
 
----
+All products have: `name`, `npk[N,P,K]`, `cupsPerLb`, `organic`, `fastOrganic`, `source`, `note19Rate`, `note`, `liquid`
 
-## Known Issues / Technical Debt
+Cottonseed meal N% corrected to **7%** per Rutgers FS626 (was 6%).
 
-### Remaining gap: Shade adjustment (static guidance only)
-Per 430-011, heavy shade lawns need only 1/2 to 2/3 the N rate. Currently a static callout. Two planned enhancements deferred from v1.4:
-1. **Dynamic minimum-applications calculation** — live result based on user's actual N total and program
-2. **Shade checkbox** — auto-reduces suggested N range display when checked
+Products added this session: bone meal (1-15-0), dried cow manure (2-3-3), bat guano (10-4-2), fish emulsion (5-1-1 liquid).
 
-### Remaining gap: N rate not carried from Soil Test tab
-N rate from Waypoint report not captured or carried. The N rate guidance table helps users translate a Waypoint recommendation into a VCE-compliant starting point in the meantime.
+### fmtMeasure(lbs, cupsPerLb)
 
-### Critical: Unicode in JS strings
-Never use literal Unicode/emoji in JS string literals. Use HTML entities (&#9888; &#10003; etc.). Literal special characters cause silent parse errors in Safari.
-
-### Critical: Template literals
-All calculator functions must use zero backtick template literals — all string concatenation.
-
-### Critical: carryOverToCalculators timing
-DOM writes and calc calls separated by setTimeout(..., 0). Do not remove.
-
-### Critical: canCarryOver must remain in interpretSoilTest
-The canCarryOver check and carryBar.style.display call live at the bottom of interpretSoilTest(), just before the summary bar render. Has been accidentally dropped in past sessions — always verify if carry-over bar stops appearing.
-
-### Critical: printPlan class cleanup
-printPlan(prefix) supports cool, warm, lime, and garden. It adds `printing-{prefix}` to body before print and removes it after. The print CSS uses `body:not(.printing-cool):not(.printing-warm):not(.printing-lime):not(.printing-garden)` to default to soil test. If window.print() is ever called without going through printPlan, the soil test page will print instead of the plan.
-
-### Critical: numApps must not be capped in calcAutoplan
-The auto plan calculator must not cap numApps at 4. Capping causes nPerApp to silently exceed the per-application limit. The warning for >4 applications handles user communication instead.
-
-### HTML Structure
-The st-layout grid requires exactly 2 direct children. A missing closing div collapses the grid.
-
-### Helper Functions Must Be Present
-card(), abox(), goBtn(), pill() are defined locally inside interpretSoilTest. Verify after any automated block replacement.
-
-**Buffer Index / Buffer pH card:** Title and "What it means" text both switch based on `isWaypoint` — VCE shows "Buffer Index", Waypoint shows "Buffer pH". The "Also called Buffer pH on Waypoint reports" parenthetical has been removed. Both versions share identical explanatory text since the concept is the same.
+- ≥ 4 cups → cups to nearest half
+- 0.5–4 cups → cups as Unicode fractions
+- 1–16 tbsp → tablespoons
+- < 1 tbsp → teaspoons
+- Always flagged as approximate
 
 ---
 
-## Soil Test Card Accuracy Notes
+## Soil Test Report Tab
 
-These corrections were made after a full card review. Future edits must maintain these:
+### Report type options
 
-### pH card
-Sulfur recommendation for alkaline soil (pH > 7.0) is general agronomic guidance — not explicitly in current sources. Keep as is but do not add more sulfur-specific detail without a source.
+| Value | Lab | Context | Lime unit | Carry-over |
+| :---- | :---- | :---- | :---- | :---- |
+| vce-lawn | VCE | Lawn | lbs/1,000 sq. ft. | Cool + Warm + Lime |
+| waypoint-lawn | Waypoint | Lawn | lbs/1,000 sq. ft. | Cool + Warm + Lime |
+| vce-garden | VCE | Garden | lbs/100 sq. ft. | Garden |
+| waypoint-garden | Waypoint | Garden | lbs/1,000 sq. ft. | Garden |
 
-### CEC card
-Range is **1–20 meq/100g** (expanded from 1–12). Virginia Piedmont and Coastal Plain clay soils commonly reach 15–20. Thresholds: ≤3 very low, ≤7 low-moderate, ≤15 moderate-high (typical), >15 high (clay soils). Uses "plants" not "grass" to cover both lawn and garden contexts.
+### Sample report buttons (PII-free)
 
-### Phosphorus card
-"Why it matters": "Phosphorus supports root development and fruit production. It is the least mobile of the major nutrients and is most available in the 6.0–7.0 pH range." Grounded in 426-323 and 452-701.
-
-### Potassium card
-"Why it matters": "Potassium supports cold hardiness, drought tolerance, and disease resistance. It is especially important for warm-season grasses going into winter." Grounded in 430-520 and 426-323. The word "vigor" has been removed.
-
-### Calcium & Magnesium card
-Action is conditional on lime type selected and Ca/Mg ratings:
-- Mg Low → use dolomitic lime (supplies both Ca and Mg)
-- Lime type = Dolomitic → confirms it supplies both
-- Lime type = Agricultural → warns it supplies Ca but not Mg
-- Ca Low, no lime type → gypsum option cited (426-323)
-- No specific concern → explains the distinction plainly
-"What it means" now correctly states that Mg is supplied specifically by dolomitic lime, not agricultural lime.
-
-### Organic Matter card
-Definition corrected to: "The percentage of plant and animal residues — at all stages of decomposition — in your soil." The word "decomposed" alone was too narrow.
-
-### Soluble Salts card
-"What it means" now reads: "Measures the total concentration of dissolved salts in your soil — from fertilizers, natural mineral weathering, and irrigation water." Previous text said "from fertilizer" only, which was misleading for users who hadn't recently fertilized. "Why it matters" extended to note that vegetable seedlings and new grass seed are especially sensitive.
-
-### Buffer Index / Buffer pH card
-Title switches: VCE = "Buffer Index", Waypoint = "Buffer pH". "Also called Buffer pH" parenthetical removed from VCE card text.
-
-### Grass Type & Fertilizer Program card
-Technical Note 17/18 references removed from user-facing text. Replaced with plain-language action: timing window stated, then direct navigation button "Go to Warm/Cool-Season Calculator".
-
-### Waypoint garden N and lime units (v1.5)
-
-Waypoint garden reports use **lbs/1,000 sq. ft.** for both N and lime recommendations. VCE garden reports use lbs/100 sq. ft. (per Note 19). `calcGarden()` detects `isWaypointGarden` and divides entered N and lime values by 10 before calculating. Field labels and hints switch dynamically. `onReportTypeChange()` calls `calcGarden()` via setTimeout when switching to a garden report type.
-
-### Vegetable & Flower Gardens tab — collapsible sections (updated v1.5)
-
-The "Vegetable crop fertilizer guidance" collapsible now includes a **crop selector** ("What are you growing?") at the bottom. Selecting a crop displays crop-specific sidedress rates, timing triggers, and cautions from the VCE crop-specific publications. Function: `showCropGuidance()`. Crops: tomatoes, peppers/eggplant, potatoes, corn, broccoli/cauliflower, cabbage/Brussels sprouts, leafy greens, spinach/lettuce, cucumbers/squash, melons, beans/peas, root crops, onions/garlic.
-
-The sidedress recommendation suppresses when the user enters an N-only fertilizer (fertP === 0 && fertK === 0) — offering 10-10-10 as a sidedress would contradict the P=zero recommendation.
-
-The tomato/pepper split note renders as a block div (not warning-badge flex) and no longer shows the half-lbs quantity inline — the quantity is already in the main result row.
-
-### Sample report buttons (v1.5)
-
-Three buttons: **Lawn Sample** (VCE lawn), **Flower Garden Sample** (Waypoint annual flowers, pH 5.2), **Vegetable Garden Sample** (Waypoint vegetable, pH 7.1, P/K/Ca Very High, OM 11.4%, no lime).
-
-Micronutrient rating prefill values must use the select option values: `L`, `M`, `SUFF`, `H` — not Waypoint keys (ME, OP, VH). The micronutrient selects use a simplified four-tier scale, not the full Waypoint scale.
-
-### Micronutrient cards — garden context (v1.5)
-
-All micronutrient card messages now use `isGarden` to provide garden-specific vs lawn-specific guidance:
-
-**Boron (B):**
-- Garden phNote: role in fruit/seed development, pollen tube growth, cell wall formation; cole crops and root crops especially sensitive
-- Garden lowMsg: Broadcast Borax, mix into soil before planting, **do not apply in a band**; 1–2 lbs Borax per 1,000 sq. ft.; hollow broccoli stems and browning cauliflower = boron deficiency; retest before reapplying. Cites 426-403, 426-323, Agronomy Facts 8.
-- highMsg: boron toxicity is more severe and persistent than other micronutrients
-- Lawn: consult VCE office (unchanged)
-
-**Zinc (Zn):**
-- Garden lowMsg: pH-first, then zinc sulfate at 1–2 lbs/1,000 sq. ft.; corn especially sensitive. Cites 426-323, 426-405.
-
-**Manganese, Copper, Iron:** All updated with clearer language and garden-relevant context.
-
-### Critical: micronutrient select option values
-
-The micronutrient rating selects (`st-b-rating`, `st-cu-rating`, etc.) use `L`, `M`, `SUFF`, `H` — not the VCE or Waypoint full scales. Any prefill data must use these four values only.
-
----
-
-## Crop-Specific VCE Publications (v1.5)
-
-Added to About tab and used in `showCropGuidance()`:
-
-| Publication | Crop | Key sidedress guidance |
+| Button | Type | Key values |
 | :---- | :---- | :---- |
-| 426-418 / SPES-795P | Tomatoes | 3 tbsp 33-0-0/10-ft row when fruit = half dollar size; 5-10-5 after first ripe tomato |
-| 426-413 / SPES-794 | Peppers, eggplant, potatoes | After fruit set; potatoes avoid excess N |
-| 426-405 / SPES-780P | Sweet corn | 3 tbsp 10-10-10/10-ft row at 12–18 inches high |
-| 426-403 / SPES-792P | Cole crops (broccoli, cauliflower, cabbage, Brussels sprouts) | 3 tbsp 10-10-10/10-ft row 3 weeks after transplanting |
-| 426-408 / SPES-785P | Leafy greens, spinach, lettuce | 1 lb 10-10-10 or 2 lbs 5-10-5 per 100 ft of row |
-| 426-406 / SPES-779P | Cucumbers, squash, melons | 3 tbsp 33-0-0/10-ft row 1 week after blossoming |
-| 426-422 / SPES-789P | Root crops | ½–2 lbs 10-10-10/100 sq. ft. at 4–6 inches tall |
-| 426-402 / SPES-676NP | Beans, peas | Legumes fix own N; avoid heavy N |
-| 426-411 / SPES-788P | Onions, garlic, shallots | Taper N as bulbs mature |
+| 📋 Lawn Sample | VCE warm-season | pH 5.5, K Low, lime 60 lbs |
+| 🌸 Flower Garden Sample | Waypoint annual flowers | pH 5.2, P Low, K Optimum, OM 5.6%, lime 87 lbs/1,000 sf, agricultural lime |
+| 🌿 Vegetable Garden Sample | Waypoint vegetable | pH 7.1, P/K/Ca Very High, OM 11.4%, no lime |
+
+Micronutrient prefill values must use `L`, `M`, `SUFF`, `H` — not Waypoint keys (ME, OP, VH).
+
+### Soil test card notes
+
+- **"Your result:"** — always on new paragraph: `</p><p><strong>Your result:</strong>`
+- **pH alkaline** — "allow to drop naturally" removed; sulfur + consult VCE
+- **Base saturation** — softened per SPES-384: not critical in most home lawn situations
+- **Lime card** — not applied annually; covers three-year period (SPES-384)
+- **Soluble salts 400–640 ppm** — conditional on isGarden (garden version adds seedling note)
+- **Organic matter** — herbicide note removed; all high tiers action-good
+- **Micronutrient cards** — all use `isGarden` for context-specific guidance
+- **Boron garden** — liquid Borax method: 1 tbsp per gallon per 100 sq. ft.; do not band; sodium accumulation caution
+
+### Lawn calculator notes
+
+- Soil testing: **3–4 years** for lawns (SPES-669, SPES-670)
+- Cool-season spring N: 0.25–0.5 lbs water-soluble N/1,000 sq. ft. every 4–8 weeks (secondary timing, SPES-670)
+- Zoysiagrass/centipedegrass annual N: **1–2 lbs** (not 1–1.5 lbs) per SPES-669
+- Clipping recycling credit: 0.5–1 lb N per year (SPES-384)
+- Measuring collapsible: Google Earth (UMN instructions), Google Maps right-click, tape measure — no Chesterfield GIS, no time estimates
 
 ---
 
+## Critical Implementation Rules
 
-
-1. Never infer soil texture from CEC or Buffer Index.
-2. Only use thresholds explicitly stated in source documents.
-3. All dynamic result sentences preceded by bolded "Your result:".
-4. Action boxes use abox(). Must be a genuine action, not a caveat.
-5. Non-action caveats use plain p with Note: label.
-6. "Why it matters" kept to one sentence, sourced from VCE.
-7. No "Mehlich" in user-facing text.
-8. No user names or lab IDs in user-visible text.
-9. Use "plant health" / "your plants" language so text works for both lawn and garden contexts.
-10. Organic volume estimates always flagged. Synthetic VCE Note 19 volumes are exact.
-11. Never recommend specific brand names — use NPK ratios and WIN percentages only.
-12. "Applications" not "trips" when describing fertilizer frequency.
+1. Never infer soil texture from CEC or Buffer Index
+2. Only use thresholds explicitly stated in source documents
+3. "Your result:" always on new paragraph
+4. Action boxes use `abox()` — genuine actions only
+5. No backtick template literals — string concatenation only (Safari)
+6. No Unicode/emoji in JS string literals — HTML entities only
+7. `numApps` never capped in `calcAutoplan` — warn if >4 needed
+8. `carryOverToCalculators()` setTimeout must not be removed
+9. `printPlan(prefix)` always — never call `window.print()` directly
+10. `calcLime()` writes to `lime-results-panel` — old individual IDs gone
+11. Micronutrient selects: `L`, `M`, `SUFF`, `H` only
+12. No PII anywhere in code or comments
+13. Soil Test tab `st-layout` is two-column — do NOT change
+14. `showCropGuidance()` is removed — use `updateCropGuidancePanel()`
+15. Soil testing: "3–4 years" lawns; "every 2–3 years" active vegetable beds
+16. Never recommend brand names — NPK ratios and WIN % only
 
 ---
 
 ## Attributions
 
-- **Chantel Wilson** — Assistant Professor and 4-H STEAM Extension Specialist, College of Agriculture, Virginia State University
-- **Michael Goatley Jr.** — Professor and Extension Specialist, School of Plant and Environmental Sciences, Virginia Tech
+- **Chantel Wilson** — Assistant Professor and 4-H STEAM Extension Specialist, Virginia State University
+- **Michael Goatley Jr.** — Professor and Extension Specialist, Virginia Tech
 
-Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, the U.S. Department of Agriculture, and local governments.
+Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, USDA, and local governments.
 
 ---
 
@@ -428,6 +256,6 @@ Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State
 
 | File | Description |
 | :---- | :---- |
-| `lawn_garden_calc_v1_5.html` | Main application — current version |
-| `CLAUDE.md` | This file — project context for AI-assisted development |
+| `lawn_garden_calc_v1_5.html` | Main application |
+| `CLAUDE.md` | Project context for AI-assisted development |
 | `README.md` | User-facing documentation |
