@@ -1339,16 +1339,51 @@
               </div>
             </div>
 
+            <!-- Crop type selector with N rate guidance -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">3</span><span class="field-question">What are you growing? <span style="font-weight:400;color:var(--slate-light);font-size:0.82rem;">(optional — helps calculate N rate)</span></span></div>
+              <select id="gdn-crop-type" onchange="onCropTypeChange()" style="margin-bottom:6px;">
+                <option value="">— Select a crop (optional) —</option>
+                <optgroup label="Heavy feeders (tomatoes, corn, broccoli…)">
+                  <option value="tomato">Tomatoes</option>
+                  <option value="pepper">Peppers &amp; eggplant</option>
+                  <option value="potato">Potatoes</option>
+                  <option value="corn">Sweet corn</option>
+                  <option value="broccoli">Broccoli &amp; cauliflower</option>
+                  <option value="cabbage">Cabbage &amp; Brussels sprouts</option>
+                  <option value="beet">Beets &amp; Swiss chard</option>
+                  <option value="spinach">Spinach</option>
+                  <option value="onion">Onions, garlic &amp; shallots</option>
+                  <option value="okra">Okra</option>
+                </optgroup>
+                <optgroup label="Medium feeders (leafy greens, cucumbers, squash…)">
+                  <option value="leafy">Leafy greens (kale, collards, mustard)</option>
+                  <option value="lettuce">Lettuce</option>
+                  <option value="cucumber">Cucumbers</option>
+                  <option value="squash">Squash &amp; pumpkins</option>
+                  <option value="melon">Melons</option>
+                  <option value="sweetpotato">Sweet potatoes</option>
+                  <option value="asparagus">Asparagus</option>
+                </optgroup>
+                <optgroup label="Light feeders (beans, carrots, root crops)">
+                  <option value="beans">Beans &amp; peas</option>
+                  <option value="carrot">Carrots</option>
+                  <option value="root">Root crops (radishes, turnips, parsnips)</option>
+                </optgroup>
+              </select>
+              <div id="gdn-crop-n-hint" style="display:none;background:var(--green-mist);border-radius:6px;padding:8px 12px;font-size:0.82rem;line-height:1.5;margin-top:4px;"></div>
+            </div>
+
             <!-- N recommendation -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">3</span><span class="field-question" id="gdn-n-rec-label">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</span></div>
+              <div class="field-label"><span class="field-num">4</span><span class="field-question" id="gdn-n-rec-label">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</span></div>
               <input type="number" id="gdn-n-rec" min="0" step="0.1" placeholder="e.g. 0.2" oninput="calcGarden()">
               <div class="field-hint" id="gdn-n-rec-hint">Enter from the fertilizer section of your soil test report. VCE reports N in lbs/100 sq. ft. Waypoint garden reports N in lbs/1,000 sq. ft. — the calculator converts automatically.</div>
             </div>
 
             <!-- P and K ratings -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question">Phosphorus (P) rating from your soil test?</span></div>
+              <div class="field-label"><span class="field-num">5</span><span class="field-question">Phosphorus (P) rating from your soil test?</span></div>
               <select id="gdn-p-rating" onchange="calcGarden()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1365,7 +1400,7 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question">Potassium (K) rating from your soil test?</span></div>
+              <div class="field-label"><span class="field-num">6</span><span class="field-question">Potassium (K) rating from your soil test?</span></div>
               <select id="gdn-k-rating" onchange="calcGarden()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1384,7 +1419,7 @@
 
             <!-- Fertilizer product -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">6</span><span class="field-question">Fertilizer: enter N-P-K grade or choose a common product</span></div>
+              <div class="field-label"><span class="field-num">7</span><span class="field-question">Fertilizer: enter N-P-K grade or choose a common product</span></div>
               <div style="display:flex;gap:8px;margin-bottom:10px;">
                 <button id="gdn-fert-mode-npk" class="st-unit-btn active" onclick="setGardenFertMode('npk')" style="padding:5px 14px;font-size:0.82rem;">Enter N-P-K</button>
                 <button id="gdn-fert-mode-product" class="st-unit-btn" onclick="setGardenFertMode('product')" style="padding:5px 14px;font-size:0.82rem;">Choose Product</button>
@@ -1399,9 +1434,9 @@
               <div id="gdn-fert-product" style="display:none;">
                 <select id="gdn-product-select" onchange="onGardenProductSelect()">
                   <option value="">- Select a product -</option>
-                  <optgroup label="Synthetic — Nitrogen Only (VCE Note 19)">
+                  <optgroup label="Synthetic — Nitrogen Only">
+                    <option value="calcium-nitrate">Calcium Nitrate (15.5-0-0) — preferred sidedress</option>
                     <option value="nitrate-soda">Nitrate of Soda (16-0-0)</option>
-                    <option value="calcium-nitrate">Calcium Nitrate (15-0-0)</option>
                     <option value="ammonium-sulfate">Ammonium Sulfate (21-0-0)</option>
                     <option value="urea">Urea (46-0-0)</option>
                   </optgroup>
@@ -1410,12 +1445,16 @@
                     <option value="5-10-5">5-10-5</option>
                   </optgroup>
                   <optgroup label="Organic Sources">
-                    <option value="blood-meal">Blood Meal (~13-0-0)</option>
-                    <option value="fish-meal">Fish Meal (~10-6-2)</option>
-                    <option value="soybean-meal">Soybean Seed Meal (~7-2-1)</option>
-                    <option value="cottonseed-meal">Cottonseed Meal (~6-2-1)</option>
-                    <option value="feather-meal">Feather Meal (~12-0-0)</option>
-                    <option value="poultry-manure">Poultry Manure (~3-2-2)</option>
+                    <option value="blood-meal">Blood Meal (~13-0-0) — medium-rapid release</option>
+                    <option value="fish-meal">Fish Meal (~10-6-2) — medium-fast release</option>
+                    <option value="fish-emulsion">Fish Emulsion (~5-1-1) — liquid, fast</option>
+                    <option value="bat-guano">Bat Guano (~10-4-2) — medium-rapid release</option>
+                    <option value="feather-meal">Feather Meal (~12-0-0) — slow release</option>
+                    <option value="soybean-meal">Soybean Meal (~7-2-1) — slow-medium release</option>
+                    <option value="cottonseed-meal">Cottonseed Meal (~7-3-2) — slow-medium release</option>
+                    <option value="bone-meal">Bone Meal (~1-15-0) — P source, medium release</option>
+                    <option value="dried-cow-manure">Dried Cow Manure (~2-3-3) — slow release</option>
+                    <option value="poultry-manure">Poultry Manure (~3-2-2) — slow release</option>
                   </optgroup>
                 </select>
                 <div id="gdn-product-note" style="font-size:0.8rem;color:var(--slate-mid);margin-top:6px;"></div>
@@ -1451,81 +1490,49 @@
                 <span>&#127813; Vegetable crop fertilizer guidance</span><span class="toggle-arrow">&#9660;</span>
               </button>
               <div class="fert-chooser-body" id="gdn-veg-body">
-                <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Timing and placement matter as much as rate for vegetables. <em>(VCE 426-323)</em></p>
 
-                <!-- Crop selector -->
-                <div style="margin-bottom:12px;">
-                  <label style="font-size:0.82rem;font-weight:600;color:var(--green-deep);display:block;margin-bottom:6px;">&#127807; What are you growing?</label>
-                  <select id="gdn-crop-type" onchange="showCropGuidance()" style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;background:white;">
-                    <option value="">— Select a crop for specific guidance —</option>
-                    <optgroup label="Fruit vegetables">
-                      <option value="tomato">Tomatoes</option>
-                      <option value="pepper">Peppers / eggplant</option>
-                      <option value="cucumber">Cucumbers / melons / squash</option>
-                      <option value="beans">Beans / peas / lima beans</option>
-                      <option value="corn">Sweet corn</option>
-                    </optgroup>
-                    <optgroup label="Leafy vegetables">
-                      <option value="brassica">Cole crops (broccoli, cabbage, cauliflower, Brussels sprouts)</option>
-                      <option value="leafygreens">Leafy greens (lettuce, spinach, kale, chard, collards)</option>
-                    </optgroup>
-                    <optgroup label="Root vegetables">
-                      <option value="rootcrops">Root crops (carrots, beets, radishes, turnips)</option>
-                      <option value="onions">Onions / garlic / shallots</option>
-                    </optgroup>
-                    <optgroup label="Other">
-                      <option value="mixed">Mixed / not sure</option>
-                    </optgroup>
-                  </select>
-                </div>
-
-                <!-- Crop-specific guidance panel -->
-                <div id="gdn-crop-guidance" style="display:none;background:white;border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:12px;font-size:0.82rem;"></div>
-
-                <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:10px;font-size:0.82rem;line-height:1.6;">
-                  <strong style="color:var(--green-deep);">What each nutrient does</strong><br>
-                  <strong>N</strong> drives leafy top growth. &nbsp;<strong>P</strong> supports root development and fruit production. &nbsp;<strong>K</strong> improves cold hardiness, disease resistance, and general plant durability.
-                </div>
-                <div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">
-                  <strong style="color:var(--green-deep);">&#9201; Timing rule:</strong> A nitrogen application has its greatest effect 3 to 4 weeks after it is applied. If tomatoes are heavily fertilized on June 1, flower production may not begin until July 1, delaying fruit ripening until late August.
-                </div>
-                <table class="fert-grade-table" style="margin-bottom:10px;">
-                  <thead><tr><th>Crop</th><th>N feeding notes</th></tr></thead>
-                  <tbody>
-                    <tr><td><strong>Tomatoes, peppers, potatoes</strong></td><td>Heavy N before fruit set = all vine, no fruit. Apply half preplant, remainder after fruit set. If P or K is High/Very High, split fertilizer in two equal applications. <em>(Note 19, 426-323)</em></td></tr>
-                    <tr><td><strong>Corn</strong></td><td>Heavy N feeder — may need N every 4 weeks. Responds well to sidedressing. <em>(426-323)</em></td></tr>
-                    <tr><td><strong>Leafy vegetables</strong><br><em style="font-size:0.75rem;">broccoli, cabbage, kale, lettuce, spinach, celery</em></td><td>Higher N demand. Respond well to sidedressing about 1 month after planting. <em>(Note 19)</em></td></tr>
-                    <tr><td><strong>Root crops</strong><br><em style="font-size:0.75rem;">carrots, beets, turnips, radishes</em></td><td>Lower N demand than leafy crops. Excess N promotes tops over roots. <em>(426-323)</em></td></tr>
-                    <tr><td><strong>Fruit-set crops</strong><br><em style="font-size:0.75rem;">beans, squash, cucumbers</em></td><td>Excess N or heavy slow-release fertilizers can push growth into late summer and delay fruit. Balance with P and K. <em>(426-323)</em></td></tr>
-                  </tbody>
-                </table>
-                <div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:12px;">
-                  <strong style="color:var(--green-deep);">&#128204; Banding for tomatoes and transplants:</strong> Apply fertilizer in a furrow 3 inches deep and 3 inches to the side of the row — half the recommended rate per side. Concentrating phosphorus in a band makes it available to young roots even when broadcast P is locked up in the soil. <em>(426-323)</em>
-                </div>
-
-                <!-- Crop-specific sidedress guidance -->
-                <div style="border-top:1px solid var(--border);padding-top:12px;">
-                  <div style="font-weight:600;color:var(--green-deep);font-size:0.85rem;margin-bottom:8px;">&#127807; Crop-specific sidedress guidance</div>
-                  <div style="margin-bottom:8px;">
-                    <label style="font-size:0.82rem;font-weight:600;color:var(--slate-mid);">What are you growing?</label>
-                    <select id="gdn-crop-select" onchange="showCropGuidance()" style="width:100%;margin-top:4px;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;">
-                      <option value="">— Select a crop —</option>
+                <!-- Crop selector — synced from step 3 but independently browsable -->
+                <div style="margin-bottom:10px;">
+                  <label style="font-size:0.8rem;color:var(--slate-mid);display:block;margin-bottom:4px;">&#127807; Showing guidance for — change to browse other crops:</label>
+                  <select id="gdn-guidance-crop" onchange="updateCropGuidancePanel()" style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;background:white;">
+                    <option value="">— Select a crop —</option>
+                    <optgroup label="Heavy feeders">
                       <option value="tomato">Tomatoes</option>
                       <option value="pepper">Peppers &amp; eggplant</option>
                       <option value="potato">Potatoes</option>
                       <option value="corn">Sweet corn</option>
                       <option value="broccoli">Broccoli &amp; cauliflower</option>
                       <option value="cabbage">Cabbage &amp; Brussels sprouts</option>
+                      <option value="beet">Beets &amp; Swiss chard</option>
+                      <option value="spinach">Spinach</option>
+                      <option value="onion">Onions, garlic &amp; shallots</option>
+                      <option value="okra">Okra</option>
+                    </optgroup>
+                    <optgroup label="Medium feeders">
                       <option value="leafy">Leafy greens (kale, collards, mustard, chard)</option>
-                      <option value="spinach">Spinach &amp; lettuce</option>
+                      <option value="lettuce">Lettuce</option>
                       <option value="cucumber">Cucumbers &amp; squash</option>
                       <option value="melon">Melons</option>
+                      <option value="sweetpotato">Sweet potatoes</option>
+                      <option value="asparagus">Asparagus</option>
+                    </optgroup>
+                    <optgroup label="Light feeders">
                       <option value="beans">Beans &amp; peas</option>
-                      <option value="root">Root crops (carrots, beets, radishes, turnips)</option>
-                      <option value="onion">Onions, garlic &amp; shallots</option>
-                    </select>
-                  </div>
-                  <div id="gdn-crop-guidance" style="display:none;background:var(--green-mist);border-radius:6px;padding:10px 14px;font-size:0.82rem;line-height:1.7;"></div>
+                      <option value="carrot">Carrots</option>
+                      <option value="root">Root crops (radishes, turnips, parsnips)</option>
+                    </optgroup>
+                  </select>
+                </div>
+
+                <!-- Crop-specific guidance panel -->
+                <div id="gdn-crop-guidance-panel" style="margin-bottom:12px;"></div>
+
+                <!-- General timing rules — always shown -->
+                <div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;border-top:1px solid var(--border);padding-top:10px;">
+                  <strong style="color:var(--green-deep);">&#9201; The 3&#8211;4 week timing rule:</strong> A nitrogen application has its greatest effect 3 to 4 weeks after it is applied. Sidedressing too early pushes vegetative growth at the expense of flowering and fruiting. <em>(VCE 426-323)</em>
+                </div>
+                <div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:12px;">
+                  <strong style="color:var(--green-deep);">&#128204; Banding for transplants:</strong> Apply fertilizer in a furrow 3 inches deep and 3 inches to the side of the row &#8212; half the recommended rate per side. Concentrating phosphorus near roots at planting makes it available even when soil broadcast P is locked up. <em>(VCE 426-323)</em>
                 </div>
               </div>
             </div>
@@ -1561,7 +1568,7 @@
             </div>
 
             <div class="field-group">
-              <div class="field-label"><span class="field-num">7</span><span class="field-question" id="gdn-lime-rec-label">Lime recommendation from your report (lbs per 100 sq. ft.)?</span></div>
+              <div class="field-label"><span class="field-num">8</span><span class="field-question" id="gdn-lime-rec-label">Lime recommendation from your report (lbs per 100 sq. ft.)?</span></div>
               <input type="number" id="gdn-lime-rec" min="0" step="0.5" placeholder="e.g. 5" oninput="calcGarden()">
               <div class="field-hint" id="gdn-lime-rec-hint">Leave blank if no lime was recommended. VCE reports lime in lbs/100 sq. ft. Waypoint garden reports lime in lbs/1,000 sq. ft. — the calculator converts automatically.</div>
             </div>
@@ -1709,133 +1716,180 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-header"><span class="icon">📄</span> Source Documents &amp; Attribution</div>
+          <div class="card-header"><span class="icon">&#128196;</span> Source Documents &amp; Attribution</div>
           <div class="card-body">
-            <p class="about-section-intro">This calculator is derived from the following official publications from Virginia Cooperative Extension and Waypoint Analytical:</p>
-            <div class="about-source">
+
+            <!-- SPES-40A — top, with thanks -->
+            <div class="about-source" style="border-color:var(--gold);background:#fff8e1;">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/SPES/spes-40/spes-40.html" target="_blank" style="color:var(--green-mid);">SPES-40A — A Spreadsheet-Based Calculator for Lawn Fertilizer and Lime Applications in Virginia</a></div>
-              <div class="about-source-meta">Virginia Cooperative Extension · Virginia Tech &amp; Virginia State University</div>
-              <p>The original Excel spreadsheet. This web tool faithfully reproduces those calculations in an accessible, interactive HTML format.</p>
+              <div class="about-source-meta">Virginia Cooperative Extension &middot; Virginia Tech &amp; Virginia State University</div>
+              <p>The original Excel spreadsheet that inspired this calculator. The core fertilizer and lime calculations faithfully reproduce the SPES-40A methodology in an interactive web format. Our sincere thanks to the authors for making this work freely available.</p>
               <div class="about-source-authors">
                 <div class="about-source-author"><strong>Chantel Wilson</strong><span>Assistant Professor and 4-H STEAM Extension Specialist, College of Agriculture, Virginia State University</span></div>
                 <div class="about-source-author"><strong>Michael Goatley Jr.</strong><span>Professor and Extension Specialist, School of Plant and Environmental Sciences, Virginia Tech</span></div>
               </div>
             </div>
+
+            <!-- VCE LAWN SOURCES -->
+            <div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 8px;">&#127807; VCE Lawn Publications</div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/430/430-011/430-011.html" target="_blank" style="color:var(--green-mid);">Publication 430-011 (SPES-334P) — Lawn Fertilization in Virginia</a></div>
+              <div class="about-source-meta">J.M. Goatley Jr. &middot; D. Cataldi &middot; D.R. Chalmers &middot; J.R. Hall III &middot; R.E. Schmidt — VCE, 2021</div>
+              <p>Primary source for the three-program nitrogen system (Programs 1, 2, and 3), grass-species N rate ceilings, seasonal timing windows, and clipping recycling guidance.</p>
+            </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/430/430-520/430-520.html" target="_blank" style="color:var(--green-mid);">Publication 430-520 (SPES-223P) — Fall Lawn Care</a></div>
-              <div class="about-source-meta">M. Goatley Jr. · S. Askew · D. McCall — VCE, 2025</div>
-              <p>Provides plain-language guidance on fall fertility timing for both cool and warm-season grasses, the "SON" (September–October–November) framework for cool-season nitrogen applications, bermudagrass fall fertility programs, potassium and winter hardiness, and shade adjustments. Used for the N rate guidance tables and timing notes in the Cool-Season and Warm-Season calculator tabs.</p>
+              <div class="about-source-meta">M. Goatley Jr. &middot; S. Askew &middot; D. McCall — VCE, 2025</div>
+              <p>Fall fertility timing for cool and warm-season grasses, the &ldquo;SON&rdquo; framework, bermudagrass fall programs, potassium and winter hardiness, shade adjustments.</p>
             </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/dam/pubs_ext_vt_edu/430/430-522/SPES-669.pdf" target="_blank" style="color:var(--green-mid);">Publication 430-522 (SPES-669P) — Maintenance Calendar for Warm-Season Turfgrasses in Virginia</a></div>
-              <div class="about-source-meta">M. Goatley · S. Askew · D. McCall (Virginia Tech); C. Wilson (Penn State Extension) — VCE, 2025</div>
-              <p>Source for warm-season maintenance timing, confirmed per-application N limits (0.7 lb readily available / 1.0 lb SAN per active growing month), the bermudagrass/St. Augustine 4.0 lb annual ceiling, and the zoysiagrass/centipedegrass 1–2 lb annual range. Also confirms the 3–4 year soil testing recommendation for home lawns.</p>
+              <div class="about-source-meta">M. Goatley &middot; S. Askew &middot; D. McCall (VT); C. Wilson (Penn State Extension) — VCE, 2025</div>
+              <p>Per-application N limits, bermudagrass/St. Augustine 4.0 lb ceiling, zoysiagrass/centipedegrass 1&ndash;2 lb annual range, 3&ndash;4 year soil testing recommendation.</p>
             </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/dam/pubs_ext_vt_edu/430/430-523/SPES-670.pdf" target="_blank" style="color:var(--green-mid);">Publication 430-523 (SPES-670P) — Maintenance Calendar for Cool-Season Turfgrasses in Virginia</a></div>
-              <div class="about-source-meta">M. Goatley · S. Askew · D. McCall (Virginia Tech); C. Wilson (Penn State Extension) — VCE, 2025</div>
-              <p>Source for cool-season maintenance timing, confirmed fall N rates (0.7 lb water-soluble N/1,000 sq. ft. every 3–4 weeks), spring secondary timing rates (0.25–0.5 lb every 4–8 weeks), controlled-release N limit (0.9 lb/1,000 sq. ft. per active growing month), and the 3–4 year soil testing recommendation for home lawns.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/430/430-011/430-011.html" target="_blank" style="color:var(--green-mid);">Publication 430-011 (SPES-334P) — Lawn Fertilization in Virginia</a></div>
-              <div class="about-source-meta">J.M. Goatley Jr. · D. Cataldi · D.R. Chalmers · J.R. Hall III · R.E. Schmidt — VCE, 2021</div>
-              <p>The primary source for the three-program nitrogen system (Programs 1, 2, and 3), grass-species-specific N rate ceilings, seasonal timing windows, and clipping recycling guidance used throughout the Cool-Season and Warm-Season calculator tabs.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-719/452-719.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 19 (452-719 / SPES-687P) — Vegetable and Flower Gardens</a></div>
-              <div class="about-source-meta">Joyce Latimer (retired) · S.E. Heckendorn — VCE, 2025</div>
-              <p>Source for all Vegetable &amp; Flower Gardens calculator logic: liming limits (5 lbs/100 sq. ft. established, 10 lbs/100 sq. ft. preplant), sidedress recommendations (corn and leafy vegetables), tomato/pepper/lima bean split-application rule, flower and rose timing, organic fertilizer application rates, and the fertilizer substitution table. Synthetic fertilizer volumes (nitrate of soda, calcium nitrate, ammonium sulfate, urea) are exact per Note 19.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-323/426-323.html" target="_blank" style="color:var(--green-mid);">Publication 426-323 (SPES-803P) — Fertilizing the Vegetable Garden</a></div>
-              <div class="about-source-meta">D. Relf · A. McDaniel · S. Donohue; reviewed by E. Olsen — VCE, 2026</div>
-              <p>Source for crop-specific N timing guidance (tomatoes, corn, root crops, fruit-set crops), the N timing rule (greatest effect 3–4 weeks post-application), banding technique for phosphorus, nutrient roles (N=leaves, P=roots/fruit, K=hardiness), and the nutrient deficiency symptoms reference table. Used in the vegetable crop guidance and deficiency symptoms collapsible sections on the Vegetable &amp; Flower Gardens tab.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-418/426-418.html" target="_blank" style="color:var(--green-mid);">Publication 426-418 (SPES-795P) — Tomatoes</a></div>
-              <div class="about-source-meta">D. Relf · A. McDaniel · R. Morse; reviewed by E. Olsen — VCE, 2026</div>
-              <p>Source for tomato sidedress timing: starter solution at transplanting, then 3 tbsp 33-0-0 per 10-foot row when first fruit cluster is the size of a half dollar, then balanced fertilizer 2 weeks after first ripe tomato, then repeat 1 month later for long-season varieties.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-413/426-413.html" target="_blank" style="color:var(--green-mid);">Publication 426-413 (SPES-794) — Potatoes, Peppers and Eggplant</a></div>
-              <div class="about-source-meta">D. Relf · A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
-              <p>Source for pepper and eggplant sidedress guidance: fertilize after fruit set, avoid heavy N before fruit set. Potatoes: excess N promotes vining over tuber development.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-405/426-405.html" target="_blank" style="color:var(--green-mid);">Publication 426-405 (SPES-780P) — Sweet Corn</a></div>
-              <div class="about-source-meta">D. Relf · A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
-              <p>Source for corn sidedress rate and timing: 3 tbsp 10-10-10 per 10-foot row when plants are 12 to 18 inches high. Excess N can cause lodging.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-403/426-403.html" target="_blank" style="color:var(--green-mid);">Publication 426-403 (SPES-792P) — Cole Crops or Brassicas</a></div>
-              <div class="about-source-meta">D. Relf · A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
-              <p>Source for broccoli, cauliflower, cabbage, Brussels sprouts, and kohlrabi sidedress rates and timing. Broccoli and cauliflower: 3 tbsp 10-10-10 per 10-foot row 3 weeks after transplanting. Cabbage: same rate at 3 weeks. Brussels sprouts: 1 tbsp ammonium nitrate per 20-foot row when 12 inches high.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-408/426-408.html" target="_blank" style="color:var(--green-mid);">Publication 426-408 (SPES-785P) — Leafy Green Vegetables</a></div>
-              <div class="about-source-meta">D. Relf · A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
-              <p>Source for leafy green sidedress guidance: spinach, cooking greens, chard — 1 lb 10-10-10 or 2 lbs 5-10-5 per 100 feet of row, scratch into top inch of soil. Lettuce: starter solution at transplanting, sidedress only if deficiencies noted.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-406/426-406.html" target="_blank" style="color:var(--green-mid);">Publication 426-406 (SPES-779P) — Cucumbers, Melons and Squash</a></div>
-              <div class="about-source-meta">A. McDaniel · E. Olsen · D. Relf — VCE, 2026</div>
-              <p>Source for cucumber and squash sidedress: 3 tbsp 33-0-0 per 10-foot row 1 week after blossoming begins, repeat 3 weeks later. Melons: sidedressing generally not recommended; may reduce yield. Low K, Mg, or B causes poor flavor.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-422/426-422.html" target="_blank" style="color:var(--green-mid);">Publication 426-422 (SPES-789P) — Root Crops</a></div>
-              <div class="about-source-meta">D. Relf · A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
-              <p>Source for root crop fertilization: preplant broadcast 2 lbs 10-10-10 per 100 sq. ft.; sidedress beets, parsnips, and turnips at ½–2 lbs 10-10-10 per 100 sq. ft. when 4–6 inches tall. Excess N promotes tops over roots.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-402/426-402.html" target="_blank" style="color:var(--green-mid);">Publication 426-402 (SPES-676NP) — Beans</a></div>
-              <div class="about-source-meta">D. Relf · A. McDaniel · E. Olsen — VCE, 2025</div>
-              <p>Source for bean fertilization guidance: legumes fix their own nitrogen when well-nodulated; avoid heavy N applications which suppress nodulation. Excess N delays pod set.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-411/426-411.html" target="_blank" style="color:var(--green-mid);">Publication 426-411 (SPES-788P) — Onions, Garlic and Shallots</a></div>
-              <div class="about-source-meta">D. Relf · A. McDaniel · E. Olsen — VCE, 2020</div>
-              <p>Source for onion, garlic, and shallot fertilization: moderate N and K during bulb development; taper off N as bulbs mature to avoid soft necks and poor storage. Garlic: delay heavy N until spring growth begins.</p>
+              <div class="about-source-meta">M. Goatley &middot; S. Askew &middot; D. McCall (VT); C. Wilson (Penn State Extension) — VCE, 2025</div>
+              <p>Fall N rates, spring secondary timing (0.25&ndash;0.5 lb every 4&ndash;8 weeks), controlled-release N limit, 3&ndash;4 year soil testing recommendation.</p>
             </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-717/452-717.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 17 (452-717 / SPES-306P) — Lawn Fertilization for Cool-Season Grasses</a></div>
-              <div class="about-source-meta">M. Goatley · E.H. Ervin · S.E. Heckendorn — VCE, 2021</div>
-              <p>Per-application nitrogen limits, seasonal timing schedules, and P/K rate guidance for cool-season grasses.</p>
+              <div class="about-source-meta">M. Goatley &middot; E.H. Ervin &middot; S.E. Heckendorn — VCE, 2021</div>
+              <p>Per-application limits, seasonal schedules, and P/K guidance for cool-season grasses.</p>
             </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-718/452-718.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 18 (452-718 / SPES-305P) — Lawn Fertilization for Warm-Season Grasses</a></div>
-              <div class="about-source-meta">M. Goatley · E.H. Ervin · S.E. Heckendorn — VCE, 2021</div>
-              <p>Per-application nitrogen limits, seasonal timing schedules, and grass-specific N rate guidance for warm-season grasses.</p>
+              <div class="about-source-meta">M. Goatley &middot; E.H. Ervin &middot; S.E. Heckendorn — VCE, 2021</div>
+              <p>Per-application limits, seasonal schedules, and grass-specific N rate guidance for warm-season grasses.</p>
+            </div>
+
+            <!-- VCE GARDEN SOURCES -->
+            <div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 8px;">&#127799; VCE Garden Publications</div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-719/452-719.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 19 (452-719 / SPES-687P) — Vegetable and Flower Gardens</a></div>
+              <div class="about-source-meta">Joyce Latimer (retired) &middot; S.E. Heckendorn — VCE, 2025</div>
+              <p>Primary source for all garden calculator logic: liming limits, sidedress recommendations, tomato/pepper split-application rule, flower and rose timing, organic fertilizer rates, and the fertilizer substitution table. Synthetic fertilizer volumes are exact per Note 19.</p>
+            </div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-323/426-323.html" target="_blank" style="color:var(--green-mid);">Publication 426-323 (SPES-803P) — Fertilizing the Vegetable Garden</a></div>
+              <div class="about-source-meta">D. Relf &middot; A. McDaniel &middot; S. Donohue; reviewed by E. Olsen — VCE, 2026</div>
+              <p>Crop-specific N timing, the 3&ndash;4 week timing rule, phosphorus banding technique, nutrient roles, and nutrient deficiency symptoms. Used throughout the garden guidance collapsibles.</p>
+            </div>
+
+            <!-- VCE CROP-SPECIFIC — collapsible -->
+            <div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 8px;">&#127807; VCE Crop-Specific Publications</div>
+            <div class="fert-chooser no-print" style="margin-bottom:14px;">
+              <button class="fert-chooser-toggle" id="about-crop-pubs-btn" onclick="toggleAboutCropPubs()" style="font-size:0.82rem;">
+                <span>&#128218; 9 crop-specific VCE publications used in the vegetable guidance</span><span class="toggle-arrow">&#9660;</span>
+              </button>
+              <div class="fert-chooser-body" id="about-crop-pubs-body">
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-418/426-418.html" target="_blank" style="color:var(--green-mid);">426-418 (SPES-795P) — Tomatoes</a></div>
+                  <div class="about-source-meta">D. Relf &middot; A. McDaniel &middot; R. Morse; reviewed by E. Olsen — VCE, 2026</div>
+                  <p>Sidedress timing: 3 tbsp 33-0-0 per 10-foot row when first fruit cluster is the size of a half dollar; balanced fertilizer 2 weeks after first ripe tomato; repeat 1 month later for long-season varieties.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-413/426-413.html" target="_blank" style="color:var(--green-mid);">426-413 (SPES-794) — Potatoes, Peppers and Eggplant</a></div>
+                  <div class="about-source-meta">D. Relf &middot; A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
+                  <p>Peppers/eggplant: sidedress after fruit set, avoid heavy N before. Potatoes: excess N promotes vining over tuber development.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-405/426-405.html" target="_blank" style="color:var(--green-mid);">426-405 (SPES-780P) — Sweet Corn</a></div>
+                  <div class="about-source-meta">D. Relf &middot; A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
+                  <p>Sidedress: 3 tbsp 10-10-10 per 10-foot row when plants are 12&ndash;18 inches tall. Excess N can cause lodging.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-403/426-403.html" target="_blank" style="color:var(--green-mid);">426-403 (SPES-792P) — Cole Crops or Brassicas</a></div>
+                  <div class="about-source-meta">D. Relf &middot; A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
+                  <p>Broccoli, cauliflower, cabbage: 3 tbsp 10-10-10 per 10-foot row 3 weeks after transplanting. Brussels sprouts: 1 tbsp ammonium nitrate per 20-foot row when 12 inches high. Boron deficiency = hollow broccoli stems, browning cauliflower.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-408/426-408.html" target="_blank" style="color:var(--green-mid);">426-408 (SPES-785P) — Leafy Green Vegetables</a></div>
+                  <div class="about-source-meta">D. Relf &middot; A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
+                  <p>Sidedress: 1 lb 10-10-10 or 2 lbs 5-10-5 per 100 feet of row when plants are 4&ndash;6 inches tall. Lettuce: starter at transplanting.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-406/426-406.html" target="_blank" style="color:var(--green-mid);">426-406 (SPES-779P) — Cucumbers, Melons and Squash</a></div>
+                  <div class="about-source-meta">A. McDaniel &middot; E. Olsen &middot; D. Relf — VCE, 2026</div>
+                  <p>Cucumbers/squash: 3 tbsp 33-0-0 per 10-foot row 1 week after blossoming, repeat 3 weeks later. Melons: sidedressing generally not recommended. Low K, Mg, or B causes poor flavor.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-422/426-422.html" target="_blank" style="color:var(--green-mid);">426-422 (SPES-789P) — Root Crops</a></div>
+                  <div class="about-source-meta">D. Relf &middot; A. McDaniel; reviewed by E. Olsen — VCE, 2026</div>
+                  <p>Preplant: 2 lbs 10-10-10 per 100 sq. ft. Sidedress beets, parsnips, turnips: &frac12;&ndash;2 lbs 10-10-10/100 sq. ft. at 4&ndash;6 inches tall. Excess N promotes tops over roots.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-402/426-402.html" target="_blank" style="color:var(--green-mid);">426-402 (SPES-676NP) — Beans</a></div>
+                  <div class="about-source-meta">D. Relf &middot; A. McDaniel &middot; E. Olsen — VCE, 2025</div>
+                  <p>Legumes fix their own nitrogen; avoid heavy N applications which suppress nodulation. Sidedress only if needed at heavy pod set.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-411/426-411.html" target="_blank" style="color:var(--green-mid);">426-411 (SPES-788P) — Onions, Garlic and Shallots</a></div>
+                  <div class="about-source-meta">D. Relf &middot; A. McDaniel &middot; E. Olsen — VCE, 2020</div>
+                  <p>Stop N applications once bulbs begin to enlarge. Taper off N as bulbs mature to avoid soft necks and poor storage quality.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- SOIL TEST & INTERPRETATION -->
+            <div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 8px;">&#128207; Soil Test &amp; Interpretation</div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-701/452-701.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 1 (452-701 / SPE-605NP) — Explanation of Soil Tests</a></div>
+              <div class="about-source-meta">Rory Maguire &middot; Steve Heckendorn — VCE, 2024</div>
+              <p>Defines the L/M/H/VH rating system, Buffer Index, and conversion factors used throughout VCE soil test reports.</p>
             </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/dam/pubs_ext_vt_edu/spes/spes-384/SPES-384.pdf" target="_blank" style="color:var(--green-mid);">SPES-384NP — Your Soil Test Report Simplified: A Guide for Homeowners</a></div>
               <div class="about-source-meta">Thomas Bolles — VCE, 2021</div>
-              <p>Plain-language guide to reading a VCE soil test report. Source for: CEC as a soil health tracking benchmark, base saturation context (not critical in most home lawn situations), lime should not be applied annually (three-year period), excessive fertilization as the most common cause of elevated salts, and the 0.5–1 lb annual nitrogen credit from returning grass clippings.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/pubs_ext_vt_edu/en/426/426-402/426-402.html" target="_blank" style="color:var(--green-mid);">426-402 (SPES-676NP) — Beans</a> &nbsp;·&nbsp; <a href="https://www.pubs.ext.vt.edu/content/pubs_ext_vt_edu/en/426/426-403/426-403.html" target="_blank" style="color:var(--green-mid);">426-403 (SPES-792P) — Cole Crops or Brassicas</a> &nbsp;·&nbsp; <a href="https://www.pubs.ext.vt.edu/content/pubs_ext_vt_edu/en/426/426-405/426-405.html" target="_blank" style="color:var(--green-mid);">426-405 (SPES-780P) — Sweet Corn</a></div>
-              <div class="about-source-meta">P. Diane Relf · Alan McDaniel; reviewed by Edward Olsen — VCE, 2025–2026</div>
-              <p>Crop-specific fertilizer guidance used in the "What are you growing?" selector in the Vegetable crop guidance section. Beans: medium feeder, legume N fixation, sidedress only after pod set. Cole crops: heavy feeders, specific sidedress rates by crop. Sweet corn: heavy feeder, sidedress at 12–18 inches tall.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/pubs_ext_vt_edu/en/426/426-408/426-408.html" target="_blank" style="color:var(--green-mid);">426-408 (SPES-785P) — Leafy Green Vegetables</a> &nbsp;·&nbsp; <a href="https://www.pubs.ext.vt.edu/content/pubs_ext_vt_edu/en/426/426-413/426-413.html" target="_blank" style="color:var(--green-mid);">426-413 (SPES-794) — Potatoes, Peppers and Eggplant</a> &nbsp;·&nbsp; <a href="https://www.pubs.ext.vt.edu/content/pubs_ext_vt_edu/en/426/426-418/426-418.html" target="_blank" style="color:var(--green-mid);">426-418 (SPES-795P) — Tomatoes</a></div>
-              <div class="about-source-meta">P. Diane Relf · Alan McDaniel; reviewed by Edward Olsen — VCE, 2026</div>
-              <p>Leafy greens: medium-heavy feeders, sidedress rates for spinach, chard, collards, lettuce. Peppers/eggplant: medium-heavy feeders, split application when P/K is high. Tomatoes: heavy feeder, starter at transplant, specific sidedress timing (first cluster develops, after first ripe fruit), half-dollar visual cue for fruit set, two applications for long-season varieties.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/pubs_ext_vt_edu/en/426/426-422/426-422.html" target="_blank" style="color:var(--green-mid);">426-422 (SPES-789P) — Root Crops</a></div>
-              <div class="about-source-meta">P. Diane Relf · Alan McDaniel; reviewed by Edward Olsen — VCE, 2026</div>
-              <p>Root crops (carrots, beets, radishes, turnips, parsnips): low-medium feeder, excess N promotes tops over roots, specific broadcast and sidedress rates per crop.</p>
-            </div>
-            <div class="about-source">
-              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-701/452-701.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 1 (452-701 / SPE-605NP) — Explanation of Soil Tests</a></div>
-              <div class="about-source-meta">Rory Maguire · Steve Heckendorn — VCE, 2024</div>
-              <p>Defines the L/M/H/VH rating system, Buffer Index, and provides conversion factors used throughout VCE soil test reports.</p>
+              <p>Source for CEC as a soil health tracking benchmark, base saturation context, lime frequency (not annually &mdash; three-year period), excessive fertilization as the primary cause of elevated salts, and the 0.5&ndash;1 lb annual N credit from returning clippings.</p>
             </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.waypointanalytical.com/Docs/technicalarticles/howtointerpretasoiltestreport.pdf" target="_blank" style="color:var(--green-mid);">Agronomy Facts 8 — Soil Test Interpretation: Terms and Definitions</a></div>
-              <div class="about-source-meta">Dr. Richard Large (original) · Revised by Dr. Oscar F. Ruiz Jr. — Waypoint Analytical, May 16, 2023</div>
+              <div class="about-source-meta">Dr. Richard Large (original) &middot; Revised by Dr. Oscar F. Ruiz Jr. — Waypoint Analytical, 2023</div>
               <p>Source for Waypoint rating labels, dS/m salt units, Buffer pH terminology, and CEC reference ranges.</p>
             </div>
+            <div class="about-source">
+              <div class="about-source-title">Virginia Nutrient Management Standards and Criteria — Virginia DCR, 2014</div>
+              <div class="about-source-meta">Virginia Department of Conservation and Recreation</div>
+              <p>Tables 2-2 and 2-3 define annual N ceilings and per-application limits used in all lawn calculator calculations.</p>
+            </div>
+
+            <!-- SUPPLEMENTARY REGIONAL SOURCES — collapsible -->
+            <div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 8px;">&#127758; Supplementary Regional Sources</div>
+            <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:8px;">The following sources are used to supplement VCE guidance for home vegetable garden topics where VCE publications are silent. All are from land-grant university Cooperative Extension programs in the Mid-Atlantic region and are consistent with VCE on all material points.</p>
+            <div class="fert-chooser no-print" style="margin-bottom:14px;">
+              <button class="fert-chooser-toggle" id="about-supp-sources-btn" onclick="toggleAboutSuppSources()" style="font-size:0.82rem;">
+                <span>&#128218; UMD, Clemson, Rutgers, NC State &amp; Mid-Atlantic Veg Guide</span><span class="toggle-arrow">&#9660;</span>
+              </button>
+              <div class="fert-chooser-body" id="about-supp-sources-body">
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://extension.umd.edu/resource/fertilizing-vegetables" target="_blank" style="color:var(--green-mid);">University of Maryland Extension — Fertilizing Vegetables</a></div>
+                  <div class="about-source-meta">University of Maryland Extension</div>
+                  <p>Source for: N rates by feeding level (heavy/medium/light feeders in lbs/100 sq. ft.), liquid Borax method for boron deficiency (1 tbsp per gallon per 100 sq. ft.), organic matter N credit (0.4 lbs N per 1% OM per 1,000 sq. ft.), and fish emulsion as a fast-acting option in cool spring soils.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://hgic.clemson.edu/factsheet/fertilizing-vegetables/" target="_blank" style="color:var(--green-mid);">Clemson HGIC — Fertilizing Vegetables</a></div>
+                  <div class="about-source-meta">Clemson Home &amp; Garden Information Center</div>
+                  <p>Source for: 30&ndash;40% preplant / 60&ndash;70% sidedress split for synthetic fertilizers, sandy soil guidance (split sidedress into two applications), calcium nitrate as preferred sidedress product (supplies Ca alongside N, reduces blossom end rot and tip burn), and annual soil testing recommendation for active vegetable beds.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://njaes.rutgers.edu/FS626/" target="_blank" style="color:var(--green-mid);">Rutgers NJAES FS626 — Fertilizing the Home Vegetable Garden</a></div>
+                  <div class="about-source-meta">Joseph Heckman &middot; Steve Reiners — Rutgers Cooperative Extension</div>
+                  <p>Source for: organic fertilizer N% and release rates (Table 1 — blood meal medium-rapid, bat guano medium-rapid, bone meal medium, soybean/cottonseed meal slow-medium), supplemental nitrogen sidedress schedule (Table 2 — tomatoes 2&times;1.0 lb N/1,000 sq. ft., potatoes 1.5 lb at 4 weeks, corn 2.0 lb at 12 inches, cabbage/squash/peppers/beans), and blood meal as a direct organic substitute for ammonium sulfate and urea in the sidedress column. Cottonseed meal N% corrected to 7% per this source.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title">NC State Cooperative Extension — Vegetable Fertilization</div>
+                  <div class="about-source-meta">NC State University</div>
+                  <p>Confirms calcium nitrate as the preferred sidedress N source for tomatoes and cole crops (supplies Ca alongside N, reducing blossom end rot and tip burn).</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/456/456-420/456-420.html" target="_blank" style="color:var(--green-mid);">2026/2027 Mid-Atlantic Commercial Vegetable Production Recommendations</a></div>
+                  <div class="about-source-meta">VCE &middot; UMD &middot; Rutgers &middot; PSU &middot; U. of Delaware &middot; WVU &mdash; 2026</div>
+                  <p>Source for per-crop pH targets (Table B-1) and the 1&ndash;3 year soil testing recommendation for vegetable production. <strong>Note: This is a commercial grower guide</strong> &mdash; rates and timing are calibrated for field production, not home raised beds. Cited for principles only.</p>
+                </div>
+              </div>
+            </div>
+
             <div class="about-note">
               Virginia Cooperative Extension programs and employment are open to all, regardless of age, color, disability, gender, gender identity, gender expression, national origin, political affiliation, race, religion, sexual orientation, genetic information, veteran status, or any other basis protected by law. An equal opportunity/affirmative action employer.<br><br>
               Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, the U.S. Department of Agriculture, and local governments.<br><br>
@@ -3313,11 +3367,14 @@ function toggleFertChooser(prefix) {
   btn.classList.toggle('open', !isOpen);
 }
 
-function showCropGuidance() {
-  var crop = document.getElementById('gdn-crop-type') ? document.getElementById('gdn-crop-type').value : '';
-  var panel = document.getElementById('gdn-crop-guidance');
+function updateCropGuidancePanel() {
+  var crop = document.getElementById('gdn-guidance-crop') ? document.getElementById('gdn-guidance-crop').value : '';
+  var panel = document.getElementById('gdn-crop-guidance-panel');
   if (!panel) return;
-  if (!crop) { panel.style.display = 'none'; panel.innerHTML = ''; return; }
+  if (!crop) {
+    panel.innerHTML = '<div style="font-size:0.82rem;color:var(--slate-light);font-style:italic;padding:4px 0;">Select a crop above to see specific sidedress guidance.</div>';
+    return;
+  }
 
   var CROP_DATA = {
     'tomato': {
@@ -3415,117 +3472,66 @@ function showCropGuidance() {
   html += '</table>';
 
   panel.innerHTML = html;
-  panel.style.display = 'block';
 }
 
-function showCropGuidance() {
-  var key = document.getElementById('gdn-crop-select').value;
-  var el  = document.getElementById('gdn-crop-guidance');
-  if (!el) return;
-  if (!key) { el.style.display = 'none'; el.innerHTML = ''; return; }
 
-  var CROP_GUIDANCE = {
-    'tomato': {
-      label: '&#127813; Tomatoes',
-      src: '426-418 (SPES-795P)',
-      html: '<strong>Preplant:</strong> Apply starter solution at transplanting. Band fertilizer in furrow 3 inches deep, 3 inches to each side of row (half recommended rate per side).'
-          + '<br><strong>Sidedress #1:</strong> 1&ndash;2 weeks after the first cluster of tomatoes begins to develop and fruit is about the size of a half dollar &mdash; apply <strong>3 tbsp 33-0-0 per 10-foot row</strong>.'
-          + '<br><strong>Sidedress #2:</strong> 2 weeks after the first ripe tomato &mdash; apply a balanced fertilizer such as <strong>5-10-5</strong> at the same rate.'
-          + '<br><strong>Sidedress #3 (long-season varieties):</strong> Repeat one month after #2.'
-          + '<br>&#9888; Do not sidedress before fruit set &mdash; excess N before fruit set causes all vine and no fruit. If P or K is High/Very High, apply half the fertilizer preplant and half at fruit set. <em>(Note 19)</em>'
-    },
-    'pepper': {
-      label: '&#127798; Peppers &amp; Eggplant',
-      src: '426-413 (SPES-794)',
-      html: '<strong>Preplant:</strong> Incorporate fertilizer before transplanting. Use starter solution at planting.'
-          + '<br><strong>Sidedress:</strong> After fruit set, apply a balanced fertilizer. Avoid heavy N before fruit set &mdash; promotes vegetative growth over fruiting.'
-          + '<br>&#9888; If P or K is High/Very High, apply half fertilizer preplant and half at fruit set. <em>(Note 19)</em>'
-    },
-    'potato': {
-      label: '&#129364; Potatoes',
-      src: '426-413 (SPES-794)',
-      html: '<strong>Preplant:</strong> Incorporate fertilizer before planting.'
-          + '<br>&#9888; Avoid excessive N &mdash; promotes vining and poor tuber formation. If slow-release fertilizer or heavy manure is used, leaf and vine growth can push into late summer and delay harvest. <em>(426-323)</em>'
-    },
-    'corn': {
-      label: '&#127807; Sweet Corn',
-      src: '426-405 (SPES-780P)',
-      html: '<strong>Preplant:</strong> Broadcast and incorporate fertilizer before planting.'
-          + '<br><strong>Sidedress:</strong> When plants are <strong>12 to 18 inches high</strong> &mdash; apply <strong>3 tbsp 10-10-10 per 10-foot row</strong>.'
-          + '<br>Corn is a heavy N feeder; a second application may be needed every 4 weeks in long-season plantings. <em>(426-323)</em>'
-          + '<br>&#9888; Too much N can cause lodging (falling over). <em>(426-405)</em>'
-    },
-    'broccoli': {
-      label: '&#129382; Broccoli &amp; Cauliflower',
-      src: '426-403 (SPES-792P)',
-      html: '<strong>Preplant:</strong> Use starter fertilizer when transplanting.'
-          + '<br><strong>Sidedress:</strong> <strong>3 weeks after transplanting</strong> and again as needed &mdash; apply <strong>3 tbsp 10-10-10 per 10-foot row</strong>.'
-          + '<br>Both are heavy feeders. Rapid, consistent growth produces the best quality heads. Interrupted growth (drought, cold, transplant stress) can cause premature heading (buttoning). <em>(426-403)</em>'
-    },
-    'cabbage': {
-      label: '&#129382; Cabbage &amp; Brussels Sprouts',
-      src: '426-403 (SPES-792P)',
-      html: '<strong>Cabbage &mdash; Sidedress:</strong> <strong>3 weeks after transplanting</strong> &mdash; apply <strong>3 tbsp 10-10-10 per 10-foot row</strong>.'
-          + '<br><strong>Brussels sprouts &mdash; Sidedress:</strong> When plants are 12 inches high or 2&ndash;4 weeks after planting &mdash; apply <strong>1 tbsp ammonium nitrate per 20-foot row</strong>.'
-          + '<br>Both are heavy feeders. Grow in cool weather for best quality &mdash; Brussels sprouts especially need cool nights as sprouts develop. <em>(426-403)</em>'
-    },
-    'leafy': {
-      label: '&#129388; Leafy Greens (kale, collards, mustard, chard)',
-      src: '426-408 (SPES-785P)',
-      html: '<strong>Sidedress:</strong> When plants are 4 to 6 inches tall &mdash; apply <strong>1 lb 10-10-10 or 2 lbs 5-10-5 (or 5-10-10) per 100 feet of row</strong>, scratch into the top inch of soil with a rake.'
-          + '<br>Chard: sidedress <strong>1 month after planting</strong> at the same rate.'
-          + '<br>Medium feeders. Rapid, succulent growth requires adequate moisture and fertility. <em>(426-408)</em>'
-    },
-    'spinach': {
-      label: '&#129388; Spinach &amp; Lettuce',
-      src: '426-408 (SPES-785P)',
-      html: '<strong>Spinach &mdash; Sidedress:</strong> Apply <strong>1 lb 10-10-10 or 2 lbs 5-10-5 (or 5-10-10) per 100 feet of row</strong> as needed; scratch into the top inch of soil.'
-          + '<br><strong>Lettuce:</strong> Use starter solution on transplants. Sidedress only if nutrient deficiencies are visible.'
-          + '<br>Both are cool-season crops; high temperatures cause bolting and bitterness. Grow in spring or fall. <em>(426-408)</em>'
-    },
-    'cucumber': {
-      label: '&#129361; Cucumbers &amp; Squash',
-      src: '426-406 (SPES-779P)',
-      html: '<strong>Sidedress:</strong> <strong>1 week after blossoming begins</strong> &mdash; apply <strong>3 tbsp 33-0-0 per 10-foot row</strong>. Repeat <strong>3 weeks later</strong>.'
-          + '<br>Heavy feeders during fruit production. Work in vines only when leaves are dry to avoid spreading disease. <em>(426-406)</em>'
-    },
-    'melon': {
-      label: '&#129389; Melons',
-      src: '426-406 (SPES-779P)',
-      html: '<strong>Sidedressing is generally not recommended</strong> for melons &mdash; it may lower yield and quality by promoting vegetative growth over fruiting.'
-          + '<br>Exception: late-maturing varieties may benefit from a modest N sidedress <strong>at fruit set</strong>.'
-          + '<br>&#9888; Poor melon flavor is often due to low potassium, magnesium, or boron &mdash; check your soil test. <em>(426-406)</em>'
-    },
-    'beans': {
-      label: '&#129752; Beans &amp; Peas',
-      src: '426-402 (SPES-676NP), 426-323',
-      html: '<strong>Preplant:</strong> Incorporate balanced fertilizer before planting.'
-          + '<br>Beans and peas are legumes &mdash; they fix their own nitrogen from the air when well-nodulated. Avoid heavy N fertilization, which can suppress nodulation and reduce yield.'
-          + '<br>&#9888; Excess N or slow-release fertilizers push vine growth and delay pod set. <em>(426-323)</em>'
-    },
-    'root': {
-      label: '&#129372; Root Crops (carrots, beets, radishes, turnips)',
-      src: '426-422 (SPES-789P)',
-      html: '<strong>Preplant:</strong> Broadcast 2 lbs 10-10-10 per 100 sq. ft. and incorporate before planting.'
-          + '<br><strong>Sidedress (beets, parsnips, turnips):</strong> 4 to 6 weeks after sowing or when plants are 4 to 6 inches tall &mdash; apply <strong>&#189;&ndash;2 lbs 10-10-10 per 100 sq. ft.</strong>'
-          + '<br>&#9888; Do not over-fertilize root crops &mdash; excess N promotes top growth over root development. Carrots and radishes generally need no sidedress if preplant was applied. <em>(426-422)</em>'
-    },
-    'onion': {
-      label: '&#129997; Onions, Garlic &amp; Shallots',
-      src: '426-411 (SPES-788P)',
-      html: '<strong>Preplant:</strong> Incorporate fertilizer before planting.'
-          + '<br>Onions are moderate feeders. Garlic planted in fall should not receive heavy N until spring growth begins.'
-          + '<br>Proper bulb development depends on day length (onions are day-length sensitive) more than fertility. Focus on adequate N and K during bulb development; taper off N as bulbs approach maturity to avoid soft necks and poor storage. <em>(426-411)</em>'
-    }
-  };
+function onCropTypeChange() {
+  var cropKey = document.getElementById('gdn-crop-type').value;
+  var hintEl  = document.getElementById('gdn-crop-n-hint');
+  var nInput  = document.getElementById('gdn-n-rec');
+  if (!hintEl) return;
+  // Sync the collapsible guidance selector to match step 3
+  var guidanceSel = document.getElementById('gdn-guidance-crop');
+  if (guidanceSel) {
+    guidanceSel.value = cropKey;
+  }
+  updateCropGuidancePanel();
 
-  var data = CROP_GUIDANCE[key];
-  if (!data) { el.style.display = 'none'; return; }
+  if (cropKey && CROP_FEEDING_LEVELS[cropKey]) {
+    var crop = CROP_FEEDING_LEVELS[cropKey];
+    var lvl  = CROP_LEVEL_LABELS[crop.level];
+    var nVal = crop.nPer100;
+    var isWP = (document.getElementById('st-report-type') && document.getElementById('st-report-type').value === 'waypoint-garden');
+    var nDisplay = isWP ? (nVal * 10).toFixed(1) + ' lbs N per 1,000 sq. ft.' : nVal.toFixed(2) + ' lbs N per 100 sq. ft.';
+    var btnVal   = isWP ? (nVal * 10).toFixed(1) : nVal.toFixed(2);
+    hintEl.innerHTML = '<strong style="color:' + lvl.color + ';">' + lvl.label + '</strong> &mdash; '
+      + crop.label + ' typically needs <strong>' + nDisplay + '</strong> per season. '
+      + '<em>(UMD Extension, Clemson, Rutgers FS626)</em>'
+      + '<br><span style="color:var(--slate-light);font-size:0.78rem;">This is the <strong>total seasonal N</strong> &mdash; split between preplant and sidedress. Target pH: <strong>' + crop.pHTarget + '</strong> (Mid-Atlantic Veg Guide)</span>'
+      + '<br><button class="st-unit-btn" onclick="useRecommendedN(\'' + cropKey + '\')" style="margin-top:6px;font-size:0.78rem;padding:4px 10px;">Use ' + btnVal + ' in step 4</button>';
+    hintEl.style.display = 'block';
+  } else {
+    hintEl.style.display = 'none';
+  }
+  calcGarden();
+}
 
-  el.innerHTML = '<strong style="color:var(--green-deep);display:block;margin-bottom:6px;">' + data.label + '</strong>'
-    + data.html
-    + '<div style="margin-top:8px;font-size:0.75rem;color:var(--slate-light);">Source: VCE ' + data.src + '</div>';
-  el.style.display = 'block';
+function useRecommendedN(cropKey) {
+  var crop = CROP_FEEDING_LEVELS[cropKey];
+  if (!crop) return;
+  var isWP = (document.getElementById('st-report-type') && document.getElementById('st-report-type').value === 'waypoint-garden');
+  var nInput = document.getElementById('gdn-n-rec');
+  if (nInput) {
+    nInput.value = isWP ? (crop.nPer100 * 10).toFixed(1) : crop.nPer100.toFixed(2);
+    calcGarden();
+  }
+}
+
+function toggleAboutCropPubs() {
+  var btn  = document.getElementById('about-crop-pubs-btn');
+  var body = document.getElementById('about-crop-pubs-body');
+  if (!btn || !body) return;
+  var open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  btn.classList.toggle('open', !open);
+}
+function toggleAboutSuppSources() {
+  var btn  = document.getElementById('about-supp-sources-btn');
+  var body = document.getElementById('about-supp-sources-body');
+  if (!btn || !body) return;
+  var open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  btn.classList.toggle('open', !open);
 }
 
 function toggleGdnVeg() {
@@ -3555,24 +3561,100 @@ function toggleGdnSubst() {
   btn.classList.toggle('open', !isOpen);
 }
 
+// ===== GARDEN VOLUME FORMATTER =====
+// Converts lbs of product to the most useful home-garden measurement
+// cupsPerLb: bulk-density-based volume per pound
+function fmtMeasure(lbs, cupsPerLb) {
+  if (!cupsPerLb || lbs <= 0) return null;
+  var cups = lbs * cupsPerLb;
+  var tbsp = cups * 16;
+  var tsp  = tbsp * 3;
+  if (cups >= 4) {
+    // Show cups to nearest half
+    return fmt(Math.round(cups * 2) / 2, 1) + ' cups';
+  } else if (cups >= 0.5) {
+    // Show cups as fraction if clean, otherwise decimal
+    var eighths = Math.round(cups * 8);
+    var whole = Math.floor(eighths / 8);
+    var frac = eighths % 8;
+    var fracStr = {0:'',1:'\u215b',2:'\u00bc',3:'\u215c',4:'\u00bd',5:'\u215d',6:'\u00be',7:'\u215e'}[frac] || '';
+    var display = (whole > 0 ? whole : '') + fracStr;
+    return display + ' cup' + (whole !== 1 || frac !== 0 ? 's' : '');
+  } else if (tbsp >= 1) {
+    // Show tablespoons
+    var t = Math.round(tbsp * 2) / 2;
+    return t + ' tbsp';
+  } else {
+    // Show teaspoons
+    var ts = Math.round(tsp);
+    return ts + ' tsp';
+  }
+}
+
+// Crop feeding levels — N rate guidance
+// Sources: UMD Extension, Clemson HGIC, Rutgers FS626, VCE Note 19
+// Rates in lbs actual N per 100 sq. ft.
+var CROP_FEEDING_LEVELS = {
+  // Heavy feeders — 0.30 lbs N/100 sqft
+  'tomato':    { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Tomatoes' },
+  'pepper':    { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Peppers & eggplant' },
+  'potato':    { level:'heavy', nPer100:0.30, pHTarget:6.2, label:'Potatoes' },
+  'broccoli':  { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Broccoli & cauliflower' },
+  'cabbage':   { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Cabbage & Brussels sprouts' },
+  'corn':      { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Sweet corn' },
+  'beet':      { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Beets & Swiss chard' },
+  'spinach':   { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Spinach' },
+  'onion':     { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Onions, garlic & shallots' },
+  'okra':      { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Okra' },
+  // Medium feeders — 0.20 lbs N/100 sqft
+  'leafy':     { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Leafy greens (kale, collards, chard)' },
+  'lettuce':   { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Lettuce' },
+  'cucumber':  { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Cucumbers' },
+  'squash':    { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Squash & pumpkins' },
+  'melon':     { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Melons' },
+  'sweetpotato':{ level:'medium', nPer100:0.20, pHTarget:6.2, label:'Sweet potatoes' },
+  'asparagus': { level:'medium', nPer100:0.20, pHTarget:6.8, label:'Asparagus' },
+  // Light feeders — 0.10 lbs N/100 sqft
+  'beans':     { level:'light', nPer100:0.10, pHTarget:6.2, label:'Beans & peas' },
+  'carrot':    { level:'light', nPer100:0.10, pHTarget:6.0, label:'Carrots' },
+  'root':      { level:'light', nPer100:0.10, pHTarget:6.5, label:'Root crops (beets, radishes, turnips)' },
+};
+
+var CROP_LEVEL_LABELS = {
+  heavy:  { label:'Heavy feeder', nPer100:0.30, color:'var(--green-deep)' },
+  medium: { label:'Medium feeder', nPer100:0.20, color:'var(--green-mid)' },
+  light:  { label:'Light feeder',  nPer100:0.10, color:'var(--slate-mid)' }
+};
+
 // ===== GARDEN CALCULATOR =====
 
 // Bulk density data: cups per pound (verified sources)
 // Synthetic: from VCE Note 19 / actual VCE garden report
 // Organic: calculated from FAO/extension bulk density data
 var GARDEN_PRODUCTS = {
-  'nitrate-soda':    { name:'Nitrate of Soda', npk:[16,0,0], cupsPerLb: 1.75, source:'VCE Note 19', organic:false, note19Rate:null },
-  'calcium-nitrate': { name:'Calcium Nitrate', npk:[15,0,0], cupsPerLb: 2.0,  source:'VCE Note 19', organic:false, note19Rate:null },
-  'ammonium-sulfate':{ name:'Ammonium Sulfate', npk:[21,0,0], cupsPerLb: 2.5,  source:'VCE Note 19', organic:false, note19Rate:null },
-  'urea':            { name:'Urea',             npk:[46,0,0], cupsPerLb: 2.5,  source:'VCE Note 19', organic:false, note19Rate:null },
-  '10-10-10':        { name:'10-10-10',         npk:[10,10,10], cupsPerLb: 1.75, source:'Est. (granular)', organic:false, note19Rate:null },
-  '5-10-5':          { name:'5-10-5',           npk:[5,10,5],  cupsPerLb: 1.75, source:'Est. (granular)', organic:false, note19Rate:null },
-  'blood-meal':      { name:'Blood Meal',       npk:[13,0,0], cupsPerLb: 2.75, source:'FAO bulk density', organic:true, note19Rate:'5 lbs per 100 sq. ft.' },
-  'fish-meal':       { name:'Fish Meal',        npk:[10,6,2], cupsPerLb: 2.5,  source:'Est. bulk density', organic:true, note19Rate:'5 lbs per 100 sq. ft.' },
-  'soybean-meal':    { name:'Soybean Meal',     npk:[7,2,1],  cupsPerLb: 2.0,  source:'Est. bulk density', organic:true, note19Rate:'10 lbs per 100 sq. ft.' },
-  'cottonseed-meal': { name:'Cottonseed Meal',  npk:[6,2,1],  cupsPerLb: 2.25, source:'Est. bulk density', organic:true, note19Rate:'10 lbs per 100 sq. ft.' },
-  'feather-meal':    { name:'Feather Meal',     npk:[12,0,0], cupsPerLb: 3.0,  source:'Est. bulk density', organic:true, note19Rate:null },
-  'poultry-manure':  { name:'Poultry Manure (dry)', npk:[3,2,2], cupsPerLb: 1.75, source:'Est. bulk density', organic:true, note19Rate:'15\u201325 lbs per 100 sq. ft.' }
+  'calcium-nitrate':  { name:'Calcium Nitrate (15.5-0-0)', npk:[15.5,0,0], cupsPerLb:2.0,  organic:false, source:'VCE Note 19', note19Rate:null,
+    note:'Preferred sidedress N source — supplies calcium alongside nitrogen, reducing blossom end rot in tomatoes and tip burn in cole crops. <em>(Clemson, NC State, Rutgers)</em>' },
+  'nitrate-soda':     { name:'Nitrate of Soda (16-0-0)',   npk:[16,0,0],   cupsPerLb:1.75, organic:false, source:'VCE Note 19', note19Rate:null, note:'' },
+  'ammonium-sulfate': { name:'Ammonium Sulfate (21-0-0)',  npk:[21,0,0],   cupsPerLb:2.5,  organic:false, source:'VCE Note 19', note19Rate:null, note:'Also supplies sulfur (24% S).' },
+  'urea':             { name:'Urea (46-0-0)',              npk:[46,0,0],   cupsPerLb:2.5,  organic:false, source:'VCE Note 19', note19Rate:null, note:'High analysis — small quantities needed. Use carefully to avoid burn.' },
+  '10-10-10':         { name:'10-10-10',                  npk:[10,10,10], cupsPerLb:1.75, organic:false, source:'Est. (granular)', note19Rate:null, note:'' },
+  '5-10-5':           { name:'5-10-5',                    npk:[5,10,5],   cupsPerLb:1.75, organic:false, source:'Est. (granular)', note19Rate:null, note:'' },
+  'blood-meal':       { name:'Blood Meal (~13-0-0)',       npk:[13,0,0],   cupsPerLb:2.75, organic:true,  fastOrganic:true,  source:'Rutgers FS626', note19Rate:'5 lbs per 100 sq. ft.',
+    note:'Fastest-releasing organic N. In warm soil (above 60\u00b0F) releases comparably to a medium-speed synthetic \u2014 effective as a sidedress for warm-season crops planted after May 1 (tomatoes, corn, peppers). In cool spring soil (below 55\u00b0F) release is much slower \u2014 for early-season cole crops and root vegetables planted in March\u2013April, use a synthetic N source for sidedressing instead. <em>(Rutgers FS626, SARE LS16-269, UMD Extension)</em>' },
+  'fish-meal':        { name:'Fish Meal (~10-6-2)',        npk:[10,6,2],   cupsPerLb:2.5,  organic:true,  fastOrganic:true,  source:'VCE Note 19', note19Rate:'5 lbs per 100 sq. ft.',
+    note:'Moderate-fast release in warm soils. Can be sidedressed for warm-season crops. <em>(SARE LS16-269)</em>' },
+  'fish-emulsion':    { name:'Fish Emulsion (~5-1-1)',     npk:[5,1,1],    cupsPerLb:null, organic:true,  fastOrganic:true,  source:'UMD Extension', note19Rate:null,
+    note:'Liquid \u2014 dilute per label. Fast-acting even in cool soils (85% of nutrients available quickly) \u2014 good choice for early-season cole crops and root vegetables. <em>(UMD Extension)</em>', liquid:true },
+  'soybean-meal':     { name:'Soybean Meal (~7-2-1)',      npk:[7,2,1],    cupsPerLb:2.0,  organic:true,  fastOrganic:false, source:'VCE Note 19', note19Rate:'10 lbs per 100 sq. ft.', note:'Slow-medium release. Best applied preplant and incorporated.' },
+  'cottonseed-meal':  { name:'Cottonseed Meal (~7-3-2)',   npk:[7,3,2],    cupsPerLb:2.25, organic:true,  fastOrganic:false, source:'Rutgers FS626', note19Rate:'10 lbs per 100 sq. ft.', note:'Slow-medium release. Best applied preplant and incorporated.' },
+  'feather-meal':     { name:'Feather Meal (~12-0-0)',     npk:[12,0,0],   cupsPerLb:3.0,  organic:true,  fastOrganic:false, source:'Est. bulk density', note19Rate:null, note:'Very slow release \u2014 best for preplant incorporation only.' },
+  'poultry-manure':   { name:'Poultry Manure, dry (~3-2-2)', npk:[3,2,2], cupsPerLb:1.75, organic:true,  fastOrganic:false, source:'VCE Note 19', note19Rate:'15\u201325 lbs per 100 sq. ft.', note:'Slow release. Apply preplant and incorporate.' },
+  'bone-meal':        { name:'Bone Meal (~1-15-0)',         npk:[1,15,0],  cupsPerLb:2.0,  organic:true,  fastOrganic:false, source:'Rutgers FS626', note19Rate:null,
+    note:'High phosphorus, very low N. Use when soil test shows low or medium P and N is adequate. Medium release rate. <em>(Rutgers FS626)</em>' },
+  'dried-cow-manure': { name:'Dried Cow Manure (~2-3-3)',   npk:[2,3,3],  cupsPerLb:1.5,  organic:true,  fastOrganic:false, source:'Rutgers FS626', note19Rate:null,
+    note:'Low analysis \u2014 large quantities needed. Slow-medium release. Primarily a soil conditioner; use as a supplement rather than a primary N source. <em>(Rutgers FS626)</em>' },
+  'bat-guano':        { name:'Bat Guano (~10-4-2)',         npk:[10,4,2],  cupsPerLb:2.0,  organic:true,  fastOrganic:true,  source:'Rutgers FS626', note19Rate:null,
+    note:'Medium-rapid release \u2014 one of the faster organic N sources alongside blood meal. Good all-purpose organic fertilizer with balanced N-P-K. <em>(Rutgers FS626)</em>' }
 };
 
 var gardenSizeMode = 'rect';
@@ -3722,37 +3804,111 @@ function calcGarden() {
     return;
   }
 
-  var hundredths = area / 100; // Number of 100 sq. ft. units
+  var hundredths = area / 100;
   var html = '';
 
-  // Fertilizer amount
+  // Determine if organic product selected and whether it can be sidedressed
+  var prod = productKey ? GARDEN_PRODUCTS[productKey] : null;
+  var cpl  = cupsPerLb || (prod ? prod.cupsPerLb : 0);
+  var isFastOrganic = prod ? !!prod.fastOrganic : false;
+  var cropKey = document.getElementById('gdn-crop-type') ? document.getElementById('gdn-crop-type').value : '';
+
+  // Warm-season crops (planted after May 1) can use blood meal/fast organics as sidedress
+  var warmSeason = ['tomato','pepper','potato','corn','squash','cucumber','melon','okra','beans','sweetpotato'].indexOf(cropKey) >= 0;
+  // For fast organics on warm-season crops: split like synthetic; for cool-season or slow organics: all preplant
+  var canSidedressOrganic = isFastOrganic && warmSeason;
+
+  // Fertilizer summary row
   if (nRec > 0 && fertN > 0) {
-    var lbsPerHundred = nRec / (fertN / 100);  // lbs of product per 100 sq ft
+    var npct = fertN / 100;
+    var lbsPerHundred = nRec / npct;
     var lbsTotal = lbsPerHundred * hundredths;
-    var cupsTotal = lbsTotal * cupsPerLb;
-    var volStr = cupsPerLb > 0 ? ' ≈ <strong>' + fmtVolume(cupsTotal) + '</strong>' + (isOrganic ? ' <em style="font-size:0.78rem;">(estimate)</em>' : '') : '';
+    var totalVol = cpl ? fmtMeasure(lbsTotal, cpl) : null;
 
-    html += '<div class="result-row"><div class="result-label">Total fertilizer for your bed (' + area + ' sq. ft.)</div><div class="result-value large">' + fmt(lbsTotal, 2) + ' lbs</div></div>';
-    if (cupsPerLb > 0) {
-      html += '<div class="result-row"><div class="result-label">Approximate volume</div><div class="result-value">' + fmtVolume(cupsTotal) + (isOrganic ? '<br><span style="font-size:0.72rem;color:var(--slate-light);">organic — estimate only; weigh when possible</span>' : '') + '</div></div>';
-    }
-    html += '<div class="result-row"><div class="result-label">Rate per 100 sq. ft.</div><div class="result-value">' + fmt(lbsPerHundred, 2) + ' lbs' + (cupsPerLb > 0 ? ' ≈ ' + fmtVolume(lbsPerHundred * cupsPerLb) : '') + '</div></div>';
+    html += '<div class="result-row"><div class="result-label">Total fertilizer for your bed (' + area + ' sq. ft.)</div>'
+      + '<div class="result-value large">' + fmt(lbsTotal, 2) + ' lbs'
+      + (totalVol ? ' &asymp; ' + totalVol : '') + '</div></div>';
+    html += '<div class="result-row"><div class="result-label">Rate per 100 sq. ft.</div>'
+      + '<div class="result-value">' + fmt(lbsPerHundred, 2) + ' lbs'
+      + (cpl ? ' &asymp; ' + (fmtMeasure(lbsPerHundred, cpl) || '') : '')
+      + (isOrganic ? ' <span style="font-size:0.72rem;color:var(--slate-light);">(volume estimate)</span>' : '') + '</div></div>';
 
-    // Sidedress for vegetables/mixed — suppress when user is already on N-only fertilizer
-    if ((gardenType === 'vegetable' || gardenType === 'mixed') && !(fertP === 0 && fertK === 0 && fertN > 0)) {
-      var sideLbs1010 = 1 * hundredths;
-      var sideLbs5105 = 2 * hundredths;
-      var sideCups = sideLbs1010 * 1.75;
-      var sideCups5105 = sideLbs5105 * 1.75;
-      html += '<div style="background:var(--green-mist);border-radius:6px;padding:12px 14px;margin-top:12px;">';
-      html += '<div style="font-weight:600;color:var(--green-deep);margin-bottom:6px;">&#127807; Sidedress Recommendation (Note 19)</div>';
-      html += '<p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:8px;">Corn and leafy vegetables (broccoli, cabbage, celery, kale, lettuce, spinach) benefit from sidedressing about 1 month after planting. Apply between the rows and scratch into the top inch of soil. Do not let fertilizer touch foliage.</p>';
-      html += '<div style="font-size:0.85rem;margin-bottom:4px;"><strong>Option A:</strong> 1 lb of 10-10-10 per 100 sq. ft. of row &nbsp;&#8594;&nbsp; <strong>' + fmt(sideLbs1010, 1) + ' lbs</strong> for your bed &#8776; ' + fmtVolume(sideCups) + '</div>';
-      html += '<div style="font-size:0.85rem;"><strong>Option B:</strong> 2 lbs of 5-10-5 (or 5-10-10) per 100 sq. ft. of row &nbsp;&#8594;&nbsp; <strong>' + fmt(sideLbs5105, 1) + ' lbs</strong> for your bed &#8776; ' + fmtVolume(sideCups5105) + '</div>';
-      html += '</div>';
+    // ---- Two-step application plan ----
+    var preplantFrac  = (!isOrganic || canSidedressOrganic) ? 0.35 : 1.0;
+    var sidedressFrac = 1.0 - preplantFrac;
+    var preplantN     = nRec * preplantFrac;
+    var sidedressN    = nRec * sidedressFrac;
+    var preplantLbs   = preplantN  / npct * hundredths;
+    var sidedressLbs  = sidedressN / npct * hundredths;
+    var ppVol  = cpl ? fmtMeasure(preplantLbs,  cpl) : null;
+    var sdVol  = cpl ? fmtMeasure(sidedressLbs, cpl) : null;
+
+    // Sidedress timing trigger
+    var sdTrigger = '3\u20134 weeks after transplanting or emergence';
+    if (cropKey === 'tomato')                    sdTrigger = 'when first fruit cluster reaches the size of a half dollar';
+    else if (cropKey === 'corn')                 sdTrigger = 'when plants are 12\u201318 inches tall';
+    else if (cropKey === 'broccoli' || cropKey === 'cabbage') sdTrigger = '3 weeks after transplanting';
+    else if (cropKey === 'onion')                sdTrigger = 'when bulbs begin to enlarge';
+    else if (cropKey === 'cucumber' || cropKey === 'squash') sdTrigger = '1 week after blossoming begins';
+    else if (cropKey === 'okra')                 sdTrigger = 'after first fruits form';
+    else if (cropKey === 'beans')                sdTrigger = 'only if needed at heavy pod set';
+    else if (cropKey === 'lettuce')              sdTrigger = 'once during the growing season';
+
+    html += '<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:12px;">';
+    html += '<div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin-bottom:8px;">&#128203; Application Plan</div>';
+
+    if (isOrganic && !canSidedressOrganic) {
+      html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Slow-release organic fertilizer:</strong> Apply the full amount preplant and incorporate 4\u20136 inches. No sidedress split needed \u2014 nutrients release gradually throughout the season. <em>(Rutgers FS626, UMD Extension)</em></div>';
+    } else if (isOrganic && canSidedressOrganic) {
+      html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Fast-releasing organic fertilizer:</strong> In warm soil (above 60\u00b0F), this product releases comparably to a medium-speed synthetic and can be sidedressed. Applying ~35% preplant and ~65% at the sidedress timing reduces waste and burn risk. <em>(Rutgers FS626, SARE LS16-269)</em></div>';
+    } else {
+      html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#9888; <strong>Synthetic fertilizer:</strong> Applying ~35% preplant and ~65% as sidedress reduces leaching and burn risk. On sandy soil, split the sidedress into two applications 3\u20134 weeks apart. <em>(Clemson HGIC, UMD)</em></div>';
     }
+
+    html += '<table class="auto-plan-table"><thead><tr><th>Step</th><th>When</th><th>Amount for your bed</th></tr></thead><tbody>';
+
+    if (cropKey === 'tomato' || cropKey === 'pepper') {
+      // Tomatoes and peppers: 3-step plan per Rutgers FS626 Table 2 + VCE Note 19
+      // Preplant ~33%, Sidedress #1 ~34%, Sidedress #2 ~33%
+      // If P or K is High/Very High: half preplant, half at fruit set (Note 19)
+      var isTomPepHighPK = (pHigh || kHigh);
+      if (isTomPepHighPK) {
+        // Note 19 high P/K split overrides: half preplant, half at fruit set
+        var halfLbs = (preplantLbs + sidedressLbs) / 2;
+        var halfVol = cpl ? fmtMeasure(halfLbs, cpl) : null;
+        var halfStr = '<strong>' + fmt(halfLbs, 2) + ' lbs</strong>' + (halfVol ? ' &asymp; <strong>' + halfVol + '</strong>' : '');
+        html += '<tr><td><strong>1 &mdash; Preplant</strong></td><td>Before planting &mdash; incorporate 4&ndash;6 inches. <span style="color:#c0392b;font-size:0.8rem;">&#9888; P or K is High/Very High: apply only half the total now.</span></td><td>' + halfStr + '</td></tr>';
+        html += '<tr><td><strong>2 &mdash; At fruit set</strong></td><td>' + (cropKey === 'tomato' ? 'When first fruit cluster reaches the size of a half dollar' : '4 weeks after transplanting') + ' &mdash; apply remaining half. <em>(VCE Note 19)</em></td><td>' + halfStr + '</td></tr>';
+      } else {
+        var sd1Lbs = sidedressLbs * 0.5;
+        var sd2Lbs = sidedressLbs * 0.5;
+        var sd1Vol = cpl ? fmtMeasure(sd1Lbs, cpl) : null;
+        var sd2Vol = cpl ? fmtMeasure(sd2Lbs, cpl) : null;
+        html += '<tr><td><strong>1 &mdash; Preplant</strong></td><td>Before planting &mdash; incorporate 4&ndash;6 inches into soil</td>'
+          + '<td><strong>' + fmt(preplantLbs, 2) + ' lbs</strong>' + (ppVol ? ' &asymp; <strong>' + ppVol + '</strong>' : '') + '</td></tr>';
+        html += '<tr><td><strong>2 &mdash; Sidedress #1</strong></td><td>' + (cropKey === 'tomato' ? 'When first fruit cluster reaches the size of a half dollar' : '4 weeks after transplanting') + ' &mdash; scatter 4&ndash;6 inches from plants &amp; water in. <em>(Rutgers FS626)</em></td>'
+          + '<td><strong>' + fmt(sd1Lbs, 2) + ' lbs</strong>' + (sd1Vol ? ' &asymp; <strong>' + sd1Vol + '</strong>' : '') + '</td></tr>';
+        html += '<tr><td><strong>3 &mdash; Sidedress #2</strong></td><td>4 weeks after sidedress #1. Long-season tomato varieties may need a 4th application 4 weeks later. <em>(Rutgers FS626)</em></td>'
+          + '<td><strong>' + fmt(sd2Lbs, 2) + ' lbs</strong>' + (sd2Vol ? ' &asymp; <strong>' + sd2Vol + '</strong>' : '') + '</td></tr>';
+      }
+    } else {
+      // Standard 2-step plan for all other crops
+      html += '<tr><td><strong>1 &mdash; Preplant</strong></td><td>Before planting &mdash; incorporate 4\u20136 inches into soil</td>'
+        + '<td><strong>' + fmt(preplantLbs, 2) + ' lbs</strong>' + (ppVol ? ' &asymp; <strong>' + ppVol + '</strong>' : '') + '</td></tr>';
+      if (sidedressFrac > 0) {
+        html += '<tr><td><strong>2 &mdash; Sidedress</strong></td><td>Apply ' + sdTrigger + '; scatter 4\u20136 inches from plants &amp; water in</td>'
+          + '<td><strong>' + fmt(sidedressLbs, 2) + ' lbs</strong>' + (sdVol ? ' &asymp; <strong>' + sdVol + '</strong>' : '') + '</td></tr>';
+      }
+    }
+
+    html += '</tbody></table>';
+    html += '<p style="font-size:0.72rem;color:var(--slate-light);margin-top:6px;">Volume measurements are approximate &mdash; bulk density varies by brand and moisture. A kitchen scale gives the most accurate result. Always read the product label.</p>';
+    html += '</div>';
+
+    // Old-style sidedress note for crops without a plan — omit when plan is shown
+    // (plan handles this now)
   } else if (area > 0) {
-    html += '<div class="result-row"><div class="result-label">Fertilizer needed</div><div class="result-value" style="color:var(--slate-light);">Enter N rec. &amp; fertilizer grade</div></div>';
+    html += '<div class="result-row"><div class="result-label">Fertilizer needed</div><div class="result-value" style="color:var(--slate-light);">Enter N rec. &amp; fertilizer grade above</div></div>';
   }
 
   // P/K flags
@@ -3760,10 +3916,11 @@ function calcGarden() {
   var kRat = WAYPOINT_TO_VCE[kRating] || kRating;
   var pkHtml = '';
 
-  // Tomato/pepper/lima bean split note — fires when P or K is High or Very High
+  // Tomato/pepper/lima bean split note — suppress when plan already handled it
   var pHigh = pRat && ['H-','H','H+','VH'].indexOf(pRat) >= 0;
   var kHigh = kRat && ['H-','H','H+','VH'].indexOf(kRat) >= 0;
-  if ((pHigh || kHigh) && (gardenType === 'vegetable' || gardenType === 'mixed') && nRec > 0 && fertN > 0) {
+  if ((pHigh || kHigh) && (gardenType === 'vegetable' || gardenType === 'mixed') && nRec > 0 && fertN > 0
+      && cropKey !== 'tomato' && cropKey !== 'pepper') {
     pkHtml += '<div style="background:#fff0f0;border:1px solid #e07070;border-radius:6px;padding:10px 14px;margin-top:8px;font-size:0.85rem;line-height:1.6;">'
       + '&#127813; <strong>Tomatoes, green peppers, and lima beans:</strong> Your soil tests '
       + (pHigh ? 'High or Very High for phosphorus' : '')
