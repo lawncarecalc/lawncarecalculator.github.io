@@ -341,9 +341,64 @@ Title switches: VCE = "Buffer Index", Waypoint = "Buffer pH". "Also called Buffe
 ### Grass Type & Fertilizer Program card
 Technical Note 17/18 references removed from user-facing text. Replaced with plain-language action: timing window stated, then direct navigation button "Go to Warm/Cool-Season Calculator".
 
+### Waypoint garden N and lime units (v1.5)
+
+Waypoint garden reports use **lbs/1,000 sq. ft.** for both N and lime recommendations. VCE garden reports use lbs/100 sq. ft. (per Note 19). `calcGarden()` detects `isWaypointGarden` and divides entered N and lime values by 10 before calculating. Field labels and hints switch dynamically. `onReportTypeChange()` calls `calcGarden()` via setTimeout when switching to a garden report type.
+
+### Vegetable & Flower Gardens tab — collapsible sections (updated v1.5)
+
+The "Vegetable crop fertilizer guidance" collapsible now includes a **crop selector** ("What are you growing?") at the bottom. Selecting a crop displays crop-specific sidedress rates, timing triggers, and cautions from the VCE crop-specific publications. Function: `showCropGuidance()`. Crops: tomatoes, peppers/eggplant, potatoes, corn, broccoli/cauliflower, cabbage/Brussels sprouts, leafy greens, spinach/lettuce, cucumbers/squash, melons, beans/peas, root crops, onions/garlic.
+
+The sidedress recommendation suppresses when the user enters an N-only fertilizer (fertP === 0 && fertK === 0) — offering 10-10-10 as a sidedress would contradict the P=zero recommendation.
+
+The tomato/pepper split note renders as a block div (not warning-badge flex) and no longer shows the half-lbs quantity inline — the quantity is already in the main result row.
+
+### Sample report buttons (v1.5)
+
+Three buttons: **Lawn Sample** (VCE lawn), **Flower Garden Sample** (Waypoint annual flowers, pH 5.2), **Vegetable Garden Sample** (Waypoint vegetable, pH 7.1, P/K/Ca Very High, OM 11.4%, no lime).
+
+Micronutrient rating prefill values must use the select option values: `L`, `M`, `SUFF`, `H` — not Waypoint keys (ME, OP, VH). The micronutrient selects use a simplified four-tier scale, not the full Waypoint scale.
+
+### Micronutrient cards — garden context (v1.5)
+
+All micronutrient card messages now use `isGarden` to provide garden-specific vs lawn-specific guidance:
+
+**Boron (B):**
+- Garden phNote: role in fruit/seed development, pollen tube growth, cell wall formation; cole crops and root crops especially sensitive
+- Garden lowMsg: Broadcast Borax, mix into soil before planting, **do not apply in a band**; 1–2 lbs Borax per 1,000 sq. ft.; hollow broccoli stems and browning cauliflower = boron deficiency; retest before reapplying. Cites 426-403, 426-323, Agronomy Facts 8.
+- highMsg: boron toxicity is more severe and persistent than other micronutrients
+- Lawn: consult VCE office (unchanged)
+
+**Zinc (Zn):**
+- Garden lowMsg: pH-first, then zinc sulfate at 1–2 lbs/1,000 sq. ft.; corn especially sensitive. Cites 426-323, 426-405.
+
+**Manganese, Copper, Iron:** All updated with clearer language and garden-relevant context.
+
+### Critical: micronutrient select option values
+
+The micronutrient rating selects (`st-b-rating`, `st-cu-rating`, etc.) use `L`, `M`, `SUFF`, `H` — not the VCE or Waypoint full scales. Any prefill data must use these four values only.
+
 ---
 
-## Style & Language Rules
+## Crop-Specific VCE Publications (v1.5)
+
+Added to About tab and used in `showCropGuidance()`:
+
+| Publication | Crop | Key sidedress guidance |
+| :---- | :---- | :---- |
+| 426-418 / SPES-795P | Tomatoes | 3 tbsp 33-0-0/10-ft row when fruit = half dollar size; 5-10-5 after first ripe tomato |
+| 426-413 / SPES-794 | Peppers, eggplant, potatoes | After fruit set; potatoes avoid excess N |
+| 426-405 / SPES-780P | Sweet corn | 3 tbsp 10-10-10/10-ft row at 12–18 inches high |
+| 426-403 / SPES-792P | Cole crops (broccoli, cauliflower, cabbage, Brussels sprouts) | 3 tbsp 10-10-10/10-ft row 3 weeks after transplanting |
+| 426-408 / SPES-785P | Leafy greens, spinach, lettuce | 1 lb 10-10-10 or 2 lbs 5-10-5 per 100 ft of row |
+| 426-406 / SPES-779P | Cucumbers, squash, melons | 3 tbsp 33-0-0/10-ft row 1 week after blossoming |
+| 426-422 / SPES-789P | Root crops | ½–2 lbs 10-10-10/100 sq. ft. at 4–6 inches tall |
+| 426-402 / SPES-676NP | Beans, peas | Legumes fix own N; avoid heavy N |
+| 426-411 / SPES-788P | Onions, garlic, shallots | Taper N as bulbs mature |
+
+---
+
+
 
 1. Never infer soil texture from CEC or Buffer Index.
 2. Only use thresholds explicitly stated in source documents.

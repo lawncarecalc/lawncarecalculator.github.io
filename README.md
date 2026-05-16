@@ -62,9 +62,11 @@ Enter your lawn size, lime recommendation, lime type, CCE (from the bag), and ba
 
 Enter bed dimensions (or area directly for irregular beds), N recommendation, P and K ratings, fertilizer grade or product, and lime recommendation. The calculator shows fertilizer weight, approximate volume, lime for your bed, and timing guidance by garden type.
 
+**Waypoint garden reports:** Enter N and lime exactly as shown on your Waypoint report — Waypoint reports garden recommendations in lbs/1,000 sq. ft. The calculator converts automatically. VCE garden reports use lbs/100 sq. ft. (per Note 19) — enter directly.
+
 **Vegetable-specific guidance** is available in collapsible sections below the fertilizer selector:
-- **Vegetable crop fertilizer guidance** (vegetable and mixed beds) — crop-specific N timing rules for tomatoes, corn, leafy vegetables, root crops, and fruit-set crops; the 3–4 week N timing rule; banding technique for transplants. *(VCE 426-323)*
-- **Nutrient deficiency symptoms reference** (all garden types) — visual symptoms for all major nutrients and trace elements with Virginia context. Most deficiency problems in Virginia are pH-related. *(VCE 426-323)*
+- **Vegetable crop fertilizer guidance** (vegetable and mixed beds) — includes a **crop selector** with sidedress rates and timing triggers from VCE crop-specific publications for 13 crop types (tomatoes, corn, cole crops, leafy greens, cucumbers, root crops, beans, onions, and more). Also covers the 3–4 week N timing rule and banding. *(VCE 426-323 and crop pubs)*
+- **Nutrient deficiency symptoms reference** (all garden types) — visual symptoms for all major nutrients and trace elements with Virginia-specific context. Boron guidance includes specific Borax application rates and the "do not band near plants" caution. *(VCE 426-323)*
 - **Can't find the recommended grade?** — fertilizer substitution table from Note 19.
 
 ---
@@ -148,6 +150,15 @@ The calculator does not recommend specific brands. The "Help me choose a fertili
 | 452-718 / SPES-305P | Soil Test Note 18: Lawn Fertilization for Warm-Season Grasses — VCE 2021 |
 | 452-719 / SPES-687P | Soil Test Note 19: Vegetable and Flower Gardens — VCE 2025 |
 | 426-323 / SPES-803P | Fertilizing the Vegetable Garden — VCE 2026 |
+| 426-418 / SPES-795P | Tomatoes — VCE 2026 |
+| 426-413 / SPES-794 | Potatoes, Peppers and Eggplant — VCE 2026 |
+| 426-405 / SPES-780P | Sweet Corn — VCE 2026 |
+| 426-403 / SPES-792P | Cole Crops or Brassicas — VCE 2026 |
+| 426-408 / SPES-785P | Leafy Green Vegetables — VCE 2026 |
+| 426-406 / SPES-779P | Cucumbers, Melons and Squash — VCE 2026 |
+| 426-422 / SPES-789P | Root Crops — VCE 2026 |
+| 426-402 / SPES-676NP | Beans — VCE 2025 |
+| 426-411 / SPES-788P | Onions, Garlic and Shallots — VCE 2020 |
 | 452-701 / SPE-605NP | Soil Test Note 1: Explanation of Soil Tests — VCE 2024 |
 | Agronomy Facts 8 | Soil Test Interpretation: Terms and Definitions — Waypoint Analytical 2023 |
 | DCR 2014 | Virginia Nutrient Management Standards and Criteria |
