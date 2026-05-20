@@ -1376,9 +1376,9 @@
 
             <!-- N recommendation -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question" id="gdn-n-rec-label">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</span></div>
+              <div class="field-label"><span class="field-num">4</span><span class="field-question" id="gdn-n-rec-label">Preplant nitrogen recommendation from your report (lbs per 100 sq. ft.)?</span></div>
               <input type="number" id="gdn-n-rec" min="0" step="0.1" placeholder="e.g. 0.2" oninput="calcGarden()">
-              <div class="field-hint" id="gdn-n-rec-hint">Enter from the fertilizer section of your soil test report. VCE reports N in lbs/100 sq. ft. Waypoint garden reports N in lbs/1,000 sq. ft. — the calculator converts automatically.</div>
+              <div class="field-hint" id="gdn-n-rec-hint">Enter the N figure shown on your soil test report. This is your preplant amount. Sidedress steps are calculated separately from crop research. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
             </div>
 
             <!-- P and K ratings -->
@@ -3462,15 +3462,21 @@ function updateCropGuidancePanel() {
   var d = CROP_DATA[crop];
   if (!d) { panel.style.display = 'none'; return; }
 
-  var html = '<div style="font-weight:600;color:var(--green-deep);margin-bottom:8px;font-size:0.88rem;">' + d.label + '</div>';
-  html += '<table style="width:100%;border-collapse:collapse;font-size:0.8rem;">';
-  html += '<tr><td style="padding:4px 6px;font-weight:600;color:var(--slate-mid);width:30%;vertical-align:top;">Feeding level</td><td style="padding:4px 6px;">' + d.feeding + '</td></tr>';
-  html += '<tr style="background:var(--green-mist);"><td style="padding:4px 6px;font-weight:600;color:var(--slate-mid);vertical-align:top;">Preplant</td><td style="padding:4px 6px;">' + d.preplant + '</td></tr>';
-  html += '<tr><td style="padding:4px 6px;font-weight:600;color:var(--slate-mid);vertical-align:top;">Sidedress</td><td style="padding:4px 6px;">' + d.sidedress + '</td></tr>';
-  html += '<tr style="background:var(--green-mist);"><td style="padding:4px 6px;font-weight:600;color:var(--slate-mid);vertical-align:top;">Caution</td><td style="padding:4px 6px;">' + d.caution + '</td></tr>';
-  html += '<tr><td colspan="2" style="padding:4px 6px;font-size:0.75rem;color:var(--slate-light);"><em>Source: VCE ' + d.source + '</em></td></tr>';
-  html += '</table>';
+  var sdGuide = (typeof SIDEDRESS_GUIDE !== 'undefined' && SIDEDRESS_GUIDE[crop]) ? SIDEDRESS_GUIDE[crop] : null;
+  var sdTrigger = sdGuide && sdGuide.apps && sdGuide.apps.length > 0
+    ? sdGuide.apps.map(function(a, i) { return (sdGuide.apps.length > 1 ? '#' + (i+1) + ': ' : '') + a.trigger; }).join(' &mdash; ')
+    : 'No standard sidedress needed';
 
+  var html = '<div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;font-size:0.82rem;line-height:1.6;">';
+  html += '<div style="font-weight:700;color:var(--green-deep);margin-bottom:6px;">' + d.label + '</div>';
+  html += '<div style="margin-bottom:4px;"><strong>Feeding level:</strong> ' + d.feeding + '</div>';
+  if (sdGuide && sdGuide.apps && sdGuide.apps.length > 0) {
+    html += '<div style="margin-bottom:4px;"><strong>Sidedress timing:</strong> ' + sdTrigger + '</div>';
+  }
+  if (sdGuide && sdGuide.note) {
+    html += '<div style="color:var(--slate-mid);font-size:0.78rem;margin-top:4px;">' + sdGuide.note + '</div>';
+  }
+  html += '</div>';
   panel.innerHTML = html;
 }
 
@@ -3491,30 +3497,14 @@ function onCropTypeChange() {
     var crop = CROP_FEEDING_LEVELS[cropKey];
     var lvl  = CROP_LEVEL_LABELS[crop.level];
     var nVal = crop.nPer100;
-    var isWP = (document.getElementById('st-report-type') && document.getElementById('st-report-type').value === 'waypoint-garden');
-    var nDisplay = isWP ? (nVal * 10).toFixed(1) + ' lbs N per 1,000 sq. ft.' : nVal.toFixed(2) + ' lbs N per 100 sq. ft.';
-    var btnVal   = isWP ? (nVal * 10).toFixed(1) : nVal.toFixed(2);
     hintEl.innerHTML = '<strong style="color:' + lvl.color + ';">' + lvl.label + '</strong> &mdash; '
-      + crop.label + ' typically needs <strong>' + nDisplay + '</strong> per season. '
-      + '<em>(UMD Extension, Clemson, Rutgers FS626)</em>'
-      + '<br><span style="color:var(--slate-light);font-size:0.78rem;">This is the <strong>total seasonal N</strong> &mdash; split between preplant and sidedress. Target pH: <strong>' + crop.pHTarget + '</strong> (Mid-Atlantic Veg Guide)</span>'
-      + '<br><button class="st-unit-btn" onclick="useRecommendedN(\'' + cropKey + '\')" style="margin-top:6px;font-size:0.78rem;padding:4px 10px;">Use ' + btnVal + ' in step 4</button>';
+      + crop.label + '. Target soil pH: <strong>' + crop.pHTarget + '</strong> (Mid-Atlantic Veg Guide). '
+      + 'Enter your soil test N recommendation in step 4 \u2014 sidedress steps will be calculated automatically.';
     hintEl.style.display = 'block';
   } else {
     hintEl.style.display = 'none';
   }
   calcGarden();
-}
-
-function useRecommendedN(cropKey) {
-  var crop = CROP_FEEDING_LEVELS[cropKey];
-  if (!crop) return;
-  var isWP = (document.getElementById('st-report-type') && document.getElementById('st-report-type').value === 'waypoint-garden');
-  var nInput = document.getElementById('gdn-n-rec');
-  if (nInput) {
-    nInput.value = isWP ? (crop.nPer100 * 10).toFixed(1) : crop.nPer100.toFixed(2);
-    calcGarden();
-  }
 }
 
 function toggleAboutCropPubs() {
@@ -3595,17 +3585,17 @@ function fmtMeasure(lbs, cupsPerLb) {
 // Sources: UMD Extension, Clemson HGIC, Rutgers FS626, VCE Note 19
 // Rates in lbs actual N per 100 sq. ft.
 var CROP_FEEDING_LEVELS = {
-  // Heavy feeders — 0.30 lbs N/100 sqft
-  'tomato':    { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Tomatoes' },
-  'pepper':    { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Peppers & eggplant' },
-  'potato':    { level:'heavy', nPer100:0.30, pHTarget:6.2, label:'Potatoes' },
-  'broccoli':  { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Broccoli & cauliflower' },
-  'cabbage':   { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Cabbage & Brussels sprouts' },
-  'corn':      { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Sweet corn' },
-  'beet':      { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Beets & Swiss chard' },
-  'spinach':   { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Spinach' },
-  'onion':     { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Onions, garlic & shallots' },
-  'okra':      { level:'heavy', nPer100:0.30, pHTarget:6.5, label:'Okra' },
+  // Heavy feeders — 0.20 lbs N/100 sq. ft. at planting (= 2 lbs/1,000 sq. ft.)
+  'tomato':    { level:'heavy', nPer100:0.20, pHTarget:6.5, label:'Tomatoes' },
+  'pepper':    { level:'heavy', nPer100:0.20, pHTarget:6.5, label:'Peppers & eggplant' },
+  'potato':    { level:'heavy', nPer100:0.20, pHTarget:6.2, label:'Potatoes' },
+  'broccoli':  { level:'heavy', nPer100:0.20, pHTarget:6.5, label:'Broccoli & cauliflower' },
+  'cabbage':   { level:'heavy', nPer100:0.20, pHTarget:6.5, label:'Cabbage & Brussels sprouts' },
+  'corn':      { level:'heavy', nPer100:0.20, pHTarget:6.5, label:'Sweet corn' },
+  'beet':      { level:'heavy', nPer100:0.20, pHTarget:6.5, label:'Beets & Swiss chard' },
+  'spinach':   { level:'heavy', nPer100:0.20, pHTarget:6.5, label:'Spinach' },
+  'onion':     { level:'heavy', nPer100:0.20, pHTarget:6.5, label:'Onions, garlic & shallots' },
+  'okra':      { level:'heavy', nPer100:0.20, pHTarget:6.5, label:'Okra' },
   // Medium feeders — 0.20 lbs N/100 sqft
   'leafy':     { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Leafy greens (kale, collards, chard)' },
   'lettuce':   { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Lettuce' },
@@ -3621,10 +3611,38 @@ var CROP_FEEDING_LEVELS = {
 };
 
 var CROP_LEVEL_LABELS = {
-  heavy:  { label:'Heavy feeder', nPer100:0.30, color:'var(--green-deep)' },
+  heavy:  { label:'Heavy feeder', nPer100:0.20, color:'var(--green-deep)' },
   medium: { label:'Medium feeder', nPer100:0.20, color:'var(--green-mid)' },
   light:  { label:'Light feeder',  nPer100:0.10, color:'var(--slate-mid)' }
 };
+
+// Sidedress N guide — lbs actual N per 1,000 sq. ft. per application
+// Sources: Rutgers FS626 Table 2, VCE 426-series, Clemson HGIC, UMD Extension
+var SIDEDRESS_GUIDE = {
+  'tomato':    { apps:[{n:1.0,trigger:'when first fruit cluster reaches the size of a half dollar'},{n:1.0,trigger:'4 weeks after sidedress #1 (long-season varieties may need a 3rd application 4 weeks later)'}], note:'Do not sidedress before fruit set — excess early N = all vine, no fruit. <em>(VCE Note 19, Rutgers FS626)</em>' },
+  'pepper':    { apps:[{n:1.0,trigger:'4 weeks after transplanting or at fruit set'}], note:'Avoid heavy N before fruit set. <em>(Rutgers FS626, VCE 426-413)</em>' },
+  'potato':    { apps:[{n:1.5,trigger:'4 weeks after emergence'}], note:'One sidedress only — excess N promotes vining over tuber development. <em>(Rutgers FS626)</em>' },
+  'corn':      { apps:[{n:2.0,trigger:'when plants are 12 inches tall'}], note:'Heavy feeder. Second application may be needed 4 weeks later for late-season plantings. <em>(Rutgers FS626, VCE 426-405)</em>' },
+  'broccoli':  { apps:[{n:1.0,trigger:'3 weeks after transplanting'}], note:'Repeat if plants look pale. Calcium nitrate preferred — reduces tip burn. <em>(Rutgers FS626, Clemson HGIC, VCE 426-403)</em>' },
+  'cabbage':   { apps:[{n:1.0,trigger:'3\u20134 weeks after transplanting'}], note:'Calcium nitrate preferred. <em>(Rutgers FS626, Clemson HGIC, VCE 426-403)</em>' },
+  'beet':      { apps:[{n:0.75,trigger:'4\u20136 weeks after planting or when 4\u20136 inches tall'}], note:'<em>(Rutgers FS626)</em>' },
+  'spinach':   { apps:[{n:0.75,trigger:'3\u20134 weeks after planting'}], note:'Calcium nitrate preferred — reduces tip burn. <em>(Clemson HGIC, Rutgers FS626)</em>' },
+  'leafy':     { apps:[{n:0.75,trigger:'3\u20134 weeks after planting'},{n:0.75,trigger:'3\u20134 weeks after first sidedress'}], note:'Collards and kale benefit from a second application. Calcium nitrate preferred. <em>(Clemson HGIC — 5 lbs Ca-N/1,000 sq. ft. each)</em>' },
+  'lettuce':   { apps:[{n:0.5,trigger:'once during the growing season, when plants are half grown'}], note:'Calcium nitrate preferred — reduces tipburn. <em>(Clemson HGIC, Rutgers FS626)</em>' },
+  'onion':     { apps:[{n:1.0,trigger:'4\u20136 weeks after planting'}], note:'Stop N once bulbs begin to enlarge. <em>(Rutgers FS626, VCE 426-411)</em>' },
+  'okra':      { apps:[{n:0.75,trigger:'3\u20134 weeks after planting'},{n:0.75,trigger:'6\u20138 weeks after planting'}], note:'Calcium nitrate preferred. Avoid excess N early \u2014 delays pod production. <em>(Clemson HGIC)</em>' },
+  'cucumber':  { apps:[{n:1.0,trigger:'when vines begin to run / 1 week after blossoming begins'},{n:1.0,trigger:'3 weeks after first sidedress'}], note:'<em>(Rutgers FS626, Clemson HGIC, VCE 426-406)</em>' },
+  'squash':    { apps:[{n:1.0,trigger:'before vines start to develop'}], note:'Do not overfertilize \u2014 excess N reduces fruit. <em>(Clemson HGIC, Rutgers FS626)</em>' },
+  'melon':     { apps:[{n:0.5,trigger:'at fruit set only for late-maturing varieties'}], note:'Sidedressing generally not recommended \u2014 may reduce yield. Only apply if plants look pale at fruit set. <em>(VCE 426-406, Rutgers FS626)</em>' },
+  'beans':     { apps:[{n:0.5,trigger:'only if needed at heavy pod set \u2014 check leaf color first'}], note:'Legumes fix their own N. Sidedress only if yellowing visible. <em>(Rutgers FS626, VCE 426-402)</em>' },
+  'sweetpotato':{ apps:[{n:0.5,trigger:'3\u20134 weeks after planting'}], note:'Light feeder. Excess N causes lush vines and poor root development. <em>(Rutgers FS626)</em>' },
+  'carrot':    { apps:[], note:'Generally no sidedress needed if preplant was applied. Monitor leaf color. <em>(Rutgers FS626)</em>' },
+  'root':      { apps:[{n:0.5,trigger:'4\u20136 weeks after planting or when 4\u20136 inches tall'}], note:'Beets and parsnips benefit from sidedress; radishes and turnips generally do not. <em>(VCE 426-422, Rutgers FS626)</em>' },
+  'asparagus': { apps:[{n:0.75,trigger:'after fern growth begins in spring'}], note:'Apply along the row. <em>(Rutgers FS626)</em>' },
+};
+
+// Default sidedress for crops not in SIDEDRESS_GUIDE
+var SIDEDRESS_DEFAULT = { apps:[{n:1.0,trigger:'3\u20134 weeks after transplanting or emergence'}], note:'Standard midseason application. <em>(Rutgers FS626, UMD Extension)</em>' };
 
 // ===== GARDEN CALCULATOR =====
 
@@ -3687,9 +3705,11 @@ function onGardenProductSelect() {
     var rateNote = (isOrganic && p.note19Rate)
       ? ' &nbsp;&#127807; <em>Organic — VCE Note 19 typical rate: ' + p.note19Rate + '. Volume is an estimate; weigh when possible.</em>'
       : (isOrganic ? ' &nbsp;&#127807; <em>Organic source — volume is an estimate; weigh when possible.</em>' : ' &nbsp;&#10003; Volume sourced from: ' + p.source);
-    noteEl.innerHTML = '<span style="color:var(--green-mid);font-weight:600;">' + p.name + '</span> — '
+    noteEl.innerHTML = '<span style="color:var(--green-mid);font-weight:600;">' + p.name + '</span> &mdash; '
       + p.npk[0] + '% N / ' + p.npk[1] + '% P / ' + p.npk[2] + '% K'
       + rateNote;
+    // Switch to product mode so calcGarden picks up the selected product
+    setGardenFertMode('product');
   } else {
     noteEl.innerHTML = '';
   }
@@ -3744,15 +3764,19 @@ function calcGarden() {
   var nHint  = document.getElementById('gdn-n-rec-hint');
   var lHint  = document.getElementById('gdn-lime-rec-hint');
   if (isWaypointGarden) {
-    if (nLabel) nLabel.textContent = 'Nitrogen recommendation from your report (lbs per 1,000 sq. ft.)?';
+    if (nLabel) nLabel.textContent = 'Preplant nitrogen recommendation from your report (lbs per 1,000 sq. ft.)?';
     if (lLabel) lLabel.textContent = 'Lime recommendation from your report (lbs per 1,000 sq. ft.)?';
-    if (nHint)  nHint.textContent  = 'Enter directly from your Waypoint soil test report. Waypoint garden reports N in lbs/1,000 sq. ft. — the calculator converts to lbs/100 sq. ft. automatically.';
-    if (lHint)  lHint.textContent  = 'Enter directly from your Waypoint report. Waypoint garden reports lime in lbs/1,000 sq. ft. — the calculator converts automatically.';
+    if (nHint)  nHint.textContent  = 'Enter the N figure from your Waypoint report \u2014 enter it exactly as shown. Sidedress steps are calculated separately. Waypoint garden reports N in lbs/1,000 sq. ft. \u2014 the calculator converts automatically.';
+    if (lHint)  lHint.textContent  = 'Enter directly from your Waypoint report. Waypoint garden reports lime in lbs/1,000 sq. ft. \u2014 the calculator converts automatically.';
+    var nInput = document.getElementById('gdn-n-rec');
+    if (nInput) nInput.placeholder = 'e.g. 2.0';
   } else {
-    if (nLabel) nLabel.textContent = 'Nitrogen recommendation from your report (lbs per 100 sq. ft.)?';
+    if (nLabel) nLabel.textContent = 'Preplant nitrogen recommendation from your report (lbs per 100 sq. ft.)?';
     if (lLabel) lLabel.textContent = 'Lime recommendation from your report (lbs per 100 sq. ft.)?';
-    if (nHint)  nHint.textContent  = 'Enter from your VCE soil test report. VCE garden reports N in lbs/100 sq. ft. Typical range: 0.1–0.3 lbs.';
+    if (nHint)  nHint.textContent  = 'Enter the N figure from your VCE report \u2014 enter it exactly as shown. Sidedress steps are calculated separately. Typical range: 0.1\u20130.3 lbs.';
     if (lHint)  lHint.textContent  = 'Leave blank if no lime was recommended. VCE reports garden lime in lbs/100 sq. ft.';
+    var nInput = document.getElementById('gdn-n-rec');
+    if (nInput) nInput.placeholder = 'e.g. 0.2';
   }
 
   // Convert Waypoint lbs/1000 to lbs/100 for all calculations
@@ -3812,6 +3836,7 @@ function calcGarden() {
   var cpl  = cupsPerLb || (prod ? prod.cupsPerLb : 0);
   var isFastOrganic = prod ? !!prod.fastOrganic : false;
   var cropKey = document.getElementById('gdn-crop-type') ? document.getElementById('gdn-crop-type').value : '';
+  var fertAlreadyZeroPK = (fertP === 0 && fertK === 0);
 
   // Warm-season crops (planted after May 1) can use blood meal/fast organics as sidedress
   var warmSeason = ['tomato','pepper','potato','corn','squash','cucumber','melon','okra','beans','sweetpotato'].indexOf(cropKey) >= 0;
@@ -3821,92 +3846,120 @@ function calcGarden() {
   // Fertilizer summary row
   if (nRec > 0 && fertN > 0) {
     var npct = fertN / 100;
-    var lbsPerHundred = nRec / npct;
+    var lbsPerHundred = nRec / npct;  // lbs of product per 100 sq. ft.
     var lbsTotal = lbsPerHundred * hundredths;
     var totalVol = cpl ? fmtMeasure(lbsTotal, cpl) : null;
 
-    html += '<div class="result-row"><div class="result-label">Total fertilizer for your bed (' + area + ' sq. ft.)</div>'
-      + '<div class="result-value large">' + fmt(lbsTotal, 2) + ' lbs'
+    // OM credit calculation
+    var omVal = parseFloat(document.getElementById('st-om') ? document.getElementById('st-om').value : '') || 0;
+    var omNCredit = omVal * 0.4; // lbs N released per 1,000 sq. ft. per year (UMD Extension)
+    var omNote = '';
+    if (omVal >= 5) {
+      omNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>High organic matter (' + omVal.toFixed(1) + '%):</strong> Your soil is releasing approximately <strong>' + omNCredit.toFixed(1) + ' lbs of N per 1,000 sq. ft.</strong> naturally this season. You may need little or no sidedress \u2014 monitor plant color before applying. <em>(UMD Extension: 0.4 lbs N per 1% OM per 1,000 sq. ft.; Rutgers FS626)</em></div>';
+    }
+
+    // Preplant summary rows
+    html += '<div class="result-row"><div class="result-label">Preplant fertilizer for your bed (' + area + ' sq. ft.)</div>'
+      + '<div class="result-value large"><strong>' + fmt(lbsTotal, 2) + ' lbs</strong>'
       + (totalVol ? ' &asymp; ' + totalVol : '') + '</div></div>';
     html += '<div class="result-row"><div class="result-label">Rate per 100 sq. ft.</div>'
       + '<div class="result-value">' + fmt(lbsPerHundred, 2) + ' lbs'
       + (cpl ? ' &asymp; ' + (fmtMeasure(lbsPerHundred, cpl) || '') : '')
       + (isOrganic ? ' <span style="font-size:0.72rem;color:var(--slate-light);">(volume estimate)</span>' : '') + '</div></div>';
 
-    // ---- Two-step application plan ----
-    var preplantFrac  = (!isOrganic || canSidedressOrganic) ? 0.35 : 1.0;
-    var sidedressFrac = 1.0 - preplantFrac;
-    var preplantN     = nRec * preplantFrac;
-    var sidedressN    = nRec * sidedressFrac;
-    var preplantLbs   = preplantN  / npct * hundredths;
-    var sidedressLbs  = sidedressN / npct * hundredths;
-    var ppVol  = cpl ? fmtMeasure(preplantLbs,  cpl) : null;
-    var sdVol  = cpl ? fmtMeasure(sidedressLbs, cpl) : null;
+    // Per sq. ft. application rate — how a home gardener actually applies it
+    var lbsPerSqFt  = lbsPerHundred / 100;
+    var ozPerSqFt   = lbsPerSqFt * 16;
+    var cupsPerSqFt = cpl ? lbsPerSqFt * cpl : 0;
+    var tbspPerSqFt = cupsPerSqFt * 16;
+    var tspPerSqFt  = tbspPerSqFt * 3;
+    var volPerSqFt  = '';
+    if (cpl) {
+      if (tbspPerSqFt >= 1) {
+        volPerSqFt = ' &asymp; <strong>' + (Math.round(tbspPerSqFt * 4) / 4).toFixed(2).replace(/\.?0+$/, '') + ' tbsp per sq. ft.</strong>';
+      } else {
+        volPerSqFt = ' &asymp; <strong>' + (Math.round(tspPerSqFt * 4) / 4).toFixed(2).replace(/\.?0+$/, '') + ' tsp per sq. ft.</strong>';
+      }
+    }
+    html += '<div class="result-row"><div class="result-label">Application rate per sq. ft.</div>'
+      + '<div class="result-value">' + (ozPerSqFt < 1 ? (Math.round(ozPerSqFt * 160) / 10).toFixed(1) + ' oz' : fmt(ozPerSqFt, 2) + ' oz') + ' per sq. ft.'
+      + volPerSqFt
+      + (isOrganic ? ' <span style="font-size:0.72rem;color:var(--slate-light);">(estimate)</span>' : '') + '</div></div>';
 
-    // Sidedress timing trigger
-    var sdTrigger = '3\u20134 weeks after transplanting or emergence';
-    if (cropKey === 'tomato')                    sdTrigger = 'when first fruit cluster reaches the size of a half dollar';
-    else if (cropKey === 'corn')                 sdTrigger = 'when plants are 12\u201318 inches tall';
-    else if (cropKey === 'broccoli' || cropKey === 'cabbage') sdTrigger = '3 weeks after transplanting';
-    else if (cropKey === 'onion')                sdTrigger = 'when bulbs begin to enlarge';
-    else if (cropKey === 'cucumber' || cropKey === 'squash') sdTrigger = '1 week after blossoming begins';
-    else if (cropKey === 'okra')                 sdTrigger = 'after first fruits form';
-    else if (cropKey === 'beans')                sdTrigger = 'only if needed at heavy pod set';
-    else if (cropKey === 'lettuce')              sdTrigger = 'once during the growing season';
-
+    // Application plan header
     html += '<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:12px;">';
-    html += '<div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin-bottom:8px;">&#128203; Application Plan</div>';
+    html += '<div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin-bottom:6px;">&#128203; Application Plan</div>';
+    html += '<p style="font-size:0.78rem;color:var(--slate-mid);margin-bottom:8px;">The <strong>preplant amount</strong> is what your soil test report recommends (step 4) \u2014 enter it exactly as shown. Sidedress amounts are <strong>additional</strong> fixed applications from crop-specific research. <em>(Rutgers FS626, VCE 426-series, Clemson HGIC, UMD Extension)</em></p>';
+    html += omNote;
 
+    // Organic note
     if (isOrganic && !canSidedressOrganic) {
-      html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Slow-release organic fertilizer:</strong> Apply the full amount preplant and incorporate 4\u20136 inches. No sidedress split needed \u2014 nutrients release gradually throughout the season. <em>(Rutgers FS626, UMD Extension)</em></div>';
+      html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Slow-release organic:</strong> Apply the full preplant amount and incorporate 4\u20136 inches. For sidedress steps, use calcium nitrate or blood meal (in warm soil above 60\u00b0F). <em>(Rutgers FS626, UMD Extension)</em></div>';
     } else if (isOrganic && canSidedressOrganic) {
-      html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Fast-releasing organic fertilizer:</strong> In warm soil (above 60\u00b0F), this product releases comparably to a medium-speed synthetic and can be sidedressed. Applying ~35% preplant and ~65% at the sidedress timing reduces waste and burn risk. <em>(Rutgers FS626, SARE LS16-269)</em></div>';
-    } else {
-      html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#9888; <strong>Synthetic fertilizer:</strong> Applying ~35% preplant and ~65% as sidedress reduces leaching and burn risk. On sandy soil, split the sidedress into two applications 3\u20134 weeks apart. <em>(Clemson HGIC, UMD)</em></div>';
+      html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Fast-release organic (warm-season crop):</strong> Effective as sidedress in warm soil above 60\u00b0F. Sidedress amounts shown below use the same product at equivalent N rates. <em>(Rutgers FS626, SARE LS16-269)</em></div>';
     }
 
+    // Build plan table
     html += '<table class="auto-plan-table"><thead><tr><th>Step</th><th>When</th><th>Amount for your bed</th></tr></thead><tbody>';
 
-    if (cropKey === 'tomato' || cropKey === 'pepper') {
-      // Tomatoes and peppers: 3-step plan per Rutgers FS626 Table 2 + VCE Note 19
-      // Preplant ~33%, Sidedress #1 ~34%, Sidedress #2 ~33%
-      // If P or K is High/Very High: half preplant, half at fruit set (Note 19)
-      var isTomPepHighPK = (pHigh || kHigh);
-      if (isTomPepHighPK) {
-        // Note 19 high P/K split overrides: half preplant, half at fruit set
-        var halfLbs = (preplantLbs + sidedressLbs) / 2;
-        var halfVol = cpl ? fmtMeasure(halfLbs, cpl) : null;
-        var halfStr = '<strong>' + fmt(halfLbs, 2) + ' lbs</strong>' + (halfVol ? ' &asymp; <strong>' + halfVol + '</strong>' : '');
-        html += '<tr><td><strong>1 &mdash; Preplant</strong></td><td>Before planting &mdash; incorporate 4&ndash;6 inches. <span style="color:#c0392b;font-size:0.8rem;">&#9888; P or K is High/Very High: apply only half the total now.</span></td><td>' + halfStr + '</td></tr>';
-        html += '<tr><td><strong>2 &mdash; At fruit set</strong></td><td>' + (cropKey === 'tomato' ? 'When first fruit cluster reaches the size of a half dollar' : '4 weeks after transplanting') + ' &mdash; apply remaining half. <em>(VCE Note 19)</em></td><td>' + halfStr + '</td></tr>';
-      } else {
-        var sd1Lbs = sidedressLbs * 0.5;
-        var sd2Lbs = sidedressLbs * 0.5;
-        var sd1Vol = cpl ? fmtMeasure(sd1Lbs, cpl) : null;
-        var sd2Vol = cpl ? fmtMeasure(sd2Lbs, cpl) : null;
-        html += '<tr><td><strong>1 &mdash; Preplant</strong></td><td>Before planting &mdash; incorporate 4&ndash;6 inches into soil</td>'
-          + '<td><strong>' + fmt(preplantLbs, 2) + ' lbs</strong>' + (ppVol ? ' &asymp; <strong>' + ppVol + '</strong>' : '') + '</td></tr>';
-        html += '<tr><td><strong>2 &mdash; Sidedress #1</strong></td><td>' + (cropKey === 'tomato' ? 'When first fruit cluster reaches the size of a half dollar' : '4 weeks after transplanting') + ' &mdash; scatter 4&ndash;6 inches from plants &amp; water in. <em>(Rutgers FS626)</em></td>'
-          + '<td><strong>' + fmt(sd1Lbs, 2) + ' lbs</strong>' + (sd1Vol ? ' &asymp; <strong>' + sd1Vol + '</strong>' : '') + '</td></tr>';
-        html += '<tr><td><strong>3 &mdash; Sidedress #2</strong></td><td>4 weeks after sidedress #1. Long-season tomato varieties may need a 4th application 4 weeks later. <em>(Rutgers FS626)</em></td>'
-          + '<td><strong>' + fmt(sd2Lbs, 2) + ' lbs</strong>' + (sd2Vol ? ' &asymp; <strong>' + sd2Vol + '</strong>' : '') + '</td></tr>';
-      }
-    } else {
-      // Standard 2-step plan for all other crops
-      html += '<tr><td><strong>1 &mdash; Preplant</strong></td><td>Before planting &mdash; incorporate 4\u20136 inches into soil</td>'
-        + '<td><strong>' + fmt(preplantLbs, 2) + ' lbs</strong>' + (ppVol ? ' &asymp; <strong>' + ppVol + '</strong>' : '') + '</td></tr>';
-      if (sidedressFrac > 0) {
-        html += '<tr><td><strong>2 &mdash; Sidedress</strong></td><td>Apply ' + sdTrigger + '; scatter 4\u20136 inches from plants &amp; water in</td>'
-          + '<td><strong>' + fmt(sidedressLbs, 2) + ' lbs</strong>' + (sdVol ? ' &asymp; <strong>' + sdVol + '</strong>' : '') + '</td></tr>';
-      }
+    // Step 1 — Preplant (full soil test rec)
+    var ppHighPKNote = ((pHigh || kHigh) && (cropKey === 'tomato' || cropKey === 'pepper'))
+      ? ' <span style="color:#c0392b;font-size:0.78rem;">&#9888; P or K is High/Very High \u2014 apply only half now; see step 2 below.</span>' : '';
+    html += '<tr><td><strong>1 &mdash; Preplant</strong></td>'
+      + '<td>Before planting \u2014 broadcast and incorporate 4\u20136 inches' + ppHighPKNote + '</td>'
+      + '<td><strong>' + fmt(lbsTotal, 2) + ' lbs</strong>' + (totalVol ? ' &asymp; <strong>' + totalVol + '</strong>' : '') + '</td></tr>';
+
+    // Sidedress steps from SIDEDRESS_GUIDE
+    var guide = SIDEDRESS_GUIDE[cropKey] || SIDEDRESS_DEFAULT;
+
+    // High P/K override for tomato/pepper: half preplant, half at fruit set (VCE Note 19)
+    if ((pHigh || kHigh) && (cropKey === 'tomato' || cropKey === 'pepper')) {
+      var halfLbs = lbsTotal / 2;
+      var halfVol = cpl ? fmtMeasure(halfLbs, cpl) : null;
+      html += '<tr><td><strong>2 &mdash; At fruit set</strong></td>'
+        + '<td>' + (cropKey === 'tomato' ? 'When first fruit cluster reaches the size of a half dollar' : 'At first fruit set')
+        + ' \u2014 apply remaining half of preplant amount. Soil tests High/Very High P or K: do not add additional sidedress N. <em>(VCE Note 19)</em></td>'
+        + '<td><strong>' + fmt(halfLbs, 2) + ' lbs</strong>' + (halfVol ? ' &asymp; <strong>' + halfVol + '</strong>' : '') + '</td></tr>';
+    } else if (guide.apps.length > 0) {
+      // Sidedress product selection:
+      // - If user selected a zero-P zero-K product (N-only synthetic or fast organic): use their product
+      // - If user selected a complete fertilizer (10-10-10 etc.): default to calcium nitrate for sidedress
+      var useUserProduct = fertAlreadyZeroPK && npct > 0;
+      var sdNpct    = useUserProduct ? npct    : 0.155;  // calcium nitrate 15.5-0-0
+      var sdCpl     = useUserProduct ? (cpl || 2.0) : 2.0;
+      var sdProdName = useUserProduct
+        ? (prod ? prod.name : '')
+        : 'calcium nitrate (15.5-0-0)';
+
+      guide.apps.forEach(function(app, idx) {
+        var sdNper1000 = app.n;  // lbs actual N per 1,000 sq. ft.
+        var sdNper100  = sdNper1000 / 10;
+        var sdProductLbs = (sdNper100 / sdNpct) * hundredths;
+        var sdVol = fmtMeasure(sdProductLbs, sdCpl);
+        html += '<tr><td><strong>' + (idx + 2) + ' &mdash; Sidedress #' + (idx + 1) + '</strong></td>'
+          + '<td>Apply ' + app.trigger + ' \u2014 scatter 4\u20136 inches from plants &amp; water in</td>'
+          + '<td><strong>' + fmt(sdProductLbs, 2) + ' lbs</strong> of ' + sdProdName
+          + (sdVol ? ' &asymp; <strong>' + sdVol + '</strong>' : '')
+          + '<br><span style="font-size:0.72rem;color:var(--slate-light);">(' + sdNper1000 + ' lbs actual N/1,000 sq. ft.)</span></td></tr>';
+      });
+    }
+
+    // No sidedress crops
+    if (guide.apps && guide.apps.length === 0) {
+      html += '<tr><td colspan="3" style="color:var(--slate-mid);font-style:italic;font-size:0.82rem;">' + guide.note + '</td></tr>';
     }
 
     html += '</tbody></table>';
-    html += '<p style="font-size:0.72rem;color:var(--slate-light);margin-top:6px;">Volume measurements are approximate &mdash; bulk density varies by brand and moisture. A kitchen scale gives the most accurate result. Always read the product label.</p>';
+
+    // Sidedress note
+    if (guide.note && guide.apps.length > 0) {
+      html += '<p style="font-size:0.78rem;color:var(--slate-mid);margin-top:6px;">&#9432; ' + guide.note + '</p>';
+    }
+
+    // Sandy soil note
+    html += '<p style="font-size:0.72rem;color:var(--slate-light);margin-top:4px;">On sandy soils, split each sidedress into two equal applications 3\u20134 weeks apart to reduce leaching. Volume measurements are approximate \u2014 bulk density varies by brand. A kitchen scale gives the most accurate result. <em>(Clemson HGIC)</em></p>';
     html += '</div>';
 
-    // Old-style sidedress note for crops without a plan — omit when plan is shown
-    // (plan handles this now)
   } else if (area > 0) {
     html += '<div class="result-row"><div class="result-label">Fertilizer needed</div><div class="result-value" style="color:var(--slate-light);">Enter N rec. &amp; fertilizer grade above</div></div>';
   }
@@ -3916,10 +3969,14 @@ function calcGarden() {
   var kRat = WAYPOINT_TO_VCE[kRating] || kRating;
   var pkHtml = '';
 
-  // Tomato/pepper/lima bean split note — suppress when plan already handled it
+  // Suppress Application Timing card when plan is showing
+  var timingCard = document.querySelector('#tab-garden .timing-card');
+  if (timingCard) timingCard.style.display = (nRec > 0 && fertN > 0) ? 'none' : '';
+
+  // Tomato/pepper split note — suppress when plan already handled it
   var pHigh = pRat && ['H-','H','H+','VH'].indexOf(pRat) >= 0;
   var kHigh = kRat && ['H-','H','H+','VH'].indexOf(kRat) >= 0;
-  if ((pHigh || kHigh) && (gardenType === 'vegetable' || gardenType === 'mixed') && nRec > 0 && fertN > 0
+  if (!fertAlreadyZeroPK && (pHigh || kHigh) && (gardenType === 'vegetable' || gardenType === 'mixed') && nRec > 0 && fertN > 0
       && cropKey !== 'tomato' && cropKey !== 'pepper') {
     pkHtml += '<div style="background:#fff0f0;border:1px solid #e07070;border-radius:6px;padding:10px 14px;margin-top:8px;font-size:0.85rem;line-height:1.6;">'
       + '&#127813; <strong>Tomatoes, green peppers, and lima beans:</strong> Your soil tests '
@@ -3929,11 +3986,11 @@ function calcGarden() {
       + '. Per Note 19, apply <strong>half the total fertilizer before planting</strong> and the <strong>remaining half after fruit set</strong>. Too much fertilizer applied early encourages vegetative growth and reduces fruit set.'
       + '</div>';
   }
-  if (pRat && P_REC[pRat]) {
+  if (!fertAlreadyZeroPK && pRat && P_REC[pRat]) {
     var pr = P_REC[pRat];
     pkHtml += '<div class="rec-box ' + pr.cls + '" style="margin-top:8px;"><span class="rec-icon">' + pr.icon + '</span><span><strong>Phosphorus:</strong> ' + pr.msg + '</span></div>';
   }
-  if (kRat && K_REC[kRat]) {
+  if (!fertAlreadyZeroPK && kRat && K_REC[kRat]) {
     var kr = K_REC[kRat];
     pkHtml += '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
   }
