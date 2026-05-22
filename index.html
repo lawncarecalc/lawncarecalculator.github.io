@@ -3855,7 +3855,9 @@ function calcGarden() {
     var omNCredit = omVal * 0.4; // lbs N released per 1,000 sq. ft. per year (UMD Extension)
     var omNote = '';
     if (omVal >= 5) {
-      omNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>High organic matter (' + omVal.toFixed(1) + '%):</strong> Your soil is releasing approximately <strong>' + omNCredit.toFixed(1) + ' lbs of N per 1,000 sq. ft.</strong> naturally this season. You may need little or no sidedress \u2014 monitor plant color before applying. <em>(UMD Extension: 0.4 lbs N per 1% OM per 1,000 sq. ft.; Rutgers FS626)</em></div>';
+      var omNPer100 = omNCredit / 10; // lbs N per 100 sq. ft.
+      var omNForBed = omNPer100 * hundredths; // lbs N for user's actual bed
+      omNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>High organic matter (' + omVal.toFixed(1) + '%):</strong> Your soil is releasing approximately <strong>' + fmt(omNPer100, 2) + ' lbs of N per 100 sq. ft.</strong> (' + fmt(omNForBed, 2) + ' lbs for your ' + area + ' sq. ft. bed) naturally this season. You may need little or no sidedress \u2014 monitor plant color before applying. <em>(UMD Extension: 0.4 lbs N per 1% OM per 1,000 sq. ft.; Rutgers FS626)</em></div>';
     }
 
     // Preplant summary rows
