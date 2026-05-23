@@ -1370,6 +1370,9 @@
                   <option value="carrot">Carrots</option>
                   <option value="root">Root crops (radishes, turnips, parsnips)</option>
                 </optgroup>
+                <optgroup label="Mixed">
+                  <option value="mixed">Mixed bed (vegetables &amp; flowers)</option>
+                </optgroup>
               </select>
               <div id="gdn-crop-n-hint" style="display:none;background:var(--green-mist);border-radius:6px;padding:8px 12px;font-size:0.82rem;line-height:1.5;margin-top:4px;"></div>
             </div>
@@ -1520,6 +1523,9 @@
                       <option value="beans">Beans &amp; peas</option>
                       <option value="carrot">Carrots</option>
                       <option value="root">Root crops (radishes, turnips, parsnips)</option>
+                    </optgroup>
+                    <optgroup label="Mixed">
+                      <option value="mixed">Mixed bed (vegetables &amp; flowers)</option>
                     </optgroup>
                   </select>
                 </div>
@@ -3608,6 +3614,8 @@ var CROP_FEEDING_LEVELS = {
   'beans':     { level:'light', nPer100:0.10, pHTarget:6.2, label:'Beans & peas' },
   'carrot':    { level:'light', nPer100:0.10, pHTarget:6.0, label:'Carrots' },
   'root':      { level:'light', nPer100:0.10, pHTarget:6.5, label:'Root crops (beets, radishes, turnips)' },
+  // Mixed bed — medium vegetable rate; pH 6.5 is standard VCE garden target (SPES-687P, Note 19)
+  'mixed':     { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Mixed bed (vegetables &amp; flowers)' },
 };
 
 var CROP_LEVEL_LABELS = {
@@ -3639,6 +3647,7 @@ var SIDEDRESS_GUIDE = {
   'carrot':    { apps:[], note:'Generally no sidedress needed if preplant was applied. Monitor leaf color. <em>(Rutgers FS626)</em>' },
   'root':      { apps:[{n:0.5,trigger:'4\u20136 weeks after planting or when 4\u20136 inches tall'}], note:'Beets and parsnips benefit from sidedress; radishes and turnips generally do not. <em>(VCE 426-422, Rutgers FS626)</em>' },
   'asparagus': { apps:[{n:0.75,trigger:'after fern growth begins in spring'}], note:'Apply along the row. <em>(Rutgers FS626)</em>' },
+  'mixed':     { apps:[], note:'Mixed beds have no single sidedress schedule \u2014 fertilizer needs vary by crop. Sidedress leafy greens and heavy feeders (tomatoes, corn, peppers) about 3\u20134 weeks after planting or transplanting. Hold off on beans and peas \u2014 they fix their own nitrogen. Use 1 lb N per 1,000 sq. ft. per application for heavy feeders; 0.5\u20130.75 lbs for medium feeders. Monitor plant color before applying. <em>(VCE 426-323, Rutgers FS626, Clemson HGIC)</em>' },
 };
 
 // Default sidedress for crops not in SIDEDRESS_GUIDE
