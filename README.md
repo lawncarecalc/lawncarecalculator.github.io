@@ -10,13 +10,13 @@ An interactive, single-file web calculator that helps Virginia homeowners interp
 
 ## What it does
 
-- Interprets soil test reports from **VCE / Virginia Tech** and **Waypoint Analytical**
-- Provides plain-English interpretation cards for every measurement on your report
-- **Build a plan for me** — enter your fertilizer grade and the calculator divides your annual N target across the right number of applications automatically
-- **Custom plan** — build your own multi-application season with up to 4 slots, each with a different fertilizer grade
-- Calculates **lime** quantities with CCE adjustment and application schedule
-- Calculates fertilizer and lime for **vegetable and flower gardens** (VCE Soil Test Note 19)
-- Carries soil test values directly into the calculator tabs with one click
+- Interprets soil test reports from **VCE / Virginia Tech** and **Waypoint Analytical**  
+- Provides plain-English interpretation cards for every measurement on your report  
+- **Build a plan for me** — enter your fertilizer grade and the calculator divides your annual N target across the right number of applications automatically  
+- **Custom plan** — build your own multi-application season with up to 4 slots, each with a different fertilizer grade  
+- Calculates **lime** quantities with CCE adjustment and application schedule  
+- Calculates fertilizer and lime for **vegetable and flower gardens** (VCE Soil Test Note 19\)  
+- Carries soil test values directly into the calculator tabs with one click  
 - Print-ready output for both auto and custom plans
 
 ---
@@ -26,9 +26,10 @@ An interactive, single-file web calculator that helps Virginia homeowners interp
 ### Step 1 — Soil Test Report tab
 
 Select your report type:
-- VCE / Virginia Tech — Lawn
-- Waypoint Analytical — Lawn
-- VCE / Virginia Tech — Vegetable & Flower Garden
+
+- VCE / Virginia Tech — Lawn  
+- Waypoint Analytical — Lawn  
+- VCE / Virginia Tech — Vegetable & Flower Garden  
 - Waypoint Analytical — Garden
 
 Enter your values exactly as they appear on your report. Units, rating scales, and interpretation language adjust automatically. The tool interprets every measurement with a color-coded action recommendation. All card content is grounded in VCE and Waypoint source documents — thresholds, ranges, and action language are sourced, not estimated.
@@ -40,12 +41,13 @@ Enter your values exactly as they appear on your report. Units, rating scales, a
 **Step 1:** Enter your lawn size.
 
 **Step 2:** Select your grass species:
-- Cool-season: Tall fescue / Kentucky bluegrass / Perennial ryegrass, or Fine-leaf fescue
+
+- Cool-season: Tall fescue / Kentucky bluegrass / Perennial ryegrass, or Fine-leaf fescue  
 - Warm-season: Bermudagrass / St. Augustinegrass, or Zoysiagrass / Centipedegrass
 
 **Step 3:** Choose your annual N rate using the guidance table. The table shows a suggested annual application total, the maximum per application by program, and the minimum number of applications needed. Your soil test report may include an N recommendation — use it as a starting point but check it against the Virginia ceilings in the table. Waypoint reports sometimes recommend rates that exceed Virginia's limits for certain grass types.
 
-- **Returning clippings?** Reduce your total by up to one-third.
+- **Returning clippings?** Reduce your total by up to one-third.  
 - **Heavy shade?** Use one-half to two-thirds of the full-sun rate.
 
 **Step 4:** Use the **"Help me choose a fertilizer"** section (tap to expand) to find an appropriate grade based on your P and K ratings. The section explains what the three numbers on a fertilizer bag mean, how to find WIN on the label, and lists common grades.
@@ -64,26 +66,38 @@ Enter bed dimensions (or area directly), N recommendation, P and K ratings, fert
 
 **Waypoint garden reports:** Enter N and lime exactly as shown — Waypoint reports garden values in lbs/1,000 sq. ft. The calculator converts automatically. VCE garden reports use lbs/100 sq. ft. — enter directly.
 
-**Step 3 — What are you growing?** Select your crop to see the recommended seasonal N rate shown in both lbs/100 sq. ft. and lbs/1,000 sq. ft., the target pH for that crop, and a "Use recommended N" button. Crops are grouped by feeding level:
-- **Heavy feeders** (tomatoes, corn, broccoli, onions…): 0.30 lbs/100 sq. ft. = 3 lbs/1,000 sq. ft.
-- **Medium feeders** (leafy greens, cucumbers, squash…): 0.20 lbs/100 sq. ft. = 2 lbs/1,000 sq. ft.
-- **Light feeders** (beans, carrots, root crops): 0.10 lbs/100 sq. ft. = 1 lb/1,000 sq. ft.
+**Step 3 — What are you growing?** Select your crop to see the recommended seasonal N rate shown in both lbs/100 sq. ft. and lbs/1,000 sq. ft., and the target pH for that crop. Crops are grouped by feeding level:
 
-*(UMD Extension, Clemson HGIC, Rutgers FS626 — confirmed across all regional sources)*
+- **Heavy feeders** (tomatoes, corn, broccoli, onions…): 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft.  
+- **Medium feeders** (leafy greens, cucumbers, squash…): 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft.  
+- **Light feeders** (beans, carrots, root crops): 0.10 lbs/100 sq. ft. \= 1 lb/1,000 sq. ft.  
+- **Mixed bed** (vegetables & flowers): 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft., pH target 6.5
 
-**Application plan:** The calculator generates a step-by-step plan with specific quantities for your bed size, shown in both weight (lbs) and volume (tablespoons/cups) based on bulk density:
-- **Slow-release organics** (feather meal, soybean meal, cottonseed meal, poultry manure, bone meal, dried cow manure): full amount preplant — nutrients release gradually, no sidedress needed
-- **Fast-release organics** (blood meal, fish meal, fish emulsion, bat guano) with warm-season crops (tomatoes, peppers, corn, squash): 35% preplant / 65% sidedress — in warm soil above 60°F these release comparably to a medium-speed synthetic
-- **Fast-release organics** with cool-season crops (broccoli, kale, root vegetables planted March–April): full amount preplant — soil too cool for microbial release to act as sidedress
-- **Synthetic fertilizers**: 35% preplant / 65% sidedress *(Clemson HGIC, UMD Extension)*
+These are **preplant amounts** — entered exactly as shown on your soil test report. Sidedress applications are additional fixed amounts from crop research, not a split of the soil test figure. *(VCE Soil Test Note 19; UMD Extension; confirmed by actual VCE and Rutgers soil test reports)*
 
-**Tomatoes and peppers** get a three-step plan: preplant → sidedress #1 when first fruit cluster reaches the size of a half dollar → sidedress #2 four weeks later. Long-season tomato varieties may need a fourth application. *(VCE 426-418, Rutgers FS626)*
+**Application plan:** The calculator generates a step-by-step plan with specific quantities for your bed size, shown in both weight (lbs) and volume (tablespoons/cups) based on bulk density. The plan has two parts:
+
+**Preplant:** The full N recommendation from your soil test report (Step 4), scaled to your bed and expressed in weight and volume. This is the amount to incorporate 4–6 inches before planting.
+
+**Sidedress steps (additional):** Fixed midseason applications from crop-specific research — these are *additional* to the preplant amount, not a split of it. Timing is expressed as a plain-English gardening cue:
+
+- **Tomatoes:** sidedress \#1 when first fruit cluster reaches half-dollar size; \#2 after first ripe tomato *(Rutgers FS626 Table 2\)*  
+- **Corn:** at knee height *(VCE 426-405)*  
+- **Cole crops:** 3 weeks after transplanting *(VCE 426-403)*  
+- **Beans and peas:** no sidedress — they fix their own nitrogen  
+- **Mixed beds:** no fixed schedule — sidedress heavy feeders and leafy greens individually; monitor plant color before applying
+
+**Organic fertilizer classification:**
+
+- **Slow-release organics** (feather meal, soybean meal, cottonseed meal, poultry manure, bone meal, dried cow manure): preplant only — release too slowly to be effective as sidedress *(Rutgers FS626 Table 1\)*  
+- **Fast-release organics** (blood meal, fish meal, fish emulsion, bat guano): effective as sidedress in warm soil above 60°F — blood meal releases \>80% of available N within 2–4 weeks *(SARE LS16-269)*. Fish emulsion is effective even in cool spring soils *(UMD Extension)*  
+- **Synthetic fertilizers:** calcium nitrate recommended for sidedress steps when a complete fertilizer (10-10-10) was used at preplant — delivers N without adding excess P or K mid-season
 
 **Vegetable-specific guidance** collapsible — synced from your crop selection but browsable independently. Shows crop-specific sidedress rates and timing triggers from VCE crop publications. Below that: the 3–4 week timing rule and banding technique. *(VCE 426-323 and crop-specific publications)*
 
 **Nutrient deficiency symptoms reference** (all garden types) — visual symptoms with Virginia context. Boron guidance: liquid Borax method (1 tbsp per gallon per 100 sq. ft.) — do not apply in a band near plants. *(VCE 426-323, UMD Extension)*
 
-**Can't find the recommended grade?** — fertilizer substitution table from Note 19.
+**Can't find the recommended grade?** — fertilizer substitution table from Note 19\.
 
 ---
 
@@ -93,17 +107,17 @@ Per VCE Publication 430-011 and DCR 2014:
 
 | Program | WIN % on bag | Cool-season max/application | Warm-season max/application |
 | :---- | :---- | :---- | :---- |
-| Program 1 — Quick-release | < 15% (or not listed) | 0.7 lb N / 1,000 sq. ft. | 0.9 lb N / 1,000 sq. ft. |
+| Program 1 — Quick-release | \< 15% (or not listed) | 0.7 lb N / 1,000 sq. ft. | 0.9 lb N / 1,000 sq. ft. |
 | Program 2 — Slow-release | 15–49% | 0.9 lb N / 1,000 sq. ft. | 1.0 lb N / 1,000 sq. ft. |
 | Program 3 — Majority slow | ≥ 50% | 1.0–1.5 lb N / 1,000 sq. ft. | 1.0–1.5 lb N / 1,000 sq. ft. |
 
-WIN (Water Insoluble Nitrogen) is listed under Guaranteed Analysis on the fertilizer bag. If not listed, assume Program 1. Sulfur-coated and polymer-coated urea are slow-release but may not list WIN explicitly — look for those terms in the ingredient list.
+WIN (Water Insoluble Nitrogen) is listed under Guaranteed Analysis on the fertilizer bag. If not listed, assume Program 1\. Sulfur-coated and polymer-coated urea are slow-release but may not list WIN explicitly — look for those terms in the ingredient list.
 
 **Reading the bag:** The three numbers (e.g. 16-4-8) are the percentages by weight of nitrogen (N), phosphorus (P), and potassium (K). A 40 lb bag of 16-4-8 contains 6.4 lbs of actual nitrogen.
 
 ---
 
-## Annual nitrogen ceilings (per 430-011 and DCR 2014)
+## Annual nitrogen ceilings (per 430-011 and DCR 2014\)
 
 | Grass type | Annual maximum |
 | :---- | :---- |
@@ -146,9 +160,10 @@ Waypoint soil test reports include a nitrogen recommendation that may reach the 
 ## Choosing a fertilizer at the garden center
 
 The calculator does not recommend specific brands. The "Help me choose a fertilizer" section (collapsible, on both the Cool-Season and Warm-Season tabs) provides:
-- A plain-language explanation of what the three numbers on a bag mean
-- A grade recommendation based on your soil test P and K ratings
-- Instructions for finding WIN on the label
+
+- A plain-language explanation of what the three numbers on a bag mean  
+- A grade recommendation based on your soil test P and K ratings  
+- Instructions for finding WIN on the label  
 - A common grades reference table
 
 ---
@@ -182,10 +197,11 @@ The calculator does not recommend specific brands. The "Help me choose a fertili
 | Mid-Atlantic Commercial Vegetable Production Recommendations 2026/2027 | VCE/UMD/Rutgers/PSU joint publication — cited for pH targets and principles |
 
 **Supplementary regional sources** (used where VCE is silent on home garden guidance):
-- University of Maryland Extension — Fertilizing Vegetables (N rates by feeding level, liquid Borax method)
-- Clemson HGIC — Fertilizing Vegetables (preplant/sidedress split, sandy soil guidance, calcium nitrate as preferred sidedress)
-- Rutgers NJAES FS626 — Fertilizing the Home Vegetable Garden (organic fertilizer table, sidedress schedule, blood meal release rate)
-- NC State Cooperative Extension — confirms calcium nitrate reduces blossom end rot and tip burn
+
+- University of Maryland Extension — Fertilizing Vegetables (N rates by feeding level, liquid Borax method)  
+- Clemson HGIC — Fertilizing Vegetables (preplant/sidedress split, sandy soil guidance, calcium nitrate as preferred sidedress)  
+- Rutgers NJAES FS626 — Fertilizing the Home Vegetable Garden (organic fertilizer table, sidedress schedule, blood meal release rate)  
+- NC State Cooperative Extension — calcium nitrate as preferred sidedress N source; delivers nitrogen without adding excess P or K mid-season. Note: blossom end rot in tomatoes and tip burn in leafy greens are calcium *uptake* disorders primarily caused by inconsistent watering and underdeveloped root systems, not soil calcium deficiency — calcium nitrate's main advantage is as an N-only sidedress, not as a blossom end rot cure
 
 ---
 
@@ -201,6 +217,18 @@ For more information visit **ext.vt.edu** or **soiltest.vt.edu**.
 
 ---
 
+## Supporting documents
+
+| Document | Description |
+| :---- | :---- |
+| `VCE_Calculator_Development_History.docx` | Full development history from February–May 2026 with changelog and source table |
+| `Soil_Test_Challenges_and_Solutions.docx` | Lawn soil test interpretation challenges and how the calculator addresses them |
+| `Garden_Soil_Test_Challenges_and_Solutions.docx` | Garden soil test interpretation challenges and how the calculator addresses them |
+| `VCE_Calculator_User_Guide.docx` | Plain-language user guide covering all features, benefits, and sources |
+| `VCE_Calculator_Fun_Facts.docx` | 11 highlights about the calculator for new users |
+
+---
+
 ## Files
 
 | File | Description |
@@ -208,3 +236,4 @@ For more information visit **ext.vt.edu** or **soiltest.vt.edu**.
 | `lawn_garden_calc_v1_5.html` | Main application |
 | `CLAUDE.md` | Developer/AI session context |
 | `README.md` | This file |
+

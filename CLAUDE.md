@@ -52,10 +52,10 @@ No server, no build step — single self-contained HTML file. Single-column resp
 
 | Source | Used for |
 | :---- | :---- |
-| University of Maryland Extension | N rates by feeding level (0.10/0.20/0.30 lbs/100 sq. ft.); liquid Borax method; OM-to-N credit; fish emulsion in cool soils |
+| University of Maryland Extension | N rates by feeding level (0.10/0.20/0.30 lbs/100 sq. ft.); liquid Borax method; OM-to-N credit **(garden context only** — 0.4 lbs N per 1% OM per 1,000 sq. ft.); fish emulsion in cool soils |
 | Clemson HGIC | 35% preplant / 65% sidedress split; sandy soil flag; calcium nitrate as preferred sidedress |
 | Rutgers NJAES FS626 | Organic fertilizer N% and release rates (Table 1); tomato sidedress schedule (Table 2); blood meal as medium-rapid; bat guano/bone meal/dried cow manure |
-| NC State Cooperative Extension | Calcium nitrate reduces blossom end rot and tip burn |
+| NC State Cooperative Extension | Calcium nitrate as preferred sidedress N source — delivers N without adding excess P or K. Blossom end rot and tip burn are calcium *uptake* disorders primarily caused by inconsistent watering and underdeveloped root systems, not soil calcium deficiency. Calcium nitrate provides direct corrective value only when soil calcium is low. |
 | Mid-Atlantic Commercial Veg Guide 2026/2027 | Per-crop pH targets (Table B-1); soil testing 1–3 years. **Commercial guide — principles only, not home garden rates** |
 | SARE LS16-269 | Blood meal \>80% available N within 2–4 weeks in warm soil |
 | GitHub Fertilizer Calculator | Bulk density data; Borax sodium accumulation note |
@@ -128,9 +128,10 @@ Single HTML file — all CSS, JS, HTML inline. No external dependencies except G
 
 | Level | Rate | Crops |
 | :---- | :---- | :---- |
-| Heavy | 0.30 lbs/100 sq. ft. \= 3 lbs/1,000 sq. ft. | Tomato, pepper, potato, broccoli, cabbage, corn, beet, spinach, onion, okra |
+| Heavy | 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft. | Tomato, pepper, potato, broccoli, cabbage, corn, beet, spinach, onion, okra |
 | Medium | 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft. | Leafy greens, lettuce, cucumber, squash, melon, sweet potato, asparagus |
 | Light | 0.10 lbs/100 sq. ft. \= 1 lb/1,000 sq. ft. | Beans/peas, carrot, root crops |
+| Mixed | 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft., pH target 6.5 | Mixed bed (vegetables & flowers) — no fixed sidedress schedule; advisory note only |
 
 ### Application plan architecture (current)
 
@@ -155,7 +156,7 @@ Single HTML file — all CSS, JS, HTML inline. No external dependencies except G
 
 **P/K flags** — suppressed when `fertAlreadyZeroPK`. Also suppressed for tomato/pepper (handled in plan).
 
-**OM credit** — when `st-om` ≥ 5%: yellow notice showing `omVal * 0.4` lbs N/1,000 sq. ft. natural release. Source: UMD Extension, confirmed by Rutgers FS626 reports.
+**OM credit (garden only)** — when `st-om` ≥ 5%: yellow notice showing `omVal * 0.4` lbs N/1,000 sq. ft. natural release, converted to lbs/100 sq. ft. and lbs for user's actual bed. Source: UMD Extension. **Not applicable to lawn tabs** — VCE does not ground lawn N recommendations in OM level; lawn equivalent is the clipping return credit (VCE 430-011, SPES-384NP: 0.5–1 lb N/year, up to one-third of seasonal requirement). Never cite Rutgers FS626 or UMD OM formula in lawn context.
 
 **Per sq. ft. application rate row** — `lbsPerHundred / 100 * 16` \= oz/sq. ft.; converted to tbsp or tsp via bulk density. Allows gardeners to measure directly over the bed.
 
@@ -239,7 +240,7 @@ Micronutrient prefill values must use `L`, `M`, `SUFF`, `H` — not Waypoint key
 - Soil testing: **3–4 years** for lawns (SPES-669, SPES-670)  
 - Cool-season spring N: 0.25–0.5 lbs water-soluble N/1,000 sq. ft. every 4–8 weeks (secondary timing, SPES-670)  
 - Zoysiagrass/centipedegrass annual N: **1–2 lbs** (not 1–1.5 lbs) per SPES-669  
-- Clipping recycling credit: 0.5–1 lb N per year (SPES-384)  
+- Clipping recycling credit: 0.5–1 lb N per year, up to one-third of seasonal requirement (VCE 430-011, SPES-384NP). **Lawn-context equivalent of the garden OM credit. Do not use Rutgers FS626 or UMD OM formula for lawn N calculations — those are garden sources.**  
 - Measuring collapsible: Google Earth (UMN instructions), Google Maps right-click, tape measure — no Chesterfield GIS, no time estimates
 
 ---
@@ -354,4 +355,82 @@ Five sections with clear headings. Two collapsibles:
 
 #### updateCropGuidancePanel cleanup
 
-Old `CROP_DATA` table (preplant/sidedress/caution rows) removed from `updateCropGuidancePanel()`. Panel now shows feeding level \+ sidedress timing from `SIDEDRESS_GUIDE` only. No conflicting preplant amounts.  
+Old `CROP_DATA` table (preplant/sidedress/caution rows) removed from `updateCropGuidancePanel()`. Panel now shows feeding level \+ sidedress timing from `SIDEDRESS_GUIDE` only. No conflicting preplant amounts.
+
+---
+
+## Session Updates — May 25, 2026
+
+### Mixed Bed support added
+
+- `CROP_FEEDING_LEVELS`: `mixed` entry added — medium level, 0.20 lbs N/100 sq. ft., pH 6.5 (VCE Note 19 / SPES-687P)  
+- `SIDEDRESS_GUIDE`: `mixed` entry added — `apps: []`, advisory note citing VCE 426-323, Rutgers FS626, Clemson HGIC. No fixed sidedress schedule — needs vary by crop in the bed  
+- Mixed Bed option added to step 3 crop type dropdown and guidance panel dropdown, each in their own `Mixed` optgroup
+
+### OM unit fix (garden tab)
+
+Yellow OM advisory box now shows N release in **lbs/100 sq. ft. and lbs for user's bed** — consistent with all other garden tab result rows. Previous version used lbs/1,000 sq. ft., which was inconsistent with all other garden outputs.
+
+### Source boundary clarification: lawn vs. garden OM
+
+- **Rutgers FS626** is a vegetable garden bulletin — must never be cited in lawn context  
+- **UMD Extension OM-to-N credit** (0.4 lbs N per 1% OM per 1,000 sq. ft.) is garden-context only in this project  
+- **Lawn equivalent** is the clipping return credit: 0.5–1 lb N/year (VCE 430-011, SPES-384NP)  
+- VCE grounds lawn N recommendations in grass species and WIN programme, not OM level (*Lawn Fertilization in Virginia*, SPES-334P: "the nitrogen requirements of turfgrass cannot be reliably evaluated by a soil test")  
+- NDSU Extension / Soltanpour & Follett (2007) confirm the 0.4 lbs/1% OM figure is valid turfgrass science, but it is outside the project's VCE-primary source hierarchy for lawns and should not be added to the lawn calculator
+
+### Lawn Soil Test Challenges document
+
+`Soil_Test_Challenges_and_Solutions.docx` updated:
+
+- Challenge 6 reframed from "Organic Matter Reducing the Nitrogen Need" → "Clipping Return Credit — A Hidden Nitrogen Source"  
+- All references to UMD Extension OM formula and Rutgers FS626 removed from lawn document  
+- Source: VCE 430-011 and SPES-384NP throughout
+
+---
+
+## Session Updates — June 3, 2026
+
+### Source correction: calcium nitrate and blossom end rot
+
+Blossom end rot in tomatoes and tip burn in leafy greens are calcium **uptake** disorders, not soil calcium deficiency. Primary causes are inconsistent watering and underdeveloped root systems in young transplants. Calcium nitrate is the preferred sidedress N source because it delivers nitrogen without adding excess P or K — not because it cures blossom end rot. Calcium nitrate provides direct corrective value only when the soil test shows **low calcium**. Updated in:
+
+- CLAUDE.md NC State source row  
+- README.md NC State supplementary source entry  
+- Fun Facts document \#11
+
+### SPES-40A citation confirmed correct
+
+SPES-40A is the Excel spreadsheet (Wilson & Goatley). SPES-40P is the companion PDF user guide for that spreadsheet. All project documents correctly cite SPES-40A. No changes needed.
+
+### Fun Facts document (\#2) — WIN clarification
+
+SPES-40A does not include WIN% program detection. The calculator builds on SPES-40A by adding: WIN% Program 1/2/3 detection, clipping return credit, plain-English soil test interpretation, crop-specific garden sidedress plans, dual lab support (VCE and Waypoint), and mixed bed support.
+
+### Fun Facts document — structural changes
+
+- \#1 and \#12 merged into single card: "It replaces a stack of nearly 30 publications with one workflow"  
+- Source count updated from "15" and "20+" to "nearly 30" (11 core VCE \+ 9 VCE crop guides \+ 9 supplementary \= \~29)  
+- \#11 title changed to "Calcium nitrate: the right sidedress nitrogen for most vegetables"  
+- \#11 body rewritten to lead with calcium nitrate rationale; blossom end rot demoted to afterthought with accurate framing  
+- High-codepoint emoji (U+1F000 range) replaced with safe Dingbat symbols (U+2000–U+27FF) to prevent square box rendering in Word
+
+### Documents produced this session
+
+| Document | Description |
+| :---- | :---- |
+| `VCE_Calculator_Development_History.docx` | Full development history Feb–May 2026 |
+| `Soil_Test_Challenges_and_Solutions.docx` | Lawn soil test challenges (7 challenges, lawn-only sources) |
+| `Garden_Soil_Test_Challenges_and_Solutions.docx` | Garden soil test challenges (10 challenges) |
+| `VCE_Calculator_User_Guide.docx` | Plain-language user guide, both lawn and garden |
+| `VCE_Calculator_Fun_Facts.docx` | 11 highlights for new users |
+
+### README.md corrections applied
+
+- Heavy feeder N rate corrected: 0.30 → 0.20 lbs/100 sq. ft.  
+- "Use recommended N" button reference removed (function was deleted)  
+- Application plan architecture updated: old 35/65 split replaced with preplant-only \+ fixed sidedress  
+- Mixed Bed added to feeding level list  
+- NC State source corrected (blossom end rot framing)  
+- Supporting documents section added
+
