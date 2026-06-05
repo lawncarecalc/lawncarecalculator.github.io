@@ -632,6 +632,7 @@
     body.printing-warm  #tab-warm   { display: block !important; }
     body.printing-lime  #tab-lime   { display: block !important; }
     body.printing-garden #tab-garden { display: block !important; }
+    body.printing-flower #tab-flower { display: block !important; }
 
     /* Show inline results and results cards when printing a plan */
     body.printing-cool  .inline-plan-result,
@@ -672,7 +673,8 @@
       <button class="tab-btn" data-tab="cool">Cool-Season Lawns</button>
       <button class="tab-btn" data-tab="warm">Warm-Season Lawns</button>
       <button class="tab-btn" data-tab="lime">Lime</button>
-      <button class="tab-btn" data-tab="garden">Vegetable &amp; Flower Gardens</button>
+      <button class="tab-btn" data-tab="garden">Vegetable Garden</button>
+      <button class="tab-btn" data-tab="flower">Flower Garden</button>
       <button class="tab-btn" data-tab="about">About &amp; Instructions</button>
     </div>
   </nav>
@@ -937,6 +939,13 @@
                 <option value="warm">Warm-Season (bermuda, zoysia, centipede, St. Augustine)</option>
               </select>
             </div>
+            <div class="st-field st-field-wide" id="st-lawn-status-field">
+              <label>Lawn Status (from report)</label>
+              <select id="st-lawn-status" onchange="interpretSoilTest()">
+                <option value="existing">Existing lawn</option>
+                <option value="new">New lawn (before seeding or sodding)</option>
+              </select>
+            </div>
             <div class="st-field st-field-wide" id="st-garden-type-field" style="display:none;">
               <label>Garden Type (from report)</label>
               <select id="st-garden-type" onchange="interpretSoilTest()">
@@ -944,6 +953,8 @@
                 <option value="vegetable">Vegetable Garden</option>
                 <option value="annual">Annual Flower Garden</option>
                 <option value="perennial">Perennial Flower Garden</option>
+                <option value="rose">Rose Bed</option>
+                <option value="bulb">Spring-Flowering Bulbs</option>
                 <option value="mixed">Mixed Bed (vegetables &amp; flowers)</option>
               </select>
             </div>
@@ -1122,7 +1133,8 @@
               <div class="field-label"><span class="field-num">2</span><span class="field-question">What grass species do you have?</span></div>
               <select id="warm-species" onchange="calcWarm()">
                 <option value="bermuda">Bermudagrass / St. Augustinegrass</option>
-                <option value="zoysia">Zoysiagrass / Centipedegrass</option>
+                <option value="zoysia">Zoysiagrass</option>
+                <option value="centipede">Centipedegrass</option>
               </select>
               <div class="field-hint" id="warm-species-hint"></div>
             </div>
@@ -1133,7 +1145,7 @@
               <!-- N rate guidance table — primary tool -->
               <div style="background:var(--green-mist);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
                 <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.9rem;">&#9728;&#65039; Choosing your annual N rate</div>
-                <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Your soil test report may include a nitrogen recommendation — use it as a starting point, but verify it against Virginia guidelines. <strong>Waypoint rates can reach the upper end of the Virginia range — appropriate for bermudagrass but too high for zoysiagrass or centipedegrass.</strong><br><br>The maximum you can apply in a single application depends on how quickly your fertilizer releases nitrogen. Quick-release fertilizers — like urea or ammonium sulfate (Program 1: no "Water Insoluble Nitrogen" or WIN listed on the bag) — have a lower per-application limit. Slow-release fertilizers — look for "Water Insoluble Nitrogen (WIN)" on the bag label (Program 2: 15–49% WIN; Program 3: 50% or more WIN) — allow a higher per-application rate and fewer applications per season. If your annual target is 3.0 lbs and you are using a quick-release product (Program 1, max 0.9 lbs per application for warm-season), you will need at least 4 separate applications to stay within Virginia's limits.</p>
+                <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Your soil test report may include a nitrogen recommendation — use it as a starting point, but verify it against Virginia guidelines. <strong>Waypoint rates can reach the upper end of the Virginia range — appropriate for bermudagrass but too high for zoysiagrass, and far too high for centipedegrass.</strong><br><br>The maximum you can apply in a single application depends on how quickly your fertilizer releases nitrogen. Quick-release fertilizers — like urea or ammonium sulfate (Program 1: no "Water Insoluble Nitrogen" or WIN listed on the bag) — have a lower per-application limit. Slow-release fertilizers — look for "Water Insoluble Nitrogen (WIN)" on the bag label (Program 2: 15–49% WIN; Program 3: 50% or more WIN) — allow a higher per-application rate and fewer applications per season. If your annual target is 3.0 lbs and you are using a quick-release product (Program 1, max 0.9 lbs per application for warm-season), you will need at least 4 separate applications to stay within Virginia's limits.</p>
                 <table style="width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:10px;">
                   <thead><tr style="background:var(--green-deep);color:white;">
                     <th style="padding:6px 8px;text-align:left;font-weight:500;">Lawn situation</th>
@@ -1142,14 +1154,15 @@
                     <th style="padding:6px 8px;text-align:center;font-weight:500;">Min. applications</th>
                   </tr></thead>
                   <tbody>
-                    <tr><td style="padding:6px 8px;">Zoysiagrass / centipedegrass — any situation</td><td style="padding:6px 8px;text-align:center;">1.0–2.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.7 (P1) / 1.0 (P2/P3)</td><td style="padding:6px 8px;text-align:center;">2</td></tr>
+                    <tr><td style="padding:6px 8px;">Zoysiagrass — any situation</td><td style="padding:6px 8px;text-align:center;">1.0–2.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.7 (P1) / 1.0 (P2/P3)</td><td style="padding:6px 8px;text-align:center;">2</td></tr>
+                    <tr style="background:white;"><td style="padding:6px 8px;">Centipedegrass — any situation</td><td style="padding:6px 8px;text-align:center;">0.5–1.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.5 (P1) / 0.5 (P2/P3)</td><td style="padding:6px 8px;text-align:center;">1–2</td></tr>
                     <tr style="background:white;"><td style="padding:6px 8px;">Bermudagrass / St. Augustine — average lawn</td><td style="padding:6px 8px;text-align:center;">2.0–3.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.9 (P1) / 1.0 (P2) / 1.5 (P3)</td><td style="padding:6px 8px;text-align:center;">3</td></tr>
                     <tr><td style="padding:6px 8px;">Bermudagrass / St. Augustine — higher quality</td><td style="padding:6px 8px;text-align:center;">3.0–4.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.9 (P1) / 1.0 (P2) / 1.5 (P3)</td><td style="padding:6px 8px;text-align:center;">4</td></tr>
                   </tbody>
                 </table>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9851; <strong>Returning clippings?</strong> Recycling grass clippings returns up to one-third of the seasonal nitrogen requirement — about 0.5 to 1 lb of nitrogen per year. Clippings also contribute organic matter that improves soil structure over time. If you mulch-mow consistently, reduce your chosen annual total by up to one-third. <em>(VCE 430-011, SPES-384)</em></p>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9729;&#65039; <strong>Sun vs. shade:</strong> Warm-season grasses in shade need significantly less nitrogen than the same grass in full sun — use the lower end of the range and reduce frequency. Shaded warm-season grasses are also more susceptible to winterkill, so avoid late-season N applications entirely in shaded areas. <em>(VCE 430-011)</em></p>
-                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9729;&#65039; &#9851; <strong>Both shade and returning clippings?</strong> Apply both reductions together. Start with the shade adjustment (reduce your target to one-half to two-thirds), then reduce that result by up to one-third for clippings. A shaded bermudagrass lawn targeting 3.0 lbs would become 1.5–2.0 lbs after the shade adjustment, then 1.0–1.3 lbs after the clipping credit. For shaded zoysia or centipede, the combined result may be well under 1.0 lb annually. <em>(VCE 430-011)</em></p>
+                <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#9729;&#65039; &#9851; <strong>Both shade and returning clippings?</strong> Apply both reductions together. Start with the shade adjustment (reduce your target to one-half to two-thirds), then reduce that result by up to one-third for clippings. A shaded bermudagrass lawn targeting 3.0 lbs would become 1.5–2.0 lbs after the shade adjustment, then 1.0–1.3 lbs after the clipping credit. For shaded zoysia, the combined result may be well under 1.0 lb annually; for centipede, it may be well under 0.5 lb. <em>(VCE 430-011)</em></p>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#10052;&#65039; <strong>Potassium and winter hardiness:</strong> Potassium is the winterizing nutrient for warm-season grasses. If your soil test rates K as Low, address it in your plan — the benefits of adequate K for winter survival are often more significant for warm-season grasses than for cool-season grasses. If K is already Medium or higher, skip extra K to avoid unnecessary leaching. <em>(VCE 430-520)</em></p>
                 <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:6px;">&#128197; <strong>When to apply:</strong> April 1 through August 15 is the primary window. A modest September application (up to 1 lb water-soluble N per 1,000 sq. ft.) for bermudagrass followed by light applications every 4–6 weeks until frost can extend the growing season and improve winter hardiness — but keep rates conservative and stop before frost. <em>(VCE 430-520)</em></p>
                 <p style="font-size:0.8rem;color:var(--red);margin-bottom:0;font-weight:600;">&#9940; Do not fertilize after August 15 unless following the specific fall bermudagrass program above. Late-season nitrogen on warm-season grasses increases winterkill risk.</p>
@@ -1158,7 +1171,7 @@
               <!-- Input field — confirms the choice made above -->
               <label style="font-size:0.82rem;color:var(--slate-mid);display:block;margin-bottom:4px;">Enter your chosen annual N rate (lbs per 1,000 sq. ft.)</label>
               <input type="number" id="warm-n-rate" min="0" step="0.1" placeholder="e.g. 2.0" oninput="calcWarm()">
-              <div class="field-hint" id="warm-n-hint">Bermudagrass/St. Augustine: max 4.0 lbs &nbsp;|&nbsp; Zoysiagrass/Centipedegrass: 1.0–2.0 lbs <em>(SPES-669)</em></div>
+              <div class="field-hint" id="warm-n-hint">Bermudagrass/St. Augustine: max 4.0 lbs &nbsp;|&nbsp; Zoysiagrass: 1.0–2.0 lbs &nbsp;|&nbsp; Centipedegrass: 0.5–1.0 lbs <em>(SPES-669, SPES-670)</em></div>
               <div id="warm-n-valid" style="margin-top:6px;"></div>
             </div>
 
@@ -1301,9 +1314,9 @@
   <div class="tab-panel" id="tab-garden">
     <div class="calc-layout">
         <div class="card">
-          <div class="card-header"><span class="icon">🌱</span> Vegetable &amp; Flower Garden Calculator</div>
+          <div class="card-header"><span class="icon">🌱</span> Vegetable Garden Calculator</div>
           <div class="card-body">
-            <p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:16px;line-height:1.5;">Based on VCE Soil Test Note 19 (SPES-687NP) — Vegetable and Flower Gardens. Enter your bed size and soil test values to calculate fertilizer needs.</p>
+            <p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:16px;line-height:1.5;">Based on VCE Soil Test Note 19 (SPES-687P) — Vegetable and Flower Gardens. Enter your bed size and soil test values to calculate fertilizer and lime needs for vegetable and mixed beds. For flowers, annuals, perennials, and bulbs, use the <strong>Flower Garden</strong> tab.</p>
 
             <!-- Garden type -->
             <div class="field-group">
@@ -1311,8 +1324,6 @@
               <select id="gdn-type" onchange="calcGarden()">
                 <option value="">- Select type -</option>
                 <option value="vegetable">Vegetable Garden</option>
-                <option value="annual">Annual Flower Bed</option>
-                <option value="perennial">Perennial Flower Bed</option>
                 <option value="mixed">Mixed Bed (vegetables &amp; flowers)</option>
               </select>
             </div>
@@ -1369,6 +1380,11 @@
                   <option value="beans">Beans &amp; peas</option>
                   <option value="carrot">Carrots</option>
                   <option value="root">Root crops (radishes, turnips, parsnips)</option>
+                </optgroup>
+                <optgroup label="Flowers">
+                  <option value="annual">Annual flowers (impatiens, marigolds, zinnias…)</option>
+                  <option value="perennial">Perennial flowers (coneflower, daylily, salvia…)</option>
+                  <option value="rose">Roses</option>
                 </optgroup>
                 <optgroup label="Mixed">
                   <option value="mixed">Mixed bed (vegetables &amp; flowers)</option>
@@ -1524,6 +1540,11 @@
                       <option value="carrot">Carrots</option>
                       <option value="root">Root crops (radishes, turnips, parsnips)</option>
                     </optgroup>
+                    <optgroup label="Flowers">
+                      <option value="annual">Annual flowers</option>
+                      <option value="perennial">Perennial flowers</option>
+                      <option value="rose">Roses</option>
+                    </optgroup>
                     <optgroup label="Mixed">
                       <option value="mixed">Mixed bed (vegetables &amp; flowers)</option>
                     </optgroup>
@@ -1636,6 +1657,172 @@
     </div>
   </div><!-- end tab-garden -->
 
+  <!-- ===== FLOWER GARDEN TAB ===== -->
+  <div class="tab-panel" id="tab-flower">
+    <div class="calc-layout">
+        <div class="card">
+          <div class="card-header"><span class="icon">🌸</span> Flower Garden Calculator</div>
+          <div class="card-body">
+            <p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:16px;line-height:1.5;">For annual beds, perennial borders, rose gardens, and spring-flowering bulbs. Based on VCE Soil Test Note 19 (SPES-687P), VCE Publication 426-200 (SPES-802P), UMD Extension, Rutgers NJAES, and NC State Extension. Enter your bed size and soil test values — or leave the nitrogen field blank to use research-based defaults for your flower type.</p>
+
+            <!-- Flower type -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">1</span><span class="field-question">What type of flower bed or planting?</span></div>
+              <select id="flr-type" onchange="calcFlower()">
+                <option value="">- Select type -</option>
+                <option value="annual">Annual Flower Bed</option>
+                <option value="perennial">Perennial Flower Bed</option>
+                <option value="rose">Rose Bed</option>
+                <option value="bulb">Spring-Flowering Bulbs</option>
+              </select>
+            </div>
+
+            <!-- Bed size -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">2</span><span class="field-question">What is the size of your bed?</span></div>
+              <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <button id="flr-size-mode-rect" class="st-unit-btn active" onclick="setFlowerSizeMode('rect')" style="padding:5px 14px;font-size:0.82rem;">L &times; W</button>
+                <button id="flr-size-mode-area" class="st-unit-btn" onclick="setFlowerSizeMode('area')" style="padding:5px 14px;font-size:0.82rem;">Enter Area Directly</button>
+              </div>
+              <div id="flr-size-rect">
+                <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;">
+                  <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Length (ft)</label>
+                    <input type="number" id="flr-length" min="0" placeholder="e.g. 10" oninput="calcFlowerDimensions()"></div>
+                  <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Width (ft)</label>
+                    <input type="number" id="flr-width" min="0" placeholder="e.g. 6" oninput="calcFlowerDimensions()"></div>
+                  <div style="padding-top:20px;color:var(--slate-mid);font-size:0.875rem;" id="flr-area-display">—</div>
+                </div>
+              </div>
+              <div id="flr-size-area" style="display:none;">
+                <label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Area (sq. ft.) — for circular, L-shaped, or irregular beds</label>
+                <input type="number" id="flr-area-direct" min="0" placeholder="e.g. 60" oninput="calcFlower()">
+              </div>
+            </div>
+
+            <!-- Flower type hint / default N info -->
+            <div id="flr-type-hint" style="display:none;background:var(--green-mist);border-radius:6px;padding:10px 14px;font-size:0.82rem;line-height:1.6;margin-bottom:8px;"></div>
+
+            <!-- N recommendation -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">3</span><span class="field-question" id="flr-n-rec-label">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</span></div>
+              <input type="number" id="flr-n-rec" min="0" step="0.1" placeholder="e.g. 0.1" oninput="calcFlower()">
+              <div class="field-hint" id="flr-n-rec-hint">Enter the N figure from your VCE or Waypoint report, or leave blank to use the research-based default for your flower type. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
+            </div>
+
+            <!-- P and K ratings -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">4</span><span class="field-question">Phosphorus (P) rating from your soil test?</span></div>
+              <select id="flr-p-rating" onchange="calcFlower()">
+                <option value="">- Select rating -</option>
+                <optgroup label="VCE / Virginia Tech">
+                  <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
+                  <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
+                  <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
+                  <option value="VH">VH</option>
+                </optgroup>
+                <optgroup label="Waypoint Analytical">
+                  <option value="VL">Very Low</option><option value="LO">Low</option>
+                  <option value="ME">Medium</option><option value="OP">Optimum</option>
+                  <option value="VH2">Very High</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">5</span><span class="field-question">Potassium (K) rating from your soil test?</span></div>
+              <select id="flr-k-rating" onchange="calcFlower()">
+                <option value="">- Select rating -</option>
+                <optgroup label="VCE / Virginia Tech">
+                  <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
+                  <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
+                  <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
+                  <option value="VH">VH</option>
+                </optgroup>
+                <optgroup label="Waypoint Analytical">
+                  <option value="VL">Very Low</option><option value="LO">Low</option>
+                  <option value="ME">Medium</option><option value="OP">Optimum</option>
+                  <option value="VH2">Very High</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <!-- Fertilizer product -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">6</span><span class="field-question">Fertilizer: enter N-P-K grade or choose a common product</span></div>
+              <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <button id="flr-fert-mode-npk" class="st-unit-btn active" onclick="setFlowerFertMode('npk')" style="padding:5px 14px;font-size:0.82rem;">Enter N-P-K</button>
+                <button id="flr-fert-mode-product" class="st-unit-btn" onclick="setFlowerFertMode('product')" style="padding:5px 14px;font-size:0.82rem;">Choose Product</button>
+              </div>
+              <div id="flr-fert-npk">
+                <div class="npk-row">
+                  <div class="npk-item"><label>N %</label><input type="number" id="flr-fert-n" min="0" max="100" placeholder="0" oninput="calcFlower()"></div>
+                  <div class="npk-item"><label>P %</label><input type="number" id="flr-fert-p" min="0" max="100" placeholder="0" oninput="calcFlower()"></div>
+                  <div class="npk-item"><label>K %</label><input type="number" id="flr-fert-k" min="0" max="100" placeholder="0" oninput="calcFlower()"></div>
+                </div>
+              </div>
+              <div id="flr-fert-product" style="display:none;">
+                <select id="flr-product-select" onchange="onFlowerProductSelect()">
+                  <option value="">- Select a product -</option>
+                  <optgroup label="Synthetic — Complete Fertilizers">
+                    <option value="10-10-10">10-10-10 (General Purpose)</option>
+                    <option value="5-10-5">5-10-5 (lower N, higher P — good for flowering)</option>
+                    <option value="calcium-nitrate">Calcium Nitrate (15.5-0-0) — roses, sidedress</option>
+                  </optgroup>
+                  <optgroup label="Organic Sources">
+                    <option value="blood-meal">Blood Meal (~13-0-0) — medium-rapid release</option>
+                    <option value="fish-emulsion">Fish Emulsion (~5-1-1) — liquid, fast</option>
+                    <option value="soybean-meal">Soybean Meal (~7-2-1) — slow-medium release</option>
+                    <option value="cottonseed-meal">Cottonseed Meal (~7-3-2) — slow-medium, acidifying</option>
+                    <option value="bone-meal">Bone Meal (~1-15-0) — P source for bulbs</option>
+                    <option value="poultry-manure">Poultry Manure (~3-2-2) — slow release</option>
+                  </optgroup>
+                </select>
+                <div id="flr-product-note" style="font-size:0.8rem;color:var(--slate-mid);margin-top:6px;"></div>
+              </div>
+            </div>
+
+            <!-- Bed status -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">7</span><span class="field-question">Is this a new (preplant) or established bed?</span></div>
+              <select id="flr-bed-status" onchange="calcFlower()">
+                <option value="established">Established bed</option>
+                <option value="preplant">New bed (preplant — before planting)</option>
+              </select>
+            </div>
+
+            <!-- Lime recommendation -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">8</span><span class="field-question" id="flr-lime-rec-label">Lime recommendation from your report (lbs per 100 sq. ft.)?</span></div>
+              <input type="number" id="flr-lime-rec" min="0" step="1" placeholder="e.g. 5" oninput="calcFlower()">
+              <div class="field-hint" id="flr-lime-rec-hint">Leave blank if no lime was recommended. VCE reports garden lime in lbs/100 sq. ft. Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
+            </div>
+
+            <!-- Excess-N caution — always visible on flower tab -->
+            <div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:10px 14px;margin-bottom:8px;font-size:0.85rem;line-height:1.6;">
+              &#9888; <strong>Flowers and nitrogen:</strong> Flowering plants respond poorly to excess nitrogen — it produces lush foliage at the direct expense of blooms. Apply conservatively. Roses tolerate more frequent feeding than other flowers, but the August 15 cutoff applies to all types. Spring bulbs should never be fertilized after flowering — it encourages rot. <em>(VCE Note 19; UMD Extension; Rutgers NJAES FS1220; NC State Extension)</em>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Results card -->
+        <div class="card">
+          <div class="card-header"><span class="icon">📋</span> Fertilizer &amp; Lime Plan</div>
+          <div class="card-body" id="flr-results">
+            <p style="color:var(--slate-light);font-size:0.875rem;">Select flower type and enter bed size to see recommendations.</p>
+          </div>
+        </div>
+
+        <!-- Timing card -->
+        <div class="card timing-card">
+          <div class="card-header"><span class="icon">📅</span> Timing of Applications</div>
+          <div class="card-body">
+            <div id="flr-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Select flower type to see timing guidance.</p></div>
+            <div class="note-banner">&#8505;&#65039; Lime applied to flower beds is effective for up to three years. Retest after 3&ndash;4 years to determine future needs. <em>(VCE Note 19)</em></div>
+          </div>
+        </div>
+    </div>
+  </div><!-- end tab-flower -->
+
   <!-- ===== ABOUT TAB ===== -->
   <div class="tab-panel" id="tab-about">
     <div class="about-layout">
@@ -1652,7 +1839,7 @@
           <div class="card-body">
             <p class="about-section-intro">This tool accepts soil test reports from Virginia Cooperative Extension (VCE) / Virginia Tech and Waypoint Analytical. Start on the <strong>Soil Test Report</strong> tab to interpret your results and carry values into the calculators:</p>
             <div class="about-step"><div class="about-step-num">1</div><div><strong>Get a soil test first.</strong> This tool works with reports from <strong>VCE / Virginia Tech</strong> and <strong>Waypoint Analytical</strong>. Select your lab from the dropdown — rating scales and units adjust automatically.</div></div>
-            <div class="about-step"><div class="about-step-num">2</div><div><strong>Choose your tab.</strong> Select <em>Cool-Season Lawns</em> or <em>Warm-Season Lawns</em> and pick your specific grass species — this sets the correct N ceiling and per-application limits. Use the <em>Lime</em> tab whenever lime is recommended. Use <em>Vegetable &amp; Flower Gardens</em> for vegetable or flower beds.</div></div>
+            <div class="about-step"><div class="about-step-num">2</div><div><strong>Choose your tab.</strong> Select <em>Cool-Season Lawns</em> or <em>Warm-Season Lawns</em> and pick your specific grass species — this sets the correct N ceiling and per-application limits. Use the <em>Lime</em> tab whenever lime is recommended. Use <em>Vegetable Garden</em> for vegetable and mixed beds; use <em>Flower Garden</em> for annuals, perennials, roses, and bulbs.</div></div>
             <div class="about-step"><div class="about-step-num">3</div><div><strong>Build your application plan.</strong> Add up to 4 application slots, each with its own N-P-K grade and WIN%. Different grades per slot let you use a P-correcting fertilizer early in the season and N-only maintenance fertilizers later. The Season Summary tracks cumulative N, P, and K against soil test recommendations.</div></div>
             <div class="about-step"><div class="about-step-num">4</div><div><strong>Adjust for clipping recycling.</strong> If you mulch-mow and return clippings, reduce your total annual N rate by up to one-third — clippings return significant nitrogen to the lawn. <em>(VCE 430-011)</em></div></div>
             <div class="about-step"><div class="about-step-num">5</div><div><strong>Retest after 3 years.</strong> All fertilizer recommendations are valid for up to three growing seasons. Lime recommendations cover a three-year period.</div></div>
@@ -1751,7 +1938,7 @@
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/dam/pubs_ext_vt_edu/430/430-522/SPES-669.pdf" target="_blank" style="color:var(--green-mid);">Publication 430-522 (SPES-669P) — Maintenance Calendar for Warm-Season Turfgrasses in Virginia</a></div>
               <div class="about-source-meta">M. Goatley &middot; S. Askew &middot; D. McCall (VT); C. Wilson (Penn State Extension) — VCE, 2025</div>
-              <p>Per-application N limits, bermudagrass/St. Augustine 4.0 lb ceiling, zoysiagrass/centipedegrass 1&ndash;2 lb annual range, 3&ndash;4 year soil testing recommendation.</p>
+              <p>Per-application N limits, bermudagrass/St. Augustine 4.0 lb ceiling, zoysiagrass 1&ndash;2 lb annual range, centipedegrass 0.5&ndash;1.0 lb annual range, 3&ndash;4 year soil testing recommendation.</p>
             </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/dam/pubs_ext_vt_edu/430/430-523/SPES-670.pdf" target="_blank" style="color:var(--green-mid);">Publication 430-523 (SPES-670P) — Maintenance Calendar for Cool-Season Turfgrasses in Virginia</a></div>
@@ -1774,12 +1961,17 @@
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-719/452-719.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 19 (452-719 / SPES-687P) — Vegetable and Flower Gardens</a></div>
               <div class="about-source-meta">Joyce Latimer (retired) &middot; S.E. Heckendorn — VCE, 2025</div>
-              <p>Primary source for all garden calculator logic: liming limits, sidedress recommendations, tomato/pepper split-application rule, flower and rose timing, organic fertilizer rates, and the fertilizer substitution table. Synthetic fertilizer volumes are exact per Note 19.</p>
+              <p>Primary source for all garden and flower calculator logic: liming limits, sidedress recommendations, tomato/pepper split-application rule, flower and rose timing (monthly March–August for roses), organic fertilizer rates, and the fertilizer substitution table. Synthetic fertilizer volumes are exact per Note 19.</p>
+            </div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/dam/pubs_ext_vt_edu/426/426-200/SPES-802.pdf" target="_blank" style="color:var(--green-mid);">Publication 426-200 (SPES-802P) — Annual Flowers: Culture and Maintenance</a></div>
+              <div class="about-source-meta">Virginia Cooperative Extension — VCE</div>
+              <p>Source for annual flower bed preparation, fertilization per soil test recommendations, and maintenance guidance. Confirms soil test as the basis for lime and fertilizer rates.</p>
             </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/426/426-323/426-323.html" target="_blank" style="color:var(--green-mid);">Publication 426-323 (SPES-803P) — Fertilizing the Vegetable Garden</a></div>
               <div class="about-source-meta">D. Relf &middot; A. McDaniel &middot; S. Donohue; reviewed by E. Olsen — VCE, 2026</div>
-              <p>Crop-specific N timing, the 3&ndash;4 week timing rule, phosphorus banding technique, nutrient roles, and nutrient deficiency symptoms. Used throughout the garden guidance collapsibles.</p>
+              <p>Crop-specific N timing, the 3&ndash;4 week timing rule, phosphorus banding technique, nutrient roles, and nutrient deficiency symptoms. Used throughout the vegetable garden guidance collapsibles.</p>
             </div>
 
             <!-- VCE CROP-SPECIFIC — collapsible -->
@@ -1896,6 +2088,37 @@
               </div>
             </div>
 
+            <!-- FLOWER SUPPLEMENTARY SOURCES — collapsible -->
+            <div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 8px;">&#127826; Flower Garden Supplementary Sources</div>
+            <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:8px;">The following sources are used to supplement VCE Note 19 for flower garden topics where VCE is silent, particularly for bulbs and perennial N rates. All are from land-grant university Cooperative Extension programs and are consistent with VCE on all material points.</p>
+            <div class="fert-chooser no-print" style="margin-bottom:14px;">
+              <button class="fert-chooser-toggle" id="about-flower-sources-btn" onclick="toggleAboutFlowerSources()" style="font-size:0.82rem;">
+                <span>&#128218; UMD Extension, Rutgers NJAES, NC State Extension — Flower &amp; Bulb Sources</span><span class="toggle-arrow">&#9660;</span>
+              </button>
+              <div class="fert-chooser-body" id="about-flower-sources-body">
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://extension.umd.edu/resource/care-annuals-and-perennials" target="_blank" style="color:var(--green-mid);">University of Maryland Extension — Care of Annuals and Perennials</a></div>
+                  <div class="about-source-meta">University of Maryland Extension</div>
+                  <p>Source for: 0.10 lbs N per 100 sq. ft. as the standard rate for both annuals and perennials; spring-only application for perennials with compost as an alternative; mid-summer repeat only if growth is weak or foliage pale; late-summer application for fall bloomers. Confirms: wash fertilizer off foliage after application; avoid sprinklers when possible for disease prevention.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://njaes.rutgers.edu/fs1220/" target="_blank" style="color:var(--green-mid);">Rutgers NJAES FS1220 — Spring Flowering Bulbs</a></div>
+                  <div class="about-source-meta">Rutgers Cooperative Extension — New Jersey Agricultural Experiment Station</div>
+                  <p>Source for: do not fertilize spring-flowering bulbs after they have started flowering (encourages bulb rot and shortens flower life); treat winter-hardy spring bulbs as perennials left in the ground year after year; dig and divide when flowers become smaller or fewer. Interplanting recommendations with herbaceous perennials.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://content.ces.ncsu.edu/spring-flowering-bulbs-trials-in-north-carolina" target="_blank" style="color:var(--green-mid);">NC State Extension — Spring-Flowering Bulbs: Trials in North Carolina</a></div>
+                  <div class="about-source-meta">Dr. Paul V. Nelson, Horticultural Nutritionist — NC State University</div>
+                  <p>Source for: nitrogen is the primary nutrient need for spring-flowering bulbs — not phosphorus (contradicts common bone-meal advice); Bulb Booster 9-9-6 at 4 lbs per 100 sq. ft. (= ~0.13 lbs N/100 sq. ft.) was the trial rate, applied at planting and each subsequent fall; fertilized bulbs performed significantly better than unfertilized regardless of fertilizer method; apply again before leaves open in spring to carry bulbs through flowering and fuel bulb-rebuilding. <strong>Note: This is the primary source for the bulb N default rate in the Flower Calculator.</strong></p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://forsyth.ces.ncsu.edu/news/fall-is-the-time-to-add-flowering-bulbs-in-your-garden/" target="_blank" style="color:var(--green-mid);">NC State Extension — Add Flowering Bulbs in Your Garden This Fall</a></div>
+                  <div class="about-source-meta">Leslie Lackey, Horticulture Agent — Forsyth County Center, NC Cooperative Extension</div>
+                  <p>Confirms: incorporate slow-release fertilizer with nitrogen and phosphorus at time of planting; apply each fall or at spring emergence in subsequent years; do not fertilize after blooming — leads to disease. Consistent with Rutgers FS1220 and NC State bulb trials.</p>
+                </div>
+              </div>
+            </div>
+
             <div class="about-note">
               Virginia Cooperative Extension programs and employment are open to all, regardless of age, color, disability, gender, gender identity, gender expression, national origin, political affiliation, race, religion, sexual orientation, genetic information, veteran status, or any other basis protected by law. An equal opportunity/affirmative action employer.<br><br>
               Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, the U.S. Department of Agriculture, and local governments.<br><br>
@@ -1950,8 +2173,9 @@ var SPECIES_CONFIG = {
   tall:    { label:'Tall fescue / Bluegrass / Ryegrass', maxN:3.5, maxApp:{1:0.7, 2:0.9, 3:1.5}, type:'cool' },
   fine:    { label:'Fine-leaf fescue',                   maxN:2.0, maxApp:{1:0.7, 2:0.9, 3:1.0}, type:'cool' },
   // Warm-season
-  bermuda: { label:'Bermudagrass / St. Augustinegrass',  maxN:4.0, maxApp:{1:0.9, 2:1.0, 3:1.5}, type:'warm' },
-  zoysia:  { label:'Zoysiagrass / Centipedegrass',       maxN:2.0, maxApp:{1:0.7, 2:1.0, 3:1.0}, type:'warm' }
+  bermuda:   { label:'Bermudagrass / St. Augustinegrass', maxN:4.0, maxApp:{1:0.9, 2:1.0, 3:1.5}, type:'warm' },
+  zoysia:    { label:'Zoysiagrass',                       maxN:2.0, maxApp:{1:0.7, 2:1.0, 3:1.0}, type:'warm' },
+  centipede: { label:'Centipedegrass',                    maxN:1.0, maxApp:{1:0.5, 2:0.5, 3:0.5}, type:'warm' }
 };
 
 // ===== TIMING GUIDANCE (per 430-011 Tables 2-4) =====
@@ -2204,8 +2428,9 @@ function calcAutoplan(prefix) {
 var MAX_PRACTICAL_APPS = {
   tall:    { 1:4, 2:4, 3:2 },  // Sept/Oct/Nov + optional May
   fine:    { 1:3, 2:3, 3:2 },  // Sept/Oct/Nov
-  bermuda: { 1:4, 2:4, 3:3 },  // Apr/May/Jun/Jul–Aug 1
-  zoysia:  { 1:3, 2:3, 3:2 }   // May/Jun/Jul
+  bermuda:   { 1:4, 2:4, 3:3 },  // Apr/May/Jun/Jul–Aug 1
+  zoysia:    { 1:3, 2:3, 3:2 },  // May/Jun/Jul
+  centipede: { 1:2, 2:2, 3:2 }   // May/Jun only — low-N, slow-growing
 };
 
 function maxDeliverable(speciesKey, program) {
@@ -2654,8 +2879,10 @@ function onReportTypeChange() {
 
   // Show/hide crop vs garden-type selector
   var cropField = document.getElementById('st-crop-field');
+  var lawnStatusField = document.getElementById('st-lawn-status-field');
   var gardenField = document.getElementById('st-garden-type-field');
   if (cropField) cropField.style.display = isGarden ? 'none' : '';
+  if (lawnStatusField) lawnStatusField.style.display = isGarden ? 'none' : '';
   if (gardenField) gardenField.style.display = isGarden ? '' : 'none';
 
   // Switch Buffer Index / Buffer pH label
@@ -2897,7 +3124,7 @@ function interpretSoilTest() {
       cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec + ' lbs / 100 sq. ft.',
         'Virginia soils naturally acidify. ' + lTypeNote + ' Per Note 19: never apply more than ' + limeMaxPer + ' lbs per 100 sq. ft. at one time (' + (bedStatus==='preplant'?'preplant':'established bed') + '). Your total of ' + limeRec + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + '.',
         'Lime restores the pH needed for nutrients to be available to garden plants. Lime should not be applied annually — the recommended amount covers a three-year period. <em>(SPES-384)</em>',
-        abox('action-needed', 'Use the Vegetable &amp; Flower Gardens tab to calculate lime for your specific bed size.'),
+        abox('action-needed', 'Use the ' + (['annual','perennial','rose','bulb'].indexOf(crop) >= 0 ? 'Flower Garden' : 'Vegetable Garden') + ' tab to calculate lime for your specific bed size.'),
         goBtn('garden', 'Open Garden Calculator')));
     } else {
       var lApps    = Math.min(Math.ceil(limeRec / 50), 6);
@@ -3068,19 +3295,29 @@ function interpretSoilTest() {
   // ---- Grass / Garden Type ----
   if (crop) {
     if (isGarden) {
-      var gdnLabels = { vegetable:'Vegetable Garden', annual:'Annual Flower Bed', perennial:'Perennial Flower Bed', mixed:'Mixed Bed (Vegetables & Flowers)' };
+      var gdnLabels = { vegetable:'Vegetable Garden', annual:'Annual Flower Bed', perennial:'Perennial Flower Bed', rose:'Rose Bed', bulb:'Spring-Flowering Bulbs', mixed:'Mixed Bed (Vegetables & Flowers)' };
       var gdnLabel = gdnLabels[crop] || crop;
+      var isFlowerType = ['annual','perennial','rose','bulb'].indexOf(crop) >= 0;
       cards.push(card('&#127807;', 'Garden Type &amp; Fertilizer Program', '', '', gdnLabel,
-        'Per VCE Soil Test Note 19, use the Vegetable &amp; Flower Gardens tab to calculate precise fertilizer and lime quantities for your bed size.',
-        '', '', goBtn('garden', 'Open Garden Calculator')));
+        isFlowerType
+          ? 'Use the Flower Garden tab to calculate precise fertilizer and lime quantities for your bed size. Research-based defaults are available if you prefer not to enter your soil test N recommendation directly.'
+          : 'Per VCE Soil Test Note 19, use the Vegetable &amp; Flower Gardens tab to calculate precise fertilizer and lime quantities for your bed size.',
+        '', '', goBtn(isFlowerType ? 'flower' : 'garden', isFlowerType ? 'Open Flower Garden Calculator' : 'Open Garden Calculator')));
     } else {
       var grassLabel = crop === 'warm'
         ? 'Warm-Season (bermudagrass, zoysiagrass, centipedegrass, St. Augustinegrass)'
         : 'Cool-Season (tall fescue, Kentucky bluegrass, fine fescue, perennial ryegrass)';
+      var lawnStatus = document.getElementById('st-lawn-status') ? document.getElementById('st-lawn-status').value : 'existing';
+      var isNewLawn = lawnStatus === 'new';
+      var statusLabel = isNewLawn ? 'New lawn (pre-seeding / pre-sodding)' : 'Existing lawn';
       var grassNote = crop === 'warm'
-        ? 'Warm-season grasses are fertilized during their active growing season — spring through summer (April through August 15). Head to the Warm-Season Calculator to choose your annual N rate, select your fertilizer grade, and build your application plan.'
-        : 'Cool-season grasses are primarily fertilized in fall — think September, October, November (SON). Head to the Cool-Season Calculator to choose your annual N rate, select your fertilizer grade, and build your application plan.';
-      cards.push(card('&#127807;', 'Grass Type &amp; Fertilizer Program', '', '', grassLabel,
+        ? (isNewLawn
+            ? 'This is a <strong>new lawn sample (pre-seeding or pre-sodding)</strong>. Soil test results taken before establishing warm-season turf allow the most effective correction of P, K, and pH — incorporate lime and fertilizer before laying sod or seeding. Head to the Warm-Season Calculator to plan your establishment fertilization.'
+            : 'Warm-season grasses are fertilized during their active growing season — spring through summer (April through August 15). Head to the Warm-Season Calculator to choose your annual N rate, select your fertilizer grade, and build your application plan.')
+        : (isNewLawn
+            ? 'This is a <strong>new lawn sample (pre-seeding or pre-sodding)</strong>. Soil test results taken before seeding allow the most effective correction of P, K, and pH — incorporate lime and fertilizer before seeding. A starter fertilizer (higher P) is appropriate at establishment even if P is medium, since young roots have limited reach. Head to the Cool-Season Calculator to plan your establishment fertilization.'
+            : 'Cool-season grasses are primarily fertilized in fall — think September, October, November (SON). Head to the Cool-Season Calculator to choose your annual N rate, select your fertilizer grade, and build your application plan.');
+      cards.push(card('&#127807;', 'Grass Type &amp; Lawn Status', '', '', grassLabel + ' &mdash; ' + statusLabel,
         grassNote,
         '', '', goBtn(crop, 'Go to ' + (crop==='warm'?'Warm':'Cool') + '-Season Calculator')));
     }
@@ -3200,6 +3437,9 @@ function carryOverToCalculators() {
   var crop     = isGarden
     ? (document.getElementById('st-garden-type') ? document.getElementById('st-garden-type').value : '')
     : (document.getElementById('st-crop') ? document.getElementById('st-crop').value : '');
+  var lawnStatus = (!isGarden && document.getElementById('st-lawn-status'))
+    ? document.getElementById('st-lawn-status').value
+    : 'existing';
 
   // setSelect: sets a select to the matching option value; '' resets to first option
   function setSelect(id, val) {
@@ -3222,27 +3462,40 @@ function carryOverToCalculators() {
     if (el) el.value = '';
   }
 
+  var flowerTypes = ['annual','perennial','rose','bulb'];
+
   if (isGarden) {
-    if (crop) setSelect('gdn-type', crop);
-    setSelect('gdn-p-rating', pRat);
-    setSelect('gdn-k-rating', kRat);
-    if (limeRec) setInput('gdn-lime-rec', limeRec); else clearInput('gdn-lime-rec');
-    if (areaSize) { setInput('gdn-area-direct', areaSize); setGardenSizeMode('area'); } else clearInput('gdn-area-direct');
-    setTimeout(function() { calcGarden(); }, 0);
+    var isFlowerCarry = flowerTypes.indexOf(crop) >= 0;
+    if (isFlowerCarry) {
+      // Route to flower tab
+      setSelect('flr-type', crop);
+      setSelect('flr-p-rating', pRat);
+      setSelect('flr-k-rating', kRat);
+      if (limeRec) setInput('flr-lime-rec', limeRec); else clearInput('flr-lime-rec');
+      if (areaSize) { setInput('flr-area-direct', areaSize); setFlowerSizeMode('area'); } else clearInput('flr-area-direct');
+      setTimeout(function() { calcFlower(); }, 0);
+    } else {
+      // Route to vegetable tab
+      if (crop) setSelect('gdn-type', crop);
+      setSelect('gdn-p-rating', pRat);
+      setSelect('gdn-k-rating', kRat);
+      if (limeRec) setInput('gdn-lime-rec', limeRec); else clearInput('gdn-lime-rec');
+      if (areaSize) { setInput('gdn-area-direct', areaSize); setGardenSizeMode('area'); } else clearInput('gdn-area-direct');
+      setTimeout(function() { calcGarden(); }, 0);
+    }
   } else {
     // Cool-season tab
     if (areaSize) setInput('cool-lawn-size', areaSize); else clearInput('cool-lawn-size');
     setSelect('cool-p-rating', pRat);
     setSelect('cool-k-rating', kRat);
-    if (crop === 'cool') setSelect('cool-species', 'tall');
-    else if (crop === 'warm') setSelect('cool-species', 'tall');
+    if (crop === 'cool' || crop === 'warm') setSelect('cool-species', 'tall');
 
     // Warm-season tab
     if (areaSize) setInput('warm-lawn-size', areaSize); else clearInput('warm-lawn-size');
     setSelect('warm-p-rating', pRat);
     setSelect('warm-k-rating', kRat);
+    // Default warm species to bermuda when grass type is warm; leave as-is for cool carry-over
     if (crop === 'warm') setSelect('warm-species', 'bermuda');
-    else if (crop === 'cool') setSelect('warm-species', 'bermuda');
 
     // Lime tab
     if (areaSize) setInput('lime-lawn-size', areaSize); else clearInput('lime-lawn-size');
@@ -3260,7 +3513,9 @@ function carryOverToCalculators() {
   // Build success bar
   var destBtns = '';
   if (isGarden) {
-    destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'garden\')">&#8599; Vegetable &amp; Flower Gardens Calculator</button>';
+    destBtns = flowerTypes.indexOf(crop) >= 0
+      ? '<button class="st-goto-btn" onclick="switchToTab(\'flower\')">&#8599; Flower Garden Calculator</button>'
+      : '<button class="st-goto-btn" onclick="switchToTab(\'garden\')">&#8599; Vegetable Garden Calculator</button>';
   } else {
     destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'cool\')">&#8599; Cool-Season Calculator</button>'
       + '<button class="st-goto-btn" onclick="switchToTab(\'warm\')">&#8599; Warm-Season Calculator</button>'
@@ -3271,16 +3526,21 @@ function carryOverToCalculators() {
   var areaStr   = areaSize ? areaSize + ' sq. ft.' : 'not entered';
   var limeStr   = limeRec  ? limeRec + ' lbs/1,000 sq. ft.' + (limeTyp ? ' (' + limeTyp + ')' : '') : 'none';
   var grassStr  = cropLabel ? cropLabel : 'not specified';
+  var statusStr = lawnStatus === 'new' ? 'New lawn (pre-seeding)' : 'Existing lawn';
+  var newLawnNote = (!isGarden && lawnStatus === 'new')
+    ? '<div style="margin-top:8px;font-size:0.8rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;">&#9888; <strong>New lawn:</strong> Incorporate lime and fertilizer before seeding or sodding. Use a starter fertilizer (higher P) at establishment. Verify your N rate is appropriate for a new seeding.</div>'
+    : '';
 
   var desc = isGarden
     ? 'Garden type: ' + (crop || 'not set') + ' &nbsp;|&nbsp; P: ' + (pRat||'–') + ' &nbsp;|&nbsp; K: ' + (kRat||'–') + ' &nbsp;|&nbsp; Lime: ' + limeStr + ' &nbsp;|&nbsp; Area: ' + areaStr
-    : 'Area: ' + areaStr + ' &nbsp;|&nbsp; P: ' + (pRat||'–') + ' &nbsp;|&nbsp; K: ' + (kRat||'–') + ' &nbsp;|&nbsp; Lime: ' + limeStr + ' &nbsp;|&nbsp; Grass: ' + grassStr;
+    : 'Area: ' + areaStr + ' &nbsp;|&nbsp; P: ' + (pRat||'–') + ' &nbsp;|&nbsp; K: ' + (kRat||'–') + ' &nbsp;|&nbsp; Lime: ' + limeStr + ' &nbsp;|&nbsp; Grass: ' + grassStr + ' &nbsp;|&nbsp; Status: ' + statusStr;
 
   var bar = document.getElementById('st-carryover-bar');
   if (bar) {
     bar.innerHTML = '<div class="st-carryover-box st-carryover-done">'
       + '<div class="st-carryover-title">&#10003; Carried over successfully!</div>'
       + '<p class="st-carryover-desc">' + desc + '</p>'
+      + newLawnNote
       + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">' + destBtns + '</div></div>';
   }
 }
@@ -3295,6 +3555,7 @@ function switchToTab(tab) {
   if (tab === 'warm') { calcWarm(); var w = document.getElementById('warm-fert-chooser'); if (w && !w.querySelector('.fert-chooser')) w.outerHTML = fertChooserHTML('warm'); }
   if (tab === 'lime') calcLime();
   if (tab === 'garden') calcGarden();
+  if (tab === 'flower') calcFlower();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -3462,6 +3723,30 @@ function updateCropGuidancePanel() {
       sidedress: 'Sidedress leafy and heavy-feeding crops about 1 month after planting. Hold off on sidedressing tomatoes, peppers, and beans until fruit or pod set.',
       caution: 'Plan crop placement to avoid applying the wrong fertilizer rate to neighboring crops with very different needs.',
       source: 'Note 19, 426-323'
+    },
+    'annual': {
+      label: 'Annual flowers',
+      feeding: 'Light feeder — 0.10 lbs N per 100 sq. ft. at planting.',
+      preplant: 'Incorporate a balanced fertilizer before planting each season. Compost or organic matter can often supply sufficient nutrients for low-demand annuals.',
+      sidedress: 'A light mid-season application at half the preplant rate may benefit heavy bloomers (petunias, impatiens, marigolds) if growth is weak or pale. Not required if soil is fertile.',
+      caution: 'Excess nitrogen promotes lush foliage at the expense of flowers — a critical distinction for flowering plants. Apply conservatively.',
+      source: 'VCE Note 19, UMD Extension'
+    },
+    'perennial': {
+      label: 'Perennial flowers',
+      feeding: 'Light feeder — 0.10 lbs N per 100 sq. ft. in early spring only.',
+      preplant: 'For new beds: incorporate fertilizer and lime before planting. For established beds: apply in early spring as new growth emerges.',
+      sidedress: 'Established perennials rarely need sidedressing. Monitor foliage color — sidedress only if growth is noticeably weak mid-season. Compost topdressing is often sufficient instead of synthetic N.',
+      caution: 'Excess nitrogen promotes vegetative growth over flowering and can increase disease susceptibility in perennials. Late-season N encourages tender growth vulnerable to frost damage.',
+      source: 'VCE Note 19, UMD Extension, Rutgers NJAES'
+    },
+    'rose': {
+      label: 'Roses',
+      feeding: 'Medium feeder — 0.20 lbs N per 100 sq. ft. monthly March through August.',
+      preplant: 'Incorporate balanced fertilizer and lime before planting. Roses prefer slightly acid soil (pH 6.0–6.5).',
+      sidedress: 'Apply after each bloom flush — typically after the first flush (late May–June) and again after the second (July–August). Use a balanced or rose-specific fertilizer.',
+      caution: 'Stop all nitrogen applications by August 15. Late-season N produces tender new growth that is highly susceptible to frost damage and disease.',
+      source: 'VCE Note 19'
     }
   };
 
@@ -3499,13 +3784,27 @@ function onCropTypeChange() {
   }
   updateCropGuidancePanel();
 
+  // Auto-sync gdn-type when a flower key is selected
+  var flowerKeys = ['annual','perennial','rose'];
+  var gdnTypeEl = document.getElementById('gdn-type');
+  if (gdnTypeEl && flowerKeys.indexOf(cropKey) >= 0) {
+    if (!gdnTypeEl.value || gdnTypeEl.value === 'vegetable' || gdnTypeEl.value === 'mixed') {
+      gdnTypeEl.value = cropKey;
+    }
+  }
+
   if (cropKey && CROP_FEEDING_LEVELS[cropKey]) {
     var crop = CROP_FEEDING_LEVELS[cropKey];
     var lvl  = CROP_LEVEL_LABELS[crop.level];
     var nVal = crop.nPer100;
+    var isFlower = flowerKeys.indexOf(cropKey) >= 0;
+    var phSource = isFlower ? 'VCE Note 19' : 'Mid-Atlantic Veg Guide';
+    var stepNote = isFlower
+      ? 'Enter your soil test N recommendation in step 4 \u2014 application plan will be calculated automatically.'
+      : 'Enter your soil test N recommendation in step 4 \u2014 sidedress steps will be calculated automatically.';
     hintEl.innerHTML = '<strong style="color:' + lvl.color + ';">' + lvl.label + '</strong> &mdash; '
-      + crop.label + '. Target soil pH: <strong>' + crop.pHTarget + '</strong> (Mid-Atlantic Veg Guide). '
-      + 'Enter your soil test N recommendation in step 4 \u2014 sidedress steps will be calculated automatically.';
+      + crop.label + '. Target soil pH: <strong>' + crop.pHTarget + '</strong> (' + phSource + '). '
+      + stepNote;
     hintEl.style.display = 'block';
   } else {
     hintEl.style.display = 'none';
@@ -3524,6 +3823,15 @@ function toggleAboutCropPubs() {
 function toggleAboutSuppSources() {
   var btn  = document.getElementById('about-supp-sources-btn');
   var body = document.getElementById('about-supp-sources-body');
+  if (!btn || !body) return;
+  var open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  btn.classList.toggle('open', !open);
+}
+
+function toggleAboutFlowerSources() {
+  var btn  = document.getElementById('about-flower-sources-btn');
+  var body = document.getElementById('about-flower-sources-body');
   if (!btn || !body) return;
   var open = body.classList.contains('open');
   body.classList.toggle('open', !open);
@@ -3616,6 +3924,10 @@ var CROP_FEEDING_LEVELS = {
   'root':      { level:'light', nPer100:0.10, pHTarget:6.5, label:'Root crops (beets, radishes, turnips)' },
   // Mixed bed — medium vegetable rate; pH 6.5 is standard VCE garden target (SPES-687P, Note 19)
   'mixed':     { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Mixed bed (vegetables &amp; flowers)' },
+  // Flowers — VCE Note 19 (SPES-687P), UMD Extension, Rutgers NJAES
+  'annual':    { level:'light', nPer100:0.10, pHTarget:6.5, label:'Annual flowers' },
+  'perennial': { level:'light', nPer100:0.10, pHTarget:6.5, label:'Perennial flowers' },
+  'rose':      { level:'medium', nPer100:0.20, pHTarget:6.5, label:'Roses' },
 };
 
 var CROP_LEVEL_LABELS = {
@@ -3648,6 +3960,10 @@ var SIDEDRESS_GUIDE = {
   'root':      { apps:[{n:0.5,trigger:'4\u20136 weeks after planting or when 4\u20136 inches tall'}], note:'Beets and parsnips benefit from sidedress; radishes and turnips generally do not. <em>(VCE 426-422, Rutgers FS626)</em>' },
   'asparagus': { apps:[{n:0.75,trigger:'after fern growth begins in spring'}], note:'Apply along the row. <em>(Rutgers FS626)</em>' },
   'mixed':     { apps:[], note:'Mixed beds have no single sidedress schedule \u2014 fertilizer needs vary by crop. Sidedress leafy greens and heavy feeders (tomatoes, corn, peppers) about 3\u20134 weeks after planting or transplanting. Hold off on beans and peas \u2014 they fix their own nitrogen. Use 1 lb N per 1,000 sq. ft. per application for heavy feeders; 0.5\u20130.75 lbs for medium feeders. Monitor plant color before applying. <em>(VCE 426-323, Rutgers FS626, Clemson HGIC)</em>' },
+  // Flowers — no standard crop sidedress; mid-season application for annuals only
+  'annual':    { apps:[{n:0.5, trigger:'mid-season, when plants are in full growth but before peak bloom \u2014 apply at half the preplant rate'}], note:'\u26a0\ufe0f Excess nitrogen promotes foliage at the expense of flowers. Apply conservatively and only if growth is weak or color is pale. <em>(VCE Note 19, UMD Extension)</em>' },
+  'perennial': { apps:[], note:'Established perennials rarely need sidedressing. One spring application is usually sufficient. Monitor foliage color \u2014 sidedress only if growth is noticeably weak mid-season. <em>(VCE Note 19, UMD Extension, Rutgers NJAES)</em>' },
+  'rose':      { apps:[{n:1.0, trigger:'after first bloom flush (typically late May\u2013June)'},{n:1.0, trigger:'after second bloom flush (typically July\u2013August)'}], note:'Roses are heavier feeders than other flowers. Repeat applications support continuous bloom. Stop all N by August 15 to avoid tender growth before frost. <em>(VCE Note 19)</em>' },
 };
 
 // Default sidedress for crops not in SIDEDRESS_GUIDE
@@ -3827,6 +4143,13 @@ function calcGarden() {
   var vegSection = document.getElementById('gdn-veg-guidance-section');
   if (vegSection) {
     vegSection.style.display = (gardenType === 'vegetable' || gardenType === 'mixed') ? '' : 'none';
+  }
+
+  // Flower excess-N caution — shown for flower bed types
+  var isFlowerBed = (gardenType === 'annual' || gardenType === 'perennial' || gardenType === 'rose');
+  var flowerCautionEl = document.getElementById('gdn-flower-caution');
+  if (flowerCautionEl) {
+    flowerCautionEl.style.display = isFlowerBed ? '' : 'none';
   }
 
   var resultsEl = document.getElementById('gdn-results');
@@ -4049,11 +4372,305 @@ function calcGarden() {
         + '<li><span class="timing-num">1</span><span><strong>Early spring:</strong> Apply fertilizer as new growth emerges. Avoid late-season N applications that promote tender growth before frost.</span></li>'
         + '<li><span class="timing-num">2</span><span><strong>Lime:</strong> Apply lime to the soil surface in fall or early spring; topdress carefully around established crowns.</span></li>'
         + '<li><span class="timing-num">&#9888;</span><span><strong>Caution:</strong> Avoid excessive fertilizer — promotes vegetative growth at the expense of flowers. <em>(Note 19)</em></span></li>'
-        + '<li><span class="timing-num">&#127826;</span><span><strong>Roses:</strong> Repeat the basic fertilizer application each month from March through August to promote continuous flower development. <em>(Note 19)</em></span></li>'
+        + '</ul>';
+    } else if (gardenType === 'rose') {
+      timingHtml = '<ul class="timing-list">'
+        + '<li><span class="timing-num">1</span><span><strong>March (early spring):</strong> First application as growth resumes. Incorporate lime if needed at this time.</span></li>'
+        + '<li><span class="timing-num">2</span><span><strong>After each bloom flush:</strong> Apply after the first flush (late May–June) and again after the second (July–August). Use a balanced or rose-specific fertilizer.</span></li>'
+        + '<li><span class="timing-num">&#9940;</span><span><strong>Stop by August 15:</strong> No nitrogen after mid-August. Late-season N produces tender growth highly susceptible to frost damage and disease. <em>(VCE Note 19)</em></span></li>'
         + '</ul>';
     }
   }
   timingEl.innerHTML = timingHtml || '<p style="color:var(--slate-light);font-size:0.875rem;">Select garden type to see timing guidance.</p>';
+}
+
+// ===== FLOWER CALCULATOR =====
+
+var flowerSizeMode = 'rect';
+var flowerFertMode = 'npk';
+
+// Default N rates per flower type (lbs per 100 sq. ft.) when no soil test N is entered
+// Sources: VCE Note 19 (SPES-687P); UMD Extension Care of Annuals and Perennials;
+//          Rutgers NJAES FS1220 (bulbs); NC State Extension bulb trials (9-9-6 @ 4 lbs/100 sq. ft.)
+var FLOWER_DEFAULTS = {
+  'annual':    { nPer100: 0.10, label: 'Annual Flower Bed',        pHTarget: 6.5,
+    note: '0.10 lbs N per 100 sq. ft. preplant. A light mid-season application at half rate benefits heavy bloomers (petunias, impatiens, marigolds). <em>(VCE Note 19; UMD Extension)</em>' },
+  'perennial': { nPer100: 0.10, label: 'Perennial Flower Bed',     pHTarget: 6.5,
+    note: '0.10 lbs N per 100 sq. ft. in early spring only. Established perennials rarely need more — compost topdressing is often sufficient. Repeat mid-summer only if growth is weak or foliage is pale. <em>(VCE Note 19; UMD Extension; Rutgers NJAES)</em>' },
+  'rose':      { nPer100: 0.20, label: 'Rose Bed',                 pHTarget: 6.5,
+    note: '0.20 lbs N per 100 sq. ft. monthly March through August. Roses are heavier feeders than other flowers; monthly applications support continuous bloom. Stop all N by August 15 to prevent frost-susceptible tender growth. <em>(VCE Note 19)</em>' },
+  'bulb':      { nPer100: 0.13, label: 'Spring-Flowering Bulbs',   pHTarget: 6.5,
+    note: 'Approximately 0.13 lbs N per 100 sq. ft. (equivalent to 4 lbs of 9-9-6 Bulb Booster per 100 sq. ft.). Apply slow-release fertilizer at planting in fall, then again when shoots emerge in spring. <strong>Never fertilize after flowering</strong> — this encourages bulb rot and disease. Bone meal alone is insufficient; nitrogen is the primary nutrient need. <em>(NC State Extension spring bulb trials; Rutgers NJAES FS1220; UMD Extension)</em>' }
+};
+
+// Flower-specific sidedress / application plan
+// Sources noted inline
+var FLOWER_APP_PLAN = {
+  'annual': [
+    { step: 'Preplant', when: 'Before planting each season — broadcast and incorporate 4–6 inches', note: '' },
+    { step: 'Mid-season (optional)', when: 'When plants are in full growth, before peak bloom — apply at half the preplant rate', note: 'Only if growth is weak or color is pale. Wash fertilizer off foliage after application. <em>(VCE Note 19; UMD Extension)</em>' }
+  ],
+  'perennial': [
+    { step: 'Early spring', when: 'As new growth emerges — apply around plants and water in', note: 'Avoid late-season N applications that promote tender growth before frost. Compost topdressing (1 inch) may substitute for fertilizer in fertile soils. <em>(VCE Note 19; UMD Extension)</em>' }
+  ],
+  'rose': [
+    { step: 'March (first application)', when: 'As growth resumes in early spring', note: '' },
+    { step: 'After each bloom flush', when: 'After the first flush (late May–June) and after the second (July–August)', note: 'Use a balanced or rose-specific fertilizer. <em>(VCE Note 19)</em>' },
+    { step: 'Stop by August 15', when: 'No nitrogen after mid-August', note: 'Late-season N produces tender growth highly susceptible to frost and disease. <em>(VCE Note 19)</em>' }
+  ],
+  'bulb': [
+    { step: 'At planting (fall)', when: 'Incorporate slow-release fertilizer at planting depth', note: 'Slow-release complete fertilizer (e.g. 9-9-6 or 5-10-10) incorporated at the time of planting. Nitrogen is the primary nutrient need — bone meal alone is insufficient. <em>(NC State Extension; Rutgers NJAES FS1220)</em>' },
+    { step: 'At emergence (spring)', when: 'When shoots first emerge, before leaves open', note: 'Apply at same rate as planting application. This carries the bulb through flowering and fuels bulb-rebuilding. <em>(NC State Extension)</em>' },
+    { step: 'Stop after flowering', when: 'Do NOT fertilize after blooms open or fade', note: 'Post-bloom fertilization encourages bulb rot and may shorten flower life. Allow foliage to die back naturally to recharge bulbs. <em>(Rutgers NJAES FS1220; NC State Extension)</em>' }
+  ]
+};
+
+function setFlowerSizeMode(mode) {
+  flowerSizeMode = mode;
+  document.getElementById('flr-size-mode-rect').classList.toggle('active', mode === 'rect');
+  document.getElementById('flr-size-mode-area').classList.toggle('active', mode === 'area');
+  document.getElementById('flr-size-rect').style.display = mode === 'rect' ? '' : 'none';
+  document.getElementById('flr-size-area').style.display = mode === 'area' ? '' : 'none';
+  calcFlower();
+}
+
+function setFlowerFertMode(mode) {
+  flowerFertMode = mode;
+  document.getElementById('flr-fert-mode-npk').classList.toggle('active', mode === 'npk');
+  document.getElementById('flr-fert-mode-product').classList.toggle('active', mode === 'product');
+  document.getElementById('flr-fert-npk').style.display = mode === 'npk' ? '' : 'none';
+  document.getElementById('flr-fert-product').style.display = mode === 'product' ? '' : 'none';
+  calcFlower();
+}
+
+function onFlowerProductSelect() {
+  var key = document.getElementById('flr-product-select').value;
+  var noteEl = document.getElementById('flr-product-note');
+  if (key && GARDEN_PRODUCTS[key]) {
+    var p = GARDEN_PRODUCTS[key];
+    noteEl.innerHTML = '<span style="color:var(--green-mid);font-weight:600;">' + p.name + '</span> &mdash; '
+      + p.npk[0] + '% N / ' + p.npk[1] + '% P / ' + p.npk[2] + '% K';
+    setFlowerFertMode('product');
+  } else {
+    noteEl.innerHTML = '';
+  }
+  calcFlower();
+}
+
+function calcFlowerDimensions() {
+  var l = parseFloat(document.getElementById('flr-length').value) || 0;
+  var w = parseFloat(document.getElementById('flr-width').value) || 0;
+  var area = l > 0 && w > 0 ? l * w : 0;
+  var disp = document.getElementById('flr-area-display');
+  if (disp) disp.textContent = area > 0 ? '= ' + area + ' sq. ft.' : '\u2014';
+  calcFlower();
+}
+
+function calcFlower() {
+  var flowerType = document.getElementById('flr-type').value;
+  var defaults   = flowerType ? FLOWER_DEFAULTS[flowerType] : null;
+
+  // Determine report type for unit conversion
+  var isWaypointGarden = (document.getElementById('st-report-type') &&
+    document.getElementById('st-report-type').value === 'waypoint-garden');
+
+  // Update labels
+  var nLabel = document.getElementById('flr-n-rec-label');
+  var lLabel = document.getElementById('flr-lime-rec-label');
+  var nHint  = document.getElementById('flr-n-rec-hint');
+  var lHint  = document.getElementById('flr-lime-rec-hint');
+  if (isWaypointGarden) {
+    if (nLabel) nLabel.textContent = 'Nitrogen recommendation from your report (lbs per 1,000 sq. ft.)?';
+    if (lLabel) lLabel.textContent = 'Lime recommendation from your report (lbs per 1,000 sq. ft.)?';
+    if (nHint)  nHint.textContent  = 'Enter the N figure from your Waypoint report exactly as shown. Waypoint reports N in lbs/1,000 sq. ft. \u2014 converted automatically. Leave blank to use the research-based default.';
+    if (lHint)  lHint.textContent  = 'Enter directly from your Waypoint report. Waypoint reports lime in lbs/1,000 sq. ft. \u2014 converted automatically.';
+  } else {
+    if (nLabel) nLabel.textContent = 'Nitrogen recommendation from your report (lbs per 100 sq. ft.)?';
+    if (lLabel) lLabel.textContent = 'Lime recommendation from your report (lbs per 100 sq. ft.)?';
+    if (nHint)  nHint.textContent  = 'Enter the N figure from your VCE report, or leave blank to use the research-based default for your flower type. VCE reports: lbs/100 sq. ft.';
+    if (lHint)  lHint.textContent  = 'Leave blank if no lime was recommended. VCE reports garden lime in lbs/100 sq. ft.';
+  }
+
+  // Show type hint
+  var hintEl = document.getElementById('flr-type-hint');
+  if (hintEl && defaults) {
+    hintEl.innerHTML = '<strong style="color:var(--green-deep);">' + defaults.label + '</strong><br>' + defaults.note;
+    hintEl.style.display = 'block';
+  } else if (hintEl) {
+    hintEl.style.display = 'none';
+  }
+
+  // Get N rec — fall back to default if blank
+  var nRecRaw = parseFloat(document.getElementById('flr-n-rec').value);
+  var usingDefault = isNaN(nRecRaw) || nRecRaw === 0;
+  var nRec = usingDefault
+    ? (defaults ? defaults.nPer100 : 0)
+    : (nRecRaw / (isWaypointGarden ? 10 : 1));
+
+  var limeRec = (parseFloat(document.getElementById('flr-lime-rec').value) || 0) / (isWaypointGarden ? 10 : 1);
+  var pRating = document.getElementById('flr-p-rating').value;
+  var kRating = document.getElementById('flr-k-rating').value;
+  var bedStatus = document.getElementById('flr-bed-status').value;
+
+  // Area
+  var area = 0;
+  if (flowerSizeMode === 'rect') {
+    var l = parseFloat(document.getElementById('flr-length').value) || 0;
+    var w = parseFloat(document.getElementById('flr-width').value) || 0;
+    area = l * w;
+  } else {
+    area = parseFloat(document.getElementById('flr-area-direct').value) || 0;
+  }
+
+  // Fertilizer
+  var fertN = 0, fertP = 0, fertK = 0, productKey = '', cupsPerLb = 0, isOrganic = false;
+  if (flowerFertMode === 'product') {
+    productKey = document.getElementById('flr-product-select').value;
+    if (productKey && GARDEN_PRODUCTS[productKey]) {
+      var pd = GARDEN_PRODUCTS[productKey];
+      fertN = pd.npk[0]; fertP = pd.npk[1]; fertK = pd.npk[2];
+      cupsPerLb = pd.cupsPerLb; isOrganic = pd.organic;
+    }
+  } else {
+    fertN = parseFloat(document.getElementById('flr-fert-n').value) || 0;
+    fertP = parseFloat(document.getElementById('flr-fert-p').value) || 0;
+    fertK = parseFloat(document.getElementById('flr-fert-k').value) || 0;
+    cupsPerLb = fertN > 30 ? 2.5 : 1.75;
+  }
+
+  var resultsEl = document.getElementById('flr-results');
+  var timingEl  = document.getElementById('flr-timing');
+
+  if (!flowerType) {
+    resultsEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Select a flower type above to see recommendations.</p>';
+    timingEl.innerHTML  = '<p style="color:var(--slate-light);font-size:0.875rem;">Select flower type to see timing guidance.</p>';
+    return;
+  }
+  if (!area || area <= 0) {
+    resultsEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your bed dimensions or area above to see recommendations.</p>';
+    return;
+  }
+
+  var hundredths = area / 100;
+  var html = '';
+
+  // Default-rate notice
+  if (usingDefault && defaults) {
+    html += '<div style="background:#e8f5e9;border:1px solid var(--green-light);border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:0.82rem;">'
+      + '&#127807; <strong>Using research-based default:</strong> No soil test N entered \u2014 using <strong>'
+      + defaults.nPer100 + ' lbs N per 100 sq. ft.</strong> for ' + defaults.label
+      + '. For a precise recommendation, submit a soil test to VCE or Waypoint Analytical and enter the result in step 3.'
+      + '</div>';
+  }
+
+  // Fertilizer quantity rows
+  if (nRec > 0 && fertN > 0) {
+    var npct = fertN / 100;
+    var lbsPerHundred = nRec / npct;
+    var lbsTotal = lbsPerHundred * hundredths;
+    var prod = productKey ? GARDEN_PRODUCTS[productKey] : null;
+    var cpl  = cupsPerLb || (prod ? prod.cupsPerLb : 0);
+    var totalVol = cpl ? fmtMeasure(lbsTotal, cpl) : null;
+
+    html += '<div class="result-row"><div class="result-label">Preplant fertilizer for your bed (' + area + ' sq. ft.)</div>'
+      + '<div class="result-value large"><strong>' + fmt(lbsTotal, 2) + ' lbs</strong>'
+      + (totalVol ? ' &asymp; ' + totalVol : '') + '</div></div>';
+    html += '<div class="result-row"><div class="result-label">Rate per 100 sq. ft.</div>'
+      + '<div class="result-value">' + fmt(lbsPerHundred, 2) + ' lbs'
+      + (cpl ? ' &asymp; ' + (fmtMeasure(lbsPerHundred, cpl) || '') : '')
+      + (isOrganic ? ' <span style="font-size:0.72rem;color:var(--slate-light);">(volume estimate)</span>' : '') + '</div></div>';
+
+    // Application plan table
+    var plan = FLOWER_APP_PLAN[flowerType] || [];
+    if (plan.length > 0) {
+      html += '<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:12px;">';
+      html += '<div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin-bottom:6px;">&#128203; Application Plan</div>';
+      if (usingDefault) {
+        html += '<p style="font-size:0.78rem;color:var(--slate-mid);margin-bottom:8px;">Amounts below use the research-based default rate. Soil test report amounts may differ \u2014 use the step 3 field to override.</p>';
+      }
+      html += '<table class="auto-plan-table"><thead><tr><th>Step</th><th>When</th><th>Amount for your bed</th></tr></thead><tbody>';
+      var stepIdx = 0;
+      plan.forEach(function(app) {
+        // Bulb stop-after-flowering step has no fertilizer amount — it's a prohibition
+        var isBulbStop = (flowerType === 'bulb' && app.step === 'Stop after flowering');
+        var amtCell = isBulbStop
+          ? '<td><strong style="color:var(--red);">&#9940; No fertilizer</strong></td>'
+          : '<td><strong>' + fmt(lbsTotal, 2) + ' lbs</strong>' + (totalVol ? ' &asymp; <strong>' + totalVol + '</strong>' : '') + '</td>';
+        // Rose: last step is also a prohibition
+        var isRoseStop = (flowerType === 'rose' && app.step === 'Stop by August 15');
+        if (isRoseStop) amtCell = '<td><strong style="color:var(--red);">&#9940; No fertilizer</strong></td>';
+        html += '<tr><td><strong>' + (stepIdx + 1) + ' \u2014 ' + app.step + '</strong></td>'
+          + '<td>' + app.when + (app.note ? '<br><span style="font-size:0.72rem;color:var(--slate-light);">' + app.note + '</span>' : '') + '</td>'
+          + amtCell + '</tr>';
+        stepIdx++;
+      });
+      html += '</tbody></table></div>';
+    }
+  } else if (nRec > 0 && fertN === 0) {
+    html += '<div class="result-row"><div class="result-label">Fertilizer needed</div><div class="result-value" style="color:var(--slate-light);">Enter fertilizer grade above (N-P-K) to calculate quantities</div></div>';
+  } else if (area > 0) {
+    html += '<div class="result-row"><div class="result-label">N recommendation</div><div class="result-value" style="color:var(--slate-light);">No default available — select flower type</div></div>';
+  }
+
+  // P/K flags
+  var pRat = WAYPOINT_TO_VCE[pRating] || pRating;
+  var kRat = WAYPOINT_TO_VCE[kRating] || kRating;
+  var pkHtml = '';
+  if (pRat && P_REC[pRat]) {
+    var pr = P_REC[pRat];
+    pkHtml += '<div class="rec-box ' + pr.cls + '" style="margin-top:8px;"><span class="rec-icon">' + pr.icon + '</span><span><strong>Phosphorus:</strong> ' + pr.msg + '</span></div>';
+  }
+  if (kRat && K_REC[kRat]) {
+    var kr = K_REC[kRat];
+    pkHtml += '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
+  }
+  if (pkHtml) html += '<div style="margin-top:12px;">' + pkHtml + '</div>';
+
+  // Lime
+  if (limeRec > 0) {
+    var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
+    var limeLbsTotal = limeRec * hundredths;
+    var limeAppsNeeded = Math.max(1, Math.ceil(limeRec / limeMaxPer));
+    var limeLbsPerApp  = limeLbsTotal / limeAppsNeeded;
+    html += '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-top:16px;">';
+    html += '<div style="font-weight:600;color:#7d5a00;margin-bottom:8px;">&#129704; Lime for Your Bed</div>';
+    html += '<div style="font-size:0.875rem;color:var(--slate-mid);">Total: <strong>' + fmt(limeLbsTotal, 1) + ' lbs</strong> in ' + limeAppsNeeded + ' application' + (limeAppsNeeded > 1 ? 's' : '') + ' of up to ' + limeMaxPer + ' lbs/100 sq. ft. (' + (bedStatus === 'preplant' ? 'preplant limit' : 'established bed limit') + '). <em>(VCE Note 19)</em></div>';
+    if (limeAppsNeeded > 1) {
+      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">' + fmt(limeLbsPerApp, 1) + ' lbs per application, spaced 1\u20136 months apart.</div>';
+    }
+    html += '</div>';
+  }
+
+  resultsEl.innerHTML = html || '<p style="color:var(--slate-light);font-size:0.875rem;">Enter nitrogen recommendation and fertilizer grade to see quantities.</p>';
+
+  // Timing
+  var FLOWER_TIMING = {
+    'annual':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>Preplant (spring):</strong> Incorporate fertilizer and lime before planting each season. <em>(VCE Note 19)</em></span></li>'
+      + '<li><span class="timing-num">2</span><span><strong>Mid-season (optional):</strong> A light additional application at half rate may benefit heavy bloomers (petunias, impatiens, marigolds). Apply before peak bloom and wash fertilizer off foliage immediately. <em>(VCE Note 19; UMD Extension)</em></span></li>'
+      + '<li><span class="timing-num">&#9888;</span><span><strong>Caution:</strong> Excess nitrogen promotes foliage at the expense of flowers. Apply conservatively. <em>(VCE Note 19; UMD Extension)</em></span></li>'
+      + '</ul>',
+    'perennial':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>Early spring:</strong> Apply fertilizer as new growth emerges. For established beds, rake back mulch, apply 1 inch of compost, then add fertilizer if needed. <em>(VCE Note 19; UMD Extension)</em></span></li>'
+      + '<li><span class="timing-num">2</span><span><strong>Lime:</strong> Apply to soil surface in fall or early spring; topdress carefully around established crowns. <em>(VCE Note 19)</em></span></li>'
+      + '<li><span class="timing-num">&#9888;</span><span><strong>Caution:</strong> Avoid late-season nitrogen applications — they promote tender frost-susceptible growth. For late summer/fall bloomers, a light mid-summer application is appropriate. <em>(UMD Extension)</em></span></li>'
+      + '</ul>',
+    'rose':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>March (early spring):</strong> First application as growth resumes. Incorporate lime if needed at this time. <em>(VCE Note 19)</em></span></li>'
+      + '<li><span class="timing-num">2</span><span><strong>After each bloom flush:</strong> Apply after the first flush (late May\u2013June) and again after the second (July\u2013August). Use a balanced or rose-specific fertilizer. <em>(VCE Note 19)</em></span></li>'
+      + '<li><span class="timing-num">&#9940;</span><span><strong>Stop by August 15:</strong> No nitrogen after mid-August. Late-season N produces tender growth highly susceptible to frost damage and disease. <em>(VCE Note 19)</em></span></li>'
+      + '</ul>',
+    'bulb':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>At planting (fall):</strong> Incorporate a slow-release complete fertilizer (e.g. 9-9-6 or 5-10-10) at planting depth. Nitrogen is the primary nutrient need \u2014 bone meal alone is insufficient. <em>(NC State Extension spring bulb trials; Rutgers NJAES FS1220)</em></span></li>'
+      + '<li><span class="timing-num">2</span><span><strong>At emergence (early spring):</strong> Apply at the same rate when shoots first emerge, before leaves fully open. This application carries bulbs through flowering and fuels bulb-rebuilding for next year. <em>(NC State Extension)</em></span></li>'
+      + '<li><span class="timing-num">&#9940;</span><span><strong>Stop after flowering \u2014 critical:</strong> Do NOT fertilize after blooms open or after flowering ends. Post-bloom N encourages bulb rot and disease, and may shorten flower life. Allow foliage to die back naturally. <em>(Rutgers NJAES FS1220; NC State Extension)</em></span></li>'
+      + '</ul>'
+  };
+  timingEl.innerHTML = FLOWER_TIMING[flowerType] || '<p style="color:var(--slate-light);font-size:0.875rem;">Select flower type to see timing guidance.</p>';
 }
 
 // ===== SAMPLE REPORT PRE-FILL =====

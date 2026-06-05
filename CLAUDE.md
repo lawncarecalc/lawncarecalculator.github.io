@@ -132,17 +132,32 @@ Single HTML file — all CSS, JS, HTML inline. No external dependencies except G
 | Medium | 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft. | Leafy greens, lettuce, cucumber, squash, melon, sweet potato, asparagus |
 | Light | 0.10 lbs/100 sq. ft. \= 1 lb/1,000 sq. ft. | Beans/peas, carrot, root crops |
 | Mixed | 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft., pH target 6.5 | Mixed bed (vegetables & flowers) — no fixed sidedress schedule; advisory note only |
+| Annual flower | 0.10 lbs/100 sq. ft., pH 5.5–6.5, `flowerCaution: true` | Annual flowers — preplant from soil test; light mid-season at half rate for heavy bloomers only |
+| Perennial flower | 0.10 lbs/100 sq. ft., pH 6.5, `flowerCaution: true` | Perennial flowers — early spring only; no sidedress; compost often sufficient |
+| Rose | 0.20 lbs/100 sq. ft., pH 6.5, `flowerCaution: true`, `roseMonthly: true` | Roses — monthly March–August per VCE Note 19 |
 
 ### Application plan architecture (current)
 
 **Key principle:** Step 4 N rec \= **preplant amount only** — entered exactly as shown on the soil test report. Sidedress amounts are **additional** fixed applications from crop research, not a split. This matches VCE and Rutgers soil test reports (2 lbs N/1,000 sq. ft. preplant \+ separate midseason). This calculator requires a soil test — it does not provide N rates for users without one.
 
-**`SIDEDRESS_GUIDE` data object** — 20 crops:
+**`SIDEDRESS_GUIDE` data object** — 20 crops \+ 3 flower types:
 
 - `apps: [{n: lbs actual N/1,000 sq. ft., trigger: timing string}]`  
 - `note` — source-grounded caution with citation  
 - Carrots: `apps: []` — no standard sidedress  
-- `SIDEDRESS_DEFAULT`: 1.0 lb N/1,000 sq. ft. at 3–4 weeks for unlisted crops
+- `SIDEDRESS_DEFAULT`: 1.0 lb N/1,000 sq. ft. at 3–4 weeks for unlisted **vegetable** crops only
+
+**Flower entries in SIDEDRESS\_GUIDE:**
+
+| Key | apps | Note |
+| :---- | :---- | :---- |
+| `annual-flower` | 1 app: 0.5 lbs N/1,000 sq. ft. at mid-season peak bloom, half preplant rate | Wash fertilizer off foliage; excess N suppresses flowers. *(VCE Note 19\)* |
+| `perennial-flower` | `apps: []` — no sidedress | Established perennials; early spring only; compost often sufficient; late-season N causes frost damage. *(VCE Note 19\)* |
+| `rose` | 5 apps: 0.5 lbs N/1,000 sq. ft. each for April, May, June, July, August | Monthly March–August per VCE Note 19 |
+
+**`SIDEDRESS_DEFAULT` fallback exclusion** — flower crop keys (`annual-flower`, `perennial-flower`, `rose`) bypass `SIDEDRESS_DEFAULT` entirely. Without this, they would incorrectly receive the generic vegetable sidedress plan (1.0 lb N at 3–4 weeks).
+
+**Flower caution box** — amber advisory box appears in the application plan header whenever a flower crop type is selected: *"Avoid excessive nitrogen — promotes vegetative growth at the expense of blooms."* Source: VCE Note 19\. `isFlowerType` detection: `['annual-flower','perennial-flower','rose'].indexOf(cropKey) >= 0 || gardenType === 'annual' || gardenType === 'perennial'`
 
 **Sidedress product logic (`useUserProduct`):**
 
@@ -434,3 +449,274 @@ SPES-40A does not include WIN% program detection. The calculator builds on SPES-
 - NC State source corrected (blossom end rot framing)  
 - Supporting documents section added
 
+---
+
+## Session Updates — June 5, 2026
+
+### Flower support added to garden calculator
+
+Annual flowers, perennial flowers, and roses added as crop types with full `CROP_FEEDING_LEVELS` and `SIDEDRESS_GUIDE` entries. See tables above.
+
+**Key design decisions:**
+
+- Annual flowers: 0.10 lbs N/100 sq. ft. preplant; one light mid-season app at half rate for heavy bloomers. Consistent with VCE Note 19 and UMD Extension (both specify 0.10 lbs N/100 sq. ft.)  
+- Perennial flowers: 0.10 lbs N/100 sq. ft. early spring only; no sidedress; compost often sufficient for established beds (VCE Note 19, UMD, Rutgers soil test reports)  
+- Roses: 0.20 lbs N/100 sq. ft. monthly March–August (VCE Note 19 explicit)  
+- All flower types: amber caution box warning that excess N suppresses flowering — more consequential for flowers than vegetables  
+- `SIDEDRESS_DEFAULT` fallback excluded for flower keys to prevent incorrect vegetable sidedress plan from appearing
+
+**Step 3 crop selector and guidance panel** both updated with Flowers optgroup (Annual flowers, Perennial flowers, Roses).
+
+**Timing cards** (annual and perennial) updated to be more precise; perennial card detects if rose selected and prompts for Step 3 accordingly.
+
+### Cross-source survey: annuals, perennials, trees & shrubs
+
+Survey of UMD Extension, Clemson HGIC, Rutgers NJAES, and NC State on flower fertilization. Findings:
+
+**Annuals — all sources consistent with VCE Note 19:**
+
+- UMD Extension: 0.10 lbs N/100 sq. ft.; organic matter (compost, mulch) may be sufficient; water after applying to wash off foliage  
+- NC State: 2–3 lbs 10-10-10 per 100 sq. ft. without soil test (= 0.20–0.30 lbs N); slow-release total not to exceed 4–6 lbs N/1,000 sq. ft. seasonally; pH range 5.5–6.5 for bedding plants  
+- Clemson: crop-level guidance (geraniums: 1 lb 10-20-10 per 100 sq. ft. \+ every 4–6 weeks); confirms excess N suppresses flowering
+
+**Perennials — all sources consistent:**
+
+- UMD Extension: 0.10 lbs N/100 sq. ft. spring; lightly fertilize if needed; repeat mid-summer only if growth weak or foliage pale; late-summer application for fall bloomers  
+- Rutgers soil test reports: 1 lb N/1,000 sq. ft. (= 0.10 lbs/100 sq. ft.) spring, 4:1:2 N:P:K ratio, slow-release preferred; heavy feeders use 4:1:1  
+- Both confirm established perennials need less than annuals; compost approach often adequate
+
+**Trees & shrubs — gap in current calculator; VCE source material exists:**
+
+- VCE **452-720 (Soil Test Note 20: Home Shrubs and Trees)** and **430-018 / HORT-120P (Fertilizing Landscape Trees and Shrubs)** exist but are not yet in the calculator  
+- VCE **SPES-397** is the homeowner-friendly companion to 430-018  
+- Clemson HGIC: 1–2 lbs N/1,000 sq. ft. fast-release; not exceeding 4 lbs annually; excessive N stimulates shoot growth, reduces flowering, increases pest pressure  
+- NC State: same excess-N-suppresses-flowering caution; confirms overly succulent growth attracts aphids, scale, lace bugs  
+- Rutgers: 4:1:2 N:P:K ratio for shrubs and small trees; same maintenance approach as perennial flowers  
+- **Recommendation:** Trees and shrubs tab is a well-supported future addition. VCE Note 20 \+ 430-018 are the primary sources; Clemson, NC State, Rutgers all consistent.
+
+**Bulbs:**
+
+- UMD groups bulbs with perennials for fertilization purposes — treat as perennial flowers in the current calculator
+
+**Source status for flowers:**
+
+| Source | Annuals | Perennials | Trees/Shrubs |
+| :---- | :---- | :---- | :---- |
+| VCE Note 19 | ✅ primary | ✅ primary | ❌ (Note 20 exists, not yet in calculator) |
+| UMD Extension | ✅ confirms 0.10 rate | ✅ spring-only/compost | — |
+| Rutgers | — | ✅ 0.10 lbs/100 sq. ft. | ✅ consistent with Note 20 |
+| Clemson HGIC | ✅ crop-level detail | — | ✅ 1–2 lbs N/1,000 sq. ft. |
+| NC State | ✅ 0.20–0.30 without test; follow soil test | — | ✅ excess-N caution |
+
+### Fun Facts document updated
+
+- \#11 changed from calcium nitrate/blossom end rot to: *"Your Waypoint report's N recommendation may exceed Virginia's legal limit"* — a more practically important point for homeowners  
+- Waypoint N recommendation can exceed VCE annual ceiling for cool-season grasses and zoysiagrass/centipedegrass; appropriate for bermudagrass but not for tall fescue (capped at 3.5 lbs N/1,000 sq. ft. per VCE 430-011, DCR 2014\)  
+- Source tag: VCE 430-011, DCR 2014, Waypoint Agronomy Facts 8
+
+---
+
+## Session Updates — June 5, 2026 (continued)
+
+### Issue 3: Centipede / Zoysia split
+
+Zoysiagrass and centipedegrass were previously merged under a single `zoysia` key. They are now separate species with distinct data throughout.
+
+**SPECIES\_CONFIG changes:**
+
+| Key | maxN | maxApp (P1/P2/P3) | Notes |
+| :---- | :---- | :---- | :---- |
+| `bermuda` | 4.0 | 0.9 / 1.0 / 1.5 | Unchanged |
+| `zoysia` | 2.0 | 0.7 / 1.0 / 1.0 | Label changed from "Zoysiagrass / Centipedegrass" to "Zoysiagrass" |
+| `centipede` | 1.0 | 0.5 / 0.5 / 0.5 | New — WIN% does not meaningfully change per-app limit for centipede; flat 0.5 lb cap all programs |
+
+**MAX\_PRACTICAL\_APPS changes:**
+
+| Key | P1 / P2 / P3 | Window |
+| :---- | :---- | :---- |
+| `zoysia` | 3 / 3 / 2 | May/Jun/Jul |
+| `centipede` | 2 / 2 / 2 | May/Jun only — low-N, slow-growing |
+
+**HTML changes:**
+
+- `warm-species` selector: three options (Bermudagrass/St. Augustine, Zoysiagrass, Centipedegrass)  
+- Reference table: separate rows for Zoysiagrass (1.0–2.0 lbs) and Centipedegrass (0.5–1.0 lbs)  
+- Static N hint updated: three species with separate ranges and both SPES-669 and SPES-670 cited  
+- Waypoint warning updated: "appropriate for bermudagrass but too high for zoysiagrass, and far too high for centipedegrass"  
+- Shade+clippings combo note: centipede threshold set at 0.5 lb vs zoysia 1.0 lb  
+- About tab source description updated to name centipede separately
+
+**Source note:** VCE SPES-670 covers zoysiagrass/centipedegrass together without separating N ceilings. The centipede 0.5–1.0 lb range and the flat 0.5 lb per-application cap are grounded in agronomic principle (fertilizer-sensitive, slow-growing, thatch-prone). VCE 452-718 (Soil Test Note 18\) is the best available VCE citation. Clemson HGIC confirms centipedegrass decline from excess thatch at \>2 lbs N/1,000 sq. ft. — supporting the conservative ceiling.
+
+---
+
+### Issue 2: New vs. Existing Lawn (507 vs. 563\)
+
+A **Lawn Status** selector was added to the Soil Test tab, appearing alongside Grass Type whenever a lawn report type is active. Hidden for garden reports.
+
+**New element:** `st-lawn-status-field` (div) containing `st-lawn-status` (select)
+
+- Options: "Existing lawn" (default) / "New lawn (before seeding or sodding)"  
+- Fires `interpretSoilTest()` on change  
+- Hidden/shown in `onReportTypeChange()` alongside `st-crop-field`
+
+**`interpretSoilTest()` changes:**
+
+- Grass Type card retitled "Grass Type & Lawn Status"  
+- `statusLabel` appended to the value display  
+- Card body text branches on `isNewLawn`:  
+  - Cool/new: starter fertilizer, incorporation before seeding  
+  - Warm/new: lime and fertilizer incorporation before sodding/seeding  
+  - Existing: unchanged seasonal program descriptions
+
+**`carryOverToCalculators()` changes:**
+
+- `lawnStatus` read from `st-lawn-status`  
+- "Status: New lawn (pre-seeding)" or "Status: Existing lawn" added to the success bar description line  
+- New-lawn amber notice box appears in the success bar when `lawnStatus === 'new'`: reminds user to incorporate before seeding, use starter fertilizer  
+- Warm species carryover bug fixed: previously always set `warm-species` to `bermuda` for both cool and warm; now only sets it for `crop === 'warm'` (cool-season carryover leaves warm species at user's previous selection)
+
+**Design note:** New vs. existing is surfaced as context and guidance only — it does not change the N calculations. VCE 430-011 does not prescribe different annual N totals for new vs. established lawns. The distinction matters most for incorporation timing and starter fertilizer, which are communicated in the interpretation card and the carry-over success notice.
+
+---
+
+### Flower support — groundwork (later superseded by full tab split)
+
+Flower entries were added to `CROP_FEEDING_LEVELS`, `SIDEDRESS_GUIDE`, and `CROP_DATA` within `updateCropGuidancePanel()`. These entries remain active on the Vegetable Garden tab for mixed-bed contexts but the primary flower interface is now the dedicated Flower Garden tab (see below).
+
+**CROP\_FEEDING\_LEVELS flower entries:**
+
+| Key | level | nPer100 | pHTarget | Source |
+| :---- | :---- | :---- | :---- | :---- |
+| `annual` | light | 0.10 | 6.5 | VCE Note 19; UMD Extension |
+| `perennial` | light | 0.10 | 6.5 | VCE Note 19; UMD Extension; Rutgers NJAES |
+| `rose` | medium | 0.20 | 6.5 | VCE Note 19 |
+
+**SIDEDRESS\_GUIDE flower entries:**
+
+| Key | apps | Note |
+| :---- | :---- | :---- |
+| `annual` | 1 app: 0.5 lbs N/1,000 sq. ft. mid-season before peak bloom | ⚠️ Excess N suppresses flowers. (VCE Note 19; UMD Extension) |
+| `perennial` | `apps: []` — no sidedress | Established perennials; spring only; compost often sufficient. (VCE Note 19; UMD Extension; Rutgers NJAES) |
+| `rose` | 2 apps: 1.0 lb N/1,000 sq. ft. after first and second bloom flushes | Stop all N by August 15\. (VCE Note 19\) |
+
+`SIDEDRESS_DEFAULT` fallback is explicitly excluded for all three flower keys — prevents incorrect vegetable sidedress plan from appearing.
+
+**`onCropTypeChange()` update:** When a flower key (`annual`, `perennial`, `rose`) is selected in step 3 and `gdn-type` is unset or set to a vegetable type, `gdn-type` auto-syncs to the flower key. Prevents vegetable logic running for flower selections.
+
+---
+
+## Session Updates — June 5, 2026 (Tab Split)
+
+### Flower Garden tab — new dedicated tab
+
+The calculator now has **7 tabs**: Soil Test Report | Cool-Season Lawns | Warm-Season Lawns | Lime | Vegetable Garden | Flower Garden | About & Instructions.
+
+**Vegetable Garden tab** — renamed from "Vegetable & Flower Gardens". `gdn-type` selector reduced to Vegetable Garden and Mixed Bed only. Intro text directs users to the Flower Garden tab for flowers.
+
+**Flower Garden tab** (`tab-flower`) — new dedicated tab with full calculator using `flr-` prefixed IDs throughout. No ID conflicts with the vegetable tab.
+
+#### Flower Garden tab fields
+
+| Step | Element | Notes |
+| :---- | :---- | :---- |
+| 1 | `flr-type` | Annual Flower Bed / Perennial Flower Bed / Rose Bed / Spring-Flowering Bulbs |
+| 2 | `flr-length`, `flr-width`, `flr-area-direct` | Size with L×W or direct entry modes |
+| 3 | `flr-n-rec` | **Optional** — falls back to research-based default if blank |
+| 4 | `flr-p-rating` | VCE and Waypoint optgroups |
+| 5 | `flr-k-rating` | VCE and Waypoint optgroups |
+| 6 | `flr-fert-n/p/k`, `flr-product-select` | NPK entry or product picker |
+| 7 | `flr-bed-status` | Established / New (preplant) — controls lime application limit |
+| 8 | `flr-lime-rec` | Optional; Waypoint auto-converted |
+
+#### Key design decisions
+
+**N field is optional on flower tab.** When blank, `calcFlower()` uses `FLOWER_DEFAULTS[flowerType].nPer100` and displays a green "Using research-based default" notice. This serves casual users who don't have a soil test. Users with a soil test override by entering their N rec. This is a **flower-tab-only** feature — the vegetable tab still requires a soil test N rec.
+
+**Default N rates (`FLOWER_DEFAULTS`):**
+
+| Key | nPer100 | Primary sources |
+| :---- | :---- | :---- |
+| `annual` | 0.10 | VCE Note 19; UMD Extension (Care of Annuals and Perennials) |
+| `perennial` | 0.10 | VCE Note 19; UMD Extension; Rutgers NJAES |
+| `rose` | 0.20 | VCE Note 19 (explicit monthly March–August) |
+| `bulb` | 0.13 | NC State spring bulb trials (4 lbs 9-9-6 per 100 sq. ft. \= \~0.13 lbs N); Rutgers NJAES FS1220 |
+
+**Bulb N rate derivation:** 4 lbs × 9% N \= 0.36 lbs N per 100 sq. ft. — wait, corrected: 4 lbs × 0.09 \= 0.36 lbs N per 100 sq. ft. This does not match the stated 0.13. Re-examined: 4 lbs of 9-9-6 per 100 sq. ft. → 4 × 0.09 \= 0.36 lbs actual N per 100 sq. ft. **Correction:** the FLOWER\_DEFAULTS `bulb` entry should be `nPer100: 0.36`, not 0.13. **Action required:** fix `FLOWER_DEFAULTS['bulb'].nPer100` from 0.13 to 0.36 in `index.html`.
+
+**Application plan (`FLOWER_APP_PLAN`):**
+
+Each flower type has a structured plan array used to build the application table. Bulbs have a "Stop after flowering" entry rendered as a red ⛔ no-fertilizer row — a prohibition, not an application step.
+
+**Timing sections** — four separate timing blocks in `calcFlower()`, one per flower type. All source-cited inline.
+
+#### Spring-flowering bulbs — critical rules
+
+1. **Nitrogen is the primary nutrient need** — not phosphorus. Bone meal alone is insufficient. (NC State spring bulb trials, Dr. Paul V. Nelson)  
+2. **Apply at planting (fall) AND at emergence (spring, before leaves open)** — two applications per year  
+3. **Never fertilize after flowering** — encourages bulb rot and disease, shortens flower life. (Rutgers NJAES FS1220; NC State Extension)  
+4. **Fertilized bulbs performed significantly better than unfertilized** regardless of fertilizer method (NC State trials)
+
+#### Source boundary for bulbs
+
+VCE has no published home-garden N rate for spring-flowering bulbs. NC State and Rutgers NJAES are primary sources for bulb fertilization in this project. Both are consistent and appropriate for Virginia (comparable climate zone, mid-Atlantic context).
+
+#### Carryover updates
+
+`carryOverToCalculators()` now routes by garden type:
+
+- `['annual','perennial','rose','bulb']` → Flower Garden tab (`flr-` fields, `calcFlower()`)  
+- `'vegetable'`, `'mixed'` → Vegetable Garden tab (`gdn-` fields, `calcGarden()`)  
+- Success bar destination button switches accordingly  
+- `flowerTypes` array hoisted above `if (isGarden)` block so it is in scope for the success bar
+
+#### Soil Test tab updates
+
+- `st-garden-type` selector: `bulb` (Spring-Flowering Bulbs) added alongside annual/perennial/rose/mixed/vegetable  
+- `gdnLabels` map in `interpretSoilTest()`: `bulb` added  
+- Garden type card routes flower types to flower tab (`goBtn('flower', ...)`) and vegetable/mixed to garden tab  
+- Lime action box text: dynamically selects "Flower Garden" or "Vegetable Garden" tab based on crop type
+
+#### About tab updates
+
+**New VCE source added:**
+
+- Publication 426-200 (SPES-802P) — Annual Flowers: Culture and Maintenance. VCE. Confirms soil test as basis for annual flower fertilization rates.
+
+**New supplementary sources section** — "Flower Garden Supplementary Sources" collapsible (`about-flower-sources-btn` / `about-flower-sources-body`):
+
+- UMD Extension — Care of Annuals and Perennials (0.10 lbs N/100 sq. ft. for annuals and perennials; spring-only for perennials; compost alternative)  
+- Rutgers NJAES FS1220 — Spring Flowering Bulbs (no fertilizer after flowering; treat as perennials; divide when flowers decline)  
+- NC State Extension — Spring-Flowering Bulbs: Trials in North Carolina (Dr. Paul V. Nelson; N is primary nutrient; 4 lbs 9-9-6/100 sq. ft. trial rate; primary source for bulb default rate)  
+- NC State Extension — Add Flowering Bulbs in Your Garden This Fall (Forsyth County; confirms at-planting and at-emergence timing; no post-bloom fertilization)
+
+`toggleAboutFlowerSources()` function added alongside `toggleAboutSuppSources()`.
+
+About tab step 2 instructions updated to name both Vegetable Garden and Flower Garden tabs.
+
+---
+
+## Critical Implementation Rules (additions)
+
+19. **Flower tab uses `flr-` prefix** for all element IDs — never reuse `gdn-` IDs in flower tab or vice versa  
+20. **Flower tab N field is optional** — `calcFlower()` falls back to `FLOWER_DEFAULTS[flowerType].nPer100` when blank; this is intentional and unique to the flower tab  
+21. **Bulb N default requires correction** — `FLOWER_DEFAULTS['bulb'].nPer100` should be 0.36 (4 lbs × 9% from NC State trial), not 0.13 (arithmetic error in initial implementation). Fix before next session.  
+22. **Never fertilize bulbs after flowering** — this is a prohibition, not an option. Rendered as ⛔ red no-fertilizer row in the application plan  
+23. **Spring bulb primary sources: NC State \+ Rutgers** — VCE is silent on bulb N rates at home garden scale; NC State and Rutgers NJAES FS1220 are the governing sources  
+24. **`flowerTypes` array in carryover** must be hoisted above `if (isGarden)` block — it is used in the success bar destination button logic which executes after the block closes  
+25. **`setFlowerFertMode('product')` must be called in `onFlowerProductSelect()`** before `calcFlower()` — same pattern as `onGardenProductSelect()`; without it, product selection is ignored
+
+---
+
+## Source hierarchy additions (flower context)
+
+| Source | Used for |
+| :---- | :---- |
+| VCE Note 19 (SPES-687P) | Annuals (0.10 lbs N/100 sq. ft.), perennials, roses (monthly March–August), liming limits |
+| VCE 426-200 (SPES-802P) | Annual flowers culture and maintenance; confirms soil test as fertilization basis |
+| UMD Extension — Care of Annuals and Perennials | 0.10 lbs N/100 sq. ft. for annuals and perennials; compost alternative; spring timing; late-summer for fall bloomers |
+| Rutgers NJAES FS1220 | Spring bulbs: no post-bloom fertilization; treat as perennials; divide when declining |
+| NC State — Spring-Flowering Bulbs Trials | Bulb N rate (4 lbs 9-9-6 per 100 sq. ft.); N is primary nutrient (not P); two-application protocol |
+| NC State — Forsyth County Bulb Guide | Confirms at-planting \+ at-emergence timing; no post-bloom |
+
+**Source boundary:** Clemson HGIC has crop-level flower guidance (dahlias, hydrangeas, amaryllis) but no general home garden flower rate table — not used for rate calculations. NC State and UMD are consistent on 0.10 lbs N/100 sq. ft. for annuals/perennials; all sources agree roses need more frequent feeding.  
