@@ -514,6 +514,7 @@ Survey of UMD Extension, Clemson HGIC, Rutgers NJAES, and NC State on flower fer
 - Waypoint N recommendation can exceed VCE annual ceiling for cool-season grasses and zoysiagrass/centipedegrass; appropriate for bermudagrass but not for tall fescue (capped at 3.5 lbs N/1,000 sq. ft. per VCE 430-011, DCR 2014\)  
 - Source tag: VCE 430-011, DCR 2014, Waypoint Agronomy Facts 8
 
+
 ---
 
 ## Session Updates — June 5, 2026 (continued)
@@ -522,7 +523,7 @@ Survey of UMD Extension, Clemson HGIC, Rutgers NJAES, and NC State on flower fer
 
 Zoysiagrass and centipedegrass were previously merged under a single `zoysia` key. They are now separate species with distinct data throughout.
 
-**SPECIES\_CONFIG changes:**
+**SPECIES_CONFIG changes:**
 
 | Key | maxN | maxApp (P1/P2/P3) | Notes |
 | :---- | :---- | :---- | :---- |
@@ -530,7 +531,7 @@ Zoysiagrass and centipedegrass were previously merged under a single `zoysia` ke
 | `zoysia` | 2.0 | 0.7 / 1.0 / 1.0 | Label changed from "Zoysiagrass / Centipedegrass" to "Zoysiagrass" |
 | `centipede` | 1.0 | 0.5 / 0.5 / 0.5 | New — WIN% does not meaningfully change per-app limit for centipede; flat 0.5 lb cap all programs |
 
-**MAX\_PRACTICAL\_APPS changes:**
+**MAX_PRACTICAL_APPS changes:**
 
 | Key | P1 / P2 / P3 | Window |
 | :---- | :---- | :---- |
@@ -538,42 +539,38 @@ Zoysiagrass and centipedegrass were previously merged under a single `zoysia` ke
 | `centipede` | 2 / 2 / 2 | May/Jun only — low-N, slow-growing |
 
 **HTML changes:**
-
-- `warm-species` selector: three options (Bermudagrass/St. Augustine, Zoysiagrass, Centipedegrass)  
-- Reference table: separate rows for Zoysiagrass (1.0–2.0 lbs) and Centipedegrass (0.5–1.0 lbs)  
-- Static N hint updated: three species with separate ranges and both SPES-669 and SPES-670 cited  
-- Waypoint warning updated: "appropriate for bermudagrass but too high for zoysiagrass, and far too high for centipedegrass"  
-- Shade+clippings combo note: centipede threshold set at 0.5 lb vs zoysia 1.0 lb  
+- `warm-species` selector: three options (Bermudagrass/St. Augustine, Zoysiagrass, Centipedegrass)
+- Reference table: separate rows for Zoysiagrass (1.0–2.0 lbs) and Centipedegrass (0.5–1.0 lbs)
+- Static N hint updated: three species with separate ranges and both SPES-669 and SPES-670 cited
+- Waypoint warning updated: "appropriate for bermudagrass but too high for zoysiagrass, and far too high for centipedegrass"
+- Shade+clippings combo note: centipede threshold set at 0.5 lb vs zoysia 1.0 lb
 - About tab source description updated to name centipede separately
 
-**Source note:** VCE SPES-670 covers zoysiagrass/centipedegrass together without separating N ceilings. The centipede 0.5–1.0 lb range and the flat 0.5 lb per-application cap are grounded in agronomic principle (fertilizer-sensitive, slow-growing, thatch-prone). VCE 452-718 (Soil Test Note 18\) is the best available VCE citation. Clemson HGIC confirms centipedegrass decline from excess thatch at \>2 lbs N/1,000 sq. ft. — supporting the conservative ceiling.
+**Source note:** VCE SPES-670 covers zoysiagrass/centipedegrass together without separating N ceilings. The centipede 0.5–1.0 lb range and the flat 0.5 lb per-application cap are grounded in agronomic principle (fertilizer-sensitive, slow-growing, thatch-prone). VCE 452-718 (Soil Test Note 18) is the best available VCE citation. Clemson HGIC confirms centipedegrass decline from excess thatch at >2 lbs N/1,000 sq. ft. — supporting the conservative ceiling.
 
 ---
 
-### Issue 2: New vs. Existing Lawn (507 vs. 563\)
+### Issue 2: New vs. Existing Lawn (507 vs. 563)
 
 A **Lawn Status** selector was added to the Soil Test tab, appearing alongside Grass Type whenever a lawn report type is active. Hidden for garden reports.
 
 **New element:** `st-lawn-status-field` (div) containing `st-lawn-status` (select)
-
-- Options: "Existing lawn" (default) / "New lawn (before seeding or sodding)"  
-- Fires `interpretSoilTest()` on change  
+- Options: "Existing lawn" (default) / "New lawn (before seeding or sodding)"
+- Fires `interpretSoilTest()` on change
 - Hidden/shown in `onReportTypeChange()` alongside `st-crop-field`
 
 **`interpretSoilTest()` changes:**
-
-- Grass Type card retitled "Grass Type & Lawn Status"  
-- `statusLabel` appended to the value display  
-- Card body text branches on `isNewLawn`:  
-  - Cool/new: starter fertilizer, incorporation before seeding  
-  - Warm/new: lime and fertilizer incorporation before sodding/seeding  
+- Grass Type card retitled "Grass Type & Lawn Status"
+- `statusLabel` appended to the value display
+- Card body text branches on `isNewLawn`:
+  - Cool/new: starter fertilizer, incorporation before seeding
+  - Warm/new: lime and fertilizer incorporation before sodding/seeding
   - Existing: unchanged seasonal program descriptions
 
 **`carryOverToCalculators()` changes:**
-
-- `lawnStatus` read from `st-lawn-status`  
-- "Status: New lawn (pre-seeding)" or "Status: Existing lawn" added to the success bar description line  
-- New-lawn amber notice box appears in the success bar when `lawnStatus === 'new'`: reminds user to incorporate before seeding, use starter fertilizer  
+- `lawnStatus` read from `st-lawn-status`
+- "Status: New lawn (pre-seeding)" or "Status: Existing lawn" added to the success bar description line
+- New-lawn amber notice box appears in the success bar when `lawnStatus === 'new'`: reminds user to incorporate before seeding, use starter fertilizer
 - Warm species carryover bug fixed: previously always set `warm-species` to `bermuda` for both cool and warm; now only sets it for `crop === 'warm'` (cool-season carryover leaves warm species at user's previous selection)
 
 **Design note:** New vs. existing is surfaced as context and guidance only — it does not change the N calculations. VCE 430-011 does not prescribe different annual N totals for new vs. established lawns. The distinction matters most for incorporation timing and starter fertilizer, which are communicated in the interpretation card and the carry-over success notice.
@@ -584,7 +581,7 @@ A **Lawn Status** selector was added to the Soil Test tab, appearing alongside G
 
 Flower entries were added to `CROP_FEEDING_LEVELS`, `SIDEDRESS_GUIDE`, and `CROP_DATA` within `updateCropGuidancePanel()`. These entries remain active on the Vegetable Garden tab for mixed-bed contexts but the primary flower interface is now the dedicated Flower Garden tab (see below).
 
-**CROP\_FEEDING\_LEVELS flower entries:**
+**CROP_FEEDING_LEVELS flower entries:**
 
 | Key | level | nPer100 | pHTarget | Source |
 | :---- | :---- | :---- | :---- | :---- |
@@ -592,13 +589,13 @@ Flower entries were added to `CROP_FEEDING_LEVELS`, `SIDEDRESS_GUIDE`, and `CROP
 | `perennial` | light | 0.10 | 6.5 | VCE Note 19; UMD Extension; Rutgers NJAES |
 | `rose` | medium | 0.20 | 6.5 | VCE Note 19 |
 
-**SIDEDRESS\_GUIDE flower entries:**
+**SIDEDRESS_GUIDE flower entries:**
 
 | Key | apps | Note |
 | :---- | :---- | :---- |
 | `annual` | 1 app: 0.5 lbs N/1,000 sq. ft. mid-season before peak bloom | ⚠️ Excess N suppresses flowers. (VCE Note 19; UMD Extension) |
 | `perennial` | `apps: []` — no sidedress | Established perennials; spring only; compost often sufficient. (VCE Note 19; UMD Extension; Rutgers NJAES) |
-| `rose` | 2 apps: 1.0 lb N/1,000 sq. ft. after first and second bloom flushes | Stop all N by August 15\. (VCE Note 19\) |
+| `rose` | 2 apps: 1.0 lb N/1,000 sq. ft. after first and second bloom flushes | Stop all N by August 15. (VCE Note 19) |
 
 `SIDEDRESS_DEFAULT` fallback is explicitly excluded for all three flower keys — prevents incorrect vegetable sidedress plan from appearing.
 
@@ -640,9 +637,9 @@ The calculator now has **7 tabs**: Soil Test Report | Cool-Season Lawns | Warm-S
 | `annual` | 0.10 | VCE Note 19; UMD Extension (Care of Annuals and Perennials) |
 | `perennial` | 0.10 | VCE Note 19; UMD Extension; Rutgers NJAES |
 | `rose` | 0.20 | VCE Note 19 (explicit monthly March–August) |
-| `bulb` | 0.13 | NC State spring bulb trials (4 lbs 9-9-6 per 100 sq. ft. \= \~0.13 lbs N); Rutgers NJAES FS1220 |
+| `bulb` | 0.13 | NC State spring bulb trials (4 lbs 9-9-6 per 100 sq. ft. = ~0.13 lbs N); Rutgers NJAES FS1220 |
 
-**Bulb N rate derivation:** 4 lbs × 9% N \= 0.36 lbs N per 100 sq. ft. — wait, corrected: 4 lbs × 0.09 \= 0.36 lbs N per 100 sq. ft. This does not match the stated 0.13. Re-examined: 4 lbs of 9-9-6 per 100 sq. ft. → 4 × 0.09 \= 0.36 lbs actual N per 100 sq. ft. **Correction:** the FLOWER\_DEFAULTS `bulb` entry should be `nPer100: 0.36`, not 0.13. **Action required:** fix `FLOWER_DEFAULTS['bulb'].nPer100` from 0.13 to 0.36 in `index.html`.
+**Bulb N rate derivation:** 4 lbs × 9% N = 0.36 lbs N per 100 sq. ft. — wait, corrected: 4 lbs × 0.09 = 0.36 lbs N per 100 sq. ft. This does not match the stated 0.13. Re-examined: 4 lbs of 9-9-6 per 100 sq. ft. → 4 × 0.09 = 0.36 lbs actual N per 100 sq. ft. **Correction:** the FLOWER_DEFAULTS `bulb` entry should be `nPer100: 0.36`, not 0.13. **Action required:** fix `FLOWER_DEFAULTS['bulb'].nPer100` from 0.13 to 0.36 in `index.html`.
 
 **Application plan (`FLOWER_APP_PLAN`):**
 
@@ -652,9 +649,9 @@ Each flower type has a structured plan array used to build the application table
 
 #### Spring-flowering bulbs — critical rules
 
-1. **Nitrogen is the primary nutrient need** — not phosphorus. Bone meal alone is insufficient. (NC State spring bulb trials, Dr. Paul V. Nelson)  
-2. **Apply at planting (fall) AND at emergence (spring, before leaves open)** — two applications per year  
-3. **Never fertilize after flowering** — encourages bulb rot and disease, shortens flower life. (Rutgers NJAES FS1220; NC State Extension)  
+1. **Nitrogen is the primary nutrient need** — not phosphorus. Bone meal alone is insufficient. (NC State spring bulb trials, Dr. Paul V. Nelson)
+2. **Apply at planting (fall) AND at emergence (spring, before leaves open)** — two applications per year
+3. **Never fertilize after flowering** — encourages bulb rot and disease, shortens flower life. (Rutgers NJAES FS1220; NC State Extension)
 4. **Fertilized bulbs performed significantly better than unfertilized** regardless of fertilizer method (NC State trials)
 
 #### Source boundary for bulbs
@@ -664,30 +661,27 @@ VCE has no published home-garden N rate for spring-flowering bulbs. NC State and
 #### Carryover updates
 
 `carryOverToCalculators()` now routes by garden type:
-
-- `['annual','perennial','rose','bulb']` → Flower Garden tab (`flr-` fields, `calcFlower()`)  
-- `'vegetable'`, `'mixed'` → Vegetable Garden tab (`gdn-` fields, `calcGarden()`)  
-- Success bar destination button switches accordingly  
+- `['annual','perennial','rose','bulb']` → Flower Garden tab (`flr-` fields, `calcFlower()`)
+- `'vegetable'`, `'mixed'` → Vegetable Garden tab (`gdn-` fields, `calcGarden()`)
+- Success bar destination button switches accordingly
 - `flowerTypes` array hoisted above `if (isGarden)` block so it is in scope for the success bar
 
 #### Soil Test tab updates
 
-- `st-garden-type` selector: `bulb` (Spring-Flowering Bulbs) added alongside annual/perennial/rose/mixed/vegetable  
-- `gdnLabels` map in `interpretSoilTest()`: `bulb` added  
-- Garden type card routes flower types to flower tab (`goBtn('flower', ...)`) and vegetable/mixed to garden tab  
+- `st-garden-type` selector: `bulb` (Spring-Flowering Bulbs) added alongside annual/perennial/rose/mixed/vegetable
+- `gdnLabels` map in `interpretSoilTest()`: `bulb` added
+- Garden type card routes flower types to flower tab (`goBtn('flower', ...)`) and vegetable/mixed to garden tab
 - Lime action box text: dynamically selects "Flower Garden" or "Vegetable Garden" tab based on crop type
 
 #### About tab updates
 
 **New VCE source added:**
-
 - Publication 426-200 (SPES-802P) — Annual Flowers: Culture and Maintenance. VCE. Confirms soil test as basis for annual flower fertilization rates.
 
 **New supplementary sources section** — "Flower Garden Supplementary Sources" collapsible (`about-flower-sources-btn` / `about-flower-sources-body`):
-
-- UMD Extension — Care of Annuals and Perennials (0.10 lbs N/100 sq. ft. for annuals and perennials; spring-only for perennials; compost alternative)  
-- Rutgers NJAES FS1220 — Spring Flowering Bulbs (no fertilizer after flowering; treat as perennials; divide when flowers decline)  
-- NC State Extension — Spring-Flowering Bulbs: Trials in North Carolina (Dr. Paul V. Nelson; N is primary nutrient; 4 lbs 9-9-6/100 sq. ft. trial rate; primary source for bulb default rate)  
+- UMD Extension — Care of Annuals and Perennials (0.10 lbs N/100 sq. ft. for annuals and perennials; spring-only for perennials; compost alternative)
+- Rutgers NJAES FS1220 — Spring Flowering Bulbs (no fertilizer after flowering; treat as perennials; divide when flowers decline)
+- NC State Extension — Spring-Flowering Bulbs: Trials in North Carolina (Dr. Paul V. Nelson; N is primary nutrient; 4 lbs 9-9-6/100 sq. ft. trial rate; primary source for bulb default rate)
 - NC State Extension — Add Flowering Bulbs in Your Garden This Fall (Forsyth County; confirms at-planting and at-emergence timing; no post-bloom fertilization)
 
 `toggleAboutFlowerSources()` function added alongside `toggleAboutSuppSources()`.
@@ -702,7 +696,7 @@ About tab step 2 instructions updated to name both Vegetable Garden and Flower G
 20. **Flower tab N field is optional** — `calcFlower()` falls back to `FLOWER_DEFAULTS[flowerType].nPer100` when blank; this is intentional and unique to the flower tab  
 21. **Bulb N default requires correction** — `FLOWER_DEFAULTS['bulb'].nPer100` should be 0.36 (4 lbs × 9% from NC State trial), not 0.13 (arithmetic error in initial implementation). Fix before next session.  
 22. **Never fertilize bulbs after flowering** — this is a prohibition, not an option. Rendered as ⛔ red no-fertilizer row in the application plan  
-23. **Spring bulb primary sources: NC State \+ Rutgers** — VCE is silent on bulb N rates at home garden scale; NC State and Rutgers NJAES FS1220 are the governing sources  
+23. **Spring bulb primary sources: NC State + Rutgers** — VCE is silent on bulb N rates at home garden scale; NC State and Rutgers NJAES FS1220 are the governing sources  
 24. **`flowerTypes` array in carryover** must be hoisted above `if (isGarden)` block — it is used in the success bar destination button logic which executes after the block closes  
 25. **`setFlowerFertMode('product')` must be called in `onFlowerProductSelect()`** before `calcFlower()` — same pattern as `onGardenProductSelect()`; without it, product selection is ignored
 
@@ -717,6 +711,174 @@ About tab step 2 instructions updated to name both Vegetable Garden and Flower G
 | UMD Extension — Care of Annuals and Perennials | 0.10 lbs N/100 sq. ft. for annuals and perennials; compost alternative; spring timing; late-summer for fall bloomers |
 | Rutgers NJAES FS1220 | Spring bulbs: no post-bloom fertilization; treat as perennials; divide when declining |
 | NC State — Spring-Flowering Bulbs Trials | Bulb N rate (4 lbs 9-9-6 per 100 sq. ft.); N is primary nutrient (not P); two-application protocol |
-| NC State — Forsyth County Bulb Guide | Confirms at-planting \+ at-emergence timing; no post-bloom |
+| NC State — Forsyth County Bulb Guide | Confirms at-planting + at-emergence timing; no post-bloom |
 
-**Source boundary:** Clemson HGIC has crop-level flower guidance (dahlias, hydrangeas, amaryllis) but no general home garden flower rate table — not used for rate calculations. NC State and UMD are consistent on 0.10 lbs N/100 sq. ft. for annuals/perennials; all sources agree roses need more frequent feeding.  
+**Source boundary:** Clemson HGIC has crop-level flower guidance (dahlias, hydrangeas, amaryllis) but no general home garden flower rate table — not used for rate calculations. NC State and UMD are consistent on 0.10 lbs N/100 sq. ft. for annuals/perennials; all sources agree roses need more frequent feeding.
+
+
+---
+
+## Session Updates — June 7, 2026
+
+### Glossary tooltip system
+
+A hover/tap definition system was added. Terms are underlined with a dotted green line; hovering (desktop) or tapping (mobile) shows a tooltip with a plain-English definition.
+
+#### Architecture
+
+**Single shared tooltip node** — one `<span class="term-tooltip">` appended to `<body>` on page load. Never inside a card. Uses `position: fixed` with coordinates calculated from `getBoundingClientRect()` on mouseenter/touchstart.
+
+**Why fixed, not absolute:** Cards may have `overflow: hidden` or CSS `transform` that creates a stacking context and clips absolutely-positioned children. Fixed positioning is relative to the viewport and is never clipped by parent cards. (Original implementation used `position: absolute` inside the `.term` span and was clipped — corrected in the same session.)
+
+**Term wrapping:** `applyGlossary(rootEl)` uses a `TreeWalker` to visit plain text nodes, skips nodes inside `SKIP_TAGS` (A, BUTTON, INPUT, SELECT, TEXTAREA, SCRIPT, STYLE, LABEL) and existing `.term` spans. Matches terms using regex with word boundaries. `GLOSSARY_FLAT` is sorted longest-phrase-first so "Water Insoluble Nitrogen" matches before "nitrogen". Definitions stored in `data-def` attribute on each `.term` span — not inside a child element.
+
+**Placement logic (`showGlossaryTooltip`):**
+- Measures tooltip dimensions by rendering off-screen first
+- Prefers above the term; flips below if insufficient clearance
+- Clamps left/right within viewport (8px margins)
+- Recalculates `--arrow-left` CSS variable after horizontal clamp so arrow still points at the term
+- Re-runs on `scroll` and `resize` events if a tooltip is open
+
+**Touch support:** `touchstart` on `.term` toggles the shared tooltip open/closed. `touchstart` on `document` (when target is not `.term`) dismisses it.
+
+**`MutationObserver` pattern:** Each dynamic output panel (soil test results, cool/warm/lime/garden/flower/shrub results, timing sections, hints) has an observer that calls `applyGlossary` after innerHTML changes. Static elements (field hints, field labels, note banners, About steps) get `applyGlossary` on `DOMContentLoaded`.
+
+**`GLOSSARY_TARGETS` array** — IDs watched by MutationObserver:
+`st-results-panel`, `cool-results-panel`, `warm-results-panel`, `lime-results-panel`, `gdn-results`, `gdn-timing`, `flr-results`, `flr-timing`, `flr-type-hint`, `gdn-crop-n-hint`, `shrub-results`, `shrub-timing`, `shrub-type-hint`, `cool-species-hint`, `warm-species-hint`, `cool-n-valid`, `warm-n-valid`
+
+#### Starting glossary (15 terms)
+
+WIN / Water Insoluble Nitrogen, Buffer Index, Buffer pH, base saturation, CEC / cation exchange capacity, pH, lime / liming, dolomitic / dolomitic lime, nitrogen, phosphorus / phosphate, potassium / potash, organic matter, preplant, sidedress / sidedressing, slow-release / controlled-release
+
+**Adding new terms:** Add an entry to `GLOSSARY_ENTRIES` array — `{ terms: ['canonical term', 'alias'], def: 'definition string' }`. No other changes needed. Longest phrases go first in each `terms` array.
+
+#### CSS classes
+
+| Class | Purpose |
+| :---- | :---- |
+| `.term` | Inline span wrapping a matched glossary term; dotted green underline, `cursor: help` |
+| `.term-tooltip` | Fixed-position shared tooltip node; `display: none` by default, `.visible` shows it |
+| `data-arrow="up"` / `data-arrow="down"` | Set by JS to control CSS arrow direction |
+| `--arrow-left` | CSS custom property set by JS to shift arrow after horizontal clamp |
+
+---
+
+### Shrubs & Trees tab (tab 7 of 8)
+
+**New tab:** `tab-shrub`, button `data-tab="shrub"`, print class `printing-shrub`. `calcShrub()` called by `switchToTab()`.
+
+#### Plant types (`SHRUB_PLANT_TYPES`)
+
+Six types, two categories:
+
+| Key | Label | N range (lbs/1,000 sq. ft.) | Default N | pH target | Primary source |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| `deciduous-shrub` | Deciduous shrub | 3–6 | 3 | 5.5–7.0 | VCE 430-018 |
+| `evergreen-shrub` | Evergreen shrub | 1–3 | 2 | 5.0–6.5 | VCE 430-018 |
+| `acid-shrub` | Acid-loving shrub | 1–2 | 1.5 | 4.5–6.0 | VCE 430-018; UMD Extension |
+| `deciduous-tree` | Deciduous tree | 3–6 | 3 | 5.5–7.0 | VCE 430-018 |
+| `evergreen-tree` | Evergreen tree | 1–3 | 2 | 5.0–6.5 | VCE 430-018 |
+| `acid-tree` | Acid-loving tree | 1–3 | 2 | 4.5–6.0 | VCE 430-018 |
+
+Default N uses the low end of each range — conservative default for home landscape. Users with a soil test override by entering their N recommendation.
+
+#### Canopy-based area calculation
+
+User enters canopy diameter (circular) or L×W (rectangular). Calculator doubles the area for application per VCE Note 20: "spread fertilizer evenly over an area twice the size of the plant's canopy as most of the smaller roots grow beyond the drip line." Direct area entry also available.
+
+#### Turf adjacency (three outcomes)
+
+| Selection | Behavior |
+| :---- | :---- |
+| No turf | Normal calculation |
+| Partial overlap | Caps each application at 1.5 lbs N/1,000 sq. ft. (VCE 430-018); splits into multiple applications if annual rate exceeds cap |
+| Fully adjacent | Advisory amber warning — VCE Note 20 states plants adjacent to fertilized lawn generally need no supplement |
+
+#### "Do you need to fertilize?" health check
+
+Opens the tab with a prominent amber box listing VCE Note 20's exact deficiency criteria (pale/small leaves, stunted growth, reduced buds, premature leaf drop). This is the most important guidance in Note 20 and is placed above the calculator fields.
+
+#### Products (`SHRUB_PRODUCTS`)
+
+8 products: Osmocote 18-6-12, 10-10-10, 12-4-8, Holly-tone 4-3-4, Azalea/Rhododendron 10-8-8, Ammonium sulfate 21-0-0, Urea 46-0-0, Calcium nitrate 15.5-0-0. Each has npk array, cupsPerLb, and a product-specific note displayed on selection.
+
+#### Acid-loving plants — specific rules
+
+- Use acid-forming or acid-specific fertilizer (ammonium sulfate, Holly-tone, azalea formula)
+- Apply **after bloom**, not before — fertilizing during or before bloom can damage flower buds
+- No lime — lime raises pH and harms acid-loving plants
+- Iron chlorosis (interveinal yellowing) is the most common symptom in Virginia clay soils above pH 6.5 — iron chelate may provide faster relief than N fertilizer
+
+#### No-fertilizer-at-planting rule (trees)
+
+Documented in deciduous and evergreen tree timing guidance, sourced from UMD Extension: research shows nitrogen suppresses root establishment in newly planted trees; wait at least one full growing season.
+
+#### Soil Test tab integration
+
+- `st-garden-type` selector: all 6 shrub/tree types added as an `<optgroup>`
+- `gdnLabels` map updated with all 6 keys
+- `interpretSoilTest()` plant type card: routes shrub types to shrub tab via `goBtn('shrub', ...)`; card note warns that fertilization is only recommended with deficiency symptoms
+- `isShrubType` derived from `shrubTypes` array (parallel to `isFlowerType`, `flowerTypes`)
+
+#### Carryover
+
+`shrubTypes` array added alongside `flowerTypes`. `isShrubCarry` routes to shrub tab — pre-fills `shrub-plant-type`, `shrub-p-rating`, `shrub-k-rating`. Success bar shows "Shrubs & Trees Calculator" button for shrub types.
+
+#### About tab
+
+**Three VCE sources documented:**
+- Soil Test Note 20 (452-720 / SPES-336P) — governing source; all health-check and application rules
+- Publication 430-018 (HORT-120P) — all N rate ranges; turf overlap cap; fertilizer ratio
+- SPES-397 — simplified companion; 1 lb N/1,000 sq. ft. reference rate
+
+**Supplementary sources collapsible** (`about-shrub-sources-btn` / `about-shrub-sources-body`):
+- UMD Extension — Fertilizing Trees and Shrubs (no fertilizer at planting; 2–3 lbs max; shallow evergreen roots; acid-loving evergreens)
+- Clemson HGIC — Fertilizing Trees & Shrubs (ANSI A300 2–4 lbs slow-release; active uptake budbreak to late summer)
+
+`toggleAboutShrubSources()` added.
+
+About tab step 2 instructions updated to name all three garden-type tabs (Vegetable Garden, Flower Garden, Shrubs & Trees).
+
+---
+
+### Tab nav overflow fix
+
+**Problem:** 8 tabs overflowed the fixed-width nav container, clipping the rightmost tab ("About & Instructions").
+
+**Fix applied to `.tab-nav` and `.tab-nav-inner`:**
+- `overflow-x: auto` on `.tab-nav` — enables horizontal scroll
+- `scrollbar-width: none` + `::-webkit-scrollbar { display: none }` — hides scrollbar chrome while keeping scroll functionality
+- `min-width: max-content` on `.tab-nav-inner` — forces container to be exactly as wide as tabs need; prevents flex from squeezing or wrapping
+- `flex-shrink: 0` on `.tab-btn` — prevents individual tabs from compressing
+- Tab padding reduced: `14px 24px` → `14px 14px`
+- Tab font reduced: `0.9rem` → `0.82rem`
+
+**Pattern:** This is the correct approach for any nav with more tabs than fit at typical viewport widths. The scrollbar is hidden but functional — touch/trackpad users can still scroll. Do not remove `min-width: max-content` or tabs will wrap to a second line.
+
+---
+
+## Critical Implementation Rules (additions)
+
+26. **Shrub tab uses `shrub-` prefix** for all element IDs — no overlap with `gdn-`, `flr-`, or other tab prefixes  
+27. **Shrub tab N field is optional** — same as flower tab; falls back to `SHRUB_PLANT_TYPES[key].nDefault`  
+28. **Application area = 2× canopy** per VCE Note 20 — this is calculated automatically in `calcShrubCanopy()`; if user enters area directly, they are responsible for doubling it (noted in field hint)  
+29. **Turf overlap cap = 1.5 lbs N/1,000 sq. ft. per application** per VCE 430-018 — enforced automatically by `calcShrub()` when `shrub-turf` = `partial`  
+30. **Acid-loving plants: no lime, apply after bloom** — enforced in timing guidance and product notes; ammonium sulfate and Holly-tone are the recommended product types  
+31. **No fertilizer at planting for trees** — documented in timing guidance; sourced from UMD Extension research finding that N suppresses root establishment  
+32. **Tab nav uses `overflow-x: auto` + `min-width: max-content`** — do not revert to fixed padding or remove these properties; with 8 tabs the nav will overflow at any viewport below ~1100px without them  
+33. **`shrubTypes` array in carryover** must be declared alongside `flowerTypes` before the `if (isGarden)` block — both are used in the success bar destination button logic
+
+---
+
+## Source hierarchy additions (shrubs & trees)
+
+| Source | Used for |
+| :---- | :---- |
+| VCE Note 20 (452-720 / SPES-336P) | All health-check rules; application area = 2× canopy; ≥50% WIN requirement; no late-season N; turf adjacency advisory |
+| VCE 430-018 (HORT-120P) | All N rate ranges by plant type; turf overlap 1.5 lbs cap; 3-1-2 ratio recommendation; acid-shrub timing (after bloom) |
+| VCE SPES-397 | 1 lb N/1,000 sq. ft. reference rate; product quantities table |
+| UMD Extension — Fertilizing Trees and Shrubs | No fertilizer at planting; 2–3 lbs N max; shallow evergreen root caution; acid-loving evergreens list |
+| Clemson HGIC — Fertilizing Trees & Shrubs | ANSI A300 2–4 lbs N/1,000 sq. ft. for slow-release; active uptake timing from budbreak |
+
+**Source boundary:** WSU Extension EB1034 and ISA Arboriculture & Urban Forestry journal were found in research but not used — outside the regional land-grant hierarchy. UNH Cooperative Extension was found but not used for same reason. Missouri Extension (MU) not used. All rate decisions trace to VCE 430-018 as primary.
+

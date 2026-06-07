@@ -77,23 +77,29 @@
   .tab-nav {
     background: var(--green-deep);
     border-bottom: 1px solid rgba(255,255,255,0.12);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;          /* Firefox */
   }
+  .tab-nav::-webkit-scrollbar { display: none; } /* Chrome/Safari */
   .tab-nav-inner {
     max-width: 1100px; margin: 0 auto;
-    padding: 0 32px;
+    padding: 0 16px;
     display: flex;
+    min-width: max-content;         /* prevent wrapping; allow scroll */
   }
   .tab-btn {
     background: none; border: none;
     color: rgba(255,255,255,0.55);
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 0.9rem; font-weight: 500;
-    padding: 14px 24px 12px;
+    font-size: 0.82rem; font-weight: 500;
+    padding: 14px 14px 12px;
     cursor: pointer;
     border-bottom: 3px solid transparent;
     transition: all 0.2s;
     letter-spacing: 0.02em;
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .tab-btn:hover { color: rgba(255,255,255,0.85); }
   .tab-btn.active { color: var(--white); border-bottom-color: var(--gold); }
@@ -605,6 +611,53 @@
   .print-plan-btn:hover { background:var(--green-mid); }
 
 
+  /* ===== GLOSSARY TOOLTIPS ===== */
+  .term {
+    border-bottom: 1px dotted var(--green-mid);
+    cursor: help;
+    display: inline;
+    white-space: normal;
+  }
+  /* Tooltip is now fixed to viewport — positioned via JS on show */
+  .term-tooltip {
+    display: none;
+    position: fixed;
+    background: var(--green-deep);
+    color: var(--white);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    padding: 7px 11px;
+    border-radius: 6px;
+    width: 240px;
+    max-width: calc(100vw - 24px);
+    z-index: 99999;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    pointer-events: none;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 400;
+    text-align: left;
+    white-space: normal;
+  }
+  .term-tooltip::after {
+    content: '';
+    position: absolute;
+    left: var(--arrow-left, 50%);
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+  }
+  /* Arrow direction set by JS via data-arrow attribute */
+  .term-tooltip[data-arrow="down"]::after {
+    top: 100%;
+    border-top-color: var(--green-deep);
+  }
+  .term-tooltip[data-arrow="up"]::after {
+    bottom: 100%;
+    border-bottom-color: var(--green-deep);
+  }
+  .term-tooltip.visible { display: block; }
+  @media print { .term-tooltip { display: none !important; } }
+
+
   /* ===== PRINT ===== */
   @media print {
     .no-print, .tab-nav, .site-header .header-badge,
@@ -633,6 +686,7 @@
     body.printing-lime  #tab-lime   { display: block !important; }
     body.printing-garden #tab-garden { display: block !important; }
     body.printing-flower #tab-flower { display: block !important; }
+    body.printing-shrub  #tab-shrub  { display: block !important; }
 
     /* Show inline results and results cards when printing a plan */
     body.printing-cool  .inline-plan-result,
@@ -675,6 +729,7 @@
       <button class="tab-btn" data-tab="lime">Lime</button>
       <button class="tab-btn" data-tab="garden">Vegetable Garden</button>
       <button class="tab-btn" data-tab="flower">Flower Garden</button>
+      <button class="tab-btn" data-tab="shrub">Shrubs &amp; Trees</button>
       <button class="tab-btn" data-tab="about">About &amp; Instructions</button>
     </div>
   </nav>
@@ -956,6 +1011,14 @@
                 <option value="rose">Rose Bed</option>
                 <option value="bulb">Spring-Flowering Bulbs</option>
                 <option value="mixed">Mixed Bed (vegetables &amp; flowers)</option>
+                <optgroup label="Shrubs &amp; Trees">
+                  <option value="deciduous-shrub">Deciduous Shrub</option>
+                  <option value="evergreen-shrub">Evergreen Shrub</option>
+                  <option value="acid-shrub">Acid-Loving Shrub (azalea, rhododendron…)</option>
+                  <option value="deciduous-tree">Deciduous Tree</option>
+                  <option value="evergreen-tree">Evergreen Tree</option>
+                  <option value="acid-tree">Acid-Loving Tree (pin oak, red maple…)</option>
+                </optgroup>
               </select>
             </div>
           </div>
@@ -1823,6 +1886,201 @@
     </div>
   </div><!-- end tab-flower -->
 
+  <!-- ===== SHRUBS & TREES TAB ===== -->
+  <div class="tab-panel" id="tab-shrub">
+    <div class="calc-layout">
+
+      <!-- Input card -->
+      <div class="card">
+        <div class="card-header"><span class="icon">🌳</span> Shrubs &amp; Trees Fertilizer Calculator</div>
+        <div class="card-body">
+          <p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:14px;line-height:1.5;">Based on VCE Soil Test Note 20 (SPES-336P) and VCE Publication 430-018 (HORT-120P). Fertilizer is only beneficial when plants show signs of deficiency — healthy plants in mulched or turf-adjacent beds typically need no supplement.</p>
+
+          <!-- Step 0 — Health check -->
+          <div class="field-group" style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-bottom:14px;">
+            <div style="font-weight:700;color:#7d5a00;margin-bottom:8px;">&#128269; Before fertilizing: does your plant need it?</div>
+            <p style="font-size:0.83rem;color:var(--slate-mid);margin-bottom:8px;line-height:1.6;">VCE Note 20 recommends fertilization <strong>only</strong> when one or more of the following symptoms are present:</p>
+            <ul style="font-size:0.83rem;color:var(--slate-mid);margin:0 0 8px 16px;line-height:1.8;">
+              <li>Leaves are paler, smaller, or fewer than normal</li>
+              <li>Plant growth appears stunted or deformed</li>
+              <li>Number of buds or flowers seems reduced</li>
+              <li>Premature fall coloration or leaf drop</li>
+              <li>Reduced twig and branch growth</li>
+            </ul>
+            <p style="font-size:0.83rem;color:var(--slate-mid);margin:0;line-height:1.6;">If the plant is healthy with good green color, <strong>no fertilizer is needed.</strong> Plants adjacent to a fertilized lawn absorb nutrients from turf applications and generally need no additional supplement. <em>(VCE Note 20)</em></p>
+          </div>
+
+          <!-- Step 1 — Plant type -->
+          <div class="field-group">
+            <div class="field-label"><span class="field-num">1</span><span class="field-question">What type of plant?</span></div>
+            <select id="shrub-plant-type" onchange="calcShrub()">
+              <option value="">— Select type —</option>
+              <optgroup label="Shrubs">
+                <option value="deciduous-shrub">Deciduous shrub (forsythia, viburnum, spirea, butterfly bush…)</option>
+                <option value="evergreen-shrub">Evergreen shrub (boxwood, holly, nandina, juniper…)</option>
+                <option value="acid-shrub">Acid-loving shrub (azalea, rhododendron, camellia, mountain laurel, pieris…)</option>
+              </optgroup>
+              <optgroup label="Trees">
+                <option value="deciduous-tree">Deciduous tree (maple, oak, dogwood, crepe myrtle…)</option>
+                <option value="evergreen-tree">Evergreen tree (pine, hemlock, spruce, arborvitae…)</option>
+                <option value="acid-tree">Acid-loving tree (pin oak, red maple, sweetbay magnolia…)</option>
+              </optgroup>
+            </select>
+            <div class="field-hint" id="shrub-type-hint"></div>
+          </div>
+
+          <!-- Step 2 — Canopy / area -->
+          <div class="field-group">
+            <div class="field-label"><span class="field-num">2</span><span class="field-question">How large is the plant's canopy (the shaded area directly underneath)?</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;">
+              <button id="shrub-size-mode-canopy" class="st-unit-btn active" onclick="setShrubSizeMode('canopy')" style="padding:5px 14px;font-size:0.82rem;">Canopy size</button>
+              <button id="shrub-size-mode-area" class="st-unit-btn" onclick="setShrubSizeMode('area')" style="padding:5px 14px;font-size:0.82rem;">Enter area directly</button>
+            </div>
+            <div id="shrub-size-canopy">
+              <p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:8px;line-height:1.5;">Enter the canopy diameter <strong>or</strong> length &times; width. The calculator will apply fertilizer to twice the canopy area, as most feeder roots extend well beyond the drip line. <em>(VCE Note 20)</em></p>
+              <div style="display:flex;gap:8px;margin-bottom:6px;">
+                <button id="shrub-canopy-mode-dia" class="st-unit-btn active" onclick="setShrubCanopyMode('dia')" style="padding:4px 10px;font-size:0.78rem;">Diameter</button>
+                <button id="shrub-canopy-mode-lw" class="st-unit-btn" onclick="setShrubCanopyMode('lw')" style="padding:4px 10px;font-size:0.78rem;">L &times; W</button>
+              </div>
+              <div id="shrub-canopy-dia">
+                <label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Canopy diameter (ft) — measure tip to tip</label>
+                <input type="number" id="shrub-canopy-diameter" min="0" placeholder="e.g. 6" oninput="calcShrubCanopy()">
+                <div id="shrub-canopy-area-display" style="font-size:0.8rem;color:var(--slate-mid);margin-top:4px;"></div>
+              </div>
+              <div id="shrub-canopy-lw" style="display:none;">
+                <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;">
+                  <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Length (ft)</label>
+                    <input type="number" id="shrub-canopy-length" min="0" placeholder="e.g. 8" oninput="calcShrubCanopy()"></div>
+                  <div><label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Width (ft)</label>
+                    <input type="number" id="shrub-canopy-width" min="0" placeholder="e.g. 6" oninput="calcShrubCanopy()"></div>
+                  <div style="padding-top:20px;color:var(--slate-mid);font-size:0.875rem;" id="shrub-lw-area-display">—</div>
+                </div>
+              </div>
+            </div>
+            <div id="shrub-size-area" style="display:none;">
+              <label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Total application area (sq. ft.) — already doubled if needed</label>
+              <input type="number" id="shrub-area-direct" min="0" placeholder="e.g. 100" oninput="calcShrub()">
+              <div class="field-hint">If you measured the canopy only, double it — feeder roots typically extend 1–3× the plant height beyond the drip line. <em>(VCE Note 20)</em></div>
+            </div>
+            <div id="shrub-area-summary" style="font-size:0.82rem;color:var(--green-deep);font-weight:600;margin-top:6px;"></div>
+          </div>
+
+          <!-- Step 3 — Turf adjacency -->
+          <div class="field-group">
+            <div class="field-label"><span class="field-num">3</span><span class="field-question">Is the application area adjacent to or overlapping a regularly fertilized lawn?</span></div>
+            <select id="shrub-turf" onchange="calcShrub()">
+              <option value="no">No — mulched bed or unfertilized area</option>
+              <option value="partial">Partially — some overlap with turf</option>
+              <option value="yes">Yes — entirely within or adjacent to fertilized lawn</option>
+            </select>
+            <div class="field-hint" id="shrub-turf-hint">Plants adjacent to a fertilized lawn absorb turf fertilizer through shared root zones. <em>(VCE Note 20; VCE 430-018)</em></div>
+          </div>
+
+          <!-- Step 4 — N rec or default -->
+          <div class="field-group">
+            <div class="field-label"><span class="field-num">4</span><span class="field-question">Nitrogen recommendation from your soil test report (lbs per 1,000 sq. ft.)?</span></div>
+            <input type="number" id="shrub-n-rec" min="0" step="0.25" placeholder="e.g. 2" oninput="calcShrub()">
+            <div class="field-hint" id="shrub-n-rec-hint">Leave blank to use the research-based default for your plant type. VCE Note 20 and VCE 430-018 give ranges — the calculator uses the midpoint of the appropriate range as the default.</div>
+          </div>
+
+          <!-- Step 5 — Fertilizer -->
+          <div class="field-group">
+            <div class="field-label"><span class="field-num">5</span><span class="field-question">Fertilizer: enter N-P-K grade or choose a common product</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;">
+              <button id="shrub-fert-mode-npk" class="st-unit-btn active" onclick="setShrubFertMode('npk')" style="padding:5px 14px;font-size:0.82rem;">Enter N-P-K</button>
+              <button id="shrub-fert-mode-product" class="st-unit-btn" onclick="setShrubFertMode('product')" style="padding:5px 14px;font-size:0.82rem;">Choose Product</button>
+            </div>
+            <div id="shrub-fert-npk">
+              <p style="font-size:0.78rem;color:var(--slate-mid);margin-bottom:6px;">Use a fertilizer with <strong>≥50% WIN</strong> (slow-release nitrogen) — required per VCE Note 20. A 3-1-2 or 3-1-1 N-P-K ratio is appropriate if soil test shows P and K are adequate. <em>(VCE 430-018)</em></p>
+              <div class="npk-row">
+                <div class="npk-item"><label>N %</label><input type="number" id="shrub-fert-n" min="0" max="100" placeholder="0" oninput="calcShrub()"></div>
+                <div class="npk-item"><label>P %</label><input type="number" id="shrub-fert-p" min="0" max="100" placeholder="0" oninput="calcShrub()"></div>
+                <div class="npk-item"><label>K %</label><input type="number" id="shrub-fert-k" min="0" max="100" placeholder="0" oninput="calcShrub()"></div>
+              </div>
+            </div>
+            <div id="shrub-fert-product" style="display:none;">
+              <select id="shrub-product-select" onchange="onShrubProductSelect()">
+                <option value="">— Select a product —</option>
+                <optgroup label="General — Slow-Release (≥50% WIN recommended)">
+                  <option value="18-6-12">Osmocote 18-6-12 (slow-release)</option>
+                  <option value="10-10-10">10-10-10 General Purpose</option>
+                  <option value="12-4-8">12-4-8 Landscape Fertilizer</option>
+                </optgroup>
+                <optgroup label="Acid-Loving Shrubs &amp; Trees">
+                  <option value="holly-tone">Holly-tone 4-3-4 (organic, acid-forming)</option>
+                  <option value="10-8-8-acid">Azalea/Camellia/Rhododendron 10-8-8</option>
+                  <option value="ammonium-sulfate">Ammonium sulfate 21-0-0 (acidifying)</option>
+                </optgroup>
+                <optgroup label="Nitrogen Only">
+                  <option value="urea">Urea 46-0-0</option>
+                  <option value="calcium-nitrate-shrub">Calcium Nitrate 15.5-0-0</option>
+                </optgroup>
+              </select>
+              <div id="shrub-product-note" style="font-size:0.8rem;color:var(--slate-mid);margin-top:6px;"></div>
+            </div>
+          </div>
+
+          <!-- Step 6 — P/K ratings -->
+          <div class="field-group">
+            <div class="field-label"><span class="field-num">6</span><span class="field-question">Phosphorus (P) rating from your soil test?</span></div>
+            <select id="shrub-p-rating" onchange="calcShrub()">
+              <option value="">— Select rating (optional) —</option>
+              <optgroup label="VCE / Virginia Tech">
+                <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
+                <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
+                <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
+                <option value="VH">VH</option>
+              </optgroup>
+              <optgroup label="Waypoint Analytical">
+                <option value="VL">Very Low</option><option value="LO">Low</option>
+                <option value="ME">Medium</option><option value="OP">Optimum</option>
+                <option value="VH2">Very High</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="field-group">
+            <div class="field-label"><span class="field-num">7</span><span class="field-question">Potassium (K) rating from your soil test?</span></div>
+            <select id="shrub-k-rating" onchange="calcShrub()">
+              <option value="">— Select rating (optional) —</option>
+              <optgroup label="VCE / Virginia Tech">
+                <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
+                <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
+                <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
+                <option value="VH">VH</option>
+              </optgroup>
+              <optgroup label="Waypoint Analytical">
+                <option value="VL">Very Low</option><option value="LO">Low</option>
+                <option value="ME">Medium</option><option value="OP">Optimum</option>
+                <option value="VH2">Very High</option>
+              </optgroup>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Results card -->
+      <div class="card">
+        <div class="card-header"><span class="icon">📋</span> Fertilizer Plan</div>
+        <div class="card-body" id="shrub-results">
+          <p style="color:var(--slate-light);font-size:0.875rem;">Select plant type and enter canopy size to see recommendations.</p>
+        </div>
+      </div>
+
+      <!-- Timing card -->
+      <div class="card timing-card">
+        <div class="card-header"><span class="icon">📅</span> Timing &amp; Application Notes</div>
+        <div class="card-body">
+          <div id="shrub-timing">
+            <p style="color:var(--slate-light);font-size:0.875rem;">Select plant type to see timing guidance.</p>
+          </div>
+          <div class="note-banner" style="margin-top:12px;">&#8505;&#65039; Sweep or blow any fertilizer that lands on driveways, sidewalks, or hard surfaces back into the landscape immediately — prevent it from washing into storm drains. <em>(VCE Note 20)</em></div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end tab-shrub -->
+
   <!-- ===== ABOUT TAB ===== -->
   <div class="tab-panel" id="tab-about">
     <div class="about-layout">
@@ -1956,7 +2214,42 @@
               <p>Per-application limits, seasonal schedules, and grass-specific N rate guidance for warm-season grasses.</p>
             </div>
 
-            <!-- VCE GARDEN SOURCES -->
+            <!-- VCE SHRUBS & TREES SOURCES -->
+            <div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 8px;">&#127795; VCE Shrubs &amp; Trees Publications</div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-720/452-720.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 20 (452-720 / SPES-336P) — Home Shrubs and Trees</a></div>
+              <div class="about-source-meta">Bonnie L. Appleton, Extension Horticulturist; S.E. Heckendorn, Soil Testing Laboratory Manager; reviewed by Laurie J. Fox — VCE, 2021</div>
+              <p>Governing source for the Shrubs &amp; Trees calculator. Key rules implemented: fertilize only when symptoms of deficiency are present; use ≥50% WIN slow-release fertilizer; application area = 2&times; canopy area; plants adjacent to fertilized turf need no supplement; no late-summer or fall applications; sweep fertilizer off hard surfaces immediately.</p>
+            </div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/430/430-018/430-018.html" target="_blank" style="color:var(--green-mid);">Publication 430-018 (HORT-120P) — Fertilizing Landscape Trees and Shrubs</a></div>
+              <div class="about-source-meta">Bonnie Appleton, Extension Horticulturist; Kathy Kauffman, Graduate Student; reviewed by David Close — VCE</div>
+              <p>Source for all N rate ranges: evergreen shrubs/trees 1–3 lbs N/1,000 sq. ft.; deciduous shrubs/trees 3–6 lbs N/1,000 sq. ft.; turf overlap cap 1.5 lbs N/1,000 sq. ft. per application; 3-1-2 or 3-1-1 fertilizer ratio recommendation; P at 1–2 lbs and K at 1.5 lbs per 1,000 sq. ft. if deficient. Iron deficiency in Virginia soils noted.</p>
+            </div>
+            <div class="about-source">
+              <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/SPES/spes-397/spes-397.html" target="_blank" style="color:var(--green-mid);">SPES-397 — Fertilizing Landscape Trees and Shrubs (Basic)</a></div>
+              <div class="about-source-meta">VCE, 2022</div>
+              <p>Simplified companion to 430-018. Confirms 1 lb N/1,000 sq. ft. as the standard reference rate for general tree and shrub fertilization; table of common fertilizer products and amounts needed per 1,000 sq. ft. to deliver 1 lb N.</p>
+            </div>
+
+            <!-- VCE SHRUBS & TREES SUPPLEMENTARY — collapsible -->
+            <div class="fert-chooser no-print" style="margin-bottom:14px;">
+              <button class="fert-chooser-toggle" id="about-shrub-sources-btn" onclick="toggleAboutShrubSources()" style="font-size:0.82rem;">
+                <span>&#128218; UMD Extension &amp; Clemson HGIC — Supplementary Shrub &amp; Tree Sources</span><span class="toggle-arrow">&#9660;</span>
+              </button>
+              <div class="fert-chooser-body" id="about-shrub-sources-body">
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://extension.umd.edu/resource/fertilizing-trees-and-shrubs-and-nutrient-deficiency-symptoms" target="_blank" style="color:var(--green-mid);">UMD Extension — Fertilizing Trees and Shrubs and Nutrient Deficiency Symptoms</a></div>
+                  <div class="about-source-meta">University of Maryland Extension, updated February 2023</div>
+                  <p>Source for: do not fertilize at planting — research shows nitrogen suppresses root establishment; trees near fertilized turf absorb those nutrients and generally need no supplement; maximum 2–3 lbs N per 1,000 sq. ft. for established trees/shrubs; lower rate for foundation plantings; shallow evergreen feeder roots are vulnerable to quick-release fertilizer injury; many evergreens are acid-loving plants. Confirms VCE 430-018 rate ranges and timing guidance.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://hgic.clemson.edu/factsheet/fertilizing-trees-shrubs/" target="_blank" style="color:var(--green-mid);">Clemson HGIC — Fertilizing Trees &amp; Shrubs</a></div>
+                  <div class="about-source-meta">Clemson University Home &amp; Garden Information Center</div>
+                  <p>Source for: ANSI A300 (Part 2)-2018 standard of 2–4 lbs N/1,000 sq. ft. for slow-release nitrogen; actively growing plants absorb fertilizer from budbreak through late summer/early fall. Soil test and plant tissue analysis as recommended basis for rate decisions.</p>
+                </div>
+              </div>
+            </div>
             <div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 8px;">&#127799; VCE Garden Publications</div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/452/452-719/452-719.html" target="_blank" style="color:var(--green-mid);">Soil Test Note 19 (452-719 / SPES-687P) — Vegetable and Flower Gardens</a></div>
@@ -3295,14 +3588,26 @@ function interpretSoilTest() {
   // ---- Grass / Garden Type ----
   if (crop) {
     if (isGarden) {
-      var gdnLabels = { vegetable:'Vegetable Garden', annual:'Annual Flower Bed', perennial:'Perennial Flower Bed', rose:'Rose Bed', bulb:'Spring-Flowering Bulbs', mixed:'Mixed Bed (Vegetables & Flowers)' };
+      var gdnLabels = {
+        vegetable:'Vegetable Garden', annual:'Annual Flower Bed', perennial:'Perennial Flower Bed',
+        rose:'Rose Bed', bulb:'Spring-Flowering Bulbs', mixed:'Mixed Bed (Vegetables & Flowers)',
+        'deciduous-shrub':'Deciduous Shrub', 'evergreen-shrub':'Evergreen Shrub',
+        'acid-shrub':'Acid-Loving Shrub (azalea, rhododendron, camellia…)',
+        'deciduous-tree':'Deciduous Tree', 'evergreen-tree':'Evergreen Tree',
+        'acid-tree':'Acid-Loving Tree (pin oak, red maple…)'
+      };
       var gdnLabel = gdnLabels[crop] || crop;
       var isFlowerType = ['annual','perennial','rose','bulb'].indexOf(crop) >= 0;
-      cards.push(card('&#127807;', 'Garden Type &amp; Fertilizer Program', '', '', gdnLabel,
-        isFlowerType
-          ? 'Use the Flower Garden tab to calculate precise fertilizer and lime quantities for your bed size. Research-based defaults are available if you prefer not to enter your soil test N recommendation directly.'
-          : 'Per VCE Soil Test Note 19, use the Vegetable &amp; Flower Gardens tab to calculate precise fertilizer and lime quantities for your bed size.',
-        '', '', goBtn(isFlowerType ? 'flower' : 'garden', isFlowerType ? 'Open Flower Garden Calculator' : 'Open Garden Calculator')));
+      var isShrubType  = ['deciduous-shrub','evergreen-shrub','acid-shrub','deciduous-tree','evergreen-tree','acid-tree'].indexOf(crop) >= 0;
+      var destTab  = isShrubType ? 'shrub' : (isFlowerType ? 'flower' : 'garden');
+      var destBtn  = isShrubType ? 'Open Shrubs & Trees Calculator' : (isFlowerType ? 'Open Flower Garden Calculator' : 'Open Garden Calculator');
+      var destNote = isShrubType
+        ? 'Fertilization is only recommended when the plant shows signs of deficiency. Plants adjacent to a fertilized lawn generally need no supplement. Use the Shrubs &amp; Trees tab to calculate quantities for your plant\'s canopy size.'
+        : (isFlowerType
+            ? 'Use the Flower Garden tab to calculate precise fertilizer and lime quantities for your bed size. Research-based defaults are available if you prefer not to enter your soil test N recommendation directly.'
+            : 'Per VCE Soil Test Note 19, use the Vegetable Garden tab to calculate precise fertilizer and lime quantities for your bed size.');
+      cards.push(card('&#127807;', 'Plant Type &amp; Fertilizer Program', '', '', gdnLabel,
+        destNote, '', '', goBtn(destTab, destBtn)));
     } else {
       var grassLabel = crop === 'warm'
         ? 'Warm-Season (bermudagrass, zoysiagrass, centipedegrass, St. Augustinegrass)'
@@ -3463,10 +3768,17 @@ function carryOverToCalculators() {
   }
 
   var flowerTypes = ['annual','perennial','rose','bulb'];
+  var shrubTypes  = ['deciduous-shrub','evergreen-shrub','acid-shrub','deciduous-tree','evergreen-tree','acid-tree'];
 
   if (isGarden) {
     var isFlowerCarry = flowerTypes.indexOf(crop) >= 0;
-    if (isFlowerCarry) {
+    var isShrubCarry  = shrubTypes.indexOf(crop) >= 0;
+    if (isShrubCarry) {
+      setSelect('shrub-plant-type', crop);
+      setSelect('shrub-p-rating', pRat);
+      setSelect('shrub-k-rating', kRat);
+      setTimeout(function() { calcShrub(); }, 0);
+    } else if (isFlowerCarry) {
       // Route to flower tab
       setSelect('flr-type', crop);
       setSelect('flr-p-rating', pRat);
@@ -3513,9 +3825,11 @@ function carryOverToCalculators() {
   // Build success bar
   var destBtns = '';
   if (isGarden) {
-    destBtns = flowerTypes.indexOf(crop) >= 0
-      ? '<button class="st-goto-btn" onclick="switchToTab(\'flower\')">&#8599; Flower Garden Calculator</button>'
-      : '<button class="st-goto-btn" onclick="switchToTab(\'garden\')">&#8599; Vegetable Garden Calculator</button>';
+    destBtns = shrubTypes.indexOf(crop) >= 0
+      ? '<button class="st-goto-btn" onclick="switchToTab(\'shrub\')">&#8599; Shrubs &amp; Trees Calculator</button>'
+      : flowerTypes.indexOf(crop) >= 0
+        ? '<button class="st-goto-btn" onclick="switchToTab(\'flower\')">&#8599; Flower Garden Calculator</button>'
+        : '<button class="st-goto-btn" onclick="switchToTab(\'garden\')">&#8599; Vegetable Garden Calculator</button>';
   } else {
     destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'cool\')">&#8599; Cool-Season Calculator</button>'
       + '<button class="st-goto-btn" onclick="switchToTab(\'warm\')">&#8599; Warm-Season Calculator</button>'
@@ -3556,6 +3870,7 @@ function switchToTab(tab) {
   if (tab === 'lime') calcLime();
   if (tab === 'garden') calcGarden();
   if (tab === 'flower') calcFlower();
+  if (tab === 'shrub')  calcShrub();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -3832,6 +4147,15 @@ function toggleAboutSuppSources() {
 function toggleAboutFlowerSources() {
   var btn  = document.getElementById('about-flower-sources-btn');
   var body = document.getElementById('about-flower-sources-body');
+  if (!btn || !body) return;
+  var open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  btn.classList.toggle('open', !open);
+}
+
+function toggleAboutShrubSources() {
+  var btn  = document.getElementById('about-shrub-sources-btn');
+  var body = document.getElementById('about-shrub-sources-body');
   if (!btn || !body) return;
   var open = body.classList.contains('open');
   body.classList.toggle('open', !open);
@@ -4747,7 +5071,627 @@ function prefillSampleReport(type) {
   showToast(type === 'garden' ? 'Sample Waypoint flower garden report loaded' : type === 'veggie' ? 'Sample Waypoint vegetable garden report loaded' : 'Sample VCE lawn soil test report loaded');
 }
 
-// ===== TOAST =====
+// ===== SHRUBS & TREES CALCULATOR =====
+// Primary sources: VCE Soil Test Note 20 (452-720 / SPES-336P); VCE 430-018 (HORT-120P)
+// Supplementary: UMD Extension — Fertilizing Trees and Shrubs; Clemson HGIC — Fertilizing Trees & Shrubs
+
+// Plant type configuration
+// nRange: [min, max] lbs N per 1,000 sq. ft. per year
+// nDefault: midpoint used when no soil test N entered
+// pHTarget: ideal soil pH range for interpretation card
+// Sources noted inline
+var SHRUB_PLANT_TYPES = {
+  'deciduous-shrub': {
+    label: 'Deciduous shrub',
+    nRange: [3, 6],       // VCE 430-018: deciduous trees/shrubs 3–6 lbs N/1,000 sq. ft.
+    nDefault: 3,          // Use low end of range — cautious default for home landscape
+    pHTarget: '5.5–7.0',
+    pHNote: 'Most deciduous shrubs grow well across a wide pH range. <em>(VCE 430-018; UMD Extension)</em>',
+    note: 'Deciduous shrubs typically need more nitrogen than evergreens during their active growing season. Split applications are appropriate if more than 1.5 lbs N/1,000 sq. ft. will overlap turf. <em>(VCE 430-018)</em>'
+  },
+  'evergreen-shrub': {
+    label: 'Evergreen shrub',
+    nRange: [1, 3],       // VCE 430-018: evergreen shrubs/trees 1–3 lbs N/1,000 sq. ft.
+    nDefault: 2,
+    pHTarget: '5.0–6.5',
+    pHNote: 'Most evergreen shrubs prefer slightly acid soil. Boxwood tolerates slightly higher pH. <em>(VCE 430-018; UMD Extension)</em>',
+    note: 'Evergreen shrubs need less nitrogen than deciduous types. Feeder roots are very shallow — avoid quick-release fertilizers at high rates, which can cause root injury. <em>(VCE 430-018; UMD Extension)</em>'
+  },
+  'acid-shrub': {
+    label: 'Acid-loving shrub (azalea, rhododendron, camellia, mountain laurel, pieris)',
+    nRange: [1, 2],       // Low end of VCE 430-018 evergreen range; UMD confirms 2–3 max, lower for acid-loving
+    nDefault: 1.5,
+    pHTarget: '4.5–6.0',
+    pHNote: 'Acid-loving shrubs require more acidic soil than other shrubs. If pH is above 6.0, consider acidifying amendments (elemental sulfur, ammonium sulfate). Iron chlorosis is common in Virginia soils above pH 6.5. <em>(VCE 430-018; UMD Extension)</em>',
+    note: 'Use an acid-forming or acid-specific fertilizer (e.g. ammonium sulfate, Holly-tone, azalea formula). Avoid lime. Apply immediately after bloom to avoid bud injury from late-season N. <em>(VCE 430-018; UMD Extension)</em>'
+  },
+  'deciduous-tree': {
+    label: 'Deciduous tree',
+    nRange: [3, 6],       // VCE 430-018
+    nDefault: 3,
+    pHTarget: '5.5–7.0',
+    pHNote: 'Most deciduous trees are adaptable across a wide pH range. <em>(VCE 430-018)</em>',
+    note: 'Fertilize the entire root zone — roots extend 1–3× the tree height beyond the drip line. If the application area overlaps turf, limit to 1.5 lbs N/1,000 sq. ft. per application and split if higher rates are needed. <em>(VCE 430-018; VCE Note 20)</em>'
+  },
+  'evergreen-tree': {
+    label: 'Evergreen tree',
+    nRange: [1, 3],       // VCE 430-018
+    nDefault: 2,
+    pHTarget: '5.0–6.5',
+    pHNote: 'Evergreen trees generally prefer slightly acid to neutral soil. <em>(VCE 430-018)</em>',
+    note: 'Evergreen trees need less nitrogen than deciduous types. Use slow-release (≥50% WIN) to reduce leaching risk. <em>(VCE 430-018; VCE Note 20)</em>'
+  },
+  'acid-tree': {
+    label: 'Acid-loving tree (pin oak, red maple, sweetbay magnolia)',
+    nRange: [1, 3],       // Same as evergreen range — acid trees are sensitive to excess N
+    nDefault: 2,
+    pHTarget: '4.5–6.0',
+    pHNote: 'Pin oaks and red maples show iron chlorosis (yellowing between leaf veins) at pH above 6.5 in Virginia clay soils. If pH is above 6.5, soil acidification may be needed alongside fertilization. <em>(VCE 430-018; UMD Extension)</em>',
+    note: 'Use an acid-forming nitrogen source (ammonium sulfate) or an acid-specific fertilizer. Avoid lime. Iron chlorosis is the most common symptom in Virginia — if interveinal yellowing is present, iron chelate application may provide faster relief than fertilizer. <em>(VCE 430-018)</em>'
+  }
+};
+
+// Common product N-P-K for shrub tab
+var SHRUB_PRODUCTS = {
+  '18-6-12':            { name:'Osmocote 18-6-12',          npk:[18,6,12],  cupsPerLb:2.5,  note:'Slow-release coated fertilizer — satisfies VCE Note 20 ≥50% WIN requirement. Good all-purpose choice for shrubs and trees.' },
+  '10-10-10':           { name:'10-10-10 General Purpose',   npk:[10,10,10], cupsPerLb:2.0,  note:'Balanced, quick-release. Use only if slow-release product is unavailable. Split into smaller applications to avoid salt injury.' },
+  '12-4-8':             { name:'12-4-8 Landscape Fertilizer',npk:[12,4,8],   cupsPerLb:2.0,  note:'3:1:2 ratio recommended by VCE 430-018 for trees and shrubs when P and K are adequate.' },
+  'holly-tone':         { name:'Holly-tone 4-3-4 (organic)', npk:[4,3,4],    cupsPerLb:1.5,  note:'Organic, acid-forming — ideal for azaleas, rhododendrons, hollies, camellias. Releases slowly; risk of root injury is low.' },
+  '10-8-8-acid':        { name:'Azalea/Rhododendron 10-8-8', npk:[10,8,8],   cupsPerLb:2.0,  note:'Formulated for acid-loving shrubs. Often contains acidifying sulfur. Check bag for WIN% — look for ≥50%.' },
+  'ammonium-sulfate':   { name:'Ammonium Sulfate 21-0-0',    npk:[21,0,0],   cupsPerLb:2.5,  note:'Acidifying N source — lowers pH over time, ideal for acid-loving shrubs and trees. Quick-release; split into smaller applications.' },
+  'urea':               { name:'Urea 46-0-0',                npk:[46,0,0],   cupsPerLb:3.3,  note:'High-analysis N, quick-release. Use only with caution — apply at low rates and water in immediately to avoid leaf/root burn.' },
+  'calcium-nitrate-shrub':{ name:'Calcium Nitrate 15.5-0-0', npk:[15.5,0,0], cupsPerLb:2.5,  note:'Quick-release, slightly alkaline — avoid for acid-loving shrubs and trees. Appropriate for deciduous shrubs and trees only.' }
+};
+
+var shrubSizeMode   = 'canopy';
+var shrubCanopyMode = 'dia';
+var shrubFertMode   = 'npk';
+
+function setShrubSizeMode(mode) {
+  shrubSizeMode = mode;
+  document.getElementById('shrub-size-mode-canopy').classList.toggle('active', mode === 'canopy');
+  document.getElementById('shrub-size-mode-area').classList.toggle('active', mode === 'area');
+  document.getElementById('shrub-size-canopy').style.display = mode === 'canopy' ? '' : 'none';
+  document.getElementById('shrub-size-area').style.display   = mode === 'area'   ? '' : 'none';
+  calcShrub();
+}
+
+function setShrubCanopyMode(mode) {
+  shrubCanopyMode = mode;
+  document.getElementById('shrub-canopy-mode-dia').classList.toggle('active', mode === 'dia');
+  document.getElementById('shrub-canopy-mode-lw').classList.toggle('active', mode === 'lw');
+  document.getElementById('shrub-canopy-dia').style.display = mode === 'dia' ? '' : 'none';
+  document.getElementById('shrub-canopy-lw').style.display  = mode === 'lw'  ? '' : 'none';
+  calcShrubCanopy();
+}
+
+function setShrubFertMode(mode) {
+  shrubFertMode = mode;
+  document.getElementById('shrub-fert-mode-npk').classList.toggle('active', mode === 'npk');
+  document.getElementById('shrub-fert-mode-product').classList.toggle('active', mode === 'product');
+  document.getElementById('shrub-fert-npk').style.display     = mode === 'npk'     ? '' : 'none';
+  document.getElementById('shrub-fert-product').style.display = mode === 'product' ? '' : 'none';
+  calcShrub();
+}
+
+function onShrubProductSelect() {
+  var key = document.getElementById('shrub-product-select').value;
+  var noteEl = document.getElementById('shrub-product-note');
+  if (key && SHRUB_PRODUCTS[key]) {
+    var p = SHRUB_PRODUCTS[key];
+    noteEl.innerHTML = '<span style="color:var(--green-mid);font-weight:600;">' + p.name + '</span> &mdash; '
+      + p.npk[0] + '% N / ' + p.npk[1] + '% P / ' + p.npk[2] + '% K<br>'
+      + '<span style="color:var(--slate-mid);">' + p.note + '</span>';
+    setShrubFertMode('product');
+  } else {
+    noteEl.innerHTML = '';
+  }
+  calcShrub();
+}
+
+function calcShrubCanopy() {
+  var canopyArea = 0;
+  if (shrubCanopyMode === 'dia') {
+    var dia = parseFloat(document.getElementById('shrub-canopy-diameter').value) || 0;
+    canopyArea = dia > 0 ? Math.PI * Math.pow(dia / 2, 2) : 0;
+    var disp = document.getElementById('shrub-canopy-area-display');
+    if (disp) disp.textContent = canopyArea > 0
+      ? 'Canopy area \u2248 ' + Math.round(canopyArea) + ' sq. ft. \u2192 application area \u2248 ' + Math.round(canopyArea * 2) + ' sq. ft. (2\u00D7 canopy per VCE Note 20)'
+      : '';
+  } else {
+    var l = parseFloat(document.getElementById('shrub-canopy-length').value) || 0;
+    var w = parseFloat(document.getElementById('shrub-canopy-width').value) || 0;
+    canopyArea = l * w;
+    var disp2 = document.getElementById('shrub-lw-area-display');
+    if (disp2) disp2.textContent = canopyArea > 0 ? '= ' + canopyArea + ' sq. ft.' : '\u2014';
+    var adisp = document.getElementById('shrub-canopy-area-display');
+    if (adisp) adisp.textContent = canopyArea > 0
+      ? 'Canopy area = ' + canopyArea + ' sq. ft. \u2192 application area = ' + (canopyArea * 2) + ' sq. ft. (2\u00D7 canopy per VCE Note 20)'
+      : '';
+  }
+  calcShrub();
+}
+
+function calcShrub() {
+  var plantType = document.getElementById('shrub-plant-type').value;
+  var config    = plantType ? SHRUB_PLANT_TYPES[plantType] : null;
+
+  // Update type hint
+  var hintEl = document.getElementById('shrub-type-hint');
+  if (hintEl && config) {
+    hintEl.innerHTML = '<strong style="color:var(--green-deep);">' + config.label + '</strong> &mdash; '
+      + 'N rate range: <strong>' + config.nRange[0] + '–' + config.nRange[1] + ' lbs per 1,000 sq. ft.</strong> per year. '
+      + 'Target pH: <strong>' + config.pHTarget + '</strong>. '
+      + config.note;
+    hintEl.style.display = 'block';
+  } else if (hintEl) {
+    hintEl.style.display = 'none';
+  }
+
+  var resultsEl = document.getElementById('shrub-results');
+  var timingEl  = document.getElementById('shrub-timing');
+
+  if (!plantType) {
+    resultsEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Select plant type above to see recommendations.</p>';
+    timingEl.innerHTML  = '<p style="color:var(--slate-light);font-size:0.875rem;">Select plant type to see timing guidance.</p>';
+    return;
+  }
+
+  // Determine application area
+  var canopyArea = 0, appArea = 0;
+  if (shrubSizeMode === 'canopy') {
+    if (shrubCanopyMode === 'dia') {
+      var dia = parseFloat(document.getElementById('shrub-canopy-diameter').value) || 0;
+      canopyArea = dia > 0 ? Math.PI * Math.pow(dia / 2, 2) : 0;
+    } else {
+      var cl = parseFloat(document.getElementById('shrub-canopy-length').value) || 0;
+      var cw = parseFloat(document.getElementById('shrub-canopy-width').value) || 0;
+      canopyArea = cl * cw;
+    }
+    appArea = canopyArea * 2; // VCE Note 20: apply over 2× canopy area
+  } else {
+    appArea = parseFloat(document.getElementById('shrub-area-direct').value) || 0;
+  }
+
+  var areaSummary = document.getElementById('shrub-area-summary');
+  if (areaSummary) {
+    areaSummary.textContent = appArea > 0
+      ? 'Application area: ' + Math.round(appArea) + ' sq. ft.'
+      : '';
+  }
+
+  if (!appArea || appArea <= 0) {
+    resultsEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter canopy size or application area to see fertilizer quantities.</p>';
+    return;
+  }
+
+  var turfAdj = document.getElementById('shrub-turf').value;
+  var turfHint = document.getElementById('shrub-turf-hint');
+
+  // Turf adjacency messaging and N cap
+  var turfMsg = '';
+  var nCapPerApp = null;
+  if (turfAdj === 'yes') {
+    turfMsg = '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:0.82rem;">'
+      + '&#9888; <strong>Adjacent to fertilized lawn:</strong> Plants in or adjacent to regularly fertilized turf generally absorb sufficient nutrients from lawn applications and need no additional fertilizer. Fertilize only if the plant is showing clear deficiency symptoms. <em>(VCE Note 20)</em>'
+      + '</div>';
+  } else if (turfAdj === 'partial') {
+    turfMsg = '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:0.82rem;">'
+      + '&#9888; <strong>Partial turf overlap:</strong> Limit each application to <strong>1.5 lbs N per 1,000 sq. ft.</strong> to avoid overstimulating or burning the grass. Split into multiple applications if your annual rate is higher. <em>(VCE 430-018)</em>'
+      + '</div>';
+    nCapPerApp = 1.5;
+  }
+
+  // N recommendation
+  var nRecRaw = parseFloat(document.getElementById('shrub-n-rec').value);
+  var usingDefault = isNaN(nRecRaw) || nRecRaw === 0;
+  var nRec = usingDefault ? config.nDefault : nRecRaw;
+
+  // Fertilizer
+  var fertN = 0, fertP = 0, fertK = 0, productKey = '', cupsPerLb = 0;
+  if (shrubFertMode === 'product') {
+    productKey = document.getElementById('shrub-product-select').value;
+    if (productKey && SHRUB_PRODUCTS[productKey]) {
+      var pd = SHRUB_PRODUCTS[productKey];
+      fertN = pd.npk[0]; fertP = pd.npk[1]; fertK = pd.npk[2];
+      cupsPerLb = pd.cupsPerLb;
+    }
+  } else {
+    fertN = parseFloat(document.getElementById('shrub-fert-n').value) || 0;
+    fertP = parseFloat(document.getElementById('shrub-fert-p').value) || 0;
+    fertK = parseFloat(document.getElementById('shrub-fert-k').value) || 0;
+    cupsPerLb = fertN > 30 ? 2.5 : 1.75;
+  }
+
+  var pRating = document.getElementById('shrub-p-rating').value;
+  var kRating = document.getElementById('shrub-k-rating').value;
+  var thousandths = appArea / 1000;
+  var html = turfMsg;
+
+  // Default notice
+  if (usingDefault) {
+    html += '<div style="background:#e8f5e9;border:1px solid var(--green-light);border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:0.82rem;">'
+      + '&#127807; <strong>Using research-based default:</strong> No soil test N entered — using <strong>'
+      + config.nDefault + ' lbs N per 1,000 sq. ft.</strong> (low end of the ' + config.nRange[0] + '–' + config.nRange[1]
+      + ' lb range for ' + config.label + '). For a precise recommendation, submit a soil test to VCE or Waypoint and enter the result above. <em>(VCE 430-018)</em>'
+      + '</div>';
+  }
+
+  // Validate against range
+  if (!usingDefault && (nRec < config.nRange[0] || nRec > config.nRange[1])) {
+    var rangeWarn = nRec < config.nRange[0]
+      ? 'This rate is below the typical minimum (' + config.nRange[0] + ' lbs) for ' + config.label + ' — this may be intentional if the plant is near-healthy.'
+      : '&#9888; This rate exceeds the typical maximum (' + config.nRange[1] + ' lbs) for ' + config.label + '. Consider splitting into two applications or reducing the rate.';
+    html += '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:0.82rem;">' + rangeWarn + ' <em>(VCE 430-018)</em></div>';
+  }
+
+  // Determine applications needed based on turf cap
+  var nTotal = nRec * thousandths; // total lbs N for this area
+  var appsNeeded = 1;
+  if (nCapPerApp !== null) {
+    var nCapTotal = nCapPerApp * thousandths;
+    appsNeeded = Math.max(1, Math.ceil(nTotal / nCapTotal));
+  }
+  var nPerApp = nTotal / appsNeeded;
+  var nPerAppPer1000 = nRec / appsNeeded;
+
+  html += '<div class="result-row"><div class="result-label">Application area</div><div class="result-value"><strong>' + Math.round(appArea) + ' sq. ft.</strong>'
+    + (shrubSizeMode === 'canopy' ? ' (2&times; canopy &mdash; VCE Note 20)' : '') + '</div></div>';
+  html += '<div class="result-row"><div class="result-label">Annual nitrogen rate</div><div class="result-value"><strong>' + nRec + ' lbs N / 1,000 sq. ft.</strong></div></div>';
+
+  if (appsNeeded > 1) {
+    html += '<div class="result-row"><div class="result-label">Applications needed</div><div class="result-value"><strong>' + appsNeeded + '</strong> (split to stay &le;1.5 lbs N/1,000 sq. ft. per app over turf)</div></div>';
+  }
+
+  if (fertN > 0) {
+    var lbsPerApp = (nPerApp) / (fertN / 100);
+    var totalAnnual = lbsPerApp * appsNeeded;
+    var volPerApp = cupsPerLb ? fmtMeasure(lbsPerApp, cupsPerLb) : null;
+
+    html += '<div class="result-row"><div class="result-label">Fertilizer per application</div>'
+      + '<div class="result-value large"><strong>' + fmt(lbsPerApp, 2) + ' lbs</strong>'
+      + (volPerApp ? ' &asymp; ' + volPerApp : '') + '</div></div>';
+    if (appsNeeded > 1) {
+      html += '<div class="result-row"><div class="result-label">Total fertilizer for the year</div>'
+        + '<div class="result-value"><strong>' + fmt(totalAnnual, 2) + ' lbs</strong></div></div>';
+    }
+    html += '<div class="result-row"><div class="result-label">Rate per 1,000 sq. ft. per application</div>'
+      + '<div class="result-value">' + fmt(nPerAppPer1000, 2) + ' lbs N &rarr; ' + fmt((nPerAppPer1000) / (fertN / 100), 2) + ' lbs fertilizer</div></div>';
+  } else {
+    html += '<div class="result-row"><div class="result-label">Fertilizer quantity</div>'
+      + '<div class="result-value" style="color:var(--slate-light);">Enter fertilizer N-P-K grade or select a product to calculate quantities</div></div>';
+  }
+
+  // pH note for plant type
+  if (config.pHNote) {
+    html += '<div style="background:var(--green-mist);border-radius:6px;padding:8px 12px;margin-top:10px;font-size:0.82rem;line-height:1.6;">'
+      + '&#127789; <strong>Soil pH target for ' + config.label + ':</strong> ' + config.pHTarget + '<br>'
+      + config.pHNote + '</div>';
+  }
+
+  // P/K flags
+  var pRat = WAYPOINT_TO_VCE[pRating] || pRating;
+  var kRat = WAYPOINT_TO_VCE[kRating] || kRating;
+  if (pRat && P_REC[pRat]) {
+    var pr = P_REC[pRat];
+    html += '<div class="rec-box ' + pr.cls + '" style="margin-top:8px;"><span class="rec-icon">' + pr.icon + '</span><span><strong>Phosphorus:</strong> ' + pr.msg + '</span></div>';
+  }
+  if (kRat && K_REC[kRat]) {
+    var kr = K_REC[kRat];
+    html += '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
+  }
+
+  resultsEl.innerHTML = html;
+
+  // Timing guidance
+  var SHRUB_TIMING = {
+    'deciduous-shrub':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>Spring (bud break through May):</strong> Primary fertilization window. Apply when plants are actively growing and can take up nutrients. <em>(VCE Note 20; VCE 430-018)</em></span></li>'
+      + '<li><span class="timing-num">2</span><span><strong>Mid-summer (optional):</strong> A second application is appropriate if the first application was at the lower end of the range and the plant responds slowly. Use slow-release only. <em>(VCE 430-018)</em></span></li>'
+      + '<li><span class="timing-num">&#9940;</span><span><strong>No late-summer or fall applications:</strong> Late-season nitrogen stimulates tender new growth that is not winter-hardy. Stop applications by August 15 in Virginia. <em>(VCE Note 20)</em></span></li>'
+      + '</ul>',
+    'evergreen-shrub':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>Early spring (before new growth):</strong> Best timing for evergreen shrubs. Apply before bud break so nutrients are available as growth begins. <em>(VCE 430-018)</em></span></li>'
+      + '<li><span class="timing-num">&#9888;</span><span><strong>Shallow root caution:</strong> Feeder roots of evergreen shrubs are very shallow. Always use slow-release (≥50% WIN) or organic fertilizers, and water in thoroughly after application. <em>(UMD Extension)</em></span></li>'
+      + '<li><span class="timing-num">&#9940;</span><span><strong>No late-summer or fall applications.</strong> <em>(VCE Note 20)</em></span></li>'
+      + '</ul>',
+    'acid-shrub':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>After bloom (spring):</strong> Apply immediately after flowers fade — fertilizing during or before bloom can damage flower buds. This also avoids stimulating growth that competes with flower development. <em>(VCE 430-018; UMD Extension)</em></span></li>'
+      + '<li><span class="timing-num">2</span><span><strong>Acidifying amendments:</strong> If soil pH is above 6.0, elemental sulfur or ammonium sulfate can gradually lower pH. Apply in fall or early spring and water in. Results take several months. <em>(VCE 430-018)</em></span></li>'
+      + '<li><span class="timing-num">&#9940;</span><span><strong>No lime.</strong> Lime raises pH and will harm acid-loving plants. <em>(VCE 430-018)</em></span></li>'
+      + '</ul>',
+    'deciduous-tree':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>Late fall (after leaf drop) or early spring (before bud break):</strong> Best timing for trees. Nutrient uptake continues through roots into late fall. <em>(VCE 430-018)</em></span></li>'
+      + '<li><span class="timing-num">2</span><span><strong>Application area:</strong> Fertilize the entire root zone — the calculator has already doubled the canopy area to estimate root extent. For very large trees, the root zone may extend considerably further. <em>(VCE Note 20)</em></span></li>'
+      + '<li><span class="timing-num">&#9940;</span><span><strong>No fertilizer at planting:</strong> Research shows nitrogen suppresses root establishment in newly planted trees. Wait at least one full growing season. <em>(UMD Extension)</em></span></li>'
+      + '</ul>',
+    'evergreen-tree':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>Early spring (before new growth):</strong> Primary window for evergreen trees. <em>(VCE 430-018)</em></span></li>'
+      + '<li><span class="timing-num">2</span><span><strong>Late fall (optional):</strong> A late-fall application after growth stops can supply nutrients taken up through fall root activity without stimulating tender growth. <em>(VCE 430-018)</em></span></li>'
+      + '<li><span class="timing-num">&#9940;</span><span><strong>No fertilizer at planting.</strong> <em>(UMD Extension)</em></span></li>'
+      + '</ul>',
+    'acid-tree':
+      '<ul class="timing-list">'
+      + '<li><span class="timing-num">1</span><span><strong>Early spring:</strong> Apply before bud break. Use acidifying N sources (ammonium sulfate) or acid-specific fertilizers. <em>(VCE 430-018)</em></span></li>'
+      + '<li><span class="timing-num">2</span><span><strong>Iron chlorosis:</strong> If yellowing between leaf veins (interveinal chlorosis) is the primary symptom, iron chelate foliar or soil drench may provide faster relief than nitrogen fertilization. Address pH first — iron becomes unavailable above pH 6.5 in Virginia clay soils. <em>(VCE 430-018)</em></span></li>'
+      + '<li><span class="timing-num">&#9940;</span><span><strong>No lime.</strong> <em>(VCE 430-018)</em></span></li>'
+      + '</ul>'
+  };
+
+  timingEl.innerHTML = SHRUB_TIMING[plantType] || '<p style="color:var(--slate-light);font-size:0.875rem;">Select plant type to see timing guidance.</p>';
+
+  // Apply glossary to new content
+  applyGlossary(resultsEl);
+  applyGlossary(timingEl);
+}
+
+// ===== GLOSSARY TOOLTIPS =====
+// Each entry: canonical display term -> definition string.
+// Aliases array lists alternate forms that should also trigger the tooltip.
+// Longest phrases must come first in GLOSSARY_ENTRIES so they match before
+// their component words do (e.g. "Buffer Index" before "Buffer").
+var GLOSSARY_ENTRIES = [
+  {
+    terms: ['Water Insoluble Nitrogen', 'WIN'],
+    def: 'Water Insoluble Nitrogen — the portion of nitrogen in a fertilizer that releases slowly over time through soil microbial activity. Listed on the fertilizer bag label as "WIN %". Higher WIN = slower, longer-lasting release. Program 1 = <15% WIN; Program 2 = 15–49%; Program 3 = ≥50%.'
+  },
+  {
+    terms: ['Buffer Index'],
+    def: 'A lab measurement of your soil\'s reserve acidity — how much built-up acid needs to be neutralized. A lower number means more lime is needed to reach the target pH. Appears on VCE/Virginia Tech reports.'
+  },
+  {
+    terms: ['Buffer pH'],
+    def: 'Waypoint Analytical\'s equivalent of the VCE Buffer Index — measures the total acidity stored in the soil. A lower Buffer pH means more lime is required to reach your target pH.'
+  },
+  {
+    terms: ['base saturation'],
+    def: 'The percentage of your soil\'s nutrient-holding sites occupied by beneficial mineral ions (calcium, magnesium, potassium, sodium). The remainder is % Acidity — sites held by acid-forming hydrogen ions. Liming raises base saturation over time.'
+  },
+  {
+    terms: ['CEC', 'cation exchange capacity'],
+    def: 'Cation Exchange Capacity — a measure of how many nutrient ions your soil can hold at one time. Higher CEC (clay-rich soils) holds more nutrients and requires more lime. Lower CEC (sandy soils) means nutrients leach more easily and fertilizer should be split into smaller, more frequent applications.'
+  },
+  {
+    terms: ['pH'],
+    def: 'A measure of soil acidity or alkalinity on a 0–14 scale (7 = neutral). Most Virginia lawn grasses grow best between pH 5.8–6.8; vegetable and flower gardens prefer 6.0–6.8. Virginia soils naturally acidify over time — lime raises pH.'
+  },
+  {
+    terms: ['lime', 'liming'],
+    def: 'Ground limestone applied to raise soil pH and supply calcium (and magnesium if dolomitic). Applied in increments — no more than 50 lbs per 1,000 sq. ft. at a time for lawns, or 5–10 lbs per 100 sq. ft. for garden beds. Recommendations cover a 3-year period.'
+  },
+  {
+    terms: ['dolomitic', 'dolomitic lime', 'dolomitic limestone'],
+    def: 'A type of limestone that supplies both calcium and magnesium alongside raising pH. Recommended when soil magnesium is low or deficient. Compare with agricultural (calcitic) lime, which supplies calcium only.'
+  },
+  {
+    terms: ['nitrogen', 'N'],
+    def: 'The primary nutrient driving plant and grass growth and green color. Listed as the first number in the N-P-K analysis on a fertilizer bag. Applied based on grass species, season, and desired maintenance level — not measured directly by a soil test for lawns.'
+  },
+  {
+    terms: ['phosphorus', 'phosphate'],
+    def: 'The second number in the N-P-K fertilizer analysis (expressed as P₂O₅). Supports root development, flowering, and fruiting. If your soil test rates phosphorus High or Very High, use a zero-phosphorus fertilizer to avoid runoff into waterways.'
+  },
+  {
+    terms: ['potassium', 'potash'],
+    def: 'The third number in the N-P-K fertilizer analysis (expressed as K₂O). Supports disease resistance, drought tolerance, and winter hardiness — especially important for warm-season grasses going into winter. Use a zero-potassium fertilizer if soil test rates K High or Very High.'
+  },
+  {
+    terms: ['organic matter'],
+    def: 'Decomposed plant and animal material in the soil. Improves water retention, soil structure, and nutrient availability. In garden beds, high organic matter (≥5%) releases nitrogen naturally — about 0.4 lbs N per 1% OM per 1,000 sq. ft. per season. (UMD Extension)'
+  },
+  {
+    terms: ['preplant'],
+    def: 'Applied before planting — broadcast over the bed and incorporated into the top 4–6 inches of soil. The soil test N recommendation is always a preplant amount. Lime is also most effective when incorporated preplant.'
+  },
+  {
+    terms: ['sidedress', 'sidedressing'],
+    def: 'An additional fertilizer application made after planting, applied alongside growing plants. Supplies nutrients at the time the plant needs them most — typically 3–4 weeks after transplanting or when growth accelerates. Sidedress amounts are separate from the preplant soil test recommendation.'
+  },
+  {
+    terms: ['slow-release', 'controlled-release', 'slow release'],
+    def: 'A fertilizer whose nitrogen becomes available gradually through microbial activity or coating dissolution, rather than all at once. Reduces burn risk, extends feeding, and allows higher per-application rates. Look for WIN% (Water Insoluble Nitrogen) on the bag — ≥15% WIN = Program 2; ≥50% WIN = Program 3.'
+  }
+];
+
+// Build a flat list sorted longest-phrase-first to prevent partial matches
+var GLOSSARY_FLAT = [];
+GLOSSARY_ENTRIES.forEach(function(entry) {
+  entry.terms.forEach(function(term) {
+    GLOSSARY_FLAT.push({ term: term, def: entry.def });
+  });
+});
+GLOSSARY_FLAT.sort(function(a, b) { return b.term.length - a.term.length; });
+
+// Tags whose text content should never be wrapped
+var SKIP_TAGS = { A:1, BUTTON:1, INPUT:1, SELECT:1, TEXTAREA:1, SCRIPT:1, STYLE:1, LABEL:1 };
+
+function applyGlossary(rootEl) {
+  if (!rootEl) return;
+
+  // Collect all text nodes under rootEl that are not inside skip tags or .term spans
+  var walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, {
+    acceptNode: function(node) {
+      var p = node.parentNode;
+      while (p && p !== rootEl) {
+        if (SKIP_TAGS[p.tagName] || (p.classList && p.classList.contains('term'))) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        p = p.parentNode;
+      }
+      return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+    }
+  }, false);
+
+  var textNodes = [];
+  var n;
+  while ((n = walker.nextNode())) { textNodes.push(n); }
+
+  textNodes.forEach(function(textNode) {
+    var text = textNode.nodeValue;
+    var matched = false;
+
+    for (var i = 0; i < GLOSSARY_FLAT.length; i++) {
+      var entry = GLOSSARY_FLAT[i];
+      // Escape special regex chars in term
+      var escaped = entry.term.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+      var re = new RegExp('\\b(' + escaped + ')\\b', 'i');
+      if (!re.test(text)) continue;
+
+      // Split on first match only — re-walk will catch remaining in next pass
+      var parts = text.split(re);
+      if (parts.length < 3) continue;
+
+      var frag = document.createDocumentFragment();
+      // parts = [before, matchedText, after, matchedText, after ...]
+      // Because of the capturing group, odd indices are matches
+      for (var j = 0; j < parts.length; j++) {
+        if (j % 2 === 0) {
+          if (parts[j]) frag.appendChild(document.createTextNode(parts[j]));
+        } else {
+          var span = document.createElement('span');
+          span.className = 'term';
+          span.setAttribute('data-term', entry.term);
+          span.setAttribute('data-def', entry.def);  // def stored on element, not inside it
+          span.textContent = parts[j];
+          frag.appendChild(span);
+        }
+      }
+      textNode.parentNode.replaceChild(frag, textNode);
+      matched = true;
+      break; // Move to next text node — re-traversal would be needed for multiple terms in one node
+    }
+  });
+
+  // Bind mouse and touch events to any newly created .term spans
+  rootEl.querySelectorAll('.term').forEach(function(el) {
+    if (el.dataset.evtBound) return;
+    el.dataset.evtBound = '1';
+    el.addEventListener('mouseenter', function() { showGlossaryTooltip(el); });
+    el.addEventListener('mouseleave', hideGlossaryTooltip);
+    el.addEventListener('touchstart', function(e) {
+      e.stopPropagation();
+      if (_gTooltipTarget === el) { hideGlossaryTooltip(); }
+      else { showGlossaryTooltip(el); }
+    }, { passive: true });
+  });
+}
+
+// ===== FIXED-POSITION TOOLTIP ENGINE =====
+// Single shared tooltip node appended to <body> — never clipped by card overflow
+var _gTooltip = (function() {
+  var el = document.createElement('span');
+  el.className = 'term-tooltip';
+  document.body.appendChild(el);
+  return el;
+})();
+
+var _gTooltipTarget = null;
+
+function showGlossaryTooltip(termEl) {
+  _gTooltipTarget = termEl;
+  _gTooltip.innerHTML = termEl.dataset.def;
+
+  // Temporarily render off-screen to measure dimensions
+  _gTooltip.style.left = '-9999px';
+  _gTooltip.style.top  = '-9999px';
+  _gTooltip.classList.add('visible');
+
+  var tipW = _gTooltip.offsetWidth;
+  var tipH = _gTooltip.offsetHeight;
+  var rect = termEl.getBoundingClientRect();
+  var vw   = window.innerWidth;
+  var GAP  = 8;
+
+  // Prefer above the term; flip below if not enough clearance
+  var spaceAbove = rect.top;
+  var spaceBelow = window.innerHeight - rect.bottom;
+  var flipDown   = spaceAbove < (tipH + GAP + 10) && spaceBelow > spaceAbove;
+
+  var top = flipDown
+    ? rect.bottom + GAP
+    : rect.top - tipH - GAP;
+
+  // Center over the term, clamped within viewport
+  var left = rect.left + (rect.width / 2) - (tipW / 2);
+  left = Math.max(8, Math.min(left, vw - tipW - 8));
+
+  // Shift arrow to still point at the term after horizontal clamp
+  var arrowLeft = (rect.left + rect.width / 2) - left;
+  arrowLeft = Math.max(12, Math.min(arrowLeft, tipW - 12));
+  _gTooltip.style.setProperty('--arrow-left', arrowLeft + 'px');
+
+  _gTooltip.setAttribute('data-arrow', flipDown ? 'up' : 'down');
+  _gTooltip.style.left = left + 'px';
+  _gTooltip.style.top  = top  + 'px';
+}
+
+function hideGlossaryTooltip() {
+  _gTooltip.classList.remove('visible');
+  _gTooltipTarget = null;
+}
+
+// Reposition on scroll/resize so tooltip tracks its term
+window.addEventListener('scroll', function() {
+  if (_gTooltipTarget) showGlossaryTooltip(_gTooltipTarget);
+}, { passive: true });
+window.addEventListener('resize', function() {
+  if (_gTooltipTarget) showGlossaryTooltip(_gTooltipTarget);
+}, { passive: true });
+
+// Close on touch outside any .term
+document.addEventListener('touchstart', function(e) {
+  if (!e.target.closest || !e.target.closest('.term')) hideGlossaryTooltip();
+});
+
+// Hook into every rendering function — wrap output after each calc
+(function() {
+  // Targets: soil test results, cool/warm plan panels, lime results, garden results, flower results
+  var GLOSSARY_TARGETS = [
+    'st-results-panel',
+    'cool-results-panel', 'warm-results-panel',
+    'lime-results-panel',
+    'gdn-results', 'gdn-timing',
+    'flr-results',  'flr-timing',
+    'flr-type-hint', 'gdn-crop-n-hint',
+    'shrub-results', 'shrub-timing', 'shrub-type-hint',
+    'cool-species-hint', 'warm-species-hint',
+    'cool-n-valid', 'warm-n-valid'
+  ];
+
+  // Also apply to static field hints and labels in the DOM on first load
+  function applyGlossaryToStatic() {
+    ['.field-hint', '.field-label .field-question', '.note-banner',
+     '.about-section-intro', '.about-step'].forEach(function(sel) {
+      document.querySelectorAll(sel).forEach(function(el) {
+        applyGlossary(el);
+      });
+    });
+  }
+
+  // Patch each target: observe for innerHTML changes, re-apply after
+  function watchTarget(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var obs = new MutationObserver(function() {
+      // Disconnect briefly to avoid loops, re-apply, reconnect
+      obs.disconnect();
+      applyGlossary(el);
+      obs.observe(el, { childList: true, subtree: true });
+    });
+    obs.observe(el, { childList: true, subtree: true });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    applyGlossaryToStatic();
+    GLOSSARY_TARGETS.forEach(watchTarget);
+  });
+})();
+
 function showToast(msg) {
   var t = document.getElementById('st-toast');
   t.textContent = msg;
