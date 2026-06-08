@@ -882,3 +882,27 @@ About tab step 2 instructions updated to name all three garden-type tabs (Vegeta
 
 **Source boundary:** WSU Extension EB1034 and ISA Arboriculture & Urban Forestry journal were found in research but not used — outside the regional land-grant hierarchy. UNH Cooperative Extension was found but not used for same reason. Missouri Extension (MU) not used. All rate decisions trace to VCE 430-018 as primary.
 
+
+---
+
+## Source correction — June 8, 2026
+
+### Bulb N rate and source update
+
+**Problem:** The NC State Extension "Spring-Flowering Bulbs: Trials in North Carolina" page (`content.ces.ncsu.edu/spring-flowering-bulbs-trials-in-north-carolina`) is no longer available. Additionally, the bulb default N rate of 0.13 lbs/100 sq. ft. was an arithmetic error (it was calculated as if 9-9-6 had 3.25% N; the correct math is 4 lbs × 9% = 0.36 lbs, not 0.13).
+
+**Replacement sources (both active NC State Extension pages):**
+- Franklin County Center: `franklin.ces.ncsu.edu/2023/11/spring-flowering-bulbs` — explicit rate: 4 lbs of 10-10-10 per 100 sq. ft. at planting and at emergence. Also confirms Bulb Booster as alternative and pH target 5.8–6.5.
+- Wayne County Center: `wayne.ces.ncsu.edu/news/plant-bulbs-this-fall-for-spring-flowers/` — confirms 10-10-10 for both slow-release-at-planting and quick-release-at-planting-plus-emergence options.
+
+**Rate corrected:** `FLOWER_DEFAULTS['bulb'].nPer100` changed from `0.13` → `0.40` (4 lbs × 10% N from 10-10-10 per 100 sq. ft.).
+
+**pH target corrected:** `pHTarget` for bulbs changed from `6.5` → `6.0` (Franklin County source specifies optimal pH 5.8–6.5; 6.0 is the appropriate midpoint for this range, slightly more acid than the 6.5 used for other flower types).
+
+**All source citations updated** in: `FLOWER_DEFAULTS` note, `FLOWER_APP_PLAN` planting step note, `calcFlower()` timing section (at-planting, at-emergence, and stop-after-flowering steps), and About tab supplementary sources collapsible.
+
+**About tab:** Dead NC State trials link replaced with two active Franklin County and Wayne County pages. Both pages documented with full source descriptions explaining what guidance came from each.
+
+**Rutgers NJAES FS1220 retained** as a supporting source for the no-post-bloom-fertilization rule (that guidance is not present on the Franklin/Wayne pages but is well-sourced in FS1220).
+
+**Critical rule 21 updated:** The previously noted "fix before next session" action item is resolved. The correct rate is 0.40 lbs N/100 sq. ft.
