@@ -972,4 +972,73 @@ Full draft produced for review. Author: calculator developer (Master Gardener vo
 
 **Rutgers NJAES FS1220 retained** as a supporting source for the no-post-bloom-fertilization rule (that guidance is not present on the Franklin/Wayne pages but is well-sourced in FS1220).
 
-**Critical rule 21 updated:** The previously noted "fix before next session" action item is resolved. The correct rate is 0.40 lbs N/100 sq. ft.  
+**Critical rule 21 updated:** The previously noted "fix before next session" action item is resolved. The correct rate is 0.40 lbs N/100 sq. ft.
+
+---
+
+## Session Updates — June 10, 2026 (Conformance Audit, Round 1\)
+
+A full source-conformance and real-report validation pass was run against twelve de-identified soil test reports (VCE and Waypoint; lawn, vegetable, and flower contexts) supplied by the Help Desk. Each value was traced through the calculator's logic, against the cited source, and against each report's own lab recommendation. Two audit-planning documents and one findings document were produced (`Calculator_Conformance_Audit_Plan.md`, `Conformance_Audit_Findings_Round1.md`). Six corrections were made to `index.html`; all JS validated clean after each.
+
+### Correction 1 — Waypoint "Optimum" mismapped to VCE "H−" (fixed)
+
+`WAYPOINT_TO_VCE` maps Waypoint OP → VCE H−. The P and K interpretation branches then treated H− as "high to very high, plants do not respond, use zero-P." Result: a nutrient **at target** (Optimum) was reported as excess, and a genuinely Very-High Waypoint soil rendered identically to a merely-Optimum one — defeating the phosphorus-runoff environmental flag on every Waypoint report. The correctly-worded "Optimum" branch was dead code because OP never survived the remap.
+
+**Fix:** added a leading `pRatRaw === 'OP'` / `kRatRaw === 'OP'` branch in both interpretations that renders "at target — maintain, no additional needed." Strengthened the genuine High/Very-High branch to name runoff risk explicitly. Fixed the rating pill to show the raw Waypoint rating (Optimum) instead of the mapped H−, and added human-readable labels (`pill()` LABELS map: VL→Very Low, LO→Low, ME→Medium, OP→Optimum, VH2→Very High, etc.). The fertilizer-rec engine and carry-over were intentionally left mapping OP→H− since both correctly yield "no additional P" (matching Waypoint's own rec of 0 at Optimum).
+
+**Source confirmation:** VCE Soil Test Note 1 (452-701) states the 12–35 lb/A P range is rated "medium *or optimum*" — VCE treats optimum as the top of the adequate band, not excess. This validates routing Optimum to "maintain" rather than "high, do not apply."
+
+### Correction 2 — Lawn N-rec not captured, so the ceiling check wasn't automatic (fixed)
+
+The garden/flower tabs capture the report's N figure, but the lawn tabs did not — carry-over set P/K/species/size but left `cool-n-rate`/`warm-n-rate` blank. The VCE-ceiling warning only fired after the volunteer manually typed the figure into the lawn tab. This is the exact Fact \#11 scenario; the live example is the Irma Arritt Waypoint report (N 4.0 on a Midlothian cool-season lawn, above the 3.5 tall-fescue ceiling).
+
+**Fix:** added an optional `st-lawn-n` field on the Soil Test tab (lawn report types only; shown/hidden alongside crop and lawn-status fields). Added a new "Nitrogen Recommendation Check" interpretation card that fires when an N value is entered: cool-season checks against 3.5; warm-season flags that the figure suits bermuda (4.0 ceiling) but exceeds the 1–2 lb zoysia/centipede ceiling, prompting species confirmation. Both branches cite 430-011, DCR 2014, Soil Test Note 18, SPES-669. `carryOverToCalculators()` now passes the N value to `cool-n-rate` or `warm-n-rate` by grass type. The warning now appears at interpretation time. The Arritt report is now a clean end-to-end demonstration of the Fact \#11 feature.
+
+### Correction 3 — Waypoint garden lime not converted in the interpretation card (fixed)
+
+The Soil Test interpretation card for **garden** lime treated the entered figure as lbs/100 sq. ft. regardless of lab. Waypoint garden reports give lime in lbs/**1,000**, so the Anderson flower report's 87 would have displayed as "87 lbs/100 sq. ft., 18 applications" — off by 10×. (The Garden tab itself was correct; it divides by 10 at `calcGarden`/`calcFlower`. Only the interpretation card was wrong.)
+
+**Fix:** the garden lime card now detects `rt === 'waypoint-garden'`, converts to lbs/100 (÷10) before display and before computing the application split, and shows the conversion explicitly ("your report lists 87 lbs/1,000 sq. ft., which is 8.7 lbs/100"). Anderson 87 now reads 8.7 lbs/100 over 2 applications — consistent with the 2.5-tons-per-acre figure on the same report. **Lawn lime path confirmed correct** (both labs use lbs/1,000, no conversion, 50-lb-per-application split). No double-conversion on carry-over (raw value carries; calc converts once).
+
+### Correction 4 — Conflicting Waypoint→VCE maps for Very Low (fixed)
+
+Two maps disagreed: the local `waypointToVCE` in `onReportTypeChange` had `VL → 'L'` while the global `WAYPOINT_TO_VCE` had `VL → 'L-'`. This made the report-type round-trip unstable (VCE L− → switch to Waypoint → switch back landed on L, not L−).
+
+**Fix:** local map corrected to `VL → 'L-'` to match the global map. Waypoint's lowest tier correctly maps to VCE's lowest (L−).
+
+### Correction 5 — Extreme organic-matter advisory stated false precision (fixed)
+
+The garden OM-to-N credit (`omVal * 0.4`, garden-only, ≥5% trigger) applied the linear UMD formula without bound. At the Anderson \#3 bed (29.4% OM) it implied \~11.8 lbs N/1,000 sq. ft. of natural release — far beyond any crop's need — stated to two decimals. The math didn't error, but the precision was unwarranted at an OM level the formula isn't calibrated for.
+
+**Fix:** above 15% OM, the advisory switches to a qualitative message ("releases more nitrogen than most vegetables require; sidedressing very unlikely to be necessary; monitor plant color") and notes the standard estimate is calibrated for ordinary soils and overstates release at this level — no precise figure shown. Below 15% (the realistic 5–11% high-OM cases), the precise figure displays as before. The 15% threshold is a judgment call, not a sourced boundary — replace if a VCE/UMD validity limit is found.
+
+### Correction 6 — VCE Medium P/K bands confirmed conformant (no change)
+
+Verified the displayed interpretation ranges against VCE Soil Test Note 1 (452-701):
+
+- P Medium: **12–35 lb/A** ✅ exact  
+- K Medium: **76–175 lb/A** ✅ exact  
+- Ca Medium: **721–1,440 lb/A** ✅ exact  
+- Mg Medium: **73–144 lb/A** ✅ exact
+
+No correction needed.
+
+### Items confirmed conformant during the audit (no change)
+
+- Per-application N caps: Waypoint's own "0.7 soluble / 0.9 slow-release per 30 days" language (Arritt report) matches the calculator's Program 1/2 cool-season caps exactly.  
+- OM credit trigger: fires at ≥5% (Snow 11.4%, Anderson 5.6%), correctly silent below (Stephens 4.4%, Shaw 2.9–3.8%); garden-only, never on lawn tabs.  
+- Garden melon sidedress: more conservative than the Waypoint report's 0.5–1.5 lb guidance — documented intentional deviation (VCE 426-406, Rutgers FS626), a teaching-moment candidate.
+
+### Open items for future rounds
+
+- **`NEED_RATIO` tables vs DCR \+/− rule.** DCR Standards & Criteria specify: L−/M−/H− → use the highest value of the recommended range; L+/M+/H+ → use the lowest. The calculator's `NEED_RATIO` gradations should be verified against this rule (out of Round 1 scope).  
+- **Flower tab has no OM advisory.** The OM-to-N credit lives only in `calcGarden`, not `calcFlower`. Anderson \#3 (flower report, 29.4% OM) run through the Flower tab shows no OM note. Lower priority — flower N rates are already minimal and excess N suppresses bloom — but a consistency candidate.  
+- **Phases 1–8 remaining checklist items** in `Calculator_Conformance_Audit_Plan.md` not yet exercised by the supplied reports (e.g. shrub/tree reports — none in the test set; lime CCE adjustment).
+
+### Documents produced this session
+
+| Document | Description |
+| :---- | :---- |
+| `Calculator_Conformance_Audit_Plan.md` | Tab-by-tab audit methodology and checklist |
+| `Conformance_Audit_Findings_Round1.md` | Findings from the twelve-report validation pass |
+

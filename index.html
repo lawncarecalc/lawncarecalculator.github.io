@@ -1003,6 +1003,10 @@
                 <option value="new">New lawn (before seeding or sodding)</option>
               </select>
             </div>
+            <div class="st-field st-field-wide" id="st-lawn-n-field">
+              <label>Annual N Recommendation from report (lbs/1,000 sq. ft.) <span style="font-weight:400;font-size:0.72rem;color:var(--slate-light);">— optional</span></label>
+              <input type="number" id="st-lawn-n" min="0" step="0.1" placeholder="e.g. 4.0 (Waypoint reports only)" oninput="interpretSoilTest()">
+            </div>
             <div class="st-field st-field-wide" id="st-garden-type-field" style="display:none;">
               <label>Garden Type (from report)</label>
               <select id="st-garden-type" onchange="interpretSoilTest()">
@@ -3183,6 +3187,8 @@ function onReportTypeChange() {
   var gardenField = document.getElementById('st-garden-type-field');
   if (cropField) cropField.style.display = isGarden ? 'none' : '';
   if (lawnStatusField) lawnStatusField.style.display = isGarden ? 'none' : '';
+  var lawnNField = document.getElementById('st-lawn-n-field');
+  if (lawnNField) lawnNField.style.display = isGarden ? 'none' : '';
   if (gardenField) gardenField.style.display = isGarden ? '' : 'none';
 
   // Switch Buffer Index / Buffer pH label
@@ -3200,7 +3206,7 @@ function onReportTypeChange() {
   // Remap rating selects when switching between VCE and Waypoint
   var ratingSelects = ['st-p-rating','st-k-rating','st-ca-rating','st-mg-rating'];
   var vceToWaypoint = {'L-':'VL','L':'LO','L+':'LO','M-':'ME','M':'ME','M+':'ME','H-':'OP','H':'OP','H+':'OP','VH':'VH2','DEF':'VL','SUFF':'OP'};
-  var waypointToVCE = {'VL':'L','LO':'L','ME':'M','OP':'H-','VH2':'VH'};
+  var waypointToVCE = {'VL':'L-','LO':'L','ME':'M','OP':'H-','VH2':'VH'};
   ratingSelects.forEach(function(id) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -3345,7 +3351,9 @@ function interpretSoilTest() {
     var low = ['L-','L','L+','DEF','VL','LO'];
     var hi  = ['H-','H','H+','VH','VH2','OP','SUFF'];
     var cls = low.indexOf(r) >= 0 ? 'pill-low' : hi.indexOf(r) >= 0 ? 'pill-suff' : 'pill-med';
-    return '<span class="st-rating-pill ' + cls + '">' + r + '</span>';
+    var LABELS = {'VL':'Very Low','LO':'Low','ME':'Medium','OP':'Optimum','VH2':'Very High','SUFF':'Sufficient','DEF':'Deficient'};
+    var label = LABELS[r] || r;
+    return '<span class="st-rating-pill ' + cls + '">' + label + '</span>';
   }
 
   // ---- pH ----
@@ -3415,14 +3423,18 @@ function interpretSoilTest() {
   // ---- Lime Recommendation ----
   if (!isNaN(limeRec) && limeRec > 0) {
     if (isGarden) {
+      // Waypoint garden reports give lime in lbs/1,000 sq. ft.; the garden tab works in lbs/100, so convert.
+      var isWaypointGdn = rt === 'waypoint-garden';
+      var limeRec100 = isWaypointGdn ? (limeRec / 10) : limeRec;
+      var limeConvNote = isWaypointGdn ? ' (your report lists ' + limeRec + ' lbs/1,000 sq. ft., which is ' + limeRec100 + ' lbs/100 sq. ft.)' : '';
       var bedStatus = document.getElementById('st-bed-status') ? document.getElementById('st-bed-status').value : 'established';
       var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
-      var lApps = Math.max(1, Math.ceil(limeRec / limeMaxPer));
+      var lApps = Math.max(1, Math.ceil(limeRec100 / limeMaxPer));
       var lTypeNote = limeTyp === 'Dolomitic' ? 'Dolomitic limestone is recommended — it supplies both calcium and magnesium.'
         : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone is recommended.'
         : 'No specific lime type listed.';
-      cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec + ' lbs / 100 sq. ft.',
-        'Virginia soils naturally acidify. ' + lTypeNote + ' Per Note 19: never apply more than ' + limeMaxPer + ' lbs per 100 sq. ft. at one time (' + (bedStatus==='preplant'?'preplant':'established bed') + '). Your total of ' + limeRec + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + '.',
+      cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec100 + ' lbs / 100 sq. ft.' + limeConvNote,
+        'Virginia soils naturally acidify. ' + lTypeNote + ' Per Note 19: never apply more than ' + limeMaxPer + ' lbs per 100 sq. ft. at one time (' + (bedStatus==='preplant'?'preplant':'established bed') + '). Your total of ' + limeRec100 + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + '.',
         'Lime restores the pH needed for nutrients to be available to garden plants. Lime should not be applied annually — the recommended amount covers a three-year period. <em>(SPES-384)</em>',
         abox('action-needed', 'Use the ' + (['annual','perennial','rose','bulb'].indexOf(crop) >= 0 ? 'Flower Garden' : 'Vegetable Garden') + ' tab to calculate lime for your specific bed size.'),
         goBtn('garden', 'Open Garden Calculator')));
@@ -3467,14 +3479,16 @@ function interpretSoilTest() {
 
   // ---- Phosphorus ----
   if (!isNaN(pVal) || pRatRaw) {
-    var pDisplay = (!isNaN(pVal) ? pVal + ' lb/A ' : '') + pill(pRat) + (WAYPOINT_TO_VCE[pRatRaw] ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + pRatRaw + ')</span>' : '');
+    var pDisplay = (!isNaN(pVal) ? pVal + ' lb/A ' : '') + pill(WAYPOINT_TO_VCE[pRatRaw] ? pRatRaw : pRat);
     var pMsg, pAction;
-    if (['L-','L','L+'].indexOf(pRat) >= 0) {
+    if (pRatRaw === 'OP') {
+      pMsg = 'Optimum — your soil phosphorus is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional phosphorus.'; pAction = abox('action-good','At target — maintain. No additional phosphorus is needed. Choose a low- or no-phosphorus fertilizer and retest in 3–4 years.');
+    } else if (['L-','L','L+'].indexOf(pRat) >= 0) {
       pMsg = 'Low phosphorus. Plants almost always respond to phosphorus fertilizer at this level.'; pAction = abox('action-needed','Use a complete fertilizer containing phosphorus (e.g. 10-10-10, 12-4-8).');
     } else if (['M-','M','M+'].indexOf(pRat) >= 0) {
       pMsg = 'Medium phosphorus. Plants sometimes respond; a moderate amount is recommended to maintain soil fertility.'; pAction = abox('action-monitor','A fertilizer with phosphorus may be used. Retest in 3–4 years.');
     } else if (['H-','H','H+','VH'].indexOf(pRat) >= 0) {
-      pMsg = 'High to very high phosphorus. Plants usually do not respond.'; pAction = abox('action-good','Use a zero-phosphorus (maintenance) fertilizer.');
+      pMsg = 'High to very high phosphorus. Plants usually do not respond, and excess phosphorus can wash into waterways during rain.'; pAction = abox('action-good','Use a zero-phosphorus (maintenance) fertilizer to prevent further buildup and runoff.');
     } else {
       pMsg = 'Optimum — your soil has adequate phosphorus for good plant growth.'; pAction = abox('action-good','Maintenance applications only. Choose a fertilizer with low or no phosphorus to avoid buildup. Retest in 3–4 years.');
     }
@@ -3486,9 +3500,11 @@ function interpretSoilTest() {
 
   // ---- Potassium ----
   if (!isNaN(kVal) || kRatRaw) {
-    var kDisplay = (!isNaN(kVal) ? kVal + ' lb/A ' : '') + pill(kRat) + (WAYPOINT_TO_VCE[kRatRaw] ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + kRatRaw + ')</span>' : '');
+    var kDisplay = (!isNaN(kVal) ? kVal + ' lb/A ' : '') + pill(WAYPOINT_TO_VCE[kRatRaw] ? kRatRaw : kRat);
     var kMsg, kAction;
-    if (['L-','L','L+'].indexOf(kRat) >= 0) {
+    if (kRatRaw === 'OP') {
+      kMsg = 'Optimum — your soil potassium is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional potassium.'; kAction = abox('action-good','At target — maintain. No additional potassium is needed. A low- or no-potassium fertilizer is appropriate; retest in 3–4 years.');
+    } else if (['L-','L','L+'].indexOf(kRat) >= 0) {
       kMsg = 'Low potassium. Plants almost always respond to potassium fertilizer at this level.'; kAction = abox('action-needed','Use a fertilizer containing potassium (K2O).');
     } else if (['M-','M','M+'].indexOf(kRat) >= 0) {
       kMsg = 'Medium potassium. Plants sometimes respond; a moderate amount is recommended to maintain fertility.'; kAction = abox('action-monitor','A fertilizer with potassium may be used. Retest in 3–4 years.');
@@ -3632,6 +3648,33 @@ function interpretSoilTest() {
       cards.push(card('&#127807;', 'Grass Type &amp; Lawn Status', '', '', grassLabel + ' &mdash; ' + statusLabel,
         grassNote,
         '', '', goBtn(crop, 'Go to ' + (crop==='warm'?'Warm':'Cool') + '-Season Calculator')));
+
+      // ---- N recommendation ceiling check (Waypoint reports) ----
+      var lawnNVal = parseFloat(document.getElementById('st-lawn-n') ? document.getElementById('st-lawn-n').value : '');
+      if (!isNaN(lawnNVal) && lawnNVal > 0) {
+        var nNote, nAction;
+        if (crop === 'cool') {
+          if (lawnNVal > 3.5) {
+            nNote = 'Your report recommends <strong>' + lawnNVal + ' lbs N/1,000 sq. ft.</strong> per year. This exceeds the VCE annual ceiling of <strong>3.5 lbs</strong> for tall fescue, bluegrass, and ryegrass (VCE 430-011, DCR 2014). Waypoint nitrogen recommendations can run to the upper end of the range — appropriate for some warm-season grasses but above the cool-season limit.';
+            nAction = abox('action-needed','Cap your annual nitrogen at 3.5 lbs/1,000 sq. ft. for cool-season grass, not the higher figure on the report. Fine-leaf fescue is lower still at 2.0 lbs. The Cool-Season Calculator will enforce this ceiling.');
+          } else {
+            nNote = 'Your report recommends <strong>' + lawnNVal + ' lbs N/1,000 sq. ft.</strong> per year, which is within the VCE ceiling of 3.5 lbs for cool-season grasses (VCE 430-011).';
+            nAction = abox('action-good','Within the VCE annual ceiling. Carry this figure to the Cool-Season Calculator to build your application plan.');
+          }
+        } else {
+          if (lawnNVal > 2.0) {
+            nNote = 'Your report recommends <strong>' + lawnNVal + ' lbs N/1,000 sq. ft.</strong> per year. This is appropriate for <strong>bermudagrass or St. Augustinegrass</strong> (ceiling 4.0 lbs) but exceeds the VCE annual ceiling of <strong>1&ndash;2 lbs</strong> for <strong>zoysiagrass and centipedegrass</strong> (Soil Test Note 18, SPES-669). Confirm your specific grass type before accepting this figure.';
+            nAction = abox('action-needed','If your lawn is zoysiagrass or centipedegrass, cap annual nitrogen at 2.0 lbs/1,000 sq. ft., not the report figure. The Warm-Season Calculator enforces the ceiling for the species you select.');
+          } else {
+            nNote = 'Your report recommends <strong>' + lawnNVal + ' lbs N/1,000 sq. ft.</strong> per year, within VCE ceilings for all warm-season grasses.';
+            nAction = abox('action-good','Within the VCE annual ceiling. Carry this figure to the Warm-Season Calculator to build your application plan.');
+          }
+        }
+        cards.push(card('&#9889;', 'Nitrogen Recommendation Check', '', '', lawnNVal + ' lbs N/1,000 sq. ft. (annual)',
+          'Waypoint soil test reports include an annual nitrogen figure; VCE reports do not.</p><p><strong>Check against the VCE ceiling:</strong> ' + nNote,
+          'Applying more nitrogen than the VCE annual ceiling increases leaching, pushes excessive top growth at the expense of roots, and can exceed Virginia nutrient management standards.', nAction,
+          goBtn(crop, 'Go to ' + (crop==='warm'?'Warm':'Cool') + '-Season Calculator')));
+      }
     }
   }
 
@@ -3815,6 +3858,13 @@ function carryOverToCalculators() {
     setSelect('warm-k-rating', kRat);
     // Default warm species to bermuda when grass type is warm; leave as-is for cool carry-over
     if (crop === 'warm') setSelect('warm-species', 'bermuda');
+
+    // Carry the report's annual N recommendation (Waypoint) to the matching tab
+    var lawnN = document.getElementById('st-lawn-n') ? document.getElementById('st-lawn-n').value : '';
+    if (lawnN !== '' && !isNaN(parseFloat(lawnN))) {
+      if (crop === 'cool') setInput('cool-n-rate', lawnN);
+      else if (crop === 'warm') setInput('warm-n-rate', lawnN);
+    }
 
     // Lime tab
     if (areaSize) setInput('lime-lawn-size', areaSize); else clearInput('lime-lawn-size');
@@ -4517,7 +4567,12 @@ function calcGarden() {
     var omVal = parseFloat(document.getElementById('st-om') ? document.getElementById('st-om').value : '') || 0;
     var omNCredit = omVal * 0.4; // lbs N released per 1,000 sq. ft. per year (UMD Extension)
     var omNote = '';
-    if (omVal >= 5) {
+    if (omVal >= 15) {
+      // Extreme OM (heavily amended / muck-like beds). The linear 0.4-per-1% formula is validated
+      // for ordinary garden OM ranges and overstates release at this level, so give a qualitative
+      // advisory rather than a precise figure.
+      omNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Very high organic matter (' + omVal.toFixed(1) + '%):</strong> Soil this rich in organic matter releases more nitrogen through the season than most vegetables require. Sidedressing is very unlikely to be necessary. Monitor plant color and only add nitrogen if plants are pale or growth is weak. The standard release estimate (0.4 lbs N per 1% OM) is calibrated for ordinary garden soils and overstates release at this level, so no precise figure is shown. <em>(UMD Extension; Rutgers FS626)</em></div>';
+    } else if (omVal >= 5) {
       var omNPer100 = omNCredit / 10; // lbs N per 100 sq. ft.
       var omNForBed = omNPer100 * hundredths; // lbs N for user's actual bed
       omNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>High organic matter (' + omVal.toFixed(1) + '%):</strong> Your soil is releasing approximately <strong>' + fmt(omNPer100, 2) + ' lbs of N per 100 sq. ft.</strong> (' + fmt(omNForBed, 2) + ' lbs for your ' + area + ' sq. ft. bed) naturally this season. You may need little or no sidedress \u2014 monitor plant color before applying. <em>(UMD Extension: 0.4 lbs N per 1% OM per 1,000 sq. ft.; Rutgers FS626)</em></div>';
