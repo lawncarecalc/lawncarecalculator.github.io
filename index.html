@@ -1210,7 +1210,7 @@
               <!-- N rate guidance table — primary tool -->
               <div style="background:var(--green-mist);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
                 <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.9rem;">&#9728;&#65039; Choosing your annual N rate</div>
-                <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Your soil test report may include a nitrogen recommendation — use it as a starting point, but verify it against Virginia guidelines. <strong>Waypoint rates can reach the upper end of the Virginia range — appropriate for bermudagrass but too high for zoysiagrass, and far too high for centipedegrass.</strong><br><br>The maximum you can apply in a single application depends on how quickly your fertilizer releases nitrogen. Quick-release fertilizers — like urea or ammonium sulfate (Program 1: no "Water Insoluble Nitrogen" or WIN listed on the bag) — have a lower per-application limit. Slow-release fertilizers — look for "Water Insoluble Nitrogen (WIN)" on the bag label (Program 2: 15–49% WIN; Program 3: 50% or more WIN) — allow a higher per-application rate and fewer applications per season. If your annual target is 3.0 lbs and you are using a quick-release product (Program 1, max 0.9 lbs per application for warm-season), you will need at least 4 separate applications to stay within Virginia's limits.</p>
+                <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Your soil test report may include a nitrogen recommendation — use it as a starting point, but verify it against Virginia guidelines. <strong>Waypoint rates can reach the upper end of the Virginia range — appropriate for bermudagrass but potentially too high for zoysiagrass and centipedegrass. Waypoint's centipedegrass guidance calls for 0.75 to 1 lb N per 1,000 sq. ft. every six weeks through late summer, a derived annual total that can reach approximately 3 lbs — well above the 1 to 2 lb annual ceiling in VCE Soil Test Note 18 (452-718).</strong><br><br>The maximum you can apply in a single application depends on how quickly your fertilizer releases nitrogen. Quick-release fertilizers — like urea or ammonium sulfate (Program 1: no "Water Insoluble Nitrogen" or WIN listed on the bag) — have a lower per-application limit. Slow-release fertilizers — look for "Water Insoluble Nitrogen (WIN)" on the bag label (Program 2: 15–49% WIN; Program 3: 50% or more WIN) — allow a higher per-application rate and fewer applications per season. If your annual target is 3.0 lbs and you are using a quick-release product (Program 1, max 0.9 lbs per application for warm-season), you will need at least 4 separate applications to stay within Virginia's limits.</p>
                 <table style="width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:10px;">
                   <thead><tr style="background:var(--green-deep);color:white;">
                     <th style="padding:6px 8px;text-align:left;font-weight:500;">Lawn situation</th>
@@ -1220,7 +1220,7 @@
                   </tr></thead>
                   <tbody>
                     <tr><td style="padding:6px 8px;">Zoysiagrass — any situation</td><td style="padding:6px 8px;text-align:center;">1.0–2.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.7 (P1) / 1.0 (P2/P3)</td><td style="padding:6px 8px;text-align:center;">2</td></tr>
-                    <tr style="background:white;"><td style="padding:6px 8px;">Centipedegrass — any situation</td><td style="padding:6px 8px;text-align:center;">0.5–1.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.5 (P1) / 0.5 (P2/P3)</td><td style="padding:6px 8px;text-align:center;">1–2</td></tr>
+                    <tr style="background:white;"><td style="padding:6px 8px;">Centipedegrass — any situation</td><td style="padding:6px 8px;text-align:center;">1.0–2.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.5 (P1) / 0.5 (P2/P3)</td><td style="padding:6px 8px;text-align:center;">1–2</td></tr>
                     <tr style="background:white;"><td style="padding:6px 8px;">Bermudagrass / St. Augustine — average lawn</td><td style="padding:6px 8px;text-align:center;">2.0–3.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.9 (P1) / 1.0 (P2) / 1.5 (P3)</td><td style="padding:6px 8px;text-align:center;">3</td></tr>
                     <tr><td style="padding:6px 8px;">Bermudagrass / St. Augustine — higher quality</td><td style="padding:6px 8px;text-align:center;">3.0–4.0 lbs</td><td style="padding:6px 8px;text-align:center;">0.9 (P1) / 1.0 (P2) / 1.5 (P3)</td><td style="padding:6px 8px;text-align:center;">4</td></tr>
                   </tbody>
@@ -1236,7 +1236,7 @@
               <!-- Input field — confirms the choice made above -->
               <label style="font-size:0.82rem;color:var(--slate-mid);display:block;margin-bottom:4px;">Enter your chosen annual N rate (lbs per 1,000 sq. ft.)</label>
               <input type="number" id="warm-n-rate" min="0" step="0.1" placeholder="e.g. 2.0" oninput="calcWarm()">
-              <div class="field-hint" id="warm-n-hint">Bermudagrass/St. Augustine: max 4.0 lbs &nbsp;|&nbsp; Zoysiagrass: 1.0–2.0 lbs &nbsp;|&nbsp; Centipedegrass: 0.5–1.0 lbs <em>(SPES-669, SPES-670)</em></div>
+              <div class="field-hint" id="warm-n-hint">Bermudagrass/St. Augustine: max 4.0 lbs &nbsp;|&nbsp; Zoysiagrass: 1.0–2.0 lbs &nbsp;|&nbsp; Centipedegrass: 1.0–2.0 lbs <em>(SPES-669, SPES-670, Soil Test Note 18)</em></div>
               <div id="warm-n-valid" style="margin-top:6px;"></div>
             </div>
 
@@ -2198,7 +2198,7 @@
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/dam/pubs_ext_vt_edu/430/430-522/SPES-669.pdf" target="_blank" style="color:var(--green-mid);">Publication 430-522 (SPES-669P) — Maintenance Calendar for Warm-Season Turfgrasses in Virginia</a></div>
               <div class="about-source-meta">M. Goatley &middot; S. Askew &middot; D. McCall (VT); C. Wilson (Penn State Extension) — VCE, 2025</div>
-              <p>Per-application N limits, bermudagrass/St. Augustine 4.0 lb ceiling, zoysiagrass 1&ndash;2 lb annual range, centipedegrass 0.5&ndash;1.0 lb annual range, 3&ndash;4 year soil testing recommendation.</p>
+              <p>Per-application N limits, bermudagrass/St. Augustine 4.0 lb ceiling, zoysiagrass 1&ndash;2 lb annual range, centipedegrass 1.0&ndash;2.0 lb annual range, 3&ndash;4 year soil testing recommendation.</p>
             </div>
             <div class="about-source">
               <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/content/dam/pubs_ext_vt_edu/430/430-523/SPES-670.pdf" target="_blank" style="color:var(--green-mid);">Publication 430-523 (SPES-670P) — Maintenance Calendar for Cool-Season Turfgrasses in Virginia</a></div>
@@ -2475,7 +2475,7 @@ var SPECIES_CONFIG = {
   // Warm-season
   bermuda:   { label:'Bermudagrass / St. Augustinegrass', maxN:4.0, maxApp:{1:0.9, 2:1.0, 3:1.5}, type:'warm' },
   zoysia:    { label:'Zoysiagrass',                       maxN:2.0, maxApp:{1:0.7, 2:1.0, 3:1.0}, type:'warm' },
-  centipede: { label:'Centipedegrass',                    maxN:1.0, maxApp:{1:0.5, 2:0.5, 3:0.5}, type:'warm' }
+  centipede: { label:'Centipedegrass',                    maxN:2.0, maxApp:{1:0.5, 2:0.5, 3:0.5}, type:'warm' }
 };
 
 // ===== TIMING GUIDANCE (per 430-011 Tables 2-4) =====
