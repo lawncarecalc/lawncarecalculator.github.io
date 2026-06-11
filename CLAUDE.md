@@ -1042,3 +1042,59 @@ No correction needed.
 | `Calculator_Conformance_Audit_Plan.md` | Tab-by-tab audit methodology and checklist |
 | `Conformance_Audit_Findings_Round1.md` | Findings from the twelve-report validation pass |
 
+---
+
+## Session Updates — June 10, 2026 (Clipping & Shade Controls)
+
+Following the conformance audit, two interactive site-adjustment controls were built on both lawn tabs (cool and warm). Both were previously **advisory text only** — the calculator told the user to manually reduce their N rate but did no arithmetic. The Fun Facts doc (\#3) and the Goatley email both described an automatic clipping "toggle" that did not exist; these builds make those claims true. All JS validated clean after each edit.
+
+### Clipping return credit — now an interactive toggle
+
+**Before:** advisory paragraphs on both tabs instructing the user to "reduce your annual total by up to one-third." No control, no calculation.
+
+**Built:**
+
+- Checkbox `cool-clip-toggle` / `warm-clip-toggle` below the N-rate input on each tab.  
+- Helper `clipCredit(prefix, rawRate)` returns the reduction: **one-third of the target, capped at 1.0 lb/1,000 sq. ft.** The cap reflects VCE 430-011's actual figure (clippings return 0.5–1 lb N/year). Without it, a 4.0-lb bermuda target would over-credit at 1.33 lbs. With it, the one-third rule governs low targets and the 1.0-lb ceiling governs high ones.  
+- **Autoplan mode:** auto-reduces the effective rate; plan recomputes applications/per-app amounts from the reduced figure; shows a credit box explaining the adjustment.  
+- **Manual multi-slot mode:** does NOT auto-reduce user-entered slots (the user controls those); shows an informational note with the reduced target to aim for.  
+- **Ceiling check stays on the raw target** in both modes — a clipping credit cannot be used to justify exceeding the species N ceiling.
+
+### Shade adjustment — 3-position control
+
+**Before:** advisory text ("one-half to two-thirds as much nitrogen") on both tabs. No control.
+
+**Source basis:** VCE 430-011 states heavily shaded grass needs "one-half to two-thirds as much nitrogen as grasses growing in full sun" — a **range, not a point value**. Clemson HGIC and Cornell corroborate. The source does not support proportioning by degree of shade or percent-of-day, so the control is a discrete 3-position choice the user judges, not a slider with interpolation.
+
+**Built:**
+
+- 3-position radio group (`cool-shade` / `warm-shade`): **Full sun (×1) / Some shade (×0.67) / Heavy shade (×0.5)** — the two reduction values are the exact ends of VCE's stated range, not an invented midpoint.  
+- The exact VCE 430-011 quote is displayed above the control so the user places themselves in the band.  
+- **Area note** (per Help Desk guidance): if a lawn is part sun / part shade, the user is told to run the shaded zone as a **separate calculation** using only its square footage — the reduction must not be applied to a whole mixed lawn. (Proportioning isn't supported by the guidance.)  
+- `shadeFactor(prefix)` reads the selected radio; `effectiveNRate(prefix, rawRate)` applies **shade first, then clipping credit on the shade-adjusted target** — matching the order in the advisory text.  
+- Warm-season control carries the 430-011 winterkill caution (avoid late-season N in shade).
+
+### Fine fescue in heavy shade — caution note
+
+VCE 430-011: fine fescue in heavy shade should be reduced even further, or applications omitted until fall leaf collection is finished. A warning note now fires in both autoplan and manual modes when species \= `fine` AND heavy shade (×0.5) is selected. Silent for fine fescue in lighter shade/full sun and for other species in any shade.
+
+### Revalidation against advisory-text worked examples
+
+The combined shade \+ clipping math was checked against the examples already written into the advisory text — all matched exactly:
+
+- Cool tall fescue 2.5 → 1.675 at ×0.67 (text: "1.67"); → 1.25 at ×0.5 (text: "1.25")  
+- Cool fescue 2.5, heavy shade \+ clippings → 0.83 (text range "0.8–1.1", at the ×0.5 end)  
+- Warm bermuda 3.0 → 2.01 at ×0.67 (text: "2.0"); → 1.5 at ×0.5 (text: "1.5")  
+- Warm bermuda 3.0, heavy shade \+ clippings → 1.0 (text range "1.0–1.3", at the ×0.5 end)
+
+### Note on a syntax error caught in process
+
+The fine-fescue `if` block was initially committed with an unclosed brace; the post-edit JS parse check caught it before output (it would have broken the entire script, not just the feature). Fixed and re-validated. Reinforces: run the script-parse check after every JS edit.
+
+### Area carry-over — verified working (no change)
+
+Confirmed `carryOverToCalculators()` reads `st-lawn-size` and sets `cool-lawn-size`, `warm-lawn-size`, `lime-lawn-size`, `gdn-area-direct`, and `flr-area-direct` (the latter two also switch to direct-area mode). Carry-over fires on the "Apply to Calculators" button. The button appears when a P/K rating and crop/grass type are set (`canCarryOver = (pRatRaw || kRatRaw) && (isGarden || crop)`); area is not part of that gate, so entering area alone (no ratings) does not surface the button — acceptable for normal soil-test use. A built-in guard warns the user if they open the carry-over bar without an area entered.
+
+### Toggles/controls not wired to carry-over or sample loader
+
+The clipping toggle and shade radios always start at their defaults (unchecked / full sun) — a safe opt-in default. They are not set by carry-over or the sample-report loader. If sample reports should demonstrate these features, that is a small future addition.  

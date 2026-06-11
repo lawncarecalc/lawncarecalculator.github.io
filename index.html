@@ -1105,6 +1105,25 @@
               <label style="font-size:0.82rem;color:var(--slate-mid);display:block;margin-bottom:4px;">Enter your chosen annual N rate (lbs per 1,000 sq. ft.)</label>
               <input type="number" id="cool-n-rate" min="0" step="0.1" placeholder="e.g. 2.0" oninput="calcCool()">
               <div class="field-hint" id="cool-n-hint">Tall fescue/bluegrass/ryegrass: max 3.5 lbs &nbsp;|&nbsp; Fine-leaf fescue: max 2.0 lbs</div>
+              <label style="display:flex;align-items:flex-start;gap:8px;margin-top:10px;font-size:0.82rem;color:var(--slate-mid);cursor:pointer;line-height:1.4;">
+                <input type="checkbox" id="cool-clip-toggle" onchange="calcCool()" style="margin-top:3px;flex-shrink:0;">
+                <span>&#9851; <strong>I mulch-mow and return clippings.</strong> Reduces your annual nitrogen target by up to one-third (capped at 1 lb/1,000 sq. ft., the nitrogen clippings return). <em>(VCE 430-011, SPES-384)</em></span>
+              </label>
+              <div style="margin-top:12px;padding:10px 12px;background:var(--cream);border:1px solid var(--border);border-radius:6px;">
+                <div style="font-size:0.82rem;color:var(--slate-mid);line-height:1.4;margin-bottom:8px;">&#9729;&#65039; <strong>Is this area shaded?</strong> VCE 430-011: <em>"Grasses growing in heavily shaded areas require only one-half to two-thirds as much nitrogen as grasses growing in full sun."</em> You judge how shaded the area is and choose accordingly.</div>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                  <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
+                    <input type="radio" name="cool-shade" value="1" checked onchange="calcCool()"> Full sun
+                  </label>
+                  <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
+                    <input type="radio" name="cool-shade" value="0.67" onchange="calcCool()"> Some shade (&#8532;)
+                  </label>
+                  <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
+                    <input type="radio" name="cool-shade" value="0.5" onchange="calcCool()"> Heavy shade (&#189;)
+                  </label>
+                </div>
+                <div style="font-size:0.76rem;color:var(--slate-light);line-height:1.4;margin-top:8px;">&#9888;&#65039; If your lawn is part sun and part shade, run the shaded zone as a <strong>separate calculation</strong> using only its square footage — the shade reduction should not be applied to your whole lawn.</div>
+              </div>
               <div id="cool-n-valid" style="margin-top:6px;"></div>
             </div>
 
@@ -1241,6 +1260,25 @@
               <label style="font-size:0.82rem;color:var(--slate-mid);display:block;margin-bottom:4px;">Enter your chosen annual N rate (lbs per 1,000 sq. ft.)</label>
               <input type="number" id="warm-n-rate" min="0" step="0.1" placeholder="e.g. 2.0" oninput="calcWarm()">
               <div class="field-hint" id="warm-n-hint">Bermudagrass/St. Augustine: max 4.0 lbs &nbsp;|&nbsp; Zoysiagrass: 1.0–2.0 lbs &nbsp;|&nbsp; Centipedegrass: 1.0–2.0 lbs <em>(SPES-669, SPES-670, Soil Test Note 18)</em></div>
+              <label style="display:flex;align-items:flex-start;gap:8px;margin-top:10px;font-size:0.82rem;color:var(--slate-mid);cursor:pointer;line-height:1.4;">
+                <input type="checkbox" id="warm-clip-toggle" onchange="calcWarm()" style="margin-top:3px;flex-shrink:0;">
+                <span>&#9851; <strong>I mulch-mow and return clippings.</strong> Reduces your annual nitrogen target by up to one-third (capped at 1 lb/1,000 sq. ft., the nitrogen clippings return). <em>(VCE 430-011, SPES-384)</em></span>
+              </label>
+              <div style="margin-top:12px;padding:10px 12px;background:var(--cream);border:1px solid var(--border);border-radius:6px;">
+                <div style="font-size:0.82rem;color:var(--slate-mid);line-height:1.4;margin-bottom:8px;">&#9729;&#65039; <strong>Is this area shaded?</strong> VCE 430-011: <em>"Grasses growing in heavily shaded areas require only one-half to two-thirds as much nitrogen as grasses growing in full sun."</em> You judge how shaded the area is and choose accordingly. Note: shaded warm-season grasses are more prone to winterkill — avoid late-season nitrogen in shade.</div>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                  <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
+                    <input type="radio" name="warm-shade" value="1" checked onchange="calcWarm()"> Full sun
+                  </label>
+                  <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
+                    <input type="radio" name="warm-shade" value="0.67" onchange="calcWarm()"> Some shade (&#8532;)
+                  </label>
+                  <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
+                    <input type="radio" name="warm-shade" value="0.5" onchange="calcWarm()"> Heavy shade (&#189;)
+                  </label>
+                </div>
+                <div style="font-size:0.76rem;color:var(--slate-light);line-height:1.4;margin-top:8px;">&#9888;&#65039; If your lawn is part sun and part shade, run the shaded zone as a <strong>separate calculation</strong> using only its square footage — the shade reduction should not be applied to your whole lawn.</div>
+              </div>
               <div id="warm-n-valid" style="margin-top:6px;"></div>
             </div>
 
@@ -2589,6 +2627,48 @@ var AUTO_TIMING = {
   warm: { 1:['June'], 2:['May','July'], 3:['April','June','August 1'], 4:['April','May','June','July–August 1'] }
 };
 
+// Returns the clipping-credit reduction (lbs N/1,000 sq ft) for a given raw annual target.
+// VCE 430-011: returning clippings recycles 0.5-1 lb N/year, up to ~one-third of the requirement.
+// We model it as one-third of the target, capped at 1.0 lb (the upper bound clippings actually return).
+function clipCredit(prefix, rawRate) {
+  var tog = document.getElementById(prefix + '-clip-toggle');
+  if (!tog || !tog.checked || !rawRate || rawRate <= 0) return 0;
+  return Math.min(rawRate / 3, 1.0);
+}
+
+// Shade factor from the 3-position control: 1 (full sun), 0.67 (some shade), 0.5 (heavy shade).
+// VCE 430-011: heavily shaded grass needs one-half to two-thirds as much N as full sun.
+function shadeFactor(prefix) {
+  var sel = document.querySelector('input[name="' + prefix + '-shade"]:checked');
+  var v = sel ? parseFloat(sel.value) : 1;
+  return (isNaN(v) || v <= 0) ? 1 : v;
+}
+
+// Combined effective rate: shade applied first, then clipping credit on the shade-adjusted target.
+function effectiveNRate(prefix, rawRate) {
+  if (!rawRate || rawRate <= 0) return { eff: 0, shadeF: 1, shadeAdj: 0, clip: 0 };
+  var sf = shadeFactor(prefix);
+  var shadeAdj = Math.round((rawRate * sf) * 1000) / 1000;
+  var clip = clipCredit(prefix, shadeAdj);
+  var eff = Math.round((shadeAdj - clip) * 1000) / 1000;
+  return { eff: eff, shadeF: sf, shadeAdj: shadeAdj, clip: clip };
+}
+
+// Informational note for the MANUAL multi-slot planner (does not auto-reduce user-entered slots).
+function clipMultiNote(prefix, rawRate) {
+  var r = effectiveNRate(prefix, rawRate);
+  var ffNote = '';
+  var spKey = document.getElementById(prefix + '-species') ? document.getElementById(prefix + '-species').value : '';
+  if (spKey === 'fine' && r.shadeF === 0.5) {
+    ffNote = '<div class="warning-badge" style="margin-top:6px;">&#9888; <strong>Fine fescue in heavy shade:</strong> VCE 430-011 advises reducing fertilization even further than the standard shade reduction — or omitting applications until fall leaf collection is finished. <em>(VCE 430-011)</em></div>';
+  }
+  if (r.shadeF === 1 && r.clip <= 0) return ffNote;
+  var parts = [];
+  if (r.shadeF !== 1) parts.push('shade reduces your ' + rawRate + ' lb target to <strong>' + r.shadeAdj + ' lbs</strong> (\u00d7' + r.shadeF + ', per VCE 430-011)');
+  if (r.clip > 0) parts.push('returning clippings supplies about ' + (Math.round(r.clip*100)/100) + ' lbs');
+  return '<div class="rec-box rec-p" style="margin-top:6px;"><span class="rec-icon">&#9729;&#65039;</span><span><strong>Site adjustments:</strong> ' + parts.join('; ') + '. Aim for about <strong>' + r.eff + ' lbs</strong> from fertilizer — distribute that reduced total across your applications below. <em>(VCE 430-011)</em></span></div>' + ffNote;
+}
+
 function calcAutoplan(prefix) {
   var lawnSize   = parseFloat(document.getElementById(prefix + '-lawn-size').value) || 0;
   var nRate      = parseFloat(document.getElementById(prefix + '-n-rate').value) || 0;
@@ -2626,10 +2706,22 @@ function calcAutoplan(prefix) {
 
   var prog       = detectProgram(autoN, autoWin);
   var maxNApp    = species ? species.maxApp[prog.program] : (isCool ? {1:0.7,2:0.9,3:1.5} : {1:0.9,2:1.0,3:1.5})[prog.program];
-  var numApps    = Math.ceil(nRate / maxNApp);
-  var nPerApp    = Math.round((nRate / numApps) * 1000) / 1000;
+  var eff        = effectiveNRate(prefix, nRate);
+  var effRate    = eff.eff; // rate the plan actually delivers (shade applied first, then clippings)
+  var numApps    = Math.ceil(effRate / maxNApp);
+  var nPerApp    = Math.round((effRate / numApps) * 1000) / 1000;
   var lbsPerApp  = autoN > 0 ? (nPerApp / (autoN / 100)) * kSq : 0;
   var totalLbs   = lbsPerApp * numApps;
+  var clipNote   = '';
+  if (eff.shadeF !== 1 || eff.clip > 0) {
+    var adjParts = [];
+    if (eff.shadeF !== 1) adjParts.push('shade reduces it to ' + eff.shadeAdj + ' lbs (\u00d7' + eff.shadeF + ')');
+    if (eff.clip > 0) adjParts.push('clippings supply about ' + (Math.round(eff.clip*100)/100) + ' lbs');
+    clipNote = '<div class="rec-box rec-p" style="margin-bottom:12px;"><span class="rec-icon">&#9729;&#65039;</span><span><strong>Site adjustments applied:</strong> your ' + nRate + ' lb target &mdash; ' + adjParts.join(', then ') + ' &mdash; so the plan delivers <strong>' + effRate + ' lbs</strong> from fertilizer. <em>(VCE 430-011)</em></span></div>';
+  }
+  if (speciesKey === 'fine' && eff.shadeF === 0.5) {
+    clipNote += '<div class="warning-badge" style="margin-bottom:12px;">&#9888; <strong>Fine fescue in heavy shade:</strong> VCE 430-011 advises reducing fertilization even further than the standard shade reduction — or omitting applications until fall leaf collection is finished. Treat the figure below as an upper limit and consider applying less. <em>(VCE 430-011)</em></div>';
+  }
 
   // Warning if more than 4 applications needed
   var overFourNote = '';
@@ -2719,7 +2811,7 @@ function calcAutoplan(prefix) {
   planHtml += pNote + kNote;
 
   // Write to inline result (screen) — includes print button
-  resultEl.innerHTML = autoHtml + overFourNote + planHtml
+  resultEl.innerHTML = autoHtml + clipNote + overFourNote + planHtml
     + '<button class="print-plan-btn no-print" onclick="printPlan(\'' + prefix + '\')" style="margin-top:14px;">&#128424; Print Plan</button>';
 
   // Write to right panel (print only)
@@ -2874,9 +2966,9 @@ function calcMulti(prefix) {
       windowWarning = '';
     }
 
-    nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Annual N rate is within the ' + maxN + ' lb ceiling for ' + species.label + '</span>' + windowWarning;
+    nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Annual N rate is within the ' + maxN + ' lb ceiling for ' + species.label + '</span>' + windowWarning + clipMultiNote(prefix, nRate);
   } else if (nRate > 0) {
-    nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Annual N rate is within the ' + maxN + ' lb ceiling for ' + (isCool ? 'cool-season' : 'warm-season') + '</span>';
+    nValid.innerHTML = '<span class="validation-badge validation-ok">&#10003; Annual N rate is within the ' + maxN + ' lb ceiling for ' + (isCool ? 'cool-season' : 'warm-season') + '</span>' + clipMultiNote(prefix, nRate);
   } else {
     nValid.innerHTML = '';
   }
@@ -3416,7 +3508,7 @@ function interpretSoilTest() {
     cards.push(card('&#9878;', 'Base Saturation &amp; Acidity', 'Acidity % = 100 minus Base Saturation %', '',
       'Base sat: ' + basesat.toFixed(1) + '% / Acidity: ' + acidity + '%',
       'Base saturation is the percentage of your soil\'s nutrient-holding sites occupied by beneficial ions. The remainder is % Acidity — sites occupied by acid-forming hydrogen ions.',
-      'In most home lawn and landscape situations this is background information — the important action is in your pH and Lime Recommendation cards. Liming raises base saturation by replacing acid ions with calcium and magnesium. <em>(SPES-384)</em>',
+      'In most home lawn and landscape situations base saturation is background information. What matters for your soil is its pH and whether lime is recommended — if your report lists a pH or lime figure, enter those for specific guidance. Liming gradually raises base saturation as soil acidity is neutralized. <em>(SPES-384)</em>',
       bsAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn('lime','Open Lime Calculator') : ''));
   }
 
