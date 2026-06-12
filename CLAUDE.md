@@ -1229,3 +1229,33 @@ Research/source question: does pelletized lime change application timing? **Yes*
 | Add VCE 452-510 to About source list | Recommended | Minor — not yet done |
 
 All other audit and enhancement items through this session are ✅ resolved or documented intentional deviations.
+
+---
+
+## Session Updates — June 10, 2026 (Fertilizer grades table — marketplace survey)
+
+### Marketplace survey of high-N, low/zero-P lawn fertilizers
+
+Surveyed real lawn fertilizers (retail + professional + organic) to populate the "Help me choose a fertilizer at the garden center" table, organized by the WIN threshold that drives program selection. Survey: `Lawn_Fertilizer_Product_Survey.md` (working reference, retains brand examples for traceability). Public-facing table extract: `Fertilizer_Grades_Table.md`.
+
+**Design constraint (per user): NO brand names in the calculator.** Products are represented only by generic N-P-K + WIN profiles so residents can match what's on the shelf without endorsement. Confirmed zero brand strings in index.html after the edit.
+
+### Common grades table rewritten (in the fert-chooser, both lawn tabs)
+
+The old table showed nearly every grade as "0% WIN / P1" with two vague slow-release rows. Replaced with survey-grounded generic profiles:
+- Quick-release zero-P maintenance grades that actually dominate big-box shelves: 28-0-3 to 32-0-4, 29-0-3 to 38-0-4, urea 46-0-0 (all P1).
+- Four concrete slow-release zero-P profiles by chemistry: 25-0-5 methylene-urea/MESA (~50%), 32-0-10 poly-coated urea (50-65%), 39-0-0 ureaform (~70%+), 9-0-9 organic feather/blood meal (~85%+).
+- Catch-all "any slow-release blend, WIN 15-49% of N" → P2.
+
+**Critical correctness fix surfaced by the survey:** the table now states explicitly that **WIN must be read as percent of TOTAL NITROGEN, not percent of bag weight** — divide the label WIN figure by total N%. This is the #1 misclassification trap (e.g. a label's "0.6% WIN" on 24-N = 2.5% of N = P1, not slow-release). Header and footnote both spell out the unit. Lists the slow-release chemistries to look for (methylene urea, MESA, ureaform, coated urea, IBDU, protein organics). Footnote reinforces no-brands + label-is-authority, cited VCE 430-011 + Notes 17/18.
+
+**Phosphorus exclusion preserved:** zero-P rows only for the maintenance/High-P case; starter grades (24-25-4, 21-22-4) noted as new-lawn-only because they're intentionally high-P; organic N sources that carry P (e.g. biosolid-based ~4% P2O5) flagged in the survey as disqualified when P tests High.
+
+**Note for review:** high-WIN rows (≥50%) are labeled Program 3, consistent with the calculator's existing 3-program structure. The VCE source defines only the 15% (P1/P2) threshold; if Program 3 has its own defined WIN cutoff, confirm the ~50% products land in the intended program. JS validated clean.
+
+### Documents produced this session
+
+| Document | Description |
+| :-- | :-- |
+| `Lawn_Fertilizer_Product_Survey.md` | Full marketplace survey (with brand examples, for reference) |
+| `Fertilizer_Grades_Table.md` | Brand-free grades table extract (matches the calculator) |
