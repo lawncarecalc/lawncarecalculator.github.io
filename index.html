@@ -1389,8 +1389,8 @@
             </div>
             <div class="field-group">
               <div class="field-label"><span class="field-num">4</span><span class="field-question">What is the Calcium Carbonate Equivalent (CCE) listed on the bag of lime?</span></div>
-              <input type="number" id="lime-cce" min="50" max="150" placeholder="50-150 (%)" oninput="calcLime()">
-              <div class="field-hint">Listed as a percentage under Guaranteed Analysis on the bag label (typically 50-150%).</div>
+              <input type="number" id="lime-cce" min="50" max="175" placeholder="e.g. 100 (most pelletized lime)" oninput="calcLime()">
+              <div class="field-hint">Listed as a percentage under Guaranteed Analysis on the bag. Pelletized lime is usually near 100%; calcitic 80&ndash;100%, dolomitic 95&ndash;108%. <strong>Gypsum (calcium sulfate) has no CCE &mdash; it does not raise pH and is not lime.</strong> <em>(VCE 452-510)</em></div>
             </div>
             <div class="field-group">
               <div class="field-label"><span class="field-num">5</span><span class="field-question">What is the size of the bag of lime (lbs.)?</span></div>
@@ -3222,6 +3222,9 @@ function calcLime() {
     var html = '';
     html += '<div class="result-row"><div class="result-label">Number of applications needed</div><div class="result-value large">' + (apps > 0 ? apps : '-') + '</div></div>';
     html += '<div class="result-row"><div class="result-label">CCE adjusted lime rate (lbs. per 1,000 sq. ft.)</div><div class="result-value">' + (adjRate > 0 ? fmt(adjRate,1) + ' lbs' : '-') + '</div></div>';
+    if (limeRec > 0 && cce > 0 && cce < 50) {
+      html += '<div class="warning-badge" style="margin-top:8px;">&#9888; A CCE this low is unusual for lime. <strong>Gypsum (calcium sulfate) has a CCE of zero &mdash; it does not neutralize acidity or raise pH.</strong> Check that your product is actually a liming material (calcitic or dolomitic limestone), not gypsum. <em>(VCE 452-510)</em></div>';
+    }
     html += '<div class="result-row"><div class="result-label">Total lbs. of lime per application to your lawn</div><div class="result-value">' + lbsPerAppDisplay + '</div></div>';
     html += '<div class="result-row"><div class="result-label">Total lbs. of lime (3-year period)</div><div class="result-value">' + (totalLbs > 0 ? fmt(totalLbs,0) + ' lbs' : '-') + '</div></div>';
     if (bagSize > 0) {
@@ -3405,12 +3408,26 @@ function interpretSoilTest() {
   // Lab notice
   var unit = nutrientUnit();
 
-  // Nutrient ranges — switch between VCE lb/A and Waypoint ppm (ppm = lb/A / 2)
-  var pRange  = unit === 'ppm' ? 'Medium: 6-18 ppm (Waypoint)'       : 'Medium: 12-35 lb/A (VCE)';
-  var kRange  = unit === 'ppm' ? 'Medium: 38-88 ppm (Waypoint)'      : 'Medium: 76-175 lb/A (VCE)';
-  var caMgRange = unit === 'ppm'
-    ? 'Ca medium: 361-720 ppm &nbsp;&bull;&nbsp; Mg adequate: &ge;64 ppm (Waypoint)'
-    : 'Ca medium: 721-1,440 lb/A &nbsp;&bull;&nbsp; Mg medium: 73-144 lb/A (VCE)';
+  // Nutrient ranges. VCE shows lb/A bands (Soil Test Note 1). Waypoint (Mehlich-3) uses its own
+  // published bands (Agronomy Facts 8): K optimum is CEC-dependent; P and Ca have no published numeric
+  // band, so we direct the user to the rating bar rather than show a VCE-derived number mislabeled as Waypoint.
+  var pRange, kRange, caMgRange;
+  if (unit === 'ppm') {
+    pRange = 'Optimum: use the rating bar on your Waypoint report (no numeric band published)';
+    // Waypoint K optimum band varies by CEC (Agronomy Facts 8, Mehlich-3)
+    var kBand = !isNaN(cec)
+      ? (cec < 5   ? 'Optimum: 95-115 ppm (CEC <5)'
+        : cec < 10  ? 'Optimum: 130-155 ppm (CEC 5-9.9)'
+        : cec < 15  ? 'Optimum: 155-190 ppm (CEC 10-14.9)'
+        :             'Optimum: 175-215 ppm (CEC 15+)')
+      : 'Optimum: 95-215 ppm (varies by CEC)';
+    kRange = kBand + ' (Waypoint)';
+    caMgRange = 'Mg adequate: &ge;64 ppm &nbsp;&bull;&nbsp; Ca: use the rating bar on your report (Waypoint)';
+  } else {
+    pRange = 'Medium: 12-35 lb/A (VCE)';
+    kRange = 'Medium: 76-175 lb/A (VCE)';
+    caMgRange = 'Ca medium: 721-1,440 lb/A &nbsp;&bull;&nbsp; Mg medium: 73-144 lb/A (VCE)';
+  }
 
   var hasAny = [ph,bi,pVal,kVal,caVal,mgVal,om,saltRaw,cec,limeRec,znVal,mnVal,cuVal,feVal,bVal].some(function(v){ return !isNaN(v) && v > 0; })
     || pRatRaw || kRatRaw || caRat || mgRat || limeTyp || crop || znRat || mnRat || cuRat || feRat || bRat;
@@ -3876,8 +3893,15 @@ function carryOverToCalculators() {
   var isGarden = rt.indexOf('garden') >= 0;
   var pRatRaw  = document.getElementById('st-p-rating').value;
   var kRatRaw  = document.getElementById('st-k-rating').value;
-  var pRat     = WAYPOINT_TO_VCE[pRatRaw] || pRatRaw;
-  var kRat     = WAYPOINT_TO_VCE[kRatRaw] || kRatRaw;
+  // Waypoint "Optimum" means at-target/adequate, equivalent to VCE M+ ("not needed, but may be used"),
+  // NOT VCE H- ("high, use zero-P"). Map OP -> M+ for carry-over so downstream tabs don't flag a false
+  // "tests High" condition. (VCE Soil Test Note 1: 12-35 lb/A P is rated "medium or optimum".)
+  var carryMap = function(raw){
+    if (raw === 'OP') return 'M+';
+    return WAYPOINT_TO_VCE[raw] || raw;
+  };
+  var pRat     = carryMap(pRatRaw);
+  var kRat     = carryMap(kRatRaw);
   var limeRec  = document.getElementById('st-lime-rec').value;
   var limeTyp  = document.getElementById('st-lime-type').value;
   var areaSize = document.getElementById('st-lawn-size').value;
@@ -5031,6 +5055,18 @@ function calcFlower() {
 
   var hundredths = area / 100;
   var html = '';
+
+  // Organic-matter nitrogen advisory (flower framing: excess N suppresses bloom, so high OM = reduce/skip N)
+  var flrOmVal = parseFloat(document.getElementById('st-om') ? document.getElementById('st-om').value : '') || 0;
+  var flrOmNote = '';
+  if (flrOmVal >= 15) {
+    flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>Very high organic matter (' + flrOmVal.toFixed(1) + '%):</strong> Soil this rich releases ample nitrogen on its own. For flowers, excess nitrogen drives leafy growth at the expense of blooms, so additional nitrogen is very likely unnecessary &mdash; and could reduce flowering. Skip supplemental N and watch plant color. <em>(UMD Extension; VCE Note 19)</em></div>';
+  } else if (flrOmVal >= 5) {
+    var flrOmNPer100 = (flrOmVal * 0.4) / 10;
+    var flrOmForBed = flrOmNPer100 * hundredths;
+    flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>High organic matter (' + flrOmVal.toFixed(1) + '%):</strong> Your soil is releasing about <strong>' + fmt(flrOmNPer100, 2) + ' lbs N per 100 sq. ft.</strong> (' + fmt(flrOmForBed, 2) + ' lbs for your ' + area + ' sq. ft. bed) naturally this season. Because excess nitrogen suppresses flowering, lean toward the low end of any nitrogen recommendation &mdash; or skip it &mdash; and watch plant color. <em>(UMD Extension: 0.4 lbs N per 1% OM per 1,000 sq. ft.; VCE Note 19)</em></div>';
+  }
+  html += flrOmNote;
 
   // Default-rate notice
   if (usingDefault && defaults) {
