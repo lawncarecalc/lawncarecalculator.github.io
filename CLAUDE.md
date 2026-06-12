@@ -514,6 +514,7 @@ Survey of UMD Extension, Clemson HGIC, Rutgers NJAES, and NC State on flower fer
 - Waypoint N recommendation can exceed VCE annual ceiling for cool-season grasses and zoysiagrass/centipedegrass; appropriate for bermudagrass but not for tall fescue (capped at 3.5 lbs N/1,000 sq. ft. per VCE 430-011, DCR 2014\)  
 - Source tag: VCE 430-011, DCR 2014, Waypoint Agronomy Facts 8
 
+
 ---
 
 ## Session Updates — June 5, 2026 (continued)
@@ -522,15 +523,15 @@ Survey of UMD Extension, Clemson HGIC, Rutgers NJAES, and NC State on flower fer
 
 Zoysiagrass and centipedegrass were previously merged under a single `zoysia` key. They are now separate species with distinct data throughout.
 
-**SPECIES\_CONFIG changes:**
+**SPECIES_CONFIG changes:**
 
 | Key | maxN | maxApp (P1/P2/P3) | Notes |
 | :---- | :---- | :---- | :---- |
 | `bermuda` | 4.0 | 0.9 / 1.0 / 1.5 | Unchanged |
 | `zoysia` | 2.0 | 0.7 / 1.0 / 1.0 | Label changed from "Zoysiagrass / Centipedegrass" to "Zoysiagrass" |
-| `centipede` | 1.0 | 0.5 / 0.5 / 0.5 | New — WIN% does not meaningfully change per-app limit for centipede; flat 0.5 lb cap all programs. Annual maxN subsequently corrected to 2.0 (June 10, 2026\) — see below. |
+| `centipede` | 1.0 | 0.5 / 0.5 / 0.5 | New — WIN% does not meaningfully change per-app limit for centipede; flat 0.5 lb cap all programs. Annual maxN subsequently corrected to 2.0 (June 10, 2026) — see below. |
 
-**MAX\_PRACTICAL\_APPS changes:**
+**MAX_PRACTICAL_APPS changes:**
 
 | Key | P1 / P2 / P3 | Window |
 | :---- | :---- | :---- |
@@ -538,42 +539,38 @@ Zoysiagrass and centipedegrass were previously merged under a single `zoysia` ke
 | `centipede` | 2 / 2 / 2 | May/Jun only — low-N, slow-growing |
 
 **HTML changes:**
-
-- `warm-species` selector: three options (Bermudagrass/St. Augustine, Zoysiagrass, Centipedegrass)  
-- Reference table: separate rows for Zoysiagrass (1.0–2.0 lbs) and Centipedegrass (0.5–1.0 lbs)  
-- Static N hint updated: three species with separate ranges and both SPES-669 and SPES-670 cited  
-- Waypoint warning updated: "appropriate for bermudagrass but potentially too high for zoysiagrass and centipedegrass" with specific centipede guidance (0.75–1 lb every 6 weeks → \~3 lbs derived annual total vs. 1–2 lb VCE ceiling per Soil Test Note 18). Updated again June 10, 2026 — see session notes.  
-- Shade+clippings combo note: centipede threshold set at 0.5 lb vs zoysia 1.0 lb  
+- `warm-species` selector: three options (Bermudagrass/St. Augustine, Zoysiagrass, Centipedegrass)
+- Reference table: separate rows for Zoysiagrass (1.0–2.0 lbs) and Centipedegrass (0.5–1.0 lbs)
+- Static N hint updated: three species with separate ranges and both SPES-669 and SPES-670 cited
+- Waypoint warning updated: "appropriate for bermudagrass but potentially too high for zoysiagrass and centipedegrass" with specific centipede guidance (0.75–1 lb every 6 weeks → ~3 lbs derived annual total vs. 1–2 lb VCE ceiling per Soil Test Note 18). Updated again June 10, 2026 — see session notes.
+- Shade+clippings combo note: centipede threshold set at 0.5 lb vs zoysia 1.0 lb
 - About tab source description updated to name centipede separately
 
-**Source note:** VCE SPES-670 covers zoysiagrass/centipedegrass together without separating N ceilings. The centipede 0.5–1.0 lb range and the flat 0.5 lb per-application cap are grounded in agronomic principle (fertilizer-sensitive, slow-growing, thatch-prone). VCE 452-718 (Soil Test Note 18\) is the best available VCE citation. Clemson HGIC confirms centipedegrass decline from excess thatch at \>2 lbs N/1,000 sq. ft. — supporting the conservative ceiling.
+**Source note:** VCE SPES-670 covers zoysiagrass/centipedegrass together without separating N ceilings. The centipede 0.5–1.0 lb range and the flat 0.5 lb per-application cap are grounded in agronomic principle (fertilizer-sensitive, slow-growing, thatch-prone). VCE 452-718 (Soil Test Note 18) is the best available VCE citation. Clemson HGIC confirms centipedegrass decline from excess thatch at >2 lbs N/1,000 sq. ft. — supporting the conservative ceiling.
 
 ---
 
-### Issue 2: New vs. Existing Lawn (507 vs. 563\)
+### Issue 2: New vs. Existing Lawn (507 vs. 563)
 
 A **Lawn Status** selector was added to the Soil Test tab, appearing alongside Grass Type whenever a lawn report type is active. Hidden for garden reports.
 
 **New element:** `st-lawn-status-field` (div) containing `st-lawn-status` (select)
-
-- Options: "Existing lawn" (default) / "New lawn (before seeding or sodding)"  
-- Fires `interpretSoilTest()` on change  
+- Options: "Existing lawn" (default) / "New lawn (before seeding or sodding)"
+- Fires `interpretSoilTest()` on change
 - Hidden/shown in `onReportTypeChange()` alongside `st-crop-field`
 
 **`interpretSoilTest()` changes:**
-
-- Grass Type card retitled "Grass Type & Lawn Status"  
-- `statusLabel` appended to the value display  
-- Card body text branches on `isNewLawn`:  
-  - Cool/new: starter fertilizer, incorporation before seeding  
-  - Warm/new: lime and fertilizer incorporation before sodding/seeding  
+- Grass Type card retitled "Grass Type & Lawn Status"
+- `statusLabel` appended to the value display
+- Card body text branches on `isNewLawn`:
+  - Cool/new: starter fertilizer, incorporation before seeding
+  - Warm/new: lime and fertilizer incorporation before sodding/seeding
   - Existing: unchanged seasonal program descriptions
 
 **`carryOverToCalculators()` changes:**
-
-- `lawnStatus` read from `st-lawn-status`  
-- "Status: New lawn (pre-seeding)" or "Status: Existing lawn" added to the success bar description line  
-- New-lawn amber notice box appears in the success bar when `lawnStatus === 'new'`: reminds user to incorporate before seeding, use starter fertilizer  
+- `lawnStatus` read from `st-lawn-status`
+- "Status: New lawn (pre-seeding)" or "Status: Existing lawn" added to the success bar description line
+- New-lawn amber notice box appears in the success bar when `lawnStatus === 'new'`: reminds user to incorporate before seeding, use starter fertilizer
 - Warm species carryover bug fixed: previously always set `warm-species` to `bermuda` for both cool and warm; now only sets it for `crop === 'warm'` (cool-season carryover leaves warm species at user's previous selection)
 
 **Design note:** New vs. existing is surfaced as context and guidance only — it does not change the N calculations. VCE 430-011 does not prescribe different annual N totals for new vs. established lawns. The distinction matters most for incorporation timing and starter fertilizer, which are communicated in the interpretation card and the carry-over success notice.
@@ -584,7 +581,7 @@ A **Lawn Status** selector was added to the Soil Test tab, appearing alongside G
 
 Flower entries were added to `CROP_FEEDING_LEVELS`, `SIDEDRESS_GUIDE`, and `CROP_DATA` within `updateCropGuidancePanel()`. These entries remain active on the Vegetable Garden tab for mixed-bed contexts but the primary flower interface is now the dedicated Flower Garden tab (see below).
 
-**CROP\_FEEDING\_LEVELS flower entries:**
+**CROP_FEEDING_LEVELS flower entries:**
 
 | Key | level | nPer100 | pHTarget | Source |
 | :---- | :---- | :---- | :---- | :---- |
@@ -592,13 +589,13 @@ Flower entries were added to `CROP_FEEDING_LEVELS`, `SIDEDRESS_GUIDE`, and `CROP
 | `perennial` | light | 0.10 | 6.5 | VCE Note 19; UMD Extension; Rutgers NJAES |
 | `rose` | medium | 0.20 | 6.5 | VCE Note 19 |
 
-**SIDEDRESS\_GUIDE flower entries:**
+**SIDEDRESS_GUIDE flower entries:**
 
 | Key | apps | Note |
 | :---- | :---- | :---- |
 | `annual` | 1 app: 0.5 lbs N/1,000 sq. ft. mid-season before peak bloom | ⚠️ Excess N suppresses flowers. (VCE Note 19; UMD Extension) |
 | `perennial` | `apps: []` — no sidedress | Established perennials; spring only; compost often sufficient. (VCE Note 19; UMD Extension; Rutgers NJAES) |
-| `rose` | 2 apps: 1.0 lb N/1,000 sq. ft. after first and second bloom flushes | Stop all N by August 15\. (VCE Note 19\) |
+| `rose` | 2 apps: 1.0 lb N/1,000 sq. ft. after first and second bloom flushes | Stop all N by August 15. (VCE Note 19) |
 
 `SIDEDRESS_DEFAULT` fallback is explicitly excluded for all three flower keys — prevents incorrect vegetable sidedress plan from appearing.
 
@@ -640,9 +637,9 @@ The calculator now has **7 tabs**: Soil Test Report | Cool-Season Lawns | Warm-S
 | `annual` | 0.10 | VCE Note 19; UMD Extension (Care of Annuals and Perennials) |
 | `perennial` | 0.10 | VCE Note 19; UMD Extension; Rutgers NJAES |
 | `rose` | 0.20 | VCE Note 19 (explicit monthly March–August) |
-| `bulb` | 0.13 | NC State spring bulb trials (4 lbs 9-9-6 per 100 sq. ft. \= \~0.13 lbs N); Rutgers NJAES FS1220 |
+| `bulb` | 0.13 | NC State spring bulb trials (4 lbs 9-9-6 per 100 sq. ft. = ~0.13 lbs N); Rutgers NJAES FS1220 |
 
-**Bulb N rate derivation:** 4 lbs × 9% N \= 0.36 lbs N per 100 sq. ft. — wait, corrected: 4 lbs × 0.09 \= 0.36 lbs N per 100 sq. ft. This does not match the stated 0.13. Re-examined: 4 lbs of 9-9-6 per 100 sq. ft. → 4 × 0.09 \= 0.36 lbs actual N per 100 sq. ft. **Correction:** the FLOWER\_DEFAULTS `bulb` entry should be `nPer100: 0.36`, not 0.13. **Action required:** fix `FLOWER_DEFAULTS['bulb'].nPer100` from 0.13 to 0.36 in `index.html`.
+**Bulb N rate derivation:** 4 lbs × 9% N = 0.36 lbs N per 100 sq. ft. — wait, corrected: 4 lbs × 0.09 = 0.36 lbs N per 100 sq. ft. This does not match the stated 0.13. Re-examined: 4 lbs of 9-9-6 per 100 sq. ft. → 4 × 0.09 = 0.36 lbs actual N per 100 sq. ft. **Correction:** the FLOWER_DEFAULTS `bulb` entry should be `nPer100: 0.36`, not 0.13. **Action required:** fix `FLOWER_DEFAULTS['bulb'].nPer100` from 0.13 to 0.36 in `index.html`.
 
 **Application plan (`FLOWER_APP_PLAN`):**
 
@@ -652,9 +649,9 @@ Each flower type has a structured plan array used to build the application table
 
 #### Spring-flowering bulbs — critical rules
 
-1. **Nitrogen is the primary nutrient need** — not phosphorus. Bone meal alone is insufficient. (NC State spring bulb trials, Dr. Paul V. Nelson)  
-2. **Apply at planting (fall) AND at emergence (spring, before leaves open)** — two applications per year  
-3. **Never fertilize after flowering** — encourages bulb rot and disease, shortens flower life. (Rutgers NJAES FS1220; NC State Extension)  
+1. **Nitrogen is the primary nutrient need** — not phosphorus. Bone meal alone is insufficient. (NC State spring bulb trials, Dr. Paul V. Nelson)
+2. **Apply at planting (fall) AND at emergence (spring, before leaves open)** — two applications per year
+3. **Never fertilize after flowering** — encourages bulb rot and disease, shortens flower life. (Rutgers NJAES FS1220; NC State Extension)
 4. **Fertilized bulbs performed significantly better than unfertilized** regardless of fertilizer method (NC State trials)
 
 #### Source boundary for bulbs
@@ -664,30 +661,27 @@ VCE has no published home-garden N rate for spring-flowering bulbs. NC State and
 #### Carryover updates
 
 `carryOverToCalculators()` now routes by garden type:
-
-- `['annual','perennial','rose','bulb']` → Flower Garden tab (`flr-` fields, `calcFlower()`)  
-- `'vegetable'`, `'mixed'` → Vegetable Garden tab (`gdn-` fields, `calcGarden()`)  
-- Success bar destination button switches accordingly  
+- `['annual','perennial','rose','bulb']` → Flower Garden tab (`flr-` fields, `calcFlower()`)
+- `'vegetable'`, `'mixed'` → Vegetable Garden tab (`gdn-` fields, `calcGarden()`)
+- Success bar destination button switches accordingly
 - `flowerTypes` array hoisted above `if (isGarden)` block so it is in scope for the success bar
 
 #### Soil Test tab updates
 
-- `st-garden-type` selector: `bulb` (Spring-Flowering Bulbs) added alongside annual/perennial/rose/mixed/vegetable  
-- `gdnLabels` map in `interpretSoilTest()`: `bulb` added  
-- Garden type card routes flower types to flower tab (`goBtn('flower', ...)`) and vegetable/mixed to garden tab  
+- `st-garden-type` selector: `bulb` (Spring-Flowering Bulbs) added alongside annual/perennial/rose/mixed/vegetable
+- `gdnLabels` map in `interpretSoilTest()`: `bulb` added
+- Garden type card routes flower types to flower tab (`goBtn('flower', ...)`) and vegetable/mixed to garden tab
 - Lime action box text: dynamically selects "Flower Garden" or "Vegetable Garden" tab based on crop type
 
 #### About tab updates
 
 **New VCE source added:**
-
 - Publication 426-200 (SPES-802P) — Annual Flowers: Culture and Maintenance. VCE. Confirms soil test as basis for annual flower fertilization rates.
 
 **New supplementary sources section** — "Flower Garden Supplementary Sources" collapsible (`about-flower-sources-btn` / `about-flower-sources-body`):
-
-- UMD Extension — Care of Annuals and Perennials (0.10 lbs N/100 sq. ft. for annuals and perennials; spring-only for perennials; compost alternative)  
-- Rutgers NJAES FS1220 — Spring Flowering Bulbs (no fertilizer after flowering; treat as perennials; divide when flowers decline)  
-- NC State Extension — Spring-Flowering Bulbs: Trials in North Carolina (Dr. Paul V. Nelson; N is primary nutrient; 4 lbs 9-9-6/100 sq. ft. trial rate; primary source for bulb default rate)  
+- UMD Extension — Care of Annuals and Perennials (0.10 lbs N/100 sq. ft. for annuals and perennials; spring-only for perennials; compost alternative)
+- Rutgers NJAES FS1220 — Spring Flowering Bulbs (no fertilizer after flowering; treat as perennials; divide when flowers decline)
+- NC State Extension — Spring-Flowering Bulbs: Trials in North Carolina (Dr. Paul V. Nelson; N is primary nutrient; 4 lbs 9-9-6/100 sq. ft. trial rate; primary source for bulb default rate)
 - NC State Extension — Add Flowering Bulbs in Your Garden This Fall (Forsyth County; confirms at-planting and at-emergence timing; no post-bloom fertilization)
 
 `toggleAboutFlowerSources()` function added alongside `toggleAboutSuppSources()`.
@@ -702,7 +696,7 @@ About tab step 2 instructions updated to name both Vegetable Garden and Flower G
 20. **Flower tab N field is optional** — `calcFlower()` falls back to `FLOWER_DEFAULTS[flowerType].nPer100` when blank; this is intentional and unique to the flower tab  
 21. **Bulb N default requires correction** — `FLOWER_DEFAULTS['bulb'].nPer100` should be 0.36 (4 lbs × 9% from NC State trial), not 0.13 (arithmetic error in initial implementation). Fix before next session.  
 22. **Never fertilize bulbs after flowering** — this is a prohibition, not an option. Rendered as ⛔ red no-fertilizer row in the application plan  
-23. **Spring bulb primary sources: NC State \+ Rutgers** — VCE is silent on bulb N rates at home garden scale; NC State and Rutgers NJAES FS1220 are the governing sources  
+23. **Spring bulb primary sources: NC State + Rutgers** — VCE is silent on bulb N rates at home garden scale; NC State and Rutgers NJAES FS1220 are the governing sources  
 24. **`flowerTypes` array in carryover** must be hoisted above `if (isGarden)` block — it is used in the success bar destination button logic which executes after the block closes  
 25. **`setFlowerFertMode('product')` must be called in `onFlowerProductSelect()`** before `calcFlower()` — same pattern as `onGardenProductSelect()`; without it, product selection is ignored
 
@@ -717,9 +711,10 @@ About tab step 2 instructions updated to name both Vegetable Garden and Flower G
 | UMD Extension — Care of Annuals and Perennials | 0.10 lbs N/100 sq. ft. for annuals and perennials; compost alternative; spring timing; late-summer for fall bloomers |
 | Rutgers NJAES FS1220 | Spring bulbs: no post-bloom fertilization; treat as perennials; divide when declining |
 | NC State — Spring-Flowering Bulbs Trials | Bulb N rate (4 lbs 9-9-6 per 100 sq. ft.); N is primary nutrient (not P); two-application protocol |
-| NC State — Forsyth County Bulb Guide | Confirms at-planting \+ at-emergence timing; no post-bloom |
+| NC State — Forsyth County Bulb Guide | Confirms at-planting + at-emergence timing; no post-bloom |
 
 **Source boundary:** Clemson HGIC has crop-level flower guidance (dahlias, hydrangeas, amaryllis) but no general home garden flower rate table — not used for rate calculations. NC State and UMD are consistent on 0.10 lbs N/100 sq. ft. for annuals/perennials; all sources agree roses need more frequent feeding.
+
 
 ---
 
@@ -738,18 +733,18 @@ A hover/tap definition system was added. Terms are underlined with a dotted gree
 **Term wrapping:** `applyGlossary(rootEl)` uses a `TreeWalker` to visit plain text nodes, skips nodes inside `SKIP_TAGS` (A, BUTTON, INPUT, SELECT, TEXTAREA, SCRIPT, STYLE, LABEL) and existing `.term` spans. Matches terms using regex with word boundaries. `GLOSSARY_FLAT` is sorted longest-phrase-first so "Water Insoluble Nitrogen" matches before "nitrogen". Definitions stored in `data-def` attribute on each `.term` span — not inside a child element.
 
 **Placement logic (`showGlossaryTooltip`):**
-
-- Measures tooltip dimensions by rendering off-screen first  
-- Prefers above the term; flips below if insufficient clearance  
-- Clamps left/right within viewport (8px margins)  
-- Recalculates `--arrow-left` CSS variable after horizontal clamp so arrow still points at the term  
+- Measures tooltip dimensions by rendering off-screen first
+- Prefers above the term; flips below if insufficient clearance
+- Clamps left/right within viewport (8px margins)
+- Recalculates `--arrow-left` CSS variable after horizontal clamp so arrow still points at the term
 - Re-runs on `scroll` and `resize` events if a tooltip is open
 
 **Touch support:** `touchstart` on `.term` toggles the shared tooltip open/closed. `touchstart` on `document` (when target is not `.term`) dismisses it.
 
 **`MutationObserver` pattern:** Each dynamic output panel (soil test results, cool/warm/lime/garden/flower/shrub results, timing sections, hints) has an observer that calls `applyGlossary` after innerHTML changes. Static elements (field hints, field labels, note banners, About steps) get `applyGlossary` on `DOMContentLoaded`.
 
-**`GLOSSARY_TARGETS` array** — IDs watched by MutationObserver: `st-results-panel`, `cool-results-panel`, `warm-results-panel`, `lime-results-panel`, `gdn-results`, `gdn-timing`, `flr-results`, `flr-timing`, `flr-type-hint`, `gdn-crop-n-hint`, `shrub-results`, `shrub-timing`, `shrub-type-hint`, `cool-species-hint`, `warm-species-hint`, `cool-n-valid`, `warm-n-valid`
+**`GLOSSARY_TARGETS` array** — IDs watched by MutationObserver:
+`st-results-panel`, `cool-results-panel`, `warm-results-panel`, `lime-results-panel`, `gdn-results`, `gdn-timing`, `flr-results`, `flr-timing`, `flr-type-hint`, `gdn-crop-n-hint`, `shrub-results`, `shrub-timing`, `shrub-type-hint`, `cool-species-hint`, `warm-species-hint`, `cool-n-valid`, `warm-n-valid`
 
 #### Starting glossary (15 terms)
 
@@ -768,7 +763,7 @@ WIN / Water Insoluble Nitrogen, Buffer Index, Buffer pH, base saturation, CEC / 
 
 ---
 
-### Shrubs & Trees tab (tab 7 of 8\)
+### Shrubs & Trees tab (tab 7 of 8)
 
 **New tab:** `tab-shrub`, button `data-tab="shrub"`, print class `printing-shrub`. `calcShrub()` called by `switchToTab()`.
 
@@ -809,9 +804,9 @@ Opens the tab with a prominent amber box listing VCE Note 20's exact deficiency 
 
 #### Acid-loving plants — specific rules
 
-- Use acid-forming or acid-specific fertilizer (ammonium sulfate, Holly-tone, azalea formula)  
-- Apply **after bloom**, not before — fertilizing during or before bloom can damage flower buds  
-- No lime — lime raises pH and harms acid-loving plants  
+- Use acid-forming or acid-specific fertilizer (ammonium sulfate, Holly-tone, azalea formula)
+- Apply **after bloom**, not before — fertilizing during or before bloom can damage flower buds
+- No lime — lime raises pH and harms acid-loving plants
 - Iron chlorosis (interveinal yellowing) is the most common symptom in Virginia clay soils above pH 6.5 — iron chelate may provide faster relief than N fertilizer
 
 #### No-fertilizer-at-planting rule (trees)
@@ -820,9 +815,9 @@ Documented in deciduous and evergreen tree timing guidance, sourced from UMD Ext
 
 #### Soil Test tab integration
 
-- `st-garden-type` selector: all 6 shrub/tree types added as an `<optgroup>`  
-- `gdnLabels` map updated with all 6 keys  
-- `interpretSoilTest()` plant type card: routes shrub types to shrub tab via `goBtn('shrub', ...)`; card note warns that fertilization is only recommended with deficiency symptoms  
+- `st-garden-type` selector: all 6 shrub/tree types added as an `<optgroup>`
+- `gdnLabels` map updated with all 6 keys
+- `interpretSoilTest()` plant type card: routes shrub types to shrub tab via `goBtn('shrub', ...)`; card note warns that fertilization is only recommended with deficiency symptoms
 - `isShrubType` derived from `shrubTypes` array (parallel to `isFlowerType`, `flowerTypes`)
 
 #### Carryover
@@ -832,14 +827,12 @@ Documented in deciduous and evergreen tree timing guidance, sourced from UMD Ext
 #### About tab
 
 **Three VCE sources documented:**
-
-- Soil Test Note 20 (452-720 / SPES-336P) — governing source; all health-check and application rules  
-- Publication 430-018 (HORT-120P) — all N rate ranges; turf overlap cap; fertilizer ratio  
+- Soil Test Note 20 (452-720 / SPES-336P) — governing source; all health-check and application rules
+- Publication 430-018 (HORT-120P) — all N rate ranges; turf overlap cap; fertilizer ratio
 - SPES-397 — simplified companion; 1 lb N/1,000 sq. ft. reference rate
 
 **Supplementary sources collapsible** (`about-shrub-sources-btn` / `about-shrub-sources-body`):
-
-- UMD Extension — Fertilizing Trees and Shrubs (no fertilizer at planting; 2–3 lbs max; shallow evergreen roots; acid-loving evergreens)  
+- UMD Extension — Fertilizing Trees and Shrubs (no fertilizer at planting; 2–3 lbs max; shallow evergreen roots; acid-loving evergreens)
 - Clemson HGIC — Fertilizing Trees & Shrubs (ANSI A300 2–4 lbs slow-release; active uptake budbreak to late summer)
 
 `toggleAboutShrubSources()` added.
@@ -853,12 +846,11 @@ About tab step 2 instructions updated to name all three garden-type tabs (Vegeta
 **Problem:** 8 tabs overflowed the fixed-width nav container, clipping the rightmost tab ("About & Instructions").
 
 **Fix applied to `.tab-nav` and `.tab-nav-inner`:**
-
-- `overflow-x: auto` on `.tab-nav` — enables horizontal scroll  
-- `scrollbar-width: none` \+ `::-webkit-scrollbar { display: none }` — hides scrollbar chrome while keeping scroll functionality  
-- `min-width: max-content` on `.tab-nav-inner` — forces container to be exactly as wide as tabs need; prevents flex from squeezing or wrapping  
-- `flex-shrink: 0` on `.tab-btn` — prevents individual tabs from compressing  
-- Tab padding reduced: `14px 24px` → `14px 14px`  
+- `overflow-x: auto` on `.tab-nav` — enables horizontal scroll
+- `scrollbar-width: none` + `::-webkit-scrollbar { display: none }` — hides scrollbar chrome while keeping scroll functionality
+- `min-width: max-content` on `.tab-nav-inner` — forces container to be exactly as wide as tabs need; prevents flex from squeezing or wrapping
+- `flex-shrink: 0` on `.tab-btn` — prevents individual tabs from compressing
+- Tab padding reduced: `14px 24px` → `14px 14px`
 - Tab font reduced: `0.9rem` → `0.82rem`
 
 **Pattern:** This is the correct approach for any nav with more tabs than fit at typical viewport widths. The scrollbar is hidden but functional — touch/trackpad users can still scroll. Do not remove `min-width: max-content` or tabs will wrap to a second line.
@@ -869,11 +861,11 @@ About tab step 2 instructions updated to name all three garden-type tabs (Vegeta
 
 26. **Shrub tab uses `shrub-` prefix** for all element IDs — no overlap with `gdn-`, `flr-`, or other tab prefixes  
 27. **Shrub tab N field is optional** — same as flower tab; falls back to `SHRUB_PLANT_TYPES[key].nDefault`  
-28. **Application area \= 2× canopy** per VCE Note 20 — this is calculated automatically in `calcShrubCanopy()`; if user enters area directly, they are responsible for doubling it (noted in field hint)  
-29. **Turf overlap cap \= 1.5 lbs N/1,000 sq. ft. per application** per VCE 430-018 — enforced automatically by `calcShrub()` when `shrub-turf` \= `partial`  
+28. **Application area = 2× canopy** per VCE Note 20 — this is calculated automatically in `calcShrubCanopy()`; if user enters area directly, they are responsible for doubling it (noted in field hint)  
+29. **Turf overlap cap = 1.5 lbs N/1,000 sq. ft. per application** per VCE 430-018 — enforced automatically by `calcShrub()` when `shrub-turf` = `partial`  
 30. **Acid-loving plants: no lime, apply after bloom** — enforced in timing guidance and product notes; ammonium sulfate and Holly-tone are the recommended product types  
 31. **No fertilizer at planting for trees** — documented in timing guidance; sourced from UMD Extension research finding that N suppresses root establishment  
-32. **Tab nav uses `overflow-x: auto` \+ `min-width: max-content`** — do not revert to fixed padding or remove these properties; with 8 tabs the nav will overflow at any viewport below \~1100px without them  
+32. **Tab nav uses `overflow-x: auto` + `min-width: max-content`** — do not revert to fixed padding or remove these properties; with 8 tabs the nav will overflow at any viewport below ~1100px without them  
 33. **`shrubTypes` array in carryover** must be declared alongside `flowerTypes` before the `if (isGarden)` block — both are used in the success bar destination button logic
 
 ---
@@ -882,13 +874,14 @@ About tab step 2 instructions updated to name all three garden-type tabs (Vegeta
 
 | Source | Used for |
 | :---- | :---- |
-| VCE Note 20 (452-720 / SPES-336P) | All health-check rules; application area \= 2× canopy; ≥50% WIN requirement; no late-season N; turf adjacency advisory |
+| VCE Note 20 (452-720 / SPES-336P) | All health-check rules; application area = 2× canopy; ≥50% WIN requirement; no late-season N; turf adjacency advisory |
 | VCE 430-018 (HORT-120P) | All N rate ranges by plant type; turf overlap 1.5 lbs cap; 3-1-2 ratio recommendation; acid-shrub timing (after bloom) |
 | VCE SPES-397 | 1 lb N/1,000 sq. ft. reference rate; product quantities table |
 | UMD Extension — Fertilizing Trees and Shrubs | No fertilizer at planting; 2–3 lbs N max; shallow evergreen root caution; acid-loving evergreens list |
 | Clemson HGIC — Fertilizing Trees & Shrubs | ANSI A300 2–4 lbs N/1,000 sq. ft. for slow-release; active uptake timing from budbreak |
 
 **Source boundary:** WSU Extension EB1034 and ISA Arboriculture & Urban Forestry journal were found in research but not used — outside the regional land-grant hierarchy. UNH Cooperative Extension was found but not used for same reason. Missouri Extension (MU) not used. All rate decisions trace to VCE 430-018 as primary.
+
 
 ---
 
@@ -899,37 +892,33 @@ About tab step 2 instructions updated to name all three garden-type tabs (Vegeta
 **Problem:** The centipede annual N ceiling throughout the calculator was set to 0.5–1.0 lbs/1,000 sq. ft., sourced to SPES-669 and SPES-670. Research against the primary sources revealed this was incorrect.
 
 **Primary sources confirmed:**
-
-- Soil Test Note 18 (452-718, Goatley/Ervin/Heckendorn): "Centipedegrass and mature zoysiagrass perform best at 1 to 2 pounds N/1,000 square feet/year"  
-- SPES-669 (430-522): "Centipedegrass and zoysiagrass should receive only 1–2 lbs N/1,000 sq ft total"  
+- Soil Test Note 18 (452-718, Goatley/Ervin/Heckendorn): "Centipedegrass and mature zoysiagrass perform best at 1 to 2 pounds N/1,000 square feet/year"
+- SPES-669 (430-522): "Centipedegrass and zoysiagrass should receive only 1–2 lbs N/1,000 sq ft total"
 - DCR 2014: does not set a separate centipede-specific ceiling below 1 lb; the 4 lb warm-season ceiling applies to bermudagrass/St. Augustine; centipede and zoysia are referenced in VCE publications at 1–2 lbs
 
 **Corrections made to index.html (5 locations):**
-
-1. Waypoint advisory text (line \~1213) — rewritten to cite Waypoint's actual centipede guidance (0.75–1 lb every 6 weeks through late summer, derived annual total \~3 lbs), compare against VCE 1–2 lb ceiling in Soil Test Note 18 (452-718). "Far too high for centipedegrass" removed — replaced with specific, sourced claim.  
-2. Reference table row (line \~1223) — centipede suggested annual total corrected from 0.5–1.0 to 1.0–2.0 lbs  
-3. Field hint (line \~1239) — centipede ceiling corrected from 0.5–1.0 to 1.0–2.0 lbs; citation updated to include Soil Test Note 18  
-4. About tab source description (line \~2201) — centipede annual range corrected from 0.5–1.0 to 1.0–2.0 lbs  
-5. JavaScript SPECIES\_CONFIG `maxN` (line \~2478) — centipede `maxN` corrected from 1.0 to 2.0; warning now fires correctly at anything above 2.0 lbs
+1. Waypoint advisory text (line ~1213) — rewritten to cite Waypoint's actual centipede guidance (0.75–1 lb every 6 weeks through late summer, derived annual total ~3 lbs), compare against VCE 1–2 lb ceiling in Soil Test Note 18 (452-718). "Far too high for centipedegrass" removed — replaced with specific, sourced claim.
+2. Reference table row (line ~1223) — centipede suggested annual total corrected from 0.5–1.0 to 1.0–2.0 lbs
+3. Field hint (line ~1239) — centipede ceiling corrected from 0.5–1.0 to 1.0–2.0 lbs; citation updated to include Soil Test Note 18
+4. About tab source description (line ~2201) — centipede annual range corrected from 0.5–1.0 to 1.0–2.0 lbs
+5. JavaScript SPECIES_CONFIG `maxN` (line ~2478) — centipede `maxN` corrected from 1.0 to 2.0; warning now fires correctly at anything above 2.0 lbs
 
 **Note on per-application cap:** The flat 0.5 lb per-application cap for centipede (all programs) is retained. The correction only affects the annual ceiling, not the per-application limit.
 
-**Note on shade+clippings combo text:** One instance remains that says "for centipede, it may be well under 0.5 lb" — this is contextual (shade \+ clipping reductions applied to a 1.0 lb starting target), not a ceiling statement, and is arithmetically defensible. Left unchanged.
+**Note on shade+clippings combo text:** One instance remains that says "for centipede, it may be well under 0.5 lb" — this is contextual (shade + clipping reductions applied to a 1.0 lb starting target), not a ceiling statement, and is arithmetically defensible. Left unchanged.
 
-### Fun Facts document — Fact \#1 and Fact \#11 updated
+### Fun Facts document — Fact #1 and Fact #11 updated
 
-**Fact \#1:**
-
-- "nearly 30 publications" → "more than 35 publications" (heading, body ×2, source footnote)  
-- "eleven core VCE publications" → "fourteen core VCE publications" (body ×2)  
-- "two lab-specific interpretation guides (VCE and Waypoint)" → "(VCE and Waypoint Analytical, a commercial soil testing laboratory)"  
+**Fact #1:**
+- "nearly 30 publications" → "more than 35 publications" (heading, body ×2, source footnote)
+- "eleven core VCE publications" → "fourteen core VCE publications" (body ×2)
+- "two lab-specific interpretation guides (VCE and Waypoint)" → "(VCE and Waypoint Analytical, a commercial soil testing laboratory)"
 - Source footnote: "VCE primary (11 publications)" → "VCE primary (14 publications)"
 
-**Fact \#11:**
-
-- Rewritten to acknowledge Waypoint does differentiate by grass type, but differentiation ≠ alignment with VCE ceilings  
-- Centipede now the headline example: Waypoint guidance (0.75–1 lb every 6 weeks) → derived \~3 lb annual total vs. VCE 1–2 lb ceiling (Soil Test Note 18\)  
-- Tall fescue retained as secondary example (4.0 vs. 3.5 lbs)  
+**Fact #11:**
+- Rewritten to acknowledge Waypoint does differentiate by grass type, but differentiation ≠ alignment with VCE ceilings
+- Centipede now the headline example: Waypoint guidance (0.75–1 lb every 6 weeks) → derived ~3 lb annual total vs. VCE 1–2 lb ceiling (Soil Test Note 18)
+- Tall fescue retained as secondary example (4.0 vs. 3.5 lbs)
 - Sources confirmed: Soil Test Note 18 (452-718); Waypoint example report (LAWN-S3M-UnitsPPM.pdf)
 
 ### Source count
@@ -942,24 +931,24 @@ The calculator now draws on **more than 35 publications**. The previously stated
 
 ### Waypoint source clarification
 
-Waypoint Analytical is a **commercial soil testing laboratory**, not a VCE publication or land-grant source. Agronomy Facts 8 (Waypoint, 2023\) is cited for lab-specific interpretation guidance only. This distinction is now explicit in Fun Facts \#1 and in the email to Dr. Goatley.
+Waypoint Analytical is a **commercial soil testing laboratory**, not a VCE publication or land-grant source. Agronomy Facts 8 (Waypoint, 2023) is cited for lab-specific interpretation guidance only. This distinction is now explicit in Fun Facts #1 and in the email to Dr. Goatley.
 
 ### Email to Dr. Goatley drafted
 
 Full draft produced for review. Author: calculator developer (Master Gardener volunteer, Chesterfield County). Purpose: share tool, seek feedback and endorsement, invite collaboration. Key points:
-
-- Builds on SPES-40A (Wilson/Goatley)  
-- Framed as "teaching tool disguised as a calculator" — flags stimulate reasoning, not just compliance  
-- Deployment plan: Help Desk volunteers first; resident release later  
+- Builds on SPES-40A (Wilson/Goatley)
+- Framed as "teaching tool disguised as a calculator" — flags stimulate reasoning, not just compliance
+- Deployment plan: Help Desk volunteers first; resident release later
 - Centipede/Waypoint claim verified against sources before inclusion; language is precise and defensible
+
+
 
 ### Bulb N rate and source update
 
-**Problem:** The NC State Extension "Spring-Flowering Bulbs: Trials in North Carolina" page (`content.ces.ncsu.edu/spring-flowering-bulbs-trials-in-north-carolina`) is no longer available. Additionally, the bulb default N rate of 0.13 lbs/100 sq. ft. was an arithmetic error (it was calculated as if 9-9-6 had 3.25% N; the correct math is 4 lbs × 9% \= 0.36 lbs, not 0.13).
+**Problem:** The NC State Extension "Spring-Flowering Bulbs: Trials in North Carolina" page (`content.ces.ncsu.edu/spring-flowering-bulbs-trials-in-north-carolina`) is no longer available. Additionally, the bulb default N rate of 0.13 lbs/100 sq. ft. was an arithmetic error (it was calculated as if 9-9-6 had 3.25% N; the correct math is 4 lbs × 9% = 0.36 lbs, not 0.13).
 
 **Replacement sources (both active NC State Extension pages):**
-
-- Franklin County Center: `franklin.ces.ncsu.edu/2023/11/spring-flowering-bulbs` — explicit rate: 4 lbs of 10-10-10 per 100 sq. ft. at planting and at emergence. Also confirms Bulb Booster as alternative and pH target 5.8–6.5.  
+- Franklin County Center: `franklin.ces.ncsu.edu/2023/11/spring-flowering-bulbs` — explicit rate: 4 lbs of 10-10-10 per 100 sq. ft. at planting and at emergence. Also confirms Bulb Booster as alternative and pH target 5.8–6.5.
 - Wayne County Center: `wayne.ces.ncsu.edu/news/plant-bulbs-this-fall-for-spring-flowers/` — confirms 10-10-10 for both slow-release-at-planting and quick-release-at-planting-plus-emergence options.
 
 **Rate corrected:** `FLOWER_DEFAULTS['bulb'].nPer100` changed from `0.13` → `0.40` (4 lbs × 10% N from 10-10-10 per 100 sq. ft.).
@@ -976,7 +965,7 @@ Full draft produced for review. Author: calculator developer (Master Gardener vo
 
 ---
 
-## Session Updates — June 10, 2026 (Conformance Audit, Round 1\)
+## Session Updates — June 10, 2026 (Conformance Audit, Round 1)
 
 A full source-conformance and real-report validation pass was run against twelve de-identified soil test reports (VCE and Waypoint; lawn, vegetable, and flower contexts) supplied by the Help Desk. Each value was traced through the calculator's logic, against the cited source, and against each report's own lab recommendation. Two audit-planning documents and one findings document were produced (`Calculator_Conformance_Audit_Plan.md`, `Conformance_Audit_Findings_Round1.md`). Six corrections were made to `index.html`; all JS validated clean after each.
 
@@ -990,9 +979,9 @@ A full source-conformance and real-report validation pass was run against twelve
 
 ### Correction 2 — Lawn N-rec not captured, so the ceiling check wasn't automatic (fixed)
 
-The garden/flower tabs capture the report's N figure, but the lawn tabs did not — carry-over set P/K/species/size but left `cool-n-rate`/`warm-n-rate` blank. The VCE-ceiling warning only fired after the volunteer manually typed the figure into the lawn tab. This is the exact Fact \#11 scenario; the live example is the Irma Arritt Waypoint report (N 4.0 on a Midlothian cool-season lawn, above the 3.5 tall-fescue ceiling).
+The garden/flower tabs capture the report's N figure, but the lawn tabs did not — carry-over set P/K/species/size but left `cool-n-rate`/`warm-n-rate` blank. The VCE-ceiling warning only fired after the volunteer manually typed the figure into the lawn tab. This is the exact Fact #11 scenario; the live example is the Irma Arritt Waypoint report (N 4.0 on a Midlothian cool-season lawn, above the 3.5 tall-fescue ceiling).
 
-**Fix:** added an optional `st-lawn-n` field on the Soil Test tab (lawn report types only; shown/hidden alongside crop and lawn-status fields). Added a new "Nitrogen Recommendation Check" interpretation card that fires when an N value is entered: cool-season checks against 3.5; warm-season flags that the figure suits bermuda (4.0 ceiling) but exceeds the 1–2 lb zoysia/centipede ceiling, prompting species confirmation. Both branches cite 430-011, DCR 2014, Soil Test Note 18, SPES-669. `carryOverToCalculators()` now passes the N value to `cool-n-rate` or `warm-n-rate` by grass type. The warning now appears at interpretation time. The Arritt report is now a clean end-to-end demonstration of the Fact \#11 feature.
+**Fix:** added an optional `st-lawn-n` field on the Soil Test tab (lawn report types only; shown/hidden alongside crop and lawn-status fields). Added a new "Nitrogen Recommendation Check" interpretation card that fires when an N value is entered: cool-season checks against 3.5; warm-season flags that the figure suits bermuda (4.0 ceiling) but exceeds the 1–2 lb zoysia/centipede ceiling, prompting species confirmation. Both branches cite 430-011, DCR 2014, Soil Test Note 18, SPES-669. `carryOverToCalculators()` now passes the N value to `cool-n-rate` or `warm-n-rate` by grass type. The warning now appears at interpretation time. The Arritt report is now a clean end-to-end demonstration of the Fact #11 feature.
 
 ### Correction 3 — Waypoint garden lime not converted in the interpretation card (fixed)
 
@@ -1008,31 +997,30 @@ Two maps disagreed: the local `waypointToVCE` in `onReportTypeChange` had `VL �
 
 ### Correction 5 — Extreme organic-matter advisory stated false precision (fixed)
 
-The garden OM-to-N credit (`omVal * 0.4`, garden-only, ≥5% trigger) applied the linear UMD formula without bound. At the Anderson \#3 bed (29.4% OM) it implied \~11.8 lbs N/1,000 sq. ft. of natural release — far beyond any crop's need — stated to two decimals. The math didn't error, but the precision was unwarranted at an OM level the formula isn't calibrated for.
+The garden OM-to-N credit (`omVal * 0.4`, garden-only, ≥5% trigger) applied the linear UMD formula without bound. At the Anderson #3 bed (29.4% OM) it implied ~11.8 lbs N/1,000 sq. ft. of natural release — far beyond any crop's need — stated to two decimals. The math didn't error, but the precision was unwarranted at an OM level the formula isn't calibrated for.
 
 **Fix:** above 15% OM, the advisory switches to a qualitative message ("releases more nitrogen than most vegetables require; sidedressing very unlikely to be necessary; monitor plant color") and notes the standard estimate is calibrated for ordinary soils and overstates release at this level — no precise figure shown. Below 15% (the realistic 5–11% high-OM cases), the precise figure displays as before. The 15% threshold is a judgment call, not a sourced boundary — replace if a VCE/UMD validity limit is found.
 
 ### Correction 6 — VCE Medium P/K bands confirmed conformant (no change)
 
 Verified the displayed interpretation ranges against VCE Soil Test Note 1 (452-701):
-
-- P Medium: **12–35 lb/A** ✅ exact  
-- K Medium: **76–175 lb/A** ✅ exact  
-- Ca Medium: **721–1,440 lb/A** ✅ exact  
+- P Medium: **12–35 lb/A** ✅ exact
+- K Medium: **76–175 lb/A** ✅ exact
+- Ca Medium: **721–1,440 lb/A** ✅ exact
 - Mg Medium: **73–144 lb/A** ✅ exact
 
 No correction needed.
 
 ### Items confirmed conformant during the audit (no change)
 
-- Per-application N caps: Waypoint's own "0.7 soluble / 0.9 slow-release per 30 days" language (Arritt report) matches the calculator's Program 1/2 cool-season caps exactly.  
-- OM credit trigger: fires at ≥5% (Snow 11.4%, Anderson 5.6%), correctly silent below (Stephens 4.4%, Shaw 2.9–3.8%); garden-only, never on lawn tabs.  
+- Per-application N caps: Waypoint's own "0.7 soluble / 0.9 slow-release per 30 days" language (Arritt report) matches the calculator's Program 1/2 cool-season caps exactly.
+- OM credit trigger: fires at ≥5% (Snow 11.4%, Anderson 5.6%), correctly silent below (Stephens 4.4%, Shaw 2.9–3.8%); garden-only, never on lawn tabs.
 - Garden melon sidedress: more conservative than the Waypoint report's 0.5–1.5 lb guidance — documented intentional deviation (VCE 426-406, Rutgers FS626), a teaching-moment candidate.
 
 ### Open items for future rounds
 
-- **`NEED_RATIO` tables vs DCR \+/− rule.** DCR Standards & Criteria specify: L−/M−/H− → use the highest value of the recommended range; L+/M+/H+ → use the lowest. The calculator's `NEED_RATIO` gradations should be verified against this rule (out of Round 1 scope).  
-- **Flower tab has no OM advisory.** The OM-to-N credit lives only in `calcGarden`, not `calcFlower`. Anderson \#3 (flower report, 29.4% OM) run through the Flower tab shows no OM note. Lower priority — flower N rates are already minimal and excess N suppresses bloom — but a consistency candidate.  
+- **`NEED_RATIO` tables vs DCR +/− rule.** DCR Standards & Criteria specify: L−/M−/H− → use the highest value of the recommended range; L+/M+/H+ → use the lowest. The calculator's `NEED_RATIO` gradations should be verified against this rule (out of Round 1 scope).
+- **Flower tab has no OM advisory.** The OM-to-N credit lives only in `calcGarden`, not `calcFlower`. Anderson #3 (flower report, 29.4% OM) run through the Flower tab shows no OM note. Lower priority — flower N rates are already minimal and excess N suppresses bloom — but a consistency candidate.
 - **Phases 1–8 remaining checklist items** in `Calculator_Conformance_Audit_Plan.md` not yet exercised by the supplied reports (e.g. shrub/tree reports — none in the test set; lime CCE adjustment).
 
 ### Documents produced this session
@@ -1046,18 +1034,17 @@ No correction needed.
 
 ## Session Updates — June 10, 2026 (Clipping & Shade Controls)
 
-Following the conformance audit, two interactive site-adjustment controls were built on both lawn tabs (cool and warm). Both were previously **advisory text only** — the calculator told the user to manually reduce their N rate but did no arithmetic. The Fun Facts doc (\#3) and the Goatley email both described an automatic clipping "toggle" that did not exist; these builds make those claims true. All JS validated clean after each edit.
+Following the conformance audit, two interactive site-adjustment controls were built on both lawn tabs (cool and warm). Both were previously **advisory text only** — the calculator told the user to manually reduce their N rate but did no arithmetic. The Fun Facts doc (#3) and the Goatley email both described an automatic clipping "toggle" that did not exist; these builds make those claims true. All JS validated clean after each edit.
 
 ### Clipping return credit — now an interactive toggle
 
 **Before:** advisory paragraphs on both tabs instructing the user to "reduce your annual total by up to one-third." No control, no calculation.
 
 **Built:**
-
-- Checkbox `cool-clip-toggle` / `warm-clip-toggle` below the N-rate input on each tab.  
-- Helper `clipCredit(prefix, rawRate)` returns the reduction: **one-third of the target, capped at 1.0 lb/1,000 sq. ft.** The cap reflects VCE 430-011's actual figure (clippings return 0.5–1 lb N/year). Without it, a 4.0-lb bermuda target would over-credit at 1.33 lbs. With it, the one-third rule governs low targets and the 1.0-lb ceiling governs high ones.  
-- **Autoplan mode:** auto-reduces the effective rate; plan recomputes applications/per-app amounts from the reduced figure; shows a credit box explaining the adjustment.  
-- **Manual multi-slot mode:** does NOT auto-reduce user-entered slots (the user controls those); shows an informational note with the reduced target to aim for.  
+- Checkbox `cool-clip-toggle` / `warm-clip-toggle` below the N-rate input on each tab.
+- Helper `clipCredit(prefix, rawRate)` returns the reduction: **one-third of the target, capped at 1.0 lb/1,000 sq. ft.** The cap reflects VCE 430-011's actual figure (clippings return 0.5–1 lb N/year). Without it, a 4.0-lb bermuda target would over-credit at 1.33 lbs. With it, the one-third rule governs low targets and the 1.0-lb ceiling governs high ones.
+- **Autoplan mode:** auto-reduces the effective rate; plan recomputes applications/per-app amounts from the reduced figure; shows a credit box explaining the adjustment.
+- **Manual multi-slot mode:** does NOT auto-reduce user-entered slots (the user controls those); shows an informational note with the reduced target to aim for.
 - **Ceiling check stays on the raw target** in both modes — a clipping credit cannot be used to justify exceeding the species N ceiling.
 
 ### Shade adjustment — 3-position control
@@ -1067,25 +1054,23 @@ Following the conformance audit, two interactive site-adjustment controls were b
 **Source basis:** VCE 430-011 states heavily shaded grass needs "one-half to two-thirds as much nitrogen as grasses growing in full sun" — a **range, not a point value**. Clemson HGIC and Cornell corroborate. The source does not support proportioning by degree of shade or percent-of-day, so the control is a discrete 3-position choice the user judges, not a slider with interpolation.
 
 **Built:**
-
-- 3-position radio group (`cool-shade` / `warm-shade`): **Full sun (×1) / Some shade (×0.67) / Heavy shade (×0.5)** — the two reduction values are the exact ends of VCE's stated range, not an invented midpoint.  
-- The exact VCE 430-011 quote is displayed above the control so the user places themselves in the band.  
-- **Area note** (per Help Desk guidance): if a lawn is part sun / part shade, the user is told to run the shaded zone as a **separate calculation** using only its square footage — the reduction must not be applied to a whole mixed lawn. (Proportioning isn't supported by the guidance.)  
-- `shadeFactor(prefix)` reads the selected radio; `effectiveNRate(prefix, rawRate)` applies **shade first, then clipping credit on the shade-adjusted target** — matching the order in the advisory text.  
+- 3-position radio group (`cool-shade` / `warm-shade`): **Full sun (×1) / Some shade (×0.67) / Heavy shade (×0.5)** — the two reduction values are the exact ends of VCE's stated range, not an invented midpoint.
+- The exact VCE 430-011 quote is displayed above the control so the user places themselves in the band.
+- **Area note** (per Help Desk guidance): if a lawn is part sun / part shade, the user is told to run the shaded zone as a **separate calculation** using only its square footage — the reduction must not be applied to a whole mixed lawn. (Proportioning isn't supported by the guidance.)
+- `shadeFactor(prefix)` reads the selected radio; `effectiveNRate(prefix, rawRate)` applies **shade first, then clipping credit on the shade-adjusted target** — matching the order in the advisory text.
 - Warm-season control carries the 430-011 winterkill caution (avoid late-season N in shade).
 
 ### Fine fescue in heavy shade — caution note
 
-VCE 430-011: fine fescue in heavy shade should be reduced even further, or applications omitted until fall leaf collection is finished. A warning note now fires in both autoplan and manual modes when species \= `fine` AND heavy shade (×0.5) is selected. Silent for fine fescue in lighter shade/full sun and for other species in any shade.
+VCE 430-011: fine fescue in heavy shade should be reduced even further, or applications omitted until fall leaf collection is finished. A warning note now fires in both autoplan and manual modes when species = `fine` AND heavy shade (×0.5) is selected. Silent for fine fescue in lighter shade/full sun and for other species in any shade.
 
 ### Revalidation against advisory-text worked examples
 
-The combined shade \+ clipping math was checked against the examples already written into the advisory text — all matched exactly:
-
-- Cool tall fescue 2.5 → 1.675 at ×0.67 (text: "1.67"); → 1.25 at ×0.5 (text: "1.25")  
-- Cool fescue 2.5, heavy shade \+ clippings → 0.83 (text range "0.8–1.1", at the ×0.5 end)  
-- Warm bermuda 3.0 → 2.01 at ×0.67 (text: "2.0"); → 1.5 at ×0.5 (text: "1.5")  
-- Warm bermuda 3.0, heavy shade \+ clippings → 1.0 (text range "1.0–1.3", at the ×0.5 end)
+The combined shade + clipping math was checked against the examples already written into the advisory text — all matched exactly:
+- Cool tall fescue 2.5 → 1.675 at ×0.67 (text: "1.67"); → 1.25 at ×0.5 (text: "1.25")
+- Cool fescue 2.5, heavy shade + clippings → 0.83 (text range "0.8–1.1", at the ×0.5 end)
+- Warm bermuda 3.0 → 2.01 at ×0.67 (text: "2.0"); → 1.5 at ×0.5 (text: "1.5")
+- Warm bermuda 3.0, heavy shade + clippings → 1.0 (text range "1.0–1.3", at the ×0.5 end)
 
 ### Note on a syntax error caught in process
 
@@ -1097,4 +1082,150 @@ Confirmed `carryOverToCalculators()` reads `st-lawn-size` and sets `cool-lawn-si
 
 ### Toggles/controls not wired to carry-over or sample loader
 
-The clipping toggle and shade radios always start at their defaults (unchecked / full sun) — a safe opt-in default. They are not set by carry-over or the sample-report loader. If sample reports should demonstrate these features, that is a small future addition.  
+The clipping toggle and shade radios always start at their defaults (unchecked / full sun) — a safe opt-in default. They are not set by carry-over or the sample-report loader. If sample reports should demonstrate these features, that is a small future addition.
+
+---
+
+## Session Updates — June 10, 2026 (Conformance Audit, Round 2 — Cross-cutting Phases)
+
+The audit plan was upgraded to v2 (`Calculator_Conformance_Audit_Plan_v2.md`) after Round 1 showed the original plan only knew how to hunt wrong *numbers* — but Round 1's two worst defects were a bad cross-system translation and a data-flow gap. v2 adds three cross-cutting phases (T: translations, U: units, D: data flow) plus process rules (regression loop, mandatory JS-parse check, required boundary testing). Round 2 executed those three phases. Findings in `Conformance_Audit_Findings_Round2.md`. One correction made; one issue flagged for decision.
+
+### Correction 7 — Optimum fix was incomplete; downstream consumers still treated OP as "High" (fixed)
+
+The Round 1 Optimum fix (Correction 1) corrected only the **interpretation card** (which reads `pRatRaw` directly). Carry-over still mapped Waypoint OP → VCE H−, so the garden, flower, and shrub tabs received "H−" in their rating dropdowns and every downstream consumer treated Optimum as genuine High:
+- Garden "your soil tests **High** for phosphorus" tomato/pepper note fired (lines ~4789).
+- Fertilizer-rec engine returned "Use a Zero Phosphorus Fertilizer" (P_REC['H−']).
+- `NEED_RATIO['H−'] = 1` applied (same as genuine High).
+
+This produced a **user-visible contradiction**: the interpretation card said "Optimum — at target, maintain" while the garden plan said "tests High, use zero-P," on the same report.
+
+**Fix:** carry-over now translates Waypoint **OP → VCE M+** (not H−). M+ is the correct equivalent of "Optimum":
+- P_REC[M+] = "not needed, but may be used" (at-target, not excess)
+- NEED_RATIO[M+] = 1 (no shortfall)
+- `pHigh` test (`['H-','H','H+','VH']`) is false for M+ → no false "tests High" note
+
+Matches VCE Soil Test Note 1 ("12–35 lb/A P is rated medium **or optimum**" — Optimum belongs at the top of the adequate band, M+, not the excess band, H−). Implemented as a `carryMap()` helper in `carryOverToCalculators()`; the interpretation card (handles OP directly) is unchanged, so card and downstream now agree end-to-end. Verified all tiers: VL→L−, LO→L, ME→M, **OP→M+**, VH2→VH.
+
+**Lesson:** a fix to an interpretation message must be traced to every consumer of the underlying value. The Optimum bug had two layers; Round 1 caught one. Phase T (trace every translation through every consumer) is what surfaced the second.
+
+### Phase T (translations) — other results
+
+- Local `waypointToVCE` and global `WAYPOINT_TO_VCE` confirmed identical (Round 1 VL fix holds).
+- Waypoint→VCE→Waypoint round-trip fully stable (the trip that matters on report-type switching).
+- VCE→Waypoint→VCE lossy for +/− variants — expected many-to-one collapse (9 tiers → 5), harmless for interpretation. Not a defect.
+- Interpretation "Optimum" branch confirmed reachable; no other unreachable branches.
+
+### Phase U (units) — results
+
+- ✅ Lime lbs/1,000 vs lbs/100 vs tons/acre: Round 1 fix holds, no double-convert, Anderson report reconciles across all three.
+- ✅ Garden ÷10, soluble salts dS/m→ppm (×640), injury thresholds: consistent.
+- ⚠️ **FLAGGED FOR DECISION: "Waypoint ppm" reference ranges are VCE lb/A ranges ÷2, not Waypoint's actual bands.** The card-header "typical range" shows e.g. "P Medium: 6–18 ppm (Waypoint)" — which is just the VCE 12–35 lb/A ÷2. Waypoint uses Mehlich-3 (VCE uses Mehlich-1); the extractants differ, so Waypoint bands can't be derived by unit-converting VCE's. Agronomy Facts 8 gives Waypoint's own ranges (K is CEC-dependent: 95–215 ppm). **Lower severity** — interpretation is rating-driven, not value-driven, so the displayed range drives no calculation; it's a display-accuracy/traceability issue. **Options:** (a) use Waypoint's actual bands from Agronomy Facts 8 (noting K is CEC-dependent), or (b) relabel as "VCE equivalent in ppm" rather than implying they are Waypoint's thresholds. Needs a careful Agronomy Facts 8 read — flagged, not fixed blind.
+- ✅ Canopy ×2 (shrubs) described correctly; not yet exercised (no shrub report).
+
+### Phase D (data flow) — results
+
+All handoffs ✅: the OP→M+ carry-over fix (above), the Round 1 lawn N-rec handoff, full carry-over completeness (area, P/K, species, lime rec/type, lawn status, N-rec), and safe defaults for the new clipping/shade controls (not set by carry-over or sample loader).
+
+### Open items after Round 2
+
+| Item | Status | Blocker |
+| :-- | :-- | :-- |
+| Waypoint ppm reference ranges | Flagged for decision | Needs Agronomy Facts 8 read + judgment (option a vs b) |
+| `NEED_RATIO` vs DCR +/− rule | Not yet checked | Phase 8 task |
+| Shrub/tree tab (Phase 7) + canopy ×2 validation | Unexercised | No shrub/tree report in the set |
+| VCE garden/flower reports | Phases 5–6 validated via Waypoint only | No VCE garden/flower report supplied |
+| Flower-tab OM advisory | Absent by design | Consistency decision pending |
+| CCE adjustment (Lime tab) | Not exercised | No report exercised the CCE input |
+
+### Documents produced this round
+
+| Document | Description |
+| :-- | :-- |
+| `Calculator_Conformance_Audit_Plan_v2.md` | Upgraded plan with Phases T/U/D and process rules |
+| `Conformance_Audit_Findings_Round2.md` | Round 2 findings (cross-cutting phases) |
+
+---
+
+## Session Updates — June 10, 2026 (Round 2 follow-ups: Waypoint ranges + NEED_RATIO)
+
+### Correction 8 — Waypoint reference ranges now use Agronomy Facts 8, not VCE ÷2
+
+Resolves the Phase U flagged item. The Soil Test card-header "typical range" for Waypoint reports previously showed VCE lb/A bands mechanically divided by 2 (e.g. "P Medium: 6-18 ppm (Waypoint)"), mislabeled as Waypoint's. Waypoint uses Mehlich-3; VCE uses Mehlich-1; the extractants differ, so VCE bands can't be unit-converted into Waypoint's.
+
+**Investigation:** Agronomy Facts 8 publishes a K optimum band (CEC-dependent) and a Mg adequacy figure, but **no numeric P or Ca band**. So "use Waypoint's published numbers" was only partpossible. Decision (with user): show Waypoint's real numbers where they exist; be honest where they don't.
+
+**Implemented (Waypoint display only; VCE display unchanged):**
+- **K** — CEC-dependent optimum band selected live from the entered CEC (Agronomy Facts 8, Mehlich-3): CEC <5 → 95-115; 5-9.9 → 130-155; 10-14.9 → 155-190; 15+ → 175-215 ppm. Fallback "95-215 ppm (varies by CEC)" when CEC not entered. Updates live as CEC changes (interpretSoilTest re-runs on input).
+- **P** — "use the rating bar on your Waypoint report (no numeric band published)" — Agronomy Facts 8 publishes no P ppm band, so no fabricated number.
+- **Ca** — same rating-bar treatment (no published band); **Mg** keeps the published "≥64 ppm adequate."
+
+**Note:** the displayed range drives no calculation (interpretation is rating-driven). This was a display-accuracy/traceability fix, not a math fix. Validated K-band selection against all real reports' CEC (Shaw 3.8 → 95-115; Snow 15.3/20.7 → 175-215; mid-range soils land correctly between). JS clean.
+
+### Phase 8 check — NEED_RATIO vs DCR +/- rule (conformant, no change)
+
+DCR Standards & Criteria: for soil-test modifiers, minus (L-/M-/H-) → use the HIGH end of the recommended range; plus (L+/M+/H+) → use the LOW end. The calculator's `NEED_RATIO` (P/K need multiplier) was checked against this:
+
+```
+L band:  L- = 3    L = 2.5   L+ = 2
+M band:  M- = 2    M = 1.5   M+ = 1
+H band:  H- = 1    H = 0.75  H+ = 0.5
+VH = 0
+```
+
+Within every band, minus > mid > plus (monotonic decreasing) — consistent with the DCR rule (minus = more = high end; plus = less = low end). Deficiency gradient correct (most-deficient L- highest at 3; VH = 0 = no application). All **three** instances (autoplan line ~2758, multi-slot ~2980, product-rec ~3072) are byte-identical — no drift. **Conformant; no correction needed.**
+
+### Open items after this round
+
+| Item | Status | Blocker |
+| :-- | :-- | :-- |
+| Shrub/tree tab (Phase 7) + canopy ×2 validation | Unexercised | No shrub/tree report supplied |
+| VCE garden/flower reports | Phases 5-6 via Waypoint only | No VCE garden/flower report supplied |
+| Flower-tab OM advisory | Absent by design | Consistency decision pending |
+| CCE adjustment (Lime tab) | Not exercised | No report exercised the CCE input |
+
+All other audit items through Round 2 are ✅ resolved or documented intentional deviations.
+
+---
+
+## Session Updates — June 10, 2026 (Flower OM, CCE survey/validation, lime timing)
+
+### Flower-tab OM advisory added
+
+The organic-matter nitrogen advisory previously existed only in `calcGarden` (Round 1 open item). Added to `calcFlower` with **bloom-appropriate framing** rather than a copy of the vegetable version: because excess N suppresses flowering, the flower advisory leans toward "skip or minimize" instead of "you may need less." Thresholds match the garden tab (≥5% precise figure; ≥15% qualitative). At ≥15% it states additional N is very likely unnecessary and could reduce flowering; at ≥5% it tells the user to lean to the low end or skip. Sourced UMD Extension + VCE Note 19. JS clean.
+
+### CCE adjustment — survey, validation, and gypsum guard
+
+CCE can't come from a soil report (it's on the lime *product label*), so a materials survey was done instead. Document: `Liming_Materials_CCE_Survey.md`.
+
+**Authoritative source found:** VCE 452-510 / SPES-158P, "Sources of Lime for Acid Soils in Virginia" (expert-reviewed Sept 2024). Gives CCE by material type (Table 1) and rate-adjustment factors (Table 2). Should be added to the About source list; it's the Virginia authority for CCE.
+
+**Real garden-center CCE ranges:** pelletized ~100% (clusters 90-100); calcitic pulverized 80-100%; dolomitic 95-108% (exceeds 100); Virginia legal floor 85% to be sold as "Aglime." Burnt/hydrated reach 120-175% but aren't typical homeowner buys. **Gypsum (CaSO4) has zero CCE — does not raise pH, is not lime** (key Help Desk trap; sold next to lime, looks identical).
+
+**Validation (5 product-driven cases, rec = 50 lbs/1,000):** the Lime tab formula `adjRate = limeRec * 100 / CCE` (line ~3182) exactly reproduces VCE 452-510 Table 2:
+- 100% → 50.0 | 90% → 55.6 | 85% → 58.8 | 108% → 46.3 | 135% → 37.0 — ALL PASS.
+- CCE > 100 correctly *reduces* the amount (dolomitic, hydrated). Conformant; no math correction.
+
+**Improvements made (survey-driven):**
+- CCE field hint rewritten with VCE 452-510 ranges (pelletized ~100%, calcitic 80-100%, dolomitic 95-108%) and a gypsum-is-not-lime warning; source cited; `max` raised 150→175 so burnt/quick lime isn't rejected.
+- **Gypsum/low-CCE guard:** a warning fires in the result when CCE < 50, naming gypsum and telling the user to confirm their product is actually limestone.
+
+### Pelletized-lime timing note added (NC State)
+
+Research/source question: does pelletized lime change application timing? **Yes** — and the sources contradict the "pelletized is faster" marketing:
+- **NC State (in source hierarchy):** "Pelleted lime comes into contact with fewer soil particles than finely ground lime. As a result, soil pH changes are slower with the pellets." Enhanced by tilling in after the pellets soften.
+- **Iowa State / A&L (Jones & Mallarino 2018):** once slaked, pelletized tracks a 60-100 mesh grind — faster than coarse aglime but slower than pure CaCO3; reaction slows in cold/dry soil.
+- **A&L:** pelletized reacts faster but runs out sooner — same total over years, applied at lower rates more frequently.
+
+**Mechanism:** the pellet must absorb moisture and slake (revert to powder) before it reacts. This is moisture- and temperature-dependent, so timing matters.
+
+**Added to Lime tab result:** a note that pelletized lime must slake before reacting (so it's slower to start and stalls in dry soil), should be applied when soil moisture is reliable (fall/early spring or before rain) not into a dry summer lawn, benefits from being worked into garden beds, and reacts-then-runs-out sooner (reinforcing the split-application logic). Attributed to NC State Extension + VCE 452-510. Note: VCE's own pubs emphasize CCE/fineness but I did not find VCE stating the timing differential explicitly — the timing finding is NC State (a Tier-2 Mid-Atlantic source in the hierarchy).
+
+### Open items after this round
+
+| Item | Status | Blocker |
+| :-- | :-- | :-- |
+| Shrub/tree tab (Phase 7) + canopy ×2 validation | Unexercised | No shrub/tree report supplied |
+| VCE garden/flower reports | Phases 5-6 via Waypoint only | No VCE garden/flower report supplied |
+| Add VCE 452-510 to About source list | Recommended | Minor — not yet done |
+
+All other audit and enhancement items through this session are ✅ resolved or documented intentional deviations.
