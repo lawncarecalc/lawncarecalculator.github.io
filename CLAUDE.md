@@ -1259,3 +1259,118 @@ The old table showed nearly every grade as "0% WIN / P1" with two vague slow-rel
 | :-- | :-- |
 | `Lawn_Fertilizer_Product_Survey.md` | Full marketplace survey (with brand examples, for reference) |
 | `Fertilizer_Grades_Table.md` | Brand-free grades table extract (matches the calculator) |
+
+---
+
+## Session Updates — June 10, 2026 (Program 3 verification — CORRECTION of an in-session error)
+
+### What happened
+
+While reviewing the fertilizer grades table, a question arose about whether the calculator's **Program 3** (the ≥50% WIN tier with a higher per-application cap) was sourced. Reading **only Soil Test Notes 17 and 18** — which describe just Programs 1 and 2 — led to an **incorrect conclusion that Program 3 was an unsourced invention exceeding the DCR ceiling.** A change was made to `detectProgram()` collapsing P3 into P2. **This was wrong and has been reverted.**
+
+### The correct, source-verified position
+
+The user supplied the full **VCE 430-011** PDF (SPES-334), which explicitly defines **THREE** programs in tables 2-4:
+- **Program 1** (table 2): quick-release, **<15% WIN**
+- **Program 2** (table 3): slowly available, **15-49% WIN**
+- **Program 3** (table 4): majority slowly available, **≥50% WIN**
+
+Direct quote: "Program 3 (table 4) details nitrogen fertility strategies that use fertilizer products with the majority (>50%) of nitrogen being from slowly available nitrogen sources." Footnotes confirm: "* ...15-49% slowly available... ** ...≥50% slowly available."
+
+The Program 3 higher per-application cap (config uses 1.5 lb) is consistent with regional turf guidance — e.g. UT Extension states majority-slow-release (>50% WIN) products "may be applied at from 1 1/2 to 2 pounds of nitrogen per 1,000 square feet."
+
+### Resolution
+
+- `detectProgram()` **restored to the original three-program logic** (P1 <15, P2 15-49, P3 ≥50). Net change to the calculator from this whole exploration: **only an added source-citation comment**; the logic is exactly as it was. JS validated clean; all 30 Program 3 references intact.
+- The fertilizer grades table built earlier (high-WIN rows labeled P3) was **correct all along** — no change needed.
+- Public-facing docs (`Fertilizer_Grades_Table.md`, `Lawn_Fertilizer_Product_Survey.md`) correctly show Program 3 — no change needed.
+
+### LESSON (important for future conformance work)
+
+**Soil Test Notes 17 and 18 are ABRIDGED.** They describe only Programs 1-2. The authoritative source for the program structure is **VCE 430-011 itself** (which the Notes reference), and it defines all three programs. Do not treat the condensed Notes as complete. When a conformance question touches program structure or per-application caps, **430-011 is the source of truth**, not the Notes.
+
+This also validates a process rule from the v2 audit plan: trace a figure to the *primary* publication, not a secondary/abridged one. The earlier centipede-ceiling work had the inverse lesson (don't trust the calculator's own internal text); this one is: don't trust an abridged note over the full publication.
+
+---
+
+## Session Updates — June 10, 2026 (Fertilizer table P-range expansion + README refresh)
+
+### Fertilizer chooser expanded beyond zero-P
+
+Per user direction, the "Help me choose a fertilizer at the garden center" table is no longer limited to zero-P grades. It now spans the full phosphorus range and is **organized by the soil's P rating** so a resident reads their interpretation and jumps to the matching group. Still brand-free (verified zero brand strings); real products converted to generic N-P-K + WIN profiles.
+
+Three sections:
+- **HIGH/VERY-HIGH P → zero-P** (runoff prevention): 28-0-3 to 32-0-4, 29-0-3 to 38-0-4, 46-0-0, plus the slow-release zero-P grades (32-0-6 ~30%, 24-0-12/24-0-11 25-49%, 25-0-5/32-0-10/39-0-0 50-70%+, 9-0-9 organic ~85%+).
+- **MEDIUM P → low-P** (4-1-2 family): 16-4-8 / 20-5-10 / 24-6-12; 3-1-2 family 12-4-8 / 15-5-10. Program shown as "by WIN" since these come in both quick- and slow-release versions.
+- **LOW P or NEW lawn → starter/high-P**: 10-10-10 / 12-12-12 balanced; 18-24-12, 18-24-6, 12-25-6, 24-25-4 starters; 5-10-5. Also "by WIN."
+
+Footnote rewritten: apply P only when the soil test calls for it; starter grades on High-P soil waste money and pollute; WIN is % of total N not bag weight; "by WIN" means read the specific bag. Sources: real Mid-Atlantic products (The Mill, Lesco/SiteOne, Pro Trust, etc. — brands stripped); VCE 430-011, Notes 17/18. Standalone `Fertilizer_Grades_Table.md` rebuilt to match the new P-organized structure. JS clean.
+
+### README refreshed to v1.7 (as styled HTML with color + emoji)
+
+The uploaded `README.md` was at v1.6 and predated this session's work, with **stale/incorrect content**:
+- Centipede listed as "1.0 lb ceiling, flat 0.5 lb cap, derived from agronomic principle" → corrected to **1.0–2.0 lb ceiling, cited to Soil Test Note 18 / SPES-669** (matches the calculator's maxN:2.0 and this session's centipede correction).
+- Program table didn't cite 430-011 Tables 2–4 → now does (and notes Notes 17/18 are condensed).
+- Missing all 1.7 features.
+
+New `README.html` (HTML chosen so color renders; user requested emoji + color):
+- Green/gold themed, hero header, callout boxes (new/note/warn/crit), emoji throughout.
+- "What's new in 1.7" section: clipping toggle, shade control, expanded fertilizer chooser, lime improvements (CCE validation, gypsum guard, pelletized timing), conformance audit.
+- Added VCE 452-510 to the source table; added the new supporting docs (fertilizer survey/table, CCE survey, audit plan/findings).
+- Corrected warm-season table; cited program structure to 430-011.
+
+Note: README.html is the refreshed deliverable; the original README.md (v1.6) is left as-is unless the user wants it replaced/converted. Version bumped 1.6 → 1.7 to reflect the feature additions; the calculator's <title> still reads v1.6 — **a future edit should bump the in-app version string to match.**
+
+### Open items
+
+| Item | Status | Blocker |
+| :-- | :-- | :-- |
+| Bump in-app version string (title) 1.6 → 1.7 | Recommended | Trivial; not yet done |
+| Add VCE 452-510 to the in-app About source list | Recommended | Not yet done (README updated; calculator not) |
+| Shrub/tree + VCE garden/flower report validation | Unexercised | Awaiting example reports |
+
+---
+
+## Session Updates — June 10, 2026 (Fertilizer table expanded to full P range; README rebuilt)
+
+### Fertilizer grades table — added P2 grades, then expanded across the full phosphorus range
+
+Two-step expansion of the "Help me choose a fertilizer at the garden center" table (both lawn tabs):
+
+1. **Added concrete Program 2 grades (15-49% WIN)** from a marketplace search, brand-free: 32-0-6 (~30% coated urea), 24-0-12 / 24-0-11 (coated urea, often +iron, 25-49%). Previously P2 was only a generic catch-all row.
+
+2. **Expanded beyond zero-P** (user: "we don't need to be limited to 0 P; there are low/lower-P products too"). Restructured the entire table to be organized by **phosphorus need**, matching the soil test's P rating so a resident reads their P result and jumps to the matching group:
+   - **HIGH/VERY-HIGH P → zero-P** grades (the existing maintenance grades across P1/P2/P3).
+   - **MEDIUM P → low-P** grades: 4-1-2 ratio family (16-4-8, 20-5-10, 24-6-12) and 3-1-2 family (12-4-8, 15-5-10).
+   - **LOW P or NEW lawn → starter/higher-P** grades: balanced 10-10-10/12-12-12 and real starter grades (18-24-12, 18-24-6, 12-25-6, 24-25-4).
+
+   Low-P and starter grades show program as **"by WIN"** rather than fixed P1/P2/P3, because these grades exist in both quick- and slow-release versions (verified in market) — the bag's WIN determines the program. Footnote reinforces: apply P only when the soil test calls for it; starter grades on High-P soil waste money and pollute. **Zero brand names confirmed** (grep clean). JS validated.
+
+### Standalone doc updated
+
+`Fertilizer_Grades_Table.md` rebuilt to match the new P-organized structure (three sections by P rating).
+
+### README rebuilt as styled HTML (README.html) with corrections
+
+The uploaded `README.md` was at v1.6 and contained a **stale centipede figure** ("1.0 lbs ... flat 0.5 lb per-app cap") — the 0.5 was the error corrected earlier this session. Rebuilt as `README.html` (HTML so it can carry color + emoji per user request), bumped to **v1.7**, with:
+- **Centipede corrected** to 1.0-2.0 lbs, flagged with a "corrected v1.7" tag and a note that it was previously listed as 0.5-1.0 in error.
+- **New v1.7 sections:** clipping return + shade site-adjustments, the expanded garden-center fertilizer table, the CCE/gypsum guard + pelletized-lime timing, the flower-tab OM advisory.
+- **Source list:** added VCE 452-510 (lime sources) and UT Extension (Program 3 corroboration); noted 430-011 as authoritative for the 3-program structure and the Notes as condensed.
+- **Conformance principle** callout: trace figures to the primary publication, not abridged Notes (the Program 3 lesson).
+- Design: VCE-green/earth palette, Fraunces/Newsreader/IBM Plex Mono, color-coded callout cards, emoji as functional signposts.
+
+### Still open (unchanged)
+
+| Item | Blocker |
+| :-- | :-- |
+| Shrub/tree tab (Phase 7) + canopy ×2 validation | No shrub/tree report supplied |
+| VCE garden/flower reports | No VCE garden/flower report supplied |
+
+### Documents produced/updated this session
+
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fertilizer table reorganized by P need |
+| `README.html` | NEW — styled, v1.7, centipede corrected |
+| `Fertilizer_Grades_Table.md` | Rebuilt to P-organized structure |
+| `CLAUDE.md` | This entry |

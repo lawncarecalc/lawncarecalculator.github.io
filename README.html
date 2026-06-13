@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VCE Lawn & Garden Care Calculator — README</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f1e9;          /* warm paper */
+    --card:#ffffff;
+    --ink:#21302a;          /* deep green-black text */
+    --slate:#52605a;
+    --slate-light:#8a948e;
+    --green-deep:#2c5f3e;   /* VCE green */
+    --green:#3d8b5f;
+    --green-soft:#e7f1ea;
+    --gold:#b8862f;
+    --gold-soft:#f8efda;
+    --terracotta:#bb5a3c;
+    --terra-soft:#f6e3da;
+    --sky:#33688f;
+    --sky-soft:#e4eef5;
+    --border:#e0ddd0;
+    --rule:#cfd8d0;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Newsreader', Georgia, serif; font-size:17px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:0 22px 90px;}
+
+  /* ---- Hero ---- */
+  header.hero{
+    padding:64px 0 38px; border-bottom:3px double var(--green-deep); margin-bottom:8px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.22em;
+    text-transform:uppercase; color:var(--green); margin:0 0 14px;
+  }
+  h1{
+    font-family:'Fraunces', serif; font-weight:600; font-size:clamp(2.1rem,5.5vw,3.4rem);
+    line-height:1.04; letter-spacing:-0.01em; margin:0 0 18px; color:var(--green-deep);
+  }
+  h1 .leaf{font-style:normal;}
+  .lede{font-size:1.18rem; color:var(--slate); margin:0 0 22px; max-width:62ch;}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
+  .badge{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.04em;
+    padding:5px 11px; border-radius:100px; background:var(--green-soft);
+    color:var(--green-deep); border:1px solid #cfe3d6;
+  }
+  .badge.gold{background:var(--gold-soft); color:#8a6418; border-color:#ecd9ad;}
+  .badge.sky{background:var(--sky-soft); color:var(--sky); border-color:#cbddeb;}
+
+  /* ---- Sections ---- */
+  section{padding:34px 0; border-bottom:1px solid var(--rule);}
+  h2{
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.6rem; color:var(--green-deep);
+    margin:0 0 6px; letter-spacing:-0.01em; display:flex; align-items:center; gap:10px;
+  }
+  h2 .ico{font-size:1.4rem; line-height:1;}
+  h3{
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.12rem; color:var(--ink);
+    margin:26px 0 8px;
+  }
+  .section-sub{color:var(--slate-light); font-size:0.95rem; margin:0 0 18px; font-style:italic;}
+  p{margin:0 0 14px;}
+  a{color:var(--green); text-decoration:none; border-bottom:1px solid #bcd9c6;}
+  a:hover{color:var(--green-deep); border-color:var(--green-deep);}
+  strong{color:var(--ink); font-weight:600;}
+
+  /* ---- Callout cards ---- */
+  .note{
+    border-radius:10px; padding:15px 18px; margin:18px 0; font-size:0.97rem; line-height:1.55;
+    border:1px solid var(--border); background:var(--card);
+  }
+  .note .nt{font-weight:600; font-family:'Fraunces',serif; display:block; margin-bottom:3px;}
+  .note.green{background:var(--green-soft); border-color:#cfe3d6;}
+  .note.green .nt{color:var(--green-deep);}
+  .note.gold{background:var(--gold-soft); border-color:#ecd9ad;}
+  .note.gold .nt{color:#8a6418;}
+  .note.terra{background:var(--terra-soft); border-color:#eccabc;}
+  .note.terra .nt{color:var(--terracotta);}
+  .note.sky{background:var(--sky-soft); border-color:#cbddeb;}
+  .note.sky .nt{color:var(--sky);}
+
+  /* ---- Tabs grid ---- */
+  .tabgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px; margin:18px 0 4px;}
+  .tabcard{
+    background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px 17px;
+    position:relative;
+  }
+  .tabcard .num{
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--green);
+    letter-spacing:0.1em;
+  }
+  .tabcard h4{font-family:'Fraunces',serif; font-size:1.04rem; margin:3px 0 6px; color:var(--green-deep);}
+  .tabcard p{font-size:0.88rem; color:var(--slate); margin:0; line-height:1.5;}
+
+  /* ---- Tables ---- */
+  .tbl-scroll{overflow-x:auto; margin:14px 0;}
+  table{border-collapse:collapse; width:100%; font-family:'Newsreader',serif; font-size:0.93rem;}
+  caption{text-align:left; font-size:0.82rem; color:var(--slate-light); margin-bottom:6px; font-style:italic;}
+  th{
+    background:var(--green-deep); color:#f3f1e9; font-weight:600; text-align:left;
+    padding:9px 12px; font-size:0.82rem; letter-spacing:0.02em;
+  }
+  td{padding:8px 12px; border-bottom:1px solid var(--border); color:var(--slate); vertical-align:top;}
+  tr:nth-child(even) td{background:#faf9f3;}
+  td strong{color:var(--ink);}
+  .grp td{background:var(--green-soft)!important; font-weight:600; color:var(--green-deep); font-size:0.82rem;}
+
+  /* ---- Source list ---- */
+  ul.clean{list-style:none; padding:0; margin:10px 0;}
+  ul.clean li{padding:6px 0 6px 26px; position:relative; border-bottom:1px solid var(--border); font-size:0.93rem; color:var(--slate);}
+  ul.clean li::before{content:"🌿"; position:absolute; left:0; top:6px; font-size:0.85rem;}
+  ul.plain{padding-left:22px; margin:8px 0;}
+  ul.plain li{margin-bottom:6px; color:var(--slate); font-size:0.94rem;}
+
+  code{font-family:'IBM Plex Mono',monospace; font-size:0.85em; background:#eceae0; padding:2px 6px; border-radius:4px; color:var(--green-deep);}
+
+  footer{padding:36px 0 0; color:var(--slate-light); font-size:0.86rem;}
+  footer em{display:block; margin-top:10px;}
+  .changelog-tag{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:0.66rem;
+    background:var(--terra-soft); color:var(--terracotta); padding:2px 7px; border-radius:4px;
+    letter-spacing:0.05em; vertical-align:middle; margin-left:6px; border:1px solid #eccabc;
+  }
+  @media (max-width:560px){
+    body{font-size:16px;}
+    header.hero{padding:42px 0 30px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Virginia Cooperative Extension · Homeowner Tool</p>
+    <h1><span class="leaf">🌱</span> Lawn &amp; Garden Care Calculator</h1>
+    <p class="lede">An interactive web tool for Virginia homeowners to interpret soil test results and calculate fertilizer and lime needs for lawns, vegetable gardens, flower beds, and landscape shrubs and trees — built entirely from official Virginia Cooperative Extension publications and peer-reviewed regional research.</p>
+    <div class="badges">
+      <span class="badge">Version 1.7 · June 2026</span>
+      <span class="badge sky">Single self-contained HTML</span>
+      <span class="badge gold">No server · no build step</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="ico">🧪</span> Overview</h2>
+    <p>The calculator accepts soil test reports from two labs and adjusts rating scales, units, and interpretation notes automatically when you select your lab:</p>
+    <div class="note green">
+      <span class="nt">🏛️ VCE / Virginia Tech Soil Testing Laboratory</span>
+      Reports in lb/A (P, K) and lbs/1,000 sq. ft. (lawn lime) or lbs/100 sq. ft. (garden lime).
+    </div>
+    <div class="note sky">
+      <span class="nt">🔬 Waypoint Analytical</span>
+      Reports in ppm (P, K, micronutrients), dS/m (salts), and lbs/1,000 sq. ft. (all lime). Rating bands use Waypoint's own published values from Agronomy Facts 8.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="ico">📋</span> The Eight Tabs</h2>
+    <div class="tabgrid">
+      <div class="tabcard"><span class="num">TAB 01</span><h4>🩺 Soil Test Report</h4><p>Interprets every value — pH, Buffer Index, P, K, Ca, Mg, organic matter, salts, CEC, base saturation, lime, and micronutrients — each with a plain-English card, rating pill, and action. <strong>Apply to Calculators</strong> pre-fills the other tabs.</p></div>
+      <div class="tabcard"><span class="num">TAB 02</span><h4>❄️ Cool-Season Lawns</h4><p>Tall fescue, bluegrass, ryegrass, fine fescue. Up to 4 custom application slots, each with its own N-P-K and WIN%. Now includes clipping-return and shade adjustments.</p></div>
+      <div class="tabcard"><span class="num">TAB 03</span><h4>☀️ Warm-Season Lawns</h4><p>Bermuda, St. Augustine, zoysia, centipede — distinct N ceilings per species. Clipping and shade controls included; no nitrogen after August 15.</p></div>
+      <div class="tabcard"><span class="num">TAB 04</span><h4>🪨 Lime</h4><p>Lime quantities from the recommendation, adjusted by product CCE and bag size. Schedules multiple applications, warns on gypsum, and explains pelletized-lime timing.</p></div>
+      <div class="tabcard"><span class="num">TAB 05</span><h4>🥬 Vegetable Garden</h4><p>20 crops with preplant N rates and separate sidedress schedules. Organic-matter nitrogen credit included for high-OM beds.</p></div>
+      <div class="tabcard"><span class="num">TAB 06</span><h4>🌸 Flower Garden</h4><p>Annuals, perennials, roses, and spring bulbs. Nitrogen field optional (research-based defaults). High-OM beds get a bloom-aware advisory.</p></div>
+      <div class="tabcard"><span class="num">TAB 07</span><h4>🌳 Shrubs &amp; Trees</h4><p>Six plant types. Fertilize only on signs of deficiency. Application area = twice the canopy (feeder roots extend past the drip line).</p></div>
+      <div class="tabcard"><span class="num">TAB 08</span><h4>📖 About &amp; Instructions</h4><p>Source documentation, WIN/program guide, VCE-vs-Waypoint rating comparison, and step-by-step usage.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="ico">❄️</span> Cool-Season Lawn Limits</h2>
+    <p class="section-sub">Annual N ceilings and per-application limits follow VCE 430-011 (Tables 2–4) and DCR 2014.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Grass</th><th>Annual N ceiling</th><th>P1 /app</th><th>P2 /app</th><th>P3 /app</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Tall fescue / bluegrass / ryegrass</strong></td><td>3.5 lbs/1,000 sq. ft.</td><td>0.7</td><td>0.9</td><td>1.5</td></tr>
+          <tr><td><strong>Fine-leaf fescue</strong></td><td>2.0 lbs/1,000 sq. ft.</td><td>0.7</td><td>0.9</td><td>1.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Primary fertilization window: <strong>September through November</strong>.</p>
+  </section>
+
+  <section>
+    <h2><span class="ico">☀️</span> Warm-Season Lawn Limits</h2>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Grass</th><th>Annual N ceiling</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Bermudagrass / St. Augustinegrass</strong></td><td>4.0 lbs/1,000 sq. ft.</td><td>Highest-N warm-season grasses</td></tr>
+          <tr><td><strong>Zoysiagrass</strong></td><td>1.0–2.0 lbs/1,000 sq. ft.</td><td>Per Soil Test Note 18 / SPES-669</td></tr>
+          <tr><td><strong>Centipedegrass</strong></td><td>1.0–2.0 lbs/1,000 sq. ft.<span class="changelog-tag">corrected v1.7</span></td><td>Most fertilizer-sensitive grass in Virginia; was previously listed as 0.5–1.0 lb in error</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note terra">
+      <span class="nt">🛑 Hard cutoff</span>
+      No nitrogen after <strong>August 15</strong> on any warm-season grass. Late-season nitrogen invites winterkill — especially in shade.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="ico">🍃</span> Site Adjustments <span class="changelog-tag">new in v1.7</span></h2>
+    <p class="section-sub">Both lawn tabs now adjust the nitrogen plan for two real-world conditions, each grounded in VCE 430-011.</p>
+    <div class="note green">
+      <span class="nt">♻️ Clipping return</span>
+      Returning clippings recycles nitrogen. Toggle it on and the calculator reduces your annual target by up to one-third, capped at 1 lb/1,000 sq. ft. — the amount clippings actually return.
+    </div>
+    <div class="note gold">
+      <span class="nt">☁️ Shade</span>
+      A three-position control (full sun / some shade / heavy shade) applies VCE's stated range — heavily shaded grass needs one-half to two-thirds the nitrogen of full sun. Shade reduction applies first, then clippings. Mixed-shade lawns should run the shaded zone as a separate calculation.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="ico">🛒</span> Choosing a Fertilizer at the Garden Center <span class="changelog-tag">expanded v1.7</span></h2>
+    <p>The lawn tabs include a brand-free reference table that matches commercial grades to your soil's phosphorus rating. Residents read their P result (Low / Medium / High) and jump to the matching group, then match the N-P-K and WIN on any bag to the closest row. <strong>No brands are endorsed</strong> — profiles are generic and the bag's guaranteed-analysis label is always the authority. Full table in <code>Fertilizer_Grades_Table.md</code>.</p>
+    <div class="note sky">
+      <span class="nt">⚠️ Reading WIN correctly</span>
+      Program is set by WIN as a <strong>percent of total nitrogen</strong>, not percent of bag weight: divide the label's WIN figure by the total N%. A bag with 24% N and "0.6% WIN" is 0.6 ÷ 24 = 2.5% of N → Program 1.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="ico">🔢</span> Nitrogen Programs (WIN%)</h2>
+    <p class="section-sub">Per VCE 430-011, Tables 2–4. The full publication defines three programs; the condensed Soil Test Notes 17/18 describe only the first two.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Program</th><th>WIN% of total N</th><th>Per-app ceiling</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>🟡 Program 1</strong></td><td>&lt; 15%</td><td>Lower (0.7 cool)</td><td>Quick-release; more applications needed</td></tr>
+          <tr><td><strong>🟢 Program 2</strong></td><td>15–49%</td><td>Medium (0.9 / 1.0)</td><td>Slow-release component on the bag</td></tr>
+          <tr><td><strong>🔵 Program 3</strong></td><td>≥ 50%</td><td>Higher</td><td>Majority slow-release; fewest applications</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>WIN is listed on the fertilizer bag. If no WIN is listed, assume Program 1 — unless the bag names sulfur- or polymer-coated urea, which counts as slowly available.</p>
+  </section>
+
+  <section>
+    <h2><span class="ico">🪨</span> Lime &amp; CCE <span class="changelog-tag">enhanced v1.7</span></h2>
+    <p>The Lime tab adjusts the recommended amount by the product's Calcium Carbonate Equivalent (CCE), validated against <strong>VCE 452-510</strong>: the adjustment factor is simply 100 ÷ CCE.</p>
+    <div class="note terra">
+      <span class="nt">🚫 Gypsum is not lime</span>
+      Gypsum (calcium sulfate) has a CCE of zero — it does not raise pH. The Lime tab warns if a near-zero CCE is entered. Pelletized lime, by contrast, must absorb moisture and slake before it reacts, so apply it when soil moisture is reliable, not into a dry summer lawn.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="ico">🌸</span> Flower Garden Defaults</h2>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Type</th><th>Default N rate</th><th>Key timing rule</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Annual flowers</strong></td><td>0.10 lbs/100 sq. ft. preplant</td><td>Optional half-rate mid-season</td></tr>
+          <tr><td><strong>Perennial flowers</strong></td><td>0.10 lbs/100 sq. ft. spring only</td><td>Compost often sufficient once established</td></tr>
+          <tr><td><strong>Roses</strong></td><td>0.20 lbs/100 sq. ft. monthly</td><td>March–August; stop by August 15</td></tr>
+          <tr><td><strong>Spring-flowering bulbs</strong></td><td>0.40 lbs/100 sq. ft.</td><td>At planting + at emergence; <strong>never after flowering</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note gold">
+      <span class="nt">🌼 High organic matter</span>
+      Because excess nitrogen suppresses bloom, beds high in organic matter get a flower-specific advisory to lean toward the low end of any nitrogen rate — or skip it.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="ico">🌳</span> Shrubs &amp; Trees</h2>
+    <p class="section-sub">Based on VCE Soil Test Note 20 (SPES-336P) and VCE 430-018 (HORT-120P).</p>
+    <div class="note green">
+      <span class="nt">✅ Fertilize only on signs of deficiency</span>
+      Healthy plants — and plants next to a regularly fertilized lawn — typically need no supplement. The tab opens with this guidance.
+    </div>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Type</th><th>N range (lbs/1,000 sq. ft.)</th><th>pH target</th></tr></thead>
+        <tbody>
+          <tr><td>Deciduous shrub</td><td>3–6</td><td>5.5–7.0</td></tr>
+          <tr><td>Evergreen shrub</td><td>1–3</td><td>5.0–6.5</td></tr>
+          <tr><td>Acid-loving shrub (azalea, rhododendron, camellia…)</td><td>1–2</td><td>4.5–6.0</td></tr>
+          <tr><td>Deciduous tree</td><td>3–6</td><td>5.5–7.0</td></tr>
+          <tr><td>Evergreen tree</td><td>1–3</td><td>5.0–6.5</td></tr>
+          <tr><td>Acid-loving tree (pin oak, red maple…)</td><td>1–3</td><td>4.5–6.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Area:</strong> enter canopy diameter or L×W — the calculator applies fertilizer to twice the canopy area, since feeder roots extend well past the drip line (Note 20). <strong>Turf adjacency:</strong> overlap with a fertilized lawn caps each application at 1.5 lbs N/1,000 sq. ft. (430-018).</p>
+  </section>
+
+  <section>
+    <h2><span class="ico">🌡️</span> How to Get a Soil Test</h2>
+    <div class="note green">
+      <span class="nt">🏛️ VCE / Virginia Tech Soil Testing Laboratory</span>
+      Forms and sample boxes at your local Extension office. Mail to 145 Smyth Hall (MC 0465), 185 Ag Quad Ln, Blacksburg VA 24061. Fee (in-state): $10 routine, $4 organic-matter add-on. More at <a href="https://soiltest.vt.edu">soiltest.vt.edu</a>.
+    </div>
+    <div class="note sky">
+      <span class="nt">🔬 Waypoint Analytical</span>
+      Submit form at <a href="https://www.waypointanalytical.com">waypointanalytical.com</a>. Richmond lab: 7621 Whitepine Road, Richmond VA 23237 · 804-743-9401. Test codes: S1M (lawn) or S3M (garden, includes micronutrients).
+    </div>
+    <p>Sample in fall or early spring for the most accurate results. Don't sample when soil is extremely wet. Take 10–12 sub-samples per area and mix before submitting.</p>
+  </section>
+
+  <section>
+    <h2><span class="ico">📚</span> Primary Sources</h2>
+    <h3>VCE Core Publications</h3>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Publication</th><th>Title</th></tr></thead>
+        <tbody>
+          <tr><td>430-011 / SPES-334P</td><td>Lawn Fertilization in Virginia <strong>(authoritative for the 3-program structure)</strong></td></tr>
+          <tr><td>430-018 / HORT-120P</td><td>Fertilizing Landscape Trees and Shrubs</td></tr>
+          <tr><td>430-520 / SPES-223P</td><td>Fall Lawn Care</td></tr>
+          <tr><td>430-522 / SPES-669P</td><td>Maintenance Calendar for Warm-Season Turfgrasses</td></tr>
+          <tr><td>430-523 / SPES-670P</td><td>Maintenance Calendar for Cool-Season Turfgrasses</td></tr>
+          <tr><td>452-717 / SPES-306P</td><td>Soil Test Note 17 — Cool-Season Grasses <em>(condensed)</em></td></tr>
+          <tr><td>452-718 / SPES-305P</td><td>Soil Test Note 18 — Warm-Season Grasses <em>(condensed)</em></td></tr>
+          <tr><td>452-719 / SPES-687P</td><td>Soil Test Note 19 — Vegetable and Flower Gardens</td></tr>
+          <tr><td>452-720 / SPES-336P</td><td>Soil Test Note 20 — Home Shrubs and Trees</td></tr>
+          <tr><td>452-701 / SPE-605NP</td><td>Soil Test Note 1 — Explanation of Soil Tests</td></tr>
+          <tr><td>452-510 / SPES-158P</td><td>Sources of Lime for Acid Soils in Virginia <span class="changelog-tag">added v1.7</span></td></tr>
+          <tr><td>426-323 / SPES-803P</td><td>Fertilizing the Vegetable Garden</td></tr>
+          <tr><td>426-200 / SPES-802P</td><td>Annual Flowers: Culture and Maintenance</td></tr>
+          <tr><td>SPES-384NP</td><td>Your Soil Test Report Simplified</td></tr>
+          <tr><td>DCR 2014</td><td>Virginia Nutrient Management Standards and Criteria</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="section-sub" style="margin-top:18px;">Plus the per-crop 426-series vegetable guides (tomatoes, potatoes, sweet corn, brassicas, leafy greens, cucurbits, root crops, beans, alliums) and the supplementary regional sources below.</p>
+
+    <h3>Supplementary Regional Sources</h3>
+    <p>Used only where VCE is silent; all from land-grant Cooperative Extension programs and consistent with VCE on material points.</p>
+    <ul class="clean">
+      <li><strong>UMD Extension</strong> — vegetable N rates by feeding level; organic-matter N credit; annual/perennial flower care; tree &amp; shrub guidance</li>
+      <li><strong>Clemson HGIC</strong> — sidedress guidance; calcium nitrate; tree &amp; shrub timing (ANSI A300)</li>
+      <li><strong>Rutgers NJAES</strong> — FS626 organic fertilizer release rates &amp; sidedress amounts; FS1220 spring bulbs</li>
+      <li><strong>NC State Extension</strong> — calcium nitrate rationale; blossom-end-rot framing; spring bulb rates; <strong>pelletized-lime timing</strong></li>
+      <li><strong>UT Extension</strong> — Program 3 (&gt;50% WIN) application-rate corroboration</li>
+      <li><strong>Waypoint Agronomy Facts 8</strong> — rating labels, units, Buffer pH terminology, K optimum bands by CEC</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="ico">⚖️</span> Source Policy</h2>
+    <p>VCE is always primary. UMD Extension and Clemson HGIC are co-primary where VCE is silent. Rutgers NJAES and NC State are supporting sources. Sources outside the Mid-Atlantic land-grant network are not used.</p>
+    <div class="note green">
+      <span class="nt">📐 Conformance principle</span>
+      Trace every figure to the <strong>primary</strong> publication, not a secondary or abridged one. The condensed Soil Test Notes (17/18) describe only Programs 1–2; the full <strong>430-011</strong> defines all three. When program structure or per-application caps are in question, 430-011 is the source of truth.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="ico">⚠️</span> Limitations</h2>
+    <ul class="plain">
+      <li><strong>Requires a soil test</strong> for lawn and vegetable calculators. Flower and shrub/tree tabs offer research-based defaults when no test is available.</li>
+      <li><strong>Lawn N cannot be estimated from a soil test</strong> — VCE 430-011 is explicit. The N figure on a lawn report is a research-based guideline, not a measured deficiency.</li>
+      <li><strong>Healthy shrubs and trees do not need fertilizer</strong> — VCE Note 20 is explicit.</li>
+      <li><strong>Recommendations are valid for ~3 years</strong> — retest every 3–4 years for lawns, 2–3 for active vegetable beds.</li>
+      <li><strong>Soil texture is never inferred</strong> from CEC or Buffer Index values.</li>
+      <li><strong>Virginia soils and climate</strong> — primary audience is Chesterfield County and the Piedmont clay belt (Zone 7b); recommendations are appropriate statewide.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="ico">🗂️</span> Supporting Documents</h2>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Document</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>CLAUDE.md</code></td><td>Development context for AI-assisted sessions — implementation details, source boundaries, critical rules, session log</td></tr>
+          <tr><td><code>Fertilizer_Grades_Table.md</code></td><td>Brand-free garden-center grades table, organized by phosphorus need</td></tr>
+          <tr><td><code>Lawn_Fertilizer_Product_Survey.md</code></td><td>Full marketplace survey behind the grades table</td></tr>
+          <tr><td><code>Liming_Materials_CCE_Survey.md</code></td><td>CCE values for garden-center liming materials (validates the Lime tab)</td></tr>
+          <tr><td><code>Calculator_Conformance_Audit_Plan_v2.md</code></td><td>Audit methodology with cross-cutting translation / unit / data-flow phases</td></tr>
+          <tr><td><code>Conformance_Audit_Findings_Round1.md</code> / <code>Round2.md</code></td><td>Findings from validating the calculator against real soil test reports</td></tr>
+          <tr><td><code>VCE_Calculator_Fun_Facts.docx</code></td><td>Highlights for new users</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Attributions</strong> — Chantel Wilson, Assistant Professor &amp; 4-H STEAM Extension Specialist, Virginia State University · Michael Goatley Jr., Professor &amp; Extension Specialist, Virginia Tech.</p>
+    <p>Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, the U.S. Department of Agriculture, and local governments.</p>
+    <em>🌱 This calculator is not an official VCE product. It is a homeowner tool built from VCE publications for personal use.</em>
+  </footer>
+
+</div>
+</body>
+</html>
