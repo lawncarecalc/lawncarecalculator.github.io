@@ -1374,3 +1374,53 @@ The uploaded `README.md` was at v1.6 and contained a **stale centipede figure** 
 | `README.html` | NEW — styled, v1.7, centipede corrected |
 | `Fertilizer_Grades_Table.md` | Rebuilt to P-organized structure |
 | `CLAUDE.md` | This entry |
+
+---
+
+## Session Updates — June 13, 2026 (Grass Seed Selection Assistant — standalone build)
+
+### Plan revised to v2, then built standalone
+
+Following four user decisions, the grass-seed-assistant plan was rewritten to v2 (`Grass_Seed_Selection_Assistant_Plan.md`) and then built as a self-contained HTML tool: `grass_seed_assistant.html`.
+
+**The four decisions:**
+1. **Build standalone first, then port into the calculator as a tab.** Logic is self-contained (driven by site/use questions, not soil-test data), so prove the question flow + engine + UI in isolation, then wire in. Logic kept in separated constants (`SPECIES`, `QUESTIONS`, `recommend()`) for a clean later port.
+2. **Lead with cultivar PROPERTIES + real store-label literacy, NOT SPES-617 cultivar names.** Residents can't buy SPES-617 varieties (Bye/Hype/Navigator III) at a big-box store. SPES-617 is now a collapsible backstop only. Consumer content = (A) the properties that make a grass fit a site, (B) how to read a real bag.
+3. **Include warm-season** as a real path (climate-change framing).
+4. **Default to Chesterfield (Southern Piedmont); others selectable.**
+
+### What the assistant does
+
+- **7 tappable questions** with progress bar, in the calculator's visual identity (VCE-green/earth palette, Fraunces/Newsreader/IBM Plex Mono) so the port is seamless. Region defaults to Southern Piedmont; winter-color question auto-skips in the Mountains (warm-season not adapted there).
+- **Recommendation engine = SPES-748 logic.** Validated across scenarios: tall fescue is the statewide default; fine fescue for shade; TF+KBG for high-traffic showcase/full-sun; warm-season (zoysia/bermuda/centipede/St. Augustine) opens when winter dormancy is acceptable in an adapted region.
+- **Boundary fix during testing:** Coastal Plain + shade + dormant-OK now routes to St. Augustine (the shade-tolerant warm-season grass adapted to far-SE VA); the same case in the Piedmont stays cool-season (fine fescue), and Coastal + shade + wants-green also stays fine fescue. Implemented via `wantsWarm = ... && (a.sun !== 'shade' || coastal)`.
+- **Output (shopping card):** recommended species/mixture + VCE rationale, property profile, what-to-look-for-on-the-bag, seed-quantity calculator (rate × area), planting timing, honest expectations ("eight turfgrasses, not very well"; winter dormancy; can't-seed warnings), hand-off to the calculator's fertilization tab + starter-fertilizer note, and the SPES-617 backstop in a `<details>`.
+- **Rules baked in:** cool-season = always a blend/mixture (never single cultivar); warm-season = monoculture and several can't be seeded (St. Augustine = sod/plugs). Renovation-diagnosis reminder for overseed (430-520).
+
+### Store-label literacy (the heart of decision 2)
+
+Bag checklist teaches generic, brand-free tag-reading. Built iteratively from extension sources (MSU Extension bulletin most authoritative):
+- Read the **back analysis tag**, not the front (front = marketing, back = lab report).
+- **Blue certification tag** — certifies varietal authenticity (NOT germination/purity quality — phrased honestly). *(added after user noted it was missing)*
+- Named **cultivars**, not just species.
+- **Germination ≥85%** with **test date within 12 months** (drops ~5%/yr). *(test date added)*
+- **Low inert/weed/other-crop.**
+- **Coated-seed trap:** coating adds bag weight but isn't seed (counts as inert); a "10 lb" coated bag has less actual seed — compare pure-live-seed weight for big jobs. *(added)*
+- **Pure Live Seed = pure% × germination%.**
+- **Avoid:** Kentucky 31 (coarse forage grass; VCE steers to turf-type tall fescue) and annual-ryegrass-heavy mixes (die in a year).
+
+### UI fix (user feedback via screenshot)
+
+The region step had a floating "Chesterfield County is here ↑" caption that was confusing (highlighted text + up-arrow pointing at a box already reading "Southern Piedmont"). Removed it; instead the default dropdown option now reads "Southern Piedmont — incl. Chesterfield, Richmond area" inline. Option `value` stays plain "Southern Piedmont" so the engine still matches. (`.region-default` CSS now unused but harmless.)
+
+### Status & open questions
+
+- Standalone is a working proof; user likes it as a start. Not yet ported to the calculator (that's the deferred step 1 follow-up).
+- Open (from the plan): warm-season depth (full parallel vs. cool-season-forward); whether to add a Virginia county→region lookup; patch/repair as its own flow; whether to add a brief VCE establishment how-to (seedbed prep, watering-in, first mow).
+
+### Documents this session
+
+| Document | Status |
+| :-- | :-- |
+| `grass_seed_assistant.html` | NEW — standalone selection assistant |
+| `Grass_Seed_Selection_Assistant_Plan.md` | Rewritten to v2 (4 decisions) |
