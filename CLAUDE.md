@@ -1534,3 +1534,29 @@ User: "Waypoint doesn't offer a Sufficient rating." Confirmed via Agronomy Facts
 | :-- | :-- |
 | `index.html` | carry-over routing hardened; "Sufficient"→"Optimum" labels |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — June 15, 2026 (cont.) (VNPS approved under the NonEdu rule — EMG Handbook Ch. 19)
+
+### Decision reversed with evidence: VNPS now qualifies (Situation 1)
+Earlier this session VNPS was held OUT of the lawn-alternative resources box pending Extension Office approval, with the note that "agency partnership" does not satisfy a gate. User pushed on the agency-partnership angle; web search + the user-uploaded **VCE Extension Master Gardener Handbook, Chapter 19 (Virginia Native Plants)** resolved it decisively — but on a different (stronger) basis than agency partnership:
+- Ch. 19's **Additional Resources lists "Virginia Native Plant Society: https://vnps.org/"** outright → the exact Situation 1 trigger ("a specific VCE publication has directed clients to them").
+- Ch. 19's "Warning Internet Searchers" box places VNPS inside its trusted set **alongside .edu/.gov** sources.
+- Ch. 19 documents a **direct Chesterfield link**: Ashley Moulton "formerly coordinated the Chesterfield Extension Master Gardener unit and serves on the boards of the Virginia Native Plant Society."
+- **Scope limit preserved:** Ch. 19 uses VNPS for native-plant lists/education and its cultivar/nativar statement, but points to the Digital Atlas of the Virginia Flora / USDA for range/nativity. So VNPS is approved for native-plant lists + education, NOT as a range authority.
+- The "agency partnership" argument was explicitly NOT the basis (it doesn't satisfy a gate); the EMG Handbook listing is.
+
+### Changes made
+1. **grass_seed_assistant.html** — added VNPS to the lawn-alternative "approved native-plant resources" box ("a VCE-recognized native-plant resource (listed in the VCE EMG Handbook) for native plant lists and education"); rewrote the code comment from "NOT included pending approval" to record the Situation 1 basis (Ch. 19 listing + Chesterfield personnel link + the not-agency-partnership note). JS validated; zero brand names.
+2. **NonEdu_Full_Rule.md** (NEW writable copy in outputs; original upload is read-only) — added a VNPS entry under Situation 1, formatted to match the Plant Virginia Natives entry, citing the EMG Handbook Ch. 19 basis and the range/nativity scope limit. Confirmed no conflict with the "Never Acceptable" list (which only excludes nonprofits that don't meet one of the five situations — VNPS now does).
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `grass_seed_assistant.html` | VNPS added to resources box (Situation 1) |
+| `NonEdu_Full_Rule.md` | NEW writable copy — VNPS added under Situation 1 |
+| `CLAUDE.md` | this entry |
+
+### Note
+The original NonEdu rule remains at /mnt/user-data/uploads/NonEdu_Full_Rule_v3.md (read-only). The updated, authoritative copy is now /mnt/user-data/outputs/NonEdu_Full_Rule.md.
