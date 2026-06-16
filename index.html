@@ -5072,7 +5072,9 @@ function calcFlower() {
   // Organic-matter nitrogen advisory (flower framing: excess N suppresses bloom, so high OM = reduce/skip N)
   var flrOmVal = parseFloat(document.getElementById('st-om') ? document.getElementById('st-om').value : '') || 0;
   var flrOmNote = '';
-  if (flrOmVal >= 15) {
+  if (flrOmVal >= 20) {
+    flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>Extreme organic matter (' + flrOmVal.toFixed(1) + '%):</strong> This bed is essentially compost-rich and very unlikely to need any fertilizer or amendment. Very high organic matter can also tie up some micronutrients. The standard 0.4 lbs N per 1% OM release estimate overstates release at this level, so no figure is shown. Skip supplemental nutrients and watch plant performance. <em>(UMD Extension; VCE Note 19)</em></div>';
+  } else if (flrOmVal >= 15) {
     flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>Very high organic matter (' + flrOmVal.toFixed(1) + '%):</strong> Soil this rich releases ample nitrogen on its own. For flowers, excess nitrogen drives leafy growth at the expense of blooms, so additional nitrogen is very likely unnecessary &mdash; and could reduce flowering. Skip supplemental N and watch plant color. <em>(UMD Extension; VCE Note 19)</em></div>';
   } else if (flrOmVal >= 5) {
     var flrOmNPer100 = (flrOmVal * 0.4) / 10;
@@ -5153,7 +5155,39 @@ function calcFlower() {
   }
   if (pkHtml) html += '<div style="margin-top:12px;">' + pkHtml + '</div>';
 
+  // Mod 3 (VCE Note 19): when P or K tests Low/Medium, offer VCE's organic-amendment materials.
+  // VCE corrects P/K only at Low/Medium (never at Optimum/High) — so this only fires for those ratings.
+  var pLowMed = (pRat === 'L-' || pRat === 'L' || pRat === 'L+' || pRat === 'M-' || pRat === 'M' || pRat === 'M+');
+  var kLowMed = (kRat === 'L-' || kRat === 'L' || kRat === 'L+' || kRat === 'M-' || kRat === 'M' || kRat === 'M+');
+  if (pLowMed || kLowMed) {
+    var matHtml = '<div style="font-size:0.78rem;background:#eef5ee;border:1px solid #cfe3d6;border-radius:4px;padding:8px 11px;margin-top:10px;">'
+      + '<strong>&#127793; Organic / amendment option (VCE Note 19):</strong> instead of a bagged fertilizer you can bring these up with materials per 100 sq. ft.:';
+    if (pLowMed) matHtml += '<div style="margin-top:4px;">&bull; <strong>Phosphorus:</strong> ~10 lb bone meal or rock phosphate.</div>';
+    if (kLowMed) matHtml += '<div style="margin-top:4px;">&bull; <strong>Potassium:</strong> ~10 lb granite dust or greensand. (Wood ash also works but only on acid soils below pH 6.0, and reduce lime by 5 lb per 10 lb ash.)</div>';
+    matHtml += '<div style="margin-top:4px;font-style:italic;color:var(--slate-mid);">VCE recommends correcting phosphorus and potassium only when they test Medium or Low. <em>(VCE Note 19)</em></div>';
+    matHtml += '</div>';
+    html += matHtml;
+  }
+
+  // Mod 3 (sulfur): optional advisory only. VCE Note 19 does not treat sulfur as a routine flower
+  // nutrient (per SPES-384 it is mainly a pH-lowering amendment), so we flag it lightly when low,
+  // and name the AF8-consistent sulfate sources rather than computing a VCE rate.
+  var sVal = parseFloat(document.getElementById('st-s') ? document.getElementById('st-s').value : '') || 0;
+  if (sVal > 0 && sVal < 10) {
+    html += '<div style="font-size:0.78rem;background:#eef5ee;border:1px solid #cfe3d6;border-radius:4px;padding:8px 11px;margin-top:10px;">'
+      + '&#129516; <strong>Sulfur reads low (' + sVal + ' ppm).</strong> Some labs (e.g. Waypoint) suggest a small sulfur application at this level; sulfate sources such as gypsum, ammonium sulfate, or potassium sulfate are appropriate (elemental sulfur is slow to become available). VCE\'s home-garden guidance treats sulfur mainly as a pH-lowering amendment rather than a routine nutrient, so for most flower beds a sulfur application is optional. Follow the product label for the rate. <em>(Waypoint Agronomy Facts 8; VCE SPES-384)</em></div>';
+  }
+
   // Lime
+  // Mod 1 (VCE Note 19): lime TYPE depends on Mg. Low Mg + lime -> dolomitic (corrects Mg);
+  // Mg adequate + lime -> calcitic. No lime + low Mg -> 1 lb Epsom salts/100 sq ft.
+  // No lime + low Ca -> 10 lb gypsum/100 sq ft.
+  var mgRatRaw = document.getElementById('st-mg-rating') ? document.getElementById('st-mg-rating').value : '';
+  var caRatRaw = document.getElementById('st-ca-rating') ? document.getElementById('st-ca-rating').value : '';
+  var mgRatF = WAYPOINT_TO_VCE[mgRatRaw] || mgRatRaw;
+  var caRatF = WAYPOINT_TO_VCE[caRatRaw] || caRatRaw;
+  var mgIsLow = (mgRatF === 'L-' || mgRatF === 'L' || mgRatF === 'L+');
+  var caIsLow = (caRatF === 'L-' || caRatF === 'L' || caRatF === 'L+');
   if (limeRec > 0) {
     var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
     var limeLbsTotal = limeRec * hundredths;
@@ -5164,6 +5198,22 @@ function calcFlower() {
     html += '<div style="font-size:0.875rem;color:var(--slate-mid);">Total: <strong>' + fmt(limeLbsTotal, 1) + ' lbs</strong> in ' + limeAppsNeeded + ' application' + (limeAppsNeeded > 1 ? 's' : '') + ' of up to ' + limeMaxPer + ' lbs/100 sq. ft. (' + (bedStatus === 'preplant' ? 'preplant limit' : 'established bed limit') + '). <em>(VCE Note 19)</em></div>';
     if (limeAppsNeeded > 1) {
       html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">' + fmt(limeLbsPerApp, 1) + ' lbs per application, spaced 1\u20136 months apart.</div>';
+    }
+    if (mgIsLow) {
+      html += '<div style="font-size:0.82rem;margin-top:8px;color:#7d5a00;border-top:1px dashed #e0c87a;padding-top:6px;">&#127807; <strong>Use dolomitic limestone.</strong> Your magnesium tests low, and dolomitic lime raises pH <em>and</em> supplies magnesium in one step. <em>(VCE Note 19)</em></div>';
+    } else {
+      html += '<div style="font-size:0.82rem;margin-top:8px;color:var(--slate-mid);border-top:1px dashed #e0c87a;padding-top:6px;">Either calcitic or dolomitic limestone works here (magnesium is adequate). <em>(VCE Note 19)</em></div>';
+    }
+    html += '</div>';
+  } else if (mgIsLow || caIsLow) {
+    html += '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-top:16px;">';
+    html += '<div style="font-weight:600;color:#7d5a00;margin-bottom:8px;">&#129704; No lime needed &mdash; but a secondary nutrient is low</div>';
+    html += '<div style="font-size:0.875rem;color:var(--slate-mid);">Your pH is in range, so no lime is recommended. Because lime is the usual way to supply calcium and magnesium, address the low nutrient directly:</div>';
+    if (mgIsLow) {
+      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">&bull; <strong>Low magnesium:</strong> apply about <strong>1 lb Epsom salts per 100 sq. ft.</strong> <em>(VCE Note 19)</em></div>';
+    }
+    if (caIsLow) {
+      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">&bull; <strong>Low calcium:</strong> apply about <strong>10 lb gypsum per 100 sq. ft.</strong> <em>(VCE Note 19)</em></div>';
     }
     html += '</div>';
   }

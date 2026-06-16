@@ -1424,3 +1424,71 @@ The region step had a floating "Chesterfield County is here ↑" caption that wa
 | :-- | :-- |
 | `grass_seed_assistant.html` | NEW — standalone selection assistant |
 | `Grass_Seed_Selection_Assistant_Plan.md` | Rewritten to v2 (4 decisions) |
+
+---
+
+## Session Updates — June 14, 2026 (Grass Seed Assistant — print, diagnostic, tag diagram, refinements)
+
+Continued work on the standalone `grass_seed_assistant.html`. All JS validated clean after each edit; zero brand names throughout (verified).
+
+### Print feature
+Added a "🖨️ Print my shopping list" button on the result screen (`window.print()`). Print stylesheet strips the hero/progress/quiz/buttons/footer and prints only the recommendation card with a print-only title. **Print-spacing fix (user screenshot showed 4 mostly-empty pages):** the cause was `page-break-inside:avoid` on whole sections (`.resblock`) forcing them to jump pages and strand white space. Removed section-level break rules; kept `break-inside:avoid` only on small units (property cards, checklist items, notes, diagnostic answer). Tightened print margins/spacing. Also hid the diagnostic picker buttons + "see all" table in print (interactive clutter), keeping only the selected answer. Note: at port time this would reconcile with the calculator's existing `printPlan()` convention.
+
+### Renovation diagnostic (interactive "why did the lawn fail")
+Replaced the static overseed note with an interactive troubleshooter: 8 tappable symptoms (shade/traffic/drainage/thatch/soil-pH/drought/pest/weeds) → likely cause + VCE fix, plus a "see all causes & VCE fixes" expandable table. Sourced from VCE 430-520 (Fall Lawn Care diagnostic framework) and EMG Handbook Ch. 11. **Trigger:** shows for project = overseed AND patch (extended to patch per user; heading/intro reworded for the bare-spot case); hidden for new lawns.
+
+### Weed-control fix — corrected against the PMG (user asked "what does the PMG say")
+Original text ("glyphosate per label, before soil prep") was incomplete. EMG Handbook Ch. 11 (which defers herbicide specifics to the PMG) specifies: start a non-selective herbicide **30–45 days before renovation** so there's time to **re-treat regrowth**; a single pass rarely kills bermudagrass/nimblewill; consult the PMG for product/rate. **PMG number verified:** the home-turf guide is **456-018, "Pest Management Guide: Home Grounds & Animals"** (product ENTO-634P, revised annually) — confirmed correct vs. 456-017 (Hort/Forest) and 456-016 (Field Crops), and confirmed the PMG actually covers turf weed control. Citation uses the full distinguishing title. **"Follow the label" added** to both pesticide-relevant diagnostic paths (weeds + insect/disease) — important because the label is legally binding and carries the planting-restriction interval that governs how soon you can seed after spraying.
+
+### Store-label literacy additions
+- Blue certification tag (certifies varietal authenticity, NOT germination/purity — phrased honestly). *Added after user noted it was missing.*
+- Tag-location correction (user: tags are often sewn into the top seam): now "small bags (≤15 lbs) printed on back; larger bags sewn into top seam; jugs on side panel."
+- Test date within 12 months (germination drops ~5%/yr).
+- **Sample seed-tag diagram** in a boxed dropdown ("👀 Show me what a seed tag looks like") — brand-free annotated HTML tag with green/red callouts showing each field; `no-print`. Summary styled as a clear boxed button (green, bordered, chevron) per user request.
+
+### Pure Live Seed vs. coated seed (user raised a real assumption question)
+User asked whether seeding rates assume 100% pure live seed. They don't — VCE bulk-weight rates already assume normal good-quality bagged seed (typical germination/purity baked in). So PLS is a bag-comparison/quality lens, not a routine weight correction. Resolution: **PLS became a checklist item** (quality/value comparison); **coated-seed note moved to "How much to buy"** (it genuinely distorts seed-per-pound) with a clarifying line that the rate assumes uncoated seed. Also **darkened `.src` notes** (`--slate-light` → `--slate`, larger) — user reported they were unreadably light.
+
+### Region label
+Default option now reads "Southern Piedmont — incl. Chesterfield, Greater Richmond area." Earlier this session the confusing floating "Chesterfield County is here ↑" caption was removed in favor of this inline label (option `value` stays plain "Southern Piedmont" so the engine matches).
+
+### Status
+Standalone is feature-complete enough for review; not yet ported into the calculator (the deferred step-1 follow-up). Open plan questions remain: warm-season depth, county→region lookup, and whether to add a VCE establishment how-to (seedbed prep, watering-in, first mow).
+
+---
+
+## Session Updates — June 15, 2026 (Flower tab: lawn-alternative path context + first flower soil-report validation + 3 coded mods)
+
+### Lawn-alternative / native groundcover path (grass_seed_assistant.html)
+Added a 4th Q1 option "🌼 Replacing lawn with a groundcover" that short-circuits to renderAlternative() (skips the grass questions). Content from VCE 426-609 + EMG Ch. 11 (VCE endorses groundcovers over turf where grass struggles) + VCE/MG conversion steps. **NonEdu rule applied to sourcing:** removed Virginia Native Plant Society (not approved under any of the 5 situations) and removed specific species (green-and-gold/wild ginger/foamflower — from an MG web page, not citable); kept only VCE-cited Pennsylvania sedge. Resources box rebuilt with rule-compliant, correctly-scoped sources: VCE 426-609 + Extension/MG Help Desk; Plant Virginia Natives/Plant RVA Natives (Situation 1, lists+locator only); USDA NRCS Plants Database (Situation 2, native range); Lady Bird Johnson Wildflower Center (Situation 5, VA-applicable lists). **VNPS:** user argued it should qualify (agency-endorsed); held out pending explicit Extension Office approval per the rule's gray-area default, with a ready-to-paste code comment so it's a one-line add once blessed. PMG/label distinction fixed in the conversion steps too (PMG selects product; label governs rate/timing).
+
+### First flower soil-report validation (Anderson + Armstrong)
+Two Waypoint flower reports assessed (first flower-specific validation; Phases 5–6 were veg-only before). Anderson = 3 samples incl. 29.4% OM; Armstrong = 1 sample with full S3M micronutrient panel + sulfur rec. Findings doc: `Conformance_Audit_Findings_Flower.md`.
+
+**Agronomy Facts 8 cross-check:** confirmed both reports are internally consistent with Waypoint AF8 (K CEC-bands, Mg saturation→dolomitic, K/Mg<0.33, high-P→zero, low-S→sulfate forms). The only Waypoint-vs-VCE divergences (K maintenance at Optimum; S as a nutrient) are philosophy differences, not errors — calculator resolves by following VCE for rates.
+
+### Three flower-tab mods CODED (all in calcFlower, index.html, JS validated, tested vs all 4 samples)
+
+**Mod 1 — lime type (the real defect):** flower lime block now reads st-mg-rating/st-ca-rating (normalized via WAYPOINT_TO_VCE) and branches per VCE Note 19: low Mg + lime → **dolomitic**; adequate Mg + lime → calcitic OK; no lime + low Mg → **1 lb Epsom salts/100 sq ft**; no lime + low Ca → **10 lb gypsum/100 sq ft**.
+
+**Mod 2 — extreme-OM tier:** added ≥20% branch above the existing ≥15% (bed needs no amendment; micronutrient lock-up; 0.4 lb N/1%OM estimate overstates at this level). Parity with veg tab.
+
+**Mod 3 — secondary nutrients (follow VCE, not Waypoint):** when P or K tests **Low/Medium only**, show VCE Note 19 organic-amendment materials (bone meal/rock phosphate for P; granite dust/greensand for K + wood-ash caveat). Critically, **nothing shows at Optimum/High** — the key divergence from Waypoint, which recommended 4.0 lb K₂O at Optimum on Armstrong. Sulfur = optional advisory only (S<10 ppm), framed honestly (Waypoint suggests it; VCE treats S as a pH tool; sulfate sources per AF8; follow label) — no fabricated VCE rate. Deliberately did NOT add micronutrient rate logic.
+
+**Test results vs the 4 real samples:** Anderson #2 (low Mg)→dolomitic ✓; Anderson #1 (adequate Mg)→calcitic ✓; Anderson #2 (Low K)→materials shown ✓; Armstrong (Optimum K)→materials hidden ✓; Armstrong (S 9 ppm)→advisory shown ✓; Anderson (no S)→hidden ✓; Anderson #3 (29.4% OM)→extreme tier ✓; Armstrong (11.9%)→high tier ✓.
+
+### Earlier this session (grass assistant, already built): print feature + print-spacing fix; interactive renovation diagnostic (8 symptoms→cause+VCE fix, "see all causes" table, triggers on overseed AND patch); PMG-corrected weed guidance (30–45 day window, PMG 456-018 verified, PMG-selects/label-governs); store-label additions (blue tag, top-seam location, test date, coated-seed); sample seed-tag diagram in boxed dropdown; PLS→checklist item + coated-seed→"how much to buy" + darkened .src notes; region label "Southern Piedmont — incl. Chesterfield, Greater Richmond area."
+
+### Documents this session
+| Document | Status |
+| :-- | :-- |
+| `index.html` | 3 flower-tab mods coded |
+| `grass_seed_assistant.html` | lawn-alternative path + all earlier refinements |
+| `Conformance_Audit_Findings_Flower.md` | NEW — 2-report findings, AF8 cross-check, VCE-sourced mods |
+| `Grass_Seed_Selection_Assistant_Plan.md` | v2 (earlier) |
+
+### Still open
+- Flower mods are coded but **findings doc not yet marked "implemented"** (optional housekeeping).
+- VNPS pending Extension Office approval (comment in place).
+- Grass assistant not yet ported into the calculator as a tab.
+- Shrub/tree tab (Phase 7) + canopy ×2 still unvalidated (no shrub/tree report supplied).
