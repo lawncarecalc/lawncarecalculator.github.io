@@ -696,7 +696,9 @@
     body.printing-cool  #cool-results-panel,
     body.printing-warm  #warm-results-panel,
     body.printing-lime  #lime-results-panel,
-    body.printing-garden #gdn-results        { display: block !important; }
+    body.printing-garden #gdn-results,
+    body.printing-flower #flr-results,
+    body.printing-shrub  #shrub-results       { display: block !important; }
 
     /* Results card visible for printing */
     .results-card { display: block !important; }
@@ -890,31 +892,43 @@
             <div class="st-field"><label>Zinc (Zn) ppm</label><input type="number" id="st-zn" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTest()"></div>
             <div class="st-field"><label>Zn Rating</label>
               <select id="st-zn-rating" onchange="interpretSoilTest()">
-                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Sufficient / Optimum</option><option value="H">High / Very High</option>
+                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Optimum</option><option value="H">High / Very High</option>
               </select>
             </div>
             <div class="st-field"><label>Manganese (Mn) ppm</label><input type="number" id="st-mn" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTest()"></div>
             <div class="st-field"><label>Mn Rating</label>
               <select id="st-mn-rating" onchange="interpretSoilTest()">
-                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Sufficient / Optimum</option><option value="H">High / Very High</option>
+                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Optimum</option><option value="H">High / Very High</option>
               </select>
             </div>
             <div class="st-field"><label>Copper (Cu) ppm</label><input type="number" id="st-cu" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTest()"></div>
             <div class="st-field"><label>Cu Rating</label>
               <select id="st-cu-rating" onchange="interpretSoilTest()">
-                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Sufficient / Optimum</option><option value="H">High / Very High</option>
+                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Optimum</option><option value="H">High / Very High</option>
               </select>
             </div>
             <div class="st-field"><label>Iron (Fe) ppm</label><input type="number" id="st-fe" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTest()"></div>
             <div class="st-field"><label>Fe Rating</label>
               <select id="st-fe-rating" onchange="interpretSoilTest()">
-                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Sufficient / Optimum</option><option value="H">High / Very High</option>
+                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Optimum</option><option value="H">High / Very High</option>
               </select>
             </div>
             <div class="st-field"><label>Boron (B) ppm</label><input type="number" id="st-b" min="0" step="0.01" placeholder="ppm" oninput="interpretSoilTest()"></div>
             <div class="st-field"><label>B Rating</label>
               <select id="st-b-rating" onchange="interpretSoilTest()">
-                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Sufficient / Optimum</option><option value="H">High / Very High</option>
+                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Optimum</option><option value="H">High / Very High</option>
+              </select>
+            </div>
+            <div class="st-field"><label>Sulfur (S) ppm</label><input type="number" id="st-s" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTest()"></div>
+            <div class="st-field"><label>S Rating</label>
+              <select id="st-s-rating" onchange="interpretSoilTest()">
+                <option value="">-</option><option value="L">Low / DEF</option><option value="M">Medium</option><option value="SUFF">Optimum</option><option value="H">High / Very High</option>
+              </select>
+            </div>
+            <div class="st-field"><label>Sodium (Na) ppm</label><input type="number" id="st-na" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTest()"></div>
+            <div class="st-field"><label>Na Rating</label>
+              <select id="st-na-rating" onchange="interpretSoilTest()">
+                <option value="">-</option><option value="SUFF">Normal / Low</option><option value="H">High / Very High</option>
               </select>
             </div>
           </div><!-- end micronutrient grid -->
@@ -1062,6 +1076,7 @@
             <div class="field-group">
               <div class="field-label"><span class="field-num">1</span><span class="field-question">What is the size of your lawn in square feet?</span></div>
               <input type="number" id="cool-lawn-size" placeholder="e.g. 5000" oninput="calcCool()">
+              <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn.</div>
             </div>
 
             <div class="field-group">
@@ -1215,6 +1230,7 @@
             <div class="field-group">
               <div class="field-label"><span class="field-num">1</span><span class="field-question">What is the size of your lawn in square feet?</span></div>
               <input type="number" id="warm-lawn-size" placeholder="e.g. 5000" oninput="calcWarm()">
+              <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn.</div>
             </div>
 
             <div class="field-group">
@@ -1372,6 +1388,7 @@
             <div class="field-group">
               <div class="field-label"><span class="field-num">1</span><span class="field-question">What is the size of your lawn in square feet?</span></div>
               <input type="number" id="lime-lawn-size" placeholder="e.g. 5000" oninput="calcLime()">
+              <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn.</div>
             </div>
             <div class="field-group">
               <div class="field-label"><span class="field-num">2</span><span class="field-question">How much lime is recommended on your VCE Soil Test Report?</span></div>
@@ -1454,6 +1471,7 @@
               <div id="gdn-size-area" style="display:none;">
                 <label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Area (sq. ft.) — for circular, L-shaped, or irregular beds</label>
                 <input type="number" id="gdn-area-direct" min="0" placeholder="e.g. 80" oninput="calcGarden()">
+                <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 100 to see results per 100 sq. ft., then scale to your bed.</div>
               </div>
             </div>
 
@@ -1803,6 +1821,7 @@
               <div id="flr-size-area" style="display:none;">
                 <label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Area (sq. ft.) — for circular, L-shaped, or irregular beds</label>
                 <input type="number" id="flr-area-direct" min="0" placeholder="e.g. 60" oninput="calcFlower()">
+                <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 100 to see results per 100 sq. ft., then scale to your bed.</div>
               </div>
             </div>
 
@@ -2004,6 +2023,7 @@
             <div id="shrub-size-area" style="display:none;">
               <label style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Total application area (sq. ft.) — already doubled if needed</label>
               <input type="number" id="shrub-area-direct" min="0" placeholder="e.g. 100" oninput="calcShrub()">
+              <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 100 to see results per 100 sq. ft., then scale to your bed.</div>
               <div class="field-hint">If you measured the canopy only, double it — feeder roots typically extend 1–3× the plant height beyond the drip line. <em>(VCE Note 20)</em></div>
             </div>
             <div id="shrub-area-summary" style="font-size:0.82rem;color:var(--green-deep);font-weight:600;margin-top:6px;"></div>
@@ -3405,6 +3425,8 @@ function interpretSoilTest() {
   var feRat   = document.getElementById('st-fe-rating').value;
   var bVal    = parseFloat(document.getElementById('st-b').value);
   var bRat    = document.getElementById('st-b-rating').value;
+  var sVal    = parseFloat(document.getElementById('st-s') ? document.getElementById('st-s').value : '');
+  var naVal   = parseFloat(document.getElementById('st-na') ? document.getElementById('st-na').value : '');
 
   var salts = (!isNaN(saltRaw) && saltUnit === 'dsm') ? saltRaw * 640 : saltRaw;
   var pRat  = WAYPOINT_TO_VCE[pRatRaw] || pRatRaw;
@@ -3434,7 +3456,7 @@ function interpretSoilTest() {
     caMgRange = 'Ca medium: 721-1,440 lb/A &nbsp;&bull;&nbsp; Mg medium: 73-144 lb/A (VCE)';
   }
 
-  var hasAny = [ph,bi,pVal,kVal,caVal,mgVal,om,saltRaw,cec,limeRec,znVal,mnVal,cuVal,feVal,bVal].some(function(v){ return !isNaN(v) && v > 0; })
+  var hasAny = [ph,bi,pVal,kVal,caVal,mgVal,om,saltRaw,cec,limeRec,znVal,mnVal,cuVal,feVal,bVal,sVal,naVal].some(function(v){ return !isNaN(v) && v > 0; })
     || pRatRaw || kRatRaw || caRat || mgRat || limeTyp || crop || znRat || mnRat || cuRat || feRat || bRat;
 
   var panel = document.getElementById('st-results-panel');
@@ -3465,7 +3487,7 @@ function interpretSoilTest() {
     var low = ['L-','L','L+','DEF','VL','LO'];
     var hi  = ['H-','H','H+','VH','VH2','OP','SUFF'];
     var cls = low.indexOf(r) >= 0 ? 'pill-low' : hi.indexOf(r) >= 0 ? 'pill-suff' : 'pill-med';
-    var LABELS = {'VL':'Very Low','LO':'Low','ME':'Medium','OP':'Optimum','VH2':'Very High','SUFF':'Sufficient','DEF':'Deficient'};
+    var LABELS = {'VL':'Very Low','LO':'Low','ME':'Medium','OP':'Optimum','VH2':'Very High','SUFF':'Optimum','DEF':'Deficient'};
     var label = LABELS[r] || r;
     return '<span class="st-rating-pill ' + cls + '">' + label + '</span>';
   }
@@ -3825,7 +3847,19 @@ function interpretSoilTest() {
           ? 'Low boron: Broadcast <strong>Borax</strong> evenly and mix into the soil before planting. <strong>Do not apply in a band near plants</strong> — the margin between deficiency and toxicity is narrow and concentrated boron can injure roots. Use the minimum effective rate: typically 1–2 lbs of Borax per 1,000 sq. ft. (about 0.1–0.2 lbs per 100 sq. ft.). Cole crops showing hollow broccoli stems or browning cauliflower curds, and root crops with cracked or distorted growth, are classic boron deficiency signs. Retest after one season before reapplying. <em>(426-403, 426-323, Waypoint Agronomy Facts 8)</em>'
           : 'Consult your local VCE office before applying — the margin between deficiency and toxicity is very narrow. Organic matter additions are the best long-term management approach. <em>(426-323)</em>',
         suffMsg:'Boron levels are adequate. No corrective action needed.',
-        highMsg:'Excessive boron is toxic to plants — more so than any other micronutrient. Do not apply boron-containing products. Boron toxicity is difficult to reverse and persists in soil.' }
+        highMsg:'Excessive boron is toxic to plants — more so than any other micronutrient. Do not apply boron-containing products. Boron toxicity is difficult to reverse and persists in soil.' },
+      { id:'st-s', rid:'st-s-rating', name:'Sulfur (S)',
+        phNote:'The test measures sulfate-sulfur, the readily available form. Sulfur can leach from sandy, low-organic soils. Less atmospheric sulfur deposition than in past decades has made deficiency somewhat more common.',
+        lowMsg: isGarden
+          ? 'Low sulfur: apply a sulfate-form source — gypsum (calcium sulfate), ammonium sulfate, or potassium sulfate (choose based on whether you also need Ca, N, or K). Elemental sulfur is slow to become available, so it is not the best quick source. VCE\'s home-garden guidance treats sulfur mainly as a pH-lowering amendment rather than a routine nutrient, so a small corrective application is optional for most beds — follow the product label for the rate. <em>(Waypoint Agronomy Facts 8; VCE SPES-384)</em>'
+          : 'Sulfur deficiency is uncommon in established turf. If a sulfate-form source is used, follow the product label. <em>(Waypoint Agronomy Facts 8)</em>',
+        suffMsg:'Sulfur levels are adequate. No corrective action needed.',
+        highMsg:'High sulfur is rarely a problem in itself, but very high levels can contribute to soluble-salt buildup. No action needed unless salts are also elevated.' },
+      { id:'st-na', rid:'st-na-rating', name:'Sodium (Na)',
+        phNote:'Sodium is not a plant nutrient. It matters for soil physical condition: on silt/clay soils, high sodium can impair water infiltration, drainage, and structure.',
+        lowMsg:'Sodium is at a normal, non-problematic level. No action needed.',
+        suffMsg:'Sodium is at a normal, non-problematic level. No action needed.',
+        highMsg:'High sodium can damage soil structure and impair drainage, especially on silt/clay soils (target less than ~1% of cation saturation). Improving drainage and leaching with good-quality water, plus adding calcium (e.g. gypsum) to displace sodium, are the usual corrections. Consult your local VCE office if sodium is persistently high. <em>(Waypoint Agronomy Facts 8)</em>' }
     ];
 
     var hasMicro = nutrients.some(function(m) {
@@ -3835,7 +3869,7 @@ function interpretSoilTest() {
     if (!hasMicro) return;
 
     var body = '<p style="font-size:0.875rem;line-height:1.6;margin-bottom:14px;color:var(--slate-mid);">' + (isGarden ? 'For vegetable and flower gardens, micronutrient deficiencies are uncommon when soil pH is in the 6.0–6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies persist.' : 'For established turfgrass, micronutrient deficiencies are uncommon when soil pH is in the 5.8-6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies are suspected.') + '</p>';
-    var ratLabels = {'L':'Low/DEF','M':'Medium','SUFF':'Sufficient','H':'High'};
+    var ratLabels = {'L':'Low/DEF','M':'Medium','SUFF':'Optimum','H':'High'};
 
     nutrients.forEach(function(m) {
       var el = document.getElementById(m.id), rel = document.getElementById(m.rid);
@@ -3859,7 +3893,7 @@ function interpretSoilTest() {
         + '</div>';
     });
 
-    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only - no calculation</div></div><div class="st-interp-ranges"><span class="st-range-label">Target:</span> Sufficient at correct soil pH (' + (isGarden ? '6.0-6.8' : '5.8-6.8') + ')</div><div class="st-interp-body">' + body + '</div></div>');
+    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only - no calculation</div></div><div class="st-interp-ranges"><span class="st-range-label">Target:</span> Optimum at correct soil pH (' + (isGarden ? '6.0-6.8' : '5.8-6.8') + ')</div><div class="st-interp-body">' + body + '</div></div>');
   })();
 
   // ---- Show/hide carry-over bar ----
@@ -4003,11 +4037,21 @@ function carryOverToCalculators() {
   // Build success bar
   var destBtns = '';
   if (isGarden) {
-    destBtns = shrubTypes.indexOf(crop) >= 0
-      ? '<button class="st-goto-btn" onclick="switchToTab(\'shrub\')">&#8599; Shrubs &amp; Trees Calculator</button>'
-      : flowerTypes.indexOf(crop) >= 0
-        ? '<button class="st-goto-btn" onclick="switchToTab(\'flower\')">&#8599; Flower Garden Calculator</button>'
-        : '<button class="st-goto-btn" onclick="switchToTab(\'garden\')">&#8599; Vegetable Garden Calculator</button>';
+    // Re-read the garden type live at button-build time (defensive against any stale 'crop').
+    var gtEl = document.getElementById('st-garden-type');
+    var gType = gtEl ? gtEl.value : crop;
+    if (!gType) gType = crop; // fall back to the value read earlier
+    if (shrubTypes.indexOf(gType) >= 0) {
+      destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'shrub\')">&#8599; Shrubs &amp; Trees Calculator</button>';
+    } else if (flowerTypes.indexOf(gType) >= 0) {
+      destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'flower\')">&#8599; Flower Garden Calculator</button>';
+    } else if (gType === 'vegetable' || gType === 'mixed') {
+      destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'garden\')">&#8599; Vegetable Garden Calculator</button>';
+    } else {
+      // Garden type not specified — offer both common destinations rather than defaulting to vegetable.
+      destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'garden\')">&#8599; Vegetable Garden Calculator</button>'
+        + '<button class="st-goto-btn" onclick="switchToTab(\'flower\')">&#8599; Flower Garden Calculator</button>';
+    }
   } else {
     destBtns = '<button class="st-goto-btn" onclick="switchToTab(\'cool\')">&#8599; Cool-Season Calculator</button>'
       + '<button class="st-goto-btn" onclick="switchToTab(\'warm\')">&#8599; Warm-Season Calculator</button>'
@@ -4860,6 +4904,7 @@ function calcGarden() {
     html += '</div>';
   }
 
+  if (html) { html += '<button class="print-plan-btn no-print" onclick="printPlan(\'garden\')" style="margin-top:14px;">&#128424; Print Plan</button>'; }
   resultsEl.innerHTML = html || '<p style="color:var(--slate-light);font-size:0.875rem;">Enter nitrogen recommendation and fertilizer grade to see quantities.</p>';
 
   // Timing
@@ -5218,6 +5263,7 @@ function calcFlower() {
     html += '</div>';
   }
 
+  if (html) { html += '<button class="print-plan-btn no-print" onclick="printPlan(\'flower\')" style="margin-top:14px;">&#128424; Print Plan</button>'; }
   resultsEl.innerHTML = html || '<p style="color:var(--slate-light);font-size:0.875rem;">Enter nitrogen recommendation and fertilizer grade to see quantities.</p>';
 
   // Timing
@@ -5254,23 +5300,24 @@ function calcFlower() {
 function prefillSampleReport(type) {
   var fields;
   if (type === 'garden') {
-    // Based on real Waypoint garden report, Midlothian VA — Annual Flowers / Perennials
+    // Based on real Waypoint flower report (full S3M panel), Linda Armstrong, Chester VA — Annual Flowers / Perennials
     fields = {
       'st-report-type':'waypoint-garden',
-      'st-ph':'5.2','st-bi':'6.61',
-      'st-cec':'9.4','st-basesat':'66',
-      'st-p-val':'61','st-p-rating':'LO',
-      'st-k-val':'147','st-k-rating':'OP',
-      'st-ca':'865','st-ca-rating':'OP',
-      'st-mg':'180','st-mg-rating':'OP',
-      'st-s':'25',
-      'st-b':'1.0','st-b-rating':'M',
-      'st-cu':'6.4','st-cu-rating':'H',
-      'st-fe':'266','st-fe-rating':'SUFF',
-      'st-mn':'27','st-mn-rating':'M',
-      'st-zn':'44.9','st-zn-rating':'H',
-      'st-om':'5.6',
-      'st-lime-rec':'87','st-lime-type':'Agricultural','st-garden-type':'annual'
+      'st-ph':'6.4',
+      'st-cec':'13.6','st-basesat':'91',
+      'st-p-val':'12','st-p-rating':'ME',
+      'st-k-val':'112','st-k-rating':'OP',
+      'st-ca':'2165','st-ca-rating':'OP',
+      'st-mg':'139','st-mg-rating':'OP',
+      'st-s':'9','st-s-rating':'L',
+      'st-b':'0.7','st-b-rating':'M',
+      'st-cu':'2.6','st-cu-rating':'SUFF',
+      'st-fe':'260','st-fe-rating':'SUFF',
+      'st-mn':'34','st-mn-rating':'SUFF',
+      'st-zn':'7.7','st-zn-rating':'SUFF',
+      'st-na':'19','st-na-rating':'SUFF',
+      'st-om':'11.9',
+      'st-lime-rec':'0','st-lime-type':'Agricultural','st-garden-type':'annual'
     };
   } else if (type === 'veggie') {
     // Based on real Waypoint vegetable garden report, Virginia — Vegetable Garden
@@ -5634,6 +5681,7 @@ function calcShrub() {
     html += '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
   }
 
+  if (html && html.indexOf('Enter') !== 0) { html += '<button class="print-plan-btn no-print" onclick="printPlan(\'shrub\')" style="margin-top:14px;">&#128424; Print Plan</button>'; }
   resultsEl.innerHTML = html;
 
   // Timing guidance

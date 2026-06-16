@@ -1492,3 +1492,45 @@ Two Waypoint flower reports assessed (first flower-specific validation; Phases 5
 - VNPS pending Extension Office approval (comment in place).
 - Grass assistant not yet ported into the calculator as a tab.
 - Shrub/tree tab (Phase 7) + canopy ×2 still unvalidated (no shrub/tree report supplied).
+
+---
+
+## Session Updates — June 15, 2026 (cont.) (Sulfur/Sodium fields, area hints, print on all tabs)
+
+### Sulfur & Sodium fields added (fixing the "no sulfur showing" bug)
+User reported sulfur never appeared for Waypoint flowers. Root cause: **there was no `st-s` input field in the form at all** — Mod 3's sulfur code read a nonexistent element (always null → 0 → advisory never fired). Sodium had the same gap. Per user direction ("the Waypoint flower data entry needs to include all fields Waypoint includes, and they all need to be in the assessment and recommendations"):
+- Added **Sulfur (S)** and **Sodium (Na)** ppm + rating inputs to the soil-test micronutrient grid. Compared against the full Armstrong S3M report, S and Na were the only two Waypoint-reported fields the form lacked; everything else was already present.
+- Wired both into `interpretSoilTest()`'s nutrients array so they get full interpretation cards: **Sulfur** — low S advises sulfate-form sources (gypsum/ammonium sulfate/potassium sulfate per AF8) with honest VCE framing (S mainly a pH tool for home gardens, correction optional); **Sodium** — normal = no action, high = soil-structure/drainage risk + gypsum-leaching correction (AF8).
+- Added `sVal`/`naVal` declarations and included them in the `hasAny` data check.
+- Updated the "Flower Garden Sample" prefill to the **real Armstrong full-panel report** (pH 6.4, P 12/ME, K 112/OP, Ca 2165, Mg 139, **S 9/L**, B 0.7, Cu/Fe/Mn/Zn all SUFF, **Na 19**, OM 11.9, lime 0) so clicking the sample now demonstrates the sulfur advisory firing. JS validated; S<10 ppm correctly fires the advisory.
+
+### Mod A — nominal sq ft hints (area entry)
+Added an italic helper note under all six area-entry boxes so the report can fire when exact size is unknown:
+- Lawn tabs (cool/warm/lime): "Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn."
+- Garden/flower/shrub: "Enter 100 to see results per 100 sq. ft., then scale to your bed."
+Matches how VCE expresses the rates (per 1,000 for lawns, per 100 for gardens) and teaches the unit basis.
+
+### Mod B — Print on every tab
+Print infrastructure already existed (`printPlan(prefix)` toggles a `printing-{tab}` body class; per-tab print CSS). Buttons existed on soil-test, cool, warm, lime. **Added Print Plan buttons to garden, flower, and shrub** (same "🖨 Print Plan" pattern, guarded by `if (html)` so they only show with results) and added the missing print-CSS lines so `#flr-results` and `#shrub-results` render when printing those tabs. All 8 tabs now printable.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | S/Na fields + interpretation; area hints; print buttons on all tabs |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — June 15, 2026 (cont.) (Two bug fixes: carry-over routing + "Sufficient" rating)
+
+### Bug 1 — Carry-over button routed flowers to Vegetable Garden
+User screenshot: garden type "Annual Flower Garden" selected, but the post-carryover success box button said "Vegetable Garden Calculator." Traced it: the routing data was correct (`flowerTypes=['annual','perennial','rose','bulb']`, `crop` reads `st-garden-type`), but the old destBtns used a ternary that defaulted **anything** not explicitly shrub-or-flower to the vegetable button — including the case where the garden-type value read back empty at button-build time (which is what occurred). **Fix (in carryOverToCalculators, index.html):** rewrote the destBtns block to (a) re-read the garden type **live** at button-build time, (b) branch **explicitly** — flower types→Flower, vegetable/mixed→Vegetable, shrub types→Shrub, and (c) if the type is genuinely unspecified, offer **both** Vegetable and Flower buttons rather than silently defaulting to vegetable. Tested: annual/perennial→Flower ✓, vegetable→Vegetable ✓, shrub→Shrub ✓, empty→both ✓.
+
+### Bug 2 — "Sufficient" rating doesn't exist on Waypoint
+User: "Waypoint doesn't offer a Sufficient rating." Confirmed via Agronomy Facts 8 — Waypoint's scale is very low / low / medium / optimum / very high (no "Sufficient"). **Fix:** relabeled every micronutrient (and the new S/Na) rating dropdown option from "Sufficient / Optimum" → **"Optimum"**; fixed the two internal label maps (LABELS, ratLabels) and the "Target: Sufficient at correct soil pH" interpretation text → "Optimum." Kept the internal value code `SUFF` unchanged so interpretation logic still keys correctly — only user-facing labels changed. Zero "Sufficient" strings remain.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | carry-over routing hardened; "Sufficient"→"Optimum" labels |
+| `CLAUDE.md` | this entry |
