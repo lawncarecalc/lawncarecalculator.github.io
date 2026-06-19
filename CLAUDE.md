@@ -1636,3 +1636,22 @@ README was provided in a follow-up upload. Four changes applied (see below).
 2. **"~3 years" → "~three years"** — prose sentence in Limitations section; single-digit number spelled out.
 3. **Nondiscrimination statement** — incomplete statement in Attributions replaced with the required VCE text, adding "(USDA)," "equal opportunity employer," and the `ext.vt.edu/accessibility` URL.
 4. **Commercial products disclaimer + AI disclosure** — both added to Attributions section, matching the text added to `index.html`.
+
+---
+
+## Session Updates — June 19, 2026 (cont.) (README vegetable garden section added)
+
+User noted the README had no dedicated section for the Vegetable Garden tab despite having full sections for Flower Garden, Shrubs & Trees, and Lime. Added `## 🥬 Vegetable Garden` section to README.md, covering:
+- Source publications (Note 19, 426-323, UMD, Clemson, Rutgers)
+- Full 20-crop table organized by feeding level (heavy/medium/light/mixed)
+- Organic matter N credit logic (0.4 lbs/1% OM/1,000 sq. ft.)
+- Sidedress timing rule (three-to-four-week rule) with crop-specific notes
+- Fertilizer source options including calcium nitrate preference rationale
+
+Section positioned between Lime and Flower Garden to match tab order.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `README.md` | Vegetable Garden section added |
+| `CLAUDE.md` | this entry |

@@ -135,6 +135,37 @@ The Lime tab adjusts the recommended amount by the product's **Calcium Carbonate
 
 ---
 
+## 🥬 Vegetable Garden
+
+Based on **VCE 452-719 / SPES-687P (Soil Test Note 19)** and **VCE 426-323 / SPES-803P (Fertilizing the Vegetable Garden)**, supplemented by UMD Extension (N rates by feeding level; organic-matter N credit), Clemson HGIC (sidedress guidance; calcium nitrate), and Rutgers NJAES FS626 (organic fertilizer release rates).
+
+The tab calculates a **preplant N rate** and a separate **sidedress schedule** for 20 crops, organized by nitrogen demand:
+
+| Feeding level | Crops |
+| :-- | :-- |
+| **Heavy feeders** | Tomatoes, peppers & eggplant, potatoes, sweet corn, broccoli & cauliflower, beets & Swiss chard, spinach, onions/garlic/shallots |
+| **Medium feeders** | Leafy greens (kale, collards, mustard), lettuce, cucumbers, squash & pumpkins, melons, sweet potatoes, asparagus |
+| **Light feeders** | Beans & peas, carrots, root crops (radishes, turnips, parsnips) |
+| **Mixed** | Mixed bed (vegetables & flowers) |
+
+### Organic matter N credit
+
+High-organic-matter beds (OM ≥ 5%) receive a nitrogen credit — the calculator reduces the preplant N recommendation by 0.4 lbs per 1% OM per 1,000 sq. ft. (UMD Extension). This prevents over-application in heavily amended raised beds.
+
+### Sidedress timing
+
+The calculator applies VCE's three-to-four-week timing rule: a nitrogen application has its greatest effect three to four weeks after it is applied. Sidedressing too early pushes vegetative growth at the expense of flowering and fruiting. Crop-specific notes include:
+
+- **Tomatoes & peppers** — sidedress after first fruit set; avoid heavy N before flowering.
+- **Potatoes** — excess N promotes vining over tuber development.
+- **Sweet corn** — sidedress when plants reach 12 inches.
+- **Cucumbers & squash** — sidedress one week after blossoming; repeat three weeks later.
+- **Melons** — sidedressing generally not recommended.
+
+### Fertilizer sources
+
+Both synthetic and organic sources are available in the sidedress selector. Calcium nitrate (15.5-0-0) is the preferred synthetic sidedress product — it supplies calcium alongside nitrogen, reducing blossom end rot and tip burn in tomatoes and cole crops. Organic options include blood meal (medium-rapid release), feather meal (slow release), soybean meal, and cottonseed meal.
+
 ## 🌸 Flower Garden Defaults
 
 The nitrogen field is **optional** — research-based defaults are used when left blank.
