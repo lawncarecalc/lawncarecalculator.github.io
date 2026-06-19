@@ -1560,3 +1560,79 @@ Earlier this session VNPS was held OUT of the lawn-alternative resources box pen
 
 ### Note
 The original NonEdu rule remains at /mnt/user-data/uploads/NonEdu_Full_Rule_v3.md (read-only). The updated, authoritative copy is now /mnt/user-data/outputs/NonEdu_Full_Rule.md.
+
+---
+
+## Session Updates — June 15, 2026 (cont.) (NonEdu rule → Word document + markdown sync)
+
+### Word version built
+Formatted the NonEdu rule as a Word document: **NonEdu_Source_Guidelines.docx** (in outputs). Built with docx-js (read docx SKILL.md first), VCE palette (deep green 2F5233 / green 3E6B43 / gold 8A6418), Calibri, styled H1/H2/H3, centered title block, running header, footer with "Page X of Y", bulleted lists via LevelFormat.BULLET, ExternalHyperlinks throughout, a shaded Xerces "critical restriction" callout box, and a 5-row Quick Reference table with a green header row. 9 pages; validated (validate.py PASSED) and visually checked via PDF/JPEG render. Build script: /home/claude/build_rule.js.
+
+### Four consistency fixes applied to BOTH the docx and the .md (now in sync)
+While converting, found and fixed source-doc inconsistencies; then synced the markdown to match:
+1. **Quick Reference Summary, Situation 1 line** — previously omitted VNPS; now lists it ("native plant lists, selection, and education only — not range/nativity"), matching the body entry.
+2. **"Prince Georges County" → "Prince George County"** (line ~111).
+3. **"iNaturist, Bug Guide" → "iNaturalist, BugGuide"** (never-acceptable list).
+4. **"Pathway 5" → "Situation 5"** (3 occurrences) — standardized terminology to match the section headers.
+
+### Authoritative copies (both in outputs, now consistent)
+| Document | Status |
+| :-- | :-- |
+| `NonEdu_Full_Rule.md` | updated markdown — VNPS (Situation 1) + 4 consistency fixes |
+| `NonEdu_Source_Guidelines.docx` | NEW formatted Word version — same content, VCE-styled |
+| `build_rule.js` | docx-js build script (/home/claude) |
+
+Note: the original upload /mnt/user-data/uploads/NonEdu_Full_Rule_v3.md remains read-only and is now stale; the outputs .md + .docx are the source of truth.
+
+---
+
+## Session Updates — June 19, 2026 (VCE Style Guide compliance pass)
+
+### Context
+Applied the VCE Style Guide (VCE-1202, June 2025) to `index.html`. Guide priority order: VT Brand Guide → VCE Style Guide → AP Stylebook → Chicago Manual of Style.
+
+### Changes made to index.html
+
+**Critical / required on all VCE publications**
+
+1. **Nondiscrimination statement** — replaced the informal custom text in the About tab with the exact required statement: "Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, the U.S. Department of Agriculture (USDA), and local governments, and is an equal opportunity employer. For the full nondiscrimination statement, please visit ext.vt.edu/accessibility."
+
+2. **Commercial products disclaimer** — added the required VCE boilerplate (products named for informational purposes only, no endorsement) since the calculator names fertilizers and specific product grades throughout.
+
+3. **AI disclosure** — added a declaration of AI assistance (Claude/Anthropic used for code generation, content drafting, and document synthesis) per VCE style guide requirement for transparency when AI tools contribute to content creation.
+
+**Content/copy fixes**
+
+4. **"phosphorous" → "phosphorus"** — global find/replace. "Phosphorous" is an adjective; "phosphorus" is the noun. Four instances corrected in About tab step 3 copy and tooltip data-def attributes.
+
+5. **"Dr." honorifics removed** — "Dr. Richard Large" and "Dr. Oscar F. Ruiz Jr." corrected in the Waypoint Analytical source attribution (VT/VCE style: do not use Dr. before any name).
+
+6. **"Retest after 3 years"** — changed to "Retest after three years" (numbers one–nine spelled out in prose when not a measurement or table value).
+
+7. **"The 3–4 week timing rule"** — changed to "The three-to-four-week timing rule" and the associated sentence updated to "three to four weeks after it is applied" for consistency.
+
+**Design fix**
+
+8. **Italic emphasis → bold** — five tab names in About step 2 (`<em>Cool-Season Lawns</em>` etc.) converted to `<strong>` per VCE/VT rule that boldface is preferred for emphasis; italics are reserved for scientific Latin names and reference list titles.
+
+### Items noted but not changed (require editorial judgment)
+
+- **Citations style** — inline citations use abbreviated publication numbers like `(VCE 430-011)` rather than Chicago author-date format `(Goatley et al. 2021)`. Full Chicago conversion would require touching hundreds of inline citations across JS-generated output strings. Flag for a dedicated pass if formal publication status is sought.
+- **ALL CAPS in UI labels** — CSS `text-transform: uppercase` on `.st-section-label`, `.st-range-label`, etc. is a design choice for UI chrome, not body copy. Guide says use sparingly; no change made.
+- **"3–4 year soil testing" in source descriptions** — left as figures because these are measurement ranges in reference metadata, not prose sentences.
+
+### README.md
+README was provided in a follow-up upload. Four changes applied (see below).
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | VCE style guide compliance pass — 8 changes |
+| `README.md` | VCE style guide compliance pass — 4 changes |
+| `CLAUDE.md` | this entry |
+
+#### README.md changes
+1. **"percent" × 2 → `%`** — "percent of total nitrogen" and "percent of bag weight" in the WIN explanation (line 77) replaced with `%` per VCE style (always use the symbol with numerals in Extension publications).
+2. **"~3 years" → "~three years"** — prose sentence in Limitations section; single-digit number spelled out.
+3. **Nondiscrimination statement** — incomplete statement in Attributions replaced with the required VCE text, adding "(USDA)," "equal opportunity employer," and the `ext.vt.edu/accessibility` URL.
+4. **Commercial products disclaimer + AI disclosure** — both added to Attributions section, matching the text added to `index.html`.

@@ -74,7 +74,7 @@ Both lawn tabs now adjust the nitrogen plan for two real-world conditions, each 
 
 The lawn tabs include a **brand-free** reference table that matches commercial grades to your soil's phosphorus rating. Read your P result (Low / Medium / High) and jump to the matching group, then match the N-P-K and WIN on any bag to the closest row. Full table in [`Fertilizer_Grades_Table.md`](Fertilizer_Grades_Table.md).
 
-> ⚠️ **Reading WIN correctly** — Program is set by WIN as a **percent of total nitrogen**, not percent of bag weight: divide the label's WIN figure by the total N%. A bag with 24% N and "0.6% WIN" is 0.6 ÷ 24 = 2.5% of N → Program 1.
+> ⚠️ **Reading WIN correctly** — Program is set by WIN as a **% of total nitrogen**, not % of bag weight: divide the label's WIN figure by the total N%. A bag with 24% N and "0.6% WIN" is 0.6 ÷ 24 = 2.5% of N → Program 1.
 
 <details>
 <summary>📊 <strong>Grades by phosphorus need</strong> (click to expand)</summary>
@@ -230,7 +230,7 @@ VCE is always primary. UMD Extension and Clemson HGIC are co-primary where VCE i
 - **Requires a soil test** for lawn and vegetable calculators. Flower and shrub/tree tabs offer research-based defaults when no test is available.
 - **Lawn N cannot be estimated from a soil test** — VCE 430-011 is explicit. The N figure on a lawn report is a research-based guideline, not a measured deficiency.
 - **Healthy shrubs and trees do not need fertilizer** — VCE Note 20 is explicit.
-- **Recommendations are valid for ~3 years** — retest every 3–4 years for lawns, 2–3 for active vegetable beds.
+- **Recommendations are valid for ~three years** — retest every 3–4 years for lawns, 2–3 for active vegetable beds.
 - **Soil texture is never inferred** from CEC or Buffer Index values.
 - **Virginia soils and climate** — primary audience is Chesterfield County and the Piedmont clay belt (Zone 7b); recommendations are appropriate statewide.
 
@@ -256,6 +256,10 @@ VCE is always primary. UMD Extension and Clemson HGIC are co-primary where VCE i
 - **Chantel Wilson** — Assistant Professor and 4-H STEAM Extension Specialist, Virginia State University
 - **Michael Goatley Jr.** — Professor and Extension Specialist, Virginia Tech
 
-Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, the U.S. Department of Agriculture, and local governments.
+Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, the U.S. Department of Agriculture (USDA), and local governments, and is an equal opportunity employer. For the full nondiscrimination statement, please visit ext.vt.edu/accessibility.
+
+**Disclaimer:** Commercial products are named in this publication for informational purposes only. Virginia Cooperative Extension does not endorse these products and does not intend discrimination against other products that also might be suitable.
+
+**Declaration of AI assistance:** During the preparation of this tool, the author(s) used Claude (Anthropic) to assist with code generation, content drafting, and document synthesis. After using this tool, the author(s) reviewed and edited the content as needed and take full responsibility for the content of this publication.
 
 > 🌱 *This calculator is not an official VCE product. It is a homeowner tool built from VCE publications for personal use.*
