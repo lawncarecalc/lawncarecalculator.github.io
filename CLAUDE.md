@@ -1655,3 +1655,50 @@ Section positioned between Lime and Flower Garden to match tab order.
 | :-- | :-- |
 | `README.md` | Vegetable Garden section added |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — June 20, 2026 (Grass Seed Assistant — standalone decision + VCE style compliance)
+
+### Decision: grass seed assistant stays standalone
+
+The grass seed assistant will **not** be ported into the lawn care calculator as a tab. It will remain a separate, standalone HTML tool (`grass_seed_assistant.html`). Rationale: the assistant's logic is question-driven (site/use/preference), not soil-test-driven, so it has no data dependency on the calculator. A standalone tool is easier to share, link, and maintain independently.
+
+The assistant now references the Lawn & Garden Care Calculator as a linked companion tool (placeholder `[LINK_TO_CALCULATOR]` in the "Next step" note) rather than as an internal tab hand-off. The code comment header was updated from "ports into calculator" to "standalone tool."
+
+Previous session entries that reference "not yet ported" or "deferred step-1 follow-up" are historical and reflect the original plan at the time.
+
+A separate project context file (`claude-grass-seed-assistant.md`) was created for the grass seed assistant, extracting all pertinent source, architecture, and decision history from this file.
+
+### VCE Style Guide compliance (grass_seed_assistant.html)
+
+Applied the VCE Style Guide (VCE-1202, June 2025) to `grass_seed_assistant.html` across two passes:
+
+**Pass 1 — static HTML**
+1. **Nondiscrimination statement** added to footer (required on all VCE materials, including websites).
+2. **AI disclosure** added to footer per VCE AI transparency requirement.
+3. **Publication title** in footer: `<em>` (italics) → quotation marks for "Selecting Turfgrass for Virginia" (Extension publication titles use quotation marks, not italics).
+4. **"Ch. 11" → "chapter 11"** — abbreviation expanded for clarity.
+5. **"Not an official VCE product" line** removed per user direction.
+
+**Pass 2 — JS-generated user-facing text**
+6. **Publication titles** — two more `<em>` → quotation marks: "Virginia Turfgrass Variety Recommendations," "Selecting Landscape Plants: Groundcovers."
+7. **Source citation italics removed** — `<em>(VCE 426-609; EMG Handbook Ch. 11)</em>` was not a title; removed italics and expanded abbreviation.
+8. **En dashes → closed hyphens** — global replacement for all ranges ("7-14 days," "4-5 months," "30-45 days") and compound descriptors ("Low-medium," "Fine-medium") per VCE range rule. Em dashes (spaced, for sentence breaks) left intact.
+9. **Ampersands → "and"** in three editorial uses; kept ampersands in formal publication titles (Pest Management Guide: Home Grounds & Animals) and product label references.
+10. **"Fall Lawn Care" quotation marks** added (standalone Extension publication).
+11. **Terminal periods on 13 list items** — seed-bag checklist (8 items) and groundcover checklist (5 items).
+12. **One more "Ch." → "chapter"** in diagnostic source citation.
+
+**Items left unchanged (by design)**
+- `<em>Carex pensylvanica</em>` — italics correct for scientific names.
+- `<em>(named cultivar)</em>` in seed-tag demo — UI annotation, not publication text.
+- Pest Management Guide and Extension Master Gardener Handbook — no quotation marks (style guide excludes handbooks and manuals).
+- Emojis — style guide does not address; left per user direction.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `grass_seed_assistant.html` | Standalone verbiage + VCE style compliance (12 changes) |
+| `CLAUDE.md` | This entry; grass seed assistant is now a separate project |
+| `claude-grass-seed-assistant.md` | NEW — standalone project context for the grass seed assistant |
