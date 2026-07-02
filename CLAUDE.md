@@ -1586,28 +1586,72 @@ Note: the original upload /mnt/user-data/uploads/NonEdu_Full_Rule_v3.md remains 
 
 ---
 
-## Session Updates — June 15, 2026 (cont.) (Source-traceability audit + 3 precision fixes)
+## Session Updates — June 19, 2026 (VCE Style Guide compliance pass)
 
-### Purpose
-Verified the claim (being made to the county agent) that every agronomic statement shown to the user traces to a source in the About-tab Source Documents & Attribution appendix — i.e., no synthetic/fabricated content. Audit doc: `Source_Traceability_Audit.md` (outputs), framed as verification of the source-traceability claim.
+### Context
+Applied the VCE Style Guide (VCE-1202, June 2025) to `index.html`. Guide priority order: VT Brand Guide → VCE Style Guide → AP Stylebook → Chicago Manual of Style.
 
-### Method
-Appendix first read in full (~30+ sources: SPES-40A origin; lawn pubs 430-011/430-520/430-522/523, Notes 17/18; shrub Note 20/430-018/SPES-397; garden Note 19/426-200/426-323; 9 crop-specific pubs; soil-test Note 1 (452-701)/SPES-384/AF8/DCR standards; supplementary UMD/Clemson/Rutgers/NC State). Audited surfaces 1 (glossary, 16 entries), 2 (interpretation cards), 3 (all six tabs' recommendation text). UI prompts, placeholders, and illustrative retail fertilizer grades (29-0-7 etc.) ruled out of scope. Leak-hunt focused on UNTAGGED agronomic claims (the 100+ inline-tagged claims self-attribute and were confirmed against the appendix). Extracted 147 clean untagged agronomic claims; flagged a claim only if untraceable to the appendix OR factually wrong; web-verified anything that wouldn't place.
+### Changes made to index.html
 
-### Result: NO synthetic content found
-Every agronomic claim across cards, tabs, and glossary traces to an appendix source. Three precision items surfaced (not leaks) and were FIXED in one pass:
-1. **CCE ranges (lime-type help, ~3211–3212):** calcitic "80–100%" / dolomitic "95–108%" were effectively swapped vs. authoritative tables (calcite ~100, high-Mg dolomite ~108 → dolomitic trends higher) and not VA-traceable. Fixed: now describes CCE as near 100 with dolomitic able to slightly exceed it, cited to VCE 452-510.
-2. **Salt ×640 dS/m→ppm conversion (~3385):** factor is real (NaCl standard) but not in appendix and methodologically mixed with VCE's 1:2-extract 844 ppm threshold (452-701, saturated-paste basis differs). Fixed: now flagged approximate/method-dependent with the 452-701 note. (The 844 ppm threshold itself verified clean vs. 452-701 — no change.)
-3. **Glossary "calcium only" (dolomitic entry):** overstated; calcitic = ≥85% neutralizing value from Ca carbonate per 452-510 → "little magnesium," not zero. Fixed to "supplies calcium and little magnesium," matching the cards.
+**Critical / required on all VCE publications**
 
-JS validated; old text confirmed gone.
+1. **Nondiscrimination statement** — replaced the informal custom text in the About tab with the exact required statement: "Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, the U.S. Department of Agriculture (USDA), and local governments, and is an equal opportunity employer. For the full nondiscrimination statement, please visit ext.vt.edu/accessibility."
+
+2. **Commercial products disclaimer** — added the required VCE boilerplate (products named for informational purposes only, no endorsement) since the calculator names fertilizers and specific product grades throughout.
+
+3. **AI disclosure** — added a declaration of AI assistance (Claude/Anthropic used for code generation, content drafting, and document synthesis) per VCE style guide requirement for transparency when AI tools contribute to content creation.
+
+**Content/copy fixes**
+
+4. **"phosphorous" → "phosphorus"** — global find/replace. "Phosphorous" is an adjective; "phosphorus" is the noun. Four instances corrected in About tab step 3 copy and tooltip data-def attributes.
+
+5. **"Dr." honorifics removed** — "Dr. Richard Large" and "Dr. Oscar F. Ruiz Jr." corrected in the Waypoint Analytical source attribution (VT/VCE style: do not use Dr. before any name).
+
+6. **"Retest after 3 years"** — changed to "Retest after three years" (numbers one–nine spelled out in prose when not a measurement or table value).
+
+7. **"The 3–4 week timing rule"** — changed to "The three-to-four-week timing rule" and the associated sentence updated to "three to four weeks after it is applied" for consistency.
+
+**Design fix**
+
+8. **Italic emphasis → bold** — five tab names in About step 2 (`<em>Cool-Season Lawns</em>` etc.) converted to `<strong>` per VCE/VT rule that boldface is preferred for emphasis; italics are reserved for scientific Latin names and reference list titles.
+
+### Items noted but not changed (require editorial judgment)
+
+- **Citations style** — inline citations use abbreviated publication numbers like `(VCE 430-011)` rather than Chicago author-date format `(Goatley et al. 2021)`. Full Chicago conversion would require touching hundreds of inline citations across JS-generated output strings. Flag for a dedicated pass if formal publication status is sought.
+- **ALL CAPS in UI labels** — CSS `text-transform: uppercase` on `.st-section-label`, `.st-range-label`, etc. is a design choice for UI chrome, not body copy. Guide says use sparingly; no change made.
+- **"3–4 year soil testing" in source descriptions** — left as figures because these are measurement ranges in reference metadata, not prose sentences.
+
+### README.md
+README was provided in a follow-up upload. Four changes applied (see below).
 
 ### Files
 | Document | Status |
 | :-- | :-- |
-| `Source_Traceability_Audit.md` | NEW — verification doc, no synthetic content found, 3 items |
-| `index.html` | 3 precision fixes applied (CCE, salt conversion, glossary wording) |
+| `index.html` | VCE style guide compliance pass — 8 changes |
+| `README.md` | VCE style guide compliance pass — 4 changes |
 | `CLAUDE.md` | this entry |
 
-### Note (separate work this session, also delivered)
-Drafted a reply to the county agent (approval to MGs/help-desk; educational + "what/how much/when" purpose; made available to help desk with some already assisting residents; agent free to distribute with a note re: minor bugs and a request that users report performance concerns; acknowledged her About-tab nitrogen-spell-out feedback). The About-tab edit to spell out N/P/K was discussed but confirm whether it was actually applied before claiming "done" to the agent.
+#### README.md changes
+1. **"percent" × 2 → `%`** — "percent of total nitrogen" and "percent of bag weight" in the WIN explanation (line 77) replaced with `%` per VCE style (always use the symbol with numerals in Extension publications).
+2. **"~3 years" → "~three years"** — prose sentence in Limitations section; single-digit number spelled out.
+3. **Nondiscrimination statement** — incomplete statement in Attributions replaced with the required VCE text, adding "(USDA)," "equal opportunity employer," and the `ext.vt.edu/accessibility` URL.
+4. **Commercial products disclaimer + AI disclosure** — both added to Attributions section, matching the text added to `index.html`.
+
+---
+
+## Session Updates — June 19, 2026 (cont.) (README vegetable garden section added)
+
+User noted the README had no dedicated section for the Vegetable Garden tab despite having full sections for Flower Garden, Shrubs & Trees, and Lime. Added `## 🥬 Vegetable Garden` section to README.md, covering:
+- Source publications (Note 19, 426-323, UMD, Clemson, Rutgers)
+- Full 20-crop table organized by feeding level (heavy/medium/light/mixed)
+- Organic matter N credit logic (0.4 lbs/1% OM/1,000 sq. ft.)
+- Sidedress timing rule (three-to-four-week rule) with crop-specific notes
+- Fertilizer source options including calcium nitrate preference rationale
+
+Section positioned between Lime and Flower Garden to match tab order.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `README.md` | Vegetable Garden section added |
+| `CLAUDE.md` | this entry |
