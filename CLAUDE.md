@@ -1586,72 +1586,131 @@ Note: the original upload /mnt/user-data/uploads/NonEdu_Full_Rule_v3.md remains 
 
 ---
 
-## Session Updates — June 19, 2026 (VCE Style Guide compliance pass)
+## Session Updates — July 6, 2026 (ADA / WCAG 2.1 AA compliance — critical tier)
 
 ### Context
-Applied the VCE Style Guide (VCE-1202, June 2025) to `index.html`. Guide priority order: VT Brand Guide → VCE Style Guide → AP Stylebook → Chicago Manual of Style.
+Virginia Tech Policy 7215 requires WCAG 2.1 AA conformance for all digital content (effective April 24, 2026). Applied all 5 critical-tier fixes to `index.html`, plus VCE style guide fixes from the prior session.
 
 ### Changes made to index.html
 
-**Critical / required on all VCE publications**
+**All VCE style guide fixes from June 19, 2026 session reapplied** (phosphorus, Dr. honorifics, numeral rules, italic→bold, nondiscrimination statement, commercial products disclaimer, AI disclosure).
 
-1. **Nondiscrimination statement** — replaced the informal custom text in the About tab with the exact required statement: "Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State University, the U.S. Department of Agriculture (USDA), and local governments, and is an equal opportunity employer. For the full nondiscrimination statement, please visit ext.vt.edu/accessibility."
+**ADA Fix 1.1 — Form label association (WCAG 1.3.1, 4.1.2)**
+- Added `for=` attribute to every `<label>` in the file (~65 static labels + 7 JS-generated slot labels)
+- Covers all tabs: Soil Test, Cool-Season, Warm-Season, Lime, Vegetable Garden, Flower Garden, Shrubs & Trees
+- Also cleaned up inline `style=` on sub-label `<span>` elements, replacing with `.st-label-sub` class
 
-2. **Commercial products disclaimer** — added the required VCE boilerplate (products named for informational purposes only, no endorsement) since the calculator names fertilizers and specific product grades throughout.
+**ADA Fix 1.2 — Tab widget ARIA pattern (WCAG 4.1.2)**
+- Added `role="tablist"` to `<nav>`, `role="tab"` + `aria-selected` + `aria-controls` + `tabindex` to each button
+- Added `role="tabpanel"` + `aria-labelledby` to each panel div
+- Refactored tab JS into `activateTab(tab)` function that manages ARIA state, tabindex, and page title
+- Added arrow-key (Left/Right/Home/End) keyboard navigation between tabs
+- Updated `switchToTab()` to delegate to `activateTab()` for ARIA consistency
+- Page `<title>` now updates dynamically to reflect the active tab
 
-3. **AI disclosure** — added a declaration of AI assistance (Claude/Anthropic used for code generation, content drafting, and document synthesis) per VCE style guide requirement for transparency when AI tools contribute to content creation.
+**ADA Fix 1.3 — Live regions for dynamic results (WCAG 4.1.3)**
+- Added `aria-live="polite" aria-atomic="false"` to all 7 result panels
+- Added `debounce()` utility (300ms) wrapping `interpretSoilTest()` on `oninput` to prevent screen reader chatter
+- Select `onchange` handlers remain immediate (no debounce needed)
 
-**Content/copy fixes**
+**ADA Fix 1.4 — Heading hierarchy (WCAG 1.3.1)**
+- Converted 23 `<div class="card-header">` elements to `<h3 class="card-header">`
+- 1 card-header (soil test, with inline buttons) uses `role="heading" aria-level="3"` fallback
+- Updated CSS selector to include `h3.card-header`
+- Added `aria-hidden="true"` to 27 decorative emoji `<span class="icon">` elements in headings and buttons
 
-4. **"phosphorous" → "phosphorus"** — global find/replace. "Phosphorous" is an adjective; "phosphorus" is the noun. Four instances corrected in About tab step 3 copy and tooltip data-def attributes.
+**ADA Fix 1.5 — Color-only status communication (WCAG 1.4.1)**
+- Updated `abox()` helper to add `role="note"` and a `.sr-only` status prefix ("Action needed:", "Monitor:", "Good:")
+- Added `.sr-only` CSS utility class (visually hidden, screen-reader announced)
+- Added `aria-hidden="true"` to decorative header badge and prefill button emoji
 
-5. **"Dr." honorifics removed** — "Dr. Richard Large" and "Dr. Oscar F. Ruiz Jr." corrected in the Waypoint Analytical source attribution (VT/VCE style: do not use Dr. before any name).
+**Additional improvements included in this pass:**
+- Skip navigation link (`<a class="skip-link">`) as first element in `<body>`, visible on focus
+- `id="main-content"` on `<main>` element for skip link target
+- Contrast fix: hint/meta text color overridden from `#8a9490` (~2.8:1) to `#5f6b6b` (passes 4.5:1 on white)
 
-6. **"Retest after 3 years"** — changed to "Retest after three years" (numbers one–nine spelled out in prose when not a measurement or table value).
-
-7. **"The 3–4 week timing rule"** — changed to "The three-to-four-week timing rule" and the associated sentence updated to "three to four weeks after it is applied" for consistency.
-
-**Design fix**
-
-8. **Italic emphasis → bold** — five tab names in About step 2 (`<em>Cool-Season Lawns</em>` etc.) converted to `<strong>` per VCE/VT rule that boldface is preferred for emphasis; italics are reserved for scientific Latin names and reference list titles.
-
-### Items noted but not changed (require editorial judgment)
-
-- **Citations style** — inline citations use abbreviated publication numbers like `(VCE 430-011)` rather than Chicago author-date format `(Goatley et al. 2021)`. Full Chicago conversion would require touching hundreds of inline citations across JS-generated output strings. Flag for a dedicated pass if formal publication status is sought.
-- **ALL CAPS in UI labels** — CSS `text-transform: uppercase` on `.st-section-label`, `.st-range-label`, etc. is a design choice for UI chrome, not body copy. Guide says use sparingly; no change made.
-- **"3–4 year soil testing" in source descriptions** — left as figures because these are measurement ranges in reference metadata, not prose sentences.
-
-### README.md
-README was provided in a follow-up upload. Four changes applied (see below).
+### Items deferred (Serious + Moderate tiers — not in this pass)
+- `<fieldset>`/`<legend>` grouping for related input pairs (P value + P rating, etc.)
+- External link `target="_blank"` warnings
+- `aria-expanded` on measure/area toggles
+- Minimum font-size audit (0.68rem → 0.75rem on range/summary labels)
+- `aria-invalid` + `aria-describedby` for validation errors
 
 ### Files
 | Document | Status |
 | :-- | :-- |
-| `index.html` | VCE style guide compliance pass — 8 changes |
-| `README.md` | VCE style guide compliance pass — 4 changes |
+| `index.html` | VCE style fixes reapplied + 5 critical ADA fixes |
 | `CLAUDE.md` | this entry |
-
-#### README.md changes
-1. **"percent" × 2 → `%`** — "percent of total nitrogen" and "percent of bag weight" in the WIN explanation (line 77) replaced with `%` per VCE style (always use the symbol with numerals in Extension publications).
-2. **"~3 years" → "~three years"** — prose sentence in Limitations section; single-digit number spelled out.
-3. **Nondiscrimination statement** — incomplete statement in Attributions replaced with the required VCE text, adding "(USDA)," "equal opportunity employer," and the `ext.vt.edu/accessibility` URL.
-4. **Commercial products disclaimer + AI disclosure** — both added to Attributions section, matching the text added to `index.html`.
 
 ---
 
-## Session Updates — June 19, 2026 (cont.) (README vegetable garden section added)
+## Session Updates — July 6, 2026 (cont.) (ADA Serious + Moderate tier)
 
-User noted the README had no dedicated section for the Vegetable Garden tab despite having full sections for Flower Garden, Shrubs & Trees, and Lime. Added `## 🥬 Vegetable Garden` section to README.md, covering:
-- Source publications (Note 19, 426-323, UMD, Clemson, Rutgers)
-- Full 20-crop table organized by feeding level (heavy/medium/light/mixed)
-- Organic matter N credit logic (0.4 lbs/1% OM/1,000 sq. ft.)
-- Sidedress timing rule (three-to-four-week rule) with crop-specific notes
-- Fertilizer source options including calcium nitrate preference rationale
+### Changes made to index.html
 
-Section positioned between Lime and Flower Garden to match tab order.
+**Fix 2.2 — Fieldset/legend grouping (WCAG 1.3.1)**
+- Wrapped P value+rating, K value+rating, Ca value+rating, Mg value+rating pairs in `<fieldset class="st-fieldset">` with visually hidden `<legend>` (Phosphorus, Potassium, Calcium, Magnesium)
+- Wrapped full micronutrient block in `<fieldset class="st-fieldset-block">` with visible legend replacing the old section-label div
+- Added CSS: `display: contents` on fieldset preserves existing CSS Grid layout; legend uses sr-only pattern for nutrient pairs
+
+**Fix 2.3 — External link warnings (WCAG 2.4.4, 3.2.2)**
+- Added `<span class="sr-only"> (opens in new tab)</span>` before `</a>` on all 39 `target="_blank"` links
+- Added `rel="noopener"` to all 39 external links (security best practice)
+
+**Fix 3.2 — aria-expanded on toggle buttons (WCAG 4.1.2)**
+- Added `aria-expanded="false"` and `aria-controls` to 8 static toggle buttons (measure, garden subsections, about source panels)
+- Added same attributes to 1 JS-generated fert-chooser toggle button
+- Updated all 9 toggle functions to sync `aria-expanded` with open/closed state via `setAttribute`
+
+**Fix 3.3 — Minimum font-size floor (WCAG 1.4.4)**
+- Raised all font-size values below 0.75rem (12px) to 0.75rem
+- Affected: `.st-range-label` (was 0.68rem), `.st-summary-label` (was 0.7rem), `.st-summary-rating` (was 0.72rem), `.prog-badge` (was 0.72rem), various inline styles on table cells and labels
+- Zero sub-0.75rem font sizes remain
+
+**Fix 3.4 — Validation errors (WCAG 3.3.1)**
+- Added `aria-describedby` linking cool/warm N-rate inputs to their validation output divs
+- Added `role="alert" aria-live="assertive"` on validation divs so screen readers announce ceiling violations
+- N-rate validation JS now sets `aria-invalid="true"` when exceeding the annual ceiling and removes it when within range
 
 ### Files
 | Document | Status |
 | :-- | :-- |
-| `README.md` | Vegetable Garden section added |
+| `index.html` | 5 serious+moderate ADA fixes applied (2.2, 2.3, 3.2, 3.3, 3.4) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 6, 2026 (cont.) (axe audit + fixes)
+
+### Context
+Ran axe-core (WCAG 2.0 AA + 2.1 AA + best-practice rules) via Puppeteer against the rendered HTML file.
+
+### Initial audit result
+- 42 rules passing
+- 2 violations (5 elements with contrast failure, 1 heading-order issue)
+- 1 incomplete (manual review needed for toggle-arrow contrast)
+
+### Fixes applied
+
+**Color contrast (WCAG 1.4.3)**
+- `.st-prefill-btn` background: `var(--gold)` (#b8892a) → `#7a6518` (white text now passes 4.5:1)
+- Flower Garden sample button inline background: `var(--gold)` → `#7a6518`
+- Vegetable Garden sample button inline background: `#5a7a2e` → `#3d5a1a`
+- `#st-area-hint` text color: `var(--gold)` → `#7a6518` (on white, passes 4.5:1)
+- `#st-salts-hint` text color: `var(--slate-light)` → `#5f6b6b` (matches earlier override)
+- `.st-placeholder` text color: added CSS rule with `#5f6b6b`
+
+**Heading order (best-practice)**
+- Soil test card-header `div[role="heading"]`: changed `aria-level="3"` → `aria-level="2"`
+- Added visually hidden `<h2 class="sr-only">` to 7 other tab panels (cool, warm, lime, garden, flower, shrub, about) so heading hierarchy flows h1 → h2 → h3 in every tab
+
+### Final audit result
+- **0 violations**
+- 42 rules passing
+- 1 incomplete: toggle-arrow contrast (manual review — inherits from parent button, visually passes)
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | axe-core 0 violations achieved |
 | `CLAUDE.md` | this entry |
