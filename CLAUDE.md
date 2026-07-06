@@ -1714,3 +1714,21 @@ Ran axe-core (WCAG 2.0 AA + 2.1 AA + best-practice rules) via Puppeteer against 
 | :-- | :-- |
 | `index.html` | axe-core 0 violations achieved |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 6, 2026 (cont.) (Lighthouse confirmation)
+
+User ran Lighthouse in Chrome DevTools against the hosted site (lawncarecalc.github.io). Results:
+- **Accessibility: 100**
+- Best Practices: 100
+- Performance: 91
+- SEO: 90
+
+README.md updated to include Lighthouse 100 alongside the axe-core 0-violation result.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `README.md` | Lighthouse score added to Accessibility section |
+| `CLAUDE.md` | this entry |

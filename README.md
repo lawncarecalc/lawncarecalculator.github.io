@@ -267,11 +267,37 @@ VCE is always primary. UMD Extension and Clemson HGIC are co-primary where VCE i
 
 ---
 
+## ♿ Accessibility
+
+The calculator targets **WCAG 2.1 AA** conformance, the standard required by Virginia Tech Policy 7215 and ADA Title II (effective April 24, 2026).
+
+### What was done
+
+- **Form labels** — every `<label>` is programmatically associated with its input via `for`/`id` pairing (~70 fields across all tabs, including dynamically generated application slots).
+- **Tab widget** — full ARIA tab pattern (`role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`, `aria-controls`) with arrow-key navigation (Left/Right/Home/End) between tabs.
+- **Live regions** — all seven result panels use `aria-live="polite"` so screen readers announce updated calculations. Soil test input is debounced at 300ms to prevent announcement chatter.
+- **Heading hierarchy** — 23 card-header divs converted to semantic `<h3>` elements; visually hidden `<h2>` added to each tab panel; decorative emoji marked `aria-hidden="true"`.
+- **Color independence** — action boxes include screen-reader-only status prefixes ("Action needed:", "Monitor:", "Good:") so status is conveyed by text, not color alone.
+- **Fieldset grouping** — related input pairs (P value + P rating, K, Ca, Mg) wrapped in `<fieldset>` with `<legend>`; micronutrient block grouped with a visible legend.
+- **External links** — all 39 `target="_blank"` links include a screen-reader-only "(opens in new tab)" notice and `rel="noopener"`.
+- **Toggle buttons** — nine collapsible-section buttons have `aria-expanded` and `aria-controls`, synced in JavaScript on every open/close.
+- **Contrast** — all text passes 4.5:1 minimum contrast ratio against its background. Hint text raised from `#8a9490` to `#5f6b6b`; gold buttons darkened to `#7a6518`.
+- **Font-size floor** — no text smaller than 0.75rem (12px).
+- **Validation** — N-rate inputs linked to validation output via `aria-describedby`; ceiling violations set `aria-invalid="true"` and announce via `role="alert"`.
+- **Skip link** — hidden "Skip to main content" link appears on first Tab keypress.
+
+### Testing
+
+Automated: **axe-core 4.x** via Puppeteer — **0 violations**, 42 rules passing. **Lighthouse** — **100 Accessibility** (plus 100 Best Practices, 91 Performance, 90 SEO). See [`Accessibility_Testing_Checklist.md`](Accessibility_Testing_Checklist.md) for the full 34-item manual testing plan covering keyboard navigation, screen reader verification, and visual/zoom checks.
+
+---
+
 ## 🗂️ Supporting Documents
 
 | Document | Description |
 | :-- | :-- |
 | `CLAUDE.md` | Development context for AI-assisted sessions — implementation, source boundaries, critical rules, session log |
+| `Accessibility_Testing_Checklist.md` | 34-item manual testing plan for WCAG 2.1 AA — keyboard, screen reader, visual, and automated tool checks |
 | `Fertilizer_Grades_Table.md` | Brand-free garden-center grades table, organized by phosphorus need |
 | `Lawn_Fertilizer_Product_Survey.md` | Full marketplace survey behind the grades table |
 | `Liming_Materials_CCE_Survey.md` | CCE values for garden-center liming materials (validates the Lime tab) |
