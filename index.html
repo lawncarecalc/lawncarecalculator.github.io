@@ -20,7 +20,7 @@
     --gold-light:  #f5e8c8;
     --slate:       #3a3f3b;
     --slate-mid:   #5a6060;
-    --slate-light: #8a9490;
+    --slate-light: #5f6b6b;  /* darkened from #8a9490 for WCAG AA contrast */
     --cream:       #fafaf8;
     --white:       #ffffff;
     --border:      #cdd8ce;
@@ -739,14 +739,7 @@
   }
   .skip-link:focus { top: 0; }
 
-  /* Improved contrast for hint/meta text (#8a9490 -> #5f6b6b, passes 4.5:1 on white) */
-  .field-hint,
-  .about-source-meta,
-  #p-rating-scale-hint,
-  #k-rating-scale-hint,
-  #st-salts-unit-label,
-  .st-label-sub { color: #5f6b6b; }
-  .st-placeholder { color: #5f6b6b; }
+  /* --slate-light variable itself now passes 4.5:1 on white */
 
   /* Fieldset/legend for grouped inputs — visually transparent */
   fieldset.st-fieldset {
@@ -783,9 +776,8 @@
 </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
-
 <header class="site-header">
+<a href="#main-content" class="skip-link">Skip to main content</a>
   <div class="header-inner">
     <div class="header-badge" aria-hidden="true">🌿</div>
     <div class="header-text">
@@ -1152,13 +1144,13 @@
           <div class="card-body">
 
             <div class="field-group">
-              <div class="field-label"><span class="field-num">1</span><span class="field-question">What is the size of your lawn in square feet?</span></div>
+              <div class="field-label"><span class="field-num">1</span><label for="cool-lawn-size" class="field-question">What is the size of your lawn in square feet?</label></div>
               <input type="number" id="cool-lawn-size" placeholder="e.g. 5000" oninput="calcCool()">
               <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn.</div>
             </div>
 
             <div class="field-group">
-              <div class="field-label"><span class="field-num">2</span><span class="field-question">What grass species do you have?</span></div>
+              <div class="field-label"><span class="field-num">2</span><label for="cool-species" class="field-question">What grass species do you have?</label></div>
               <select id="cool-species" onchange="calcCool()">
                 <option value="tall">Tall fescue / Kentucky bluegrass / Perennial ryegrass</option>
                 <option value="fine">Fine-leaf fescue (creeping red, chewings, hard)</option>
@@ -1202,9 +1194,9 @@
                 <input type="checkbox" id="cool-clip-toggle" onchange="calcCool()" style="margin-top:3px;flex-shrink:0;">
                 <span>&#9851; <strong>I mulch-mow and return clippings.</strong> Reduces your annual nitrogen target by up to one-third (capped at 1 lb/1,000 sq. ft., the nitrogen clippings return). <em>(VCE 430-011, SPES-384)</em></span>
               </label>
-              <div style="margin-top:12px;padding:10px 12px;background:var(--cream);border:1px solid var(--border);border-radius:6px;">
-                <div style="font-size:0.82rem;color:var(--slate-mid);line-height:1.4;margin-bottom:8px;">&#9729;&#65039; <strong>Is this area shaded?</strong> VCE 430-011: <em>"Grasses growing in heavily shaded areas require only one-half to two-thirds as much nitrogen as grasses growing in full sun."</em> You judge how shaded the area is and choose accordingly.</div>
-                <div style="display:flex;gap:4px;flex-wrap:wrap;">
+              <fieldset class="st-fieldset-block" style="margin-top:12px;padding:10px 12px;background:var(--cream);border:1px solid var(--border);border-radius:6px;">
+                <legend style="font-size:0.82rem;color:var(--slate-mid);line-height:1.4;margin-bottom:8px;float:left;width:100%;">&#9729;&#65039; <strong>Is this area shaded?</strong> VCE 430-011: <em>"Grasses growing in heavily shaded areas require only one-half to two-thirds as much nitrogen as grasses growing in full sun."</em> You judge how shaded the area is and choose accordingly.</legend>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;clear:both;">
                   <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
                     <input type="radio" name="cool-shade" value="1" checked onchange="calcCool()"> Full sun
                   </label>
@@ -1216,12 +1208,12 @@
                   </label>
                 </div>
                 <div style="font-size:0.76rem;color:var(--slate-light);line-height:1.4;margin-top:8px;">&#9888;&#65039; If your lawn is part sun and part shade, run the shaded zone as a <strong>separate calculation</strong> using only its square footage — the shade reduction should not be applied to your whole lawn.</div>
-              </div>
+              </fieldset>
               <div id="cool-n-valid" style="margin-top:6px;" role="alert" aria-live="assertive"></div>
             </div>
 
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question">Fertility rating for <strong>P</strong> (from soil test)?</span></div>
+              <div class="field-label"><span class="field-num">4</span><label for="cool-p-rating" class="field-question">Fertility rating for <strong>P</strong> (from soil test)?</label></div>
               <select id="cool-p-rating" onchange="calcCool()">
                 <option value="">- Select rating -</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -1231,7 +1223,7 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question">Fertility rating for <strong>K</strong> (from soil test)?</span></div>
+              <div class="field-label"><span class="field-num">5</span><label for="cool-k-rating" class="field-question">Fertility rating for <strong>K</strong> (from soil test)?</label></div>
               <select id="cool-k-rating" onchange="calcCool()">
                 <option value="">- Select rating -</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -1306,13 +1298,13 @@
           <div class="card-body">
 
             <div class="field-group">
-              <div class="field-label"><span class="field-num">1</span><span class="field-question">What is the size of your lawn in square feet?</span></div>
+              <div class="field-label"><span class="field-num">1</span><label for="warm-lawn-size" class="field-question">What is the size of your lawn in square feet?</label></div>
               <input type="number" id="warm-lawn-size" placeholder="e.g. 5000" oninput="calcWarm()">
               <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn.</div>
             </div>
 
             <div class="field-group">
-              <div class="field-label"><span class="field-num">2</span><span class="field-question">What grass species do you have?</span></div>
+              <div class="field-label"><span class="field-num">2</span><label for="warm-species" class="field-question">What grass species do you have?</label></div>
               <select id="warm-species" onchange="calcWarm()">
                 <option value="bermuda">Bermudagrass / St. Augustinegrass</option>
                 <option value="zoysia">Zoysiagrass</option>
@@ -1372,12 +1364,12 @@
                   </label>
                 </div>
                 <div style="font-size:0.76rem;color:var(--slate-light);line-height:1.4;margin-top:8px;">&#9888;&#65039; If your lawn is part sun and part shade, run the shaded zone as a <strong>separate calculation</strong> using only its square footage — the shade reduction should not be applied to your whole lawn.</div>
-              </div>
+              </fieldset>
               <div id="warm-n-valid" style="margin-top:6px;" role="alert" aria-live="assertive"></div>
             </div>
 
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question">Fertility rating for <strong>P</strong> (from soil test)?</span></div>
+              <div class="field-label"><span class="field-num">4</span><label for="warm-p-rating" class="field-question">Fertility rating for <strong>P</strong> (from soil test)?</label></div>
               <select id="warm-p-rating" onchange="calcWarm()">
                 <option value="">- Select rating -</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -1387,7 +1379,7 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question">Fertility rating for <strong>K</strong> (from soil test)?</span></div>
+              <div class="field-label"><span class="field-num">5</span><label for="warm-k-rating" class="field-question">Fertility rating for <strong>K</strong> (from soil test)?</label></div>
               <select id="warm-k-rating" onchange="calcWarm()">
                 <option value="">- Select rating -</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>

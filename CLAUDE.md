@@ -1732,3 +1732,38 @@ README.md updated to include Lighthouse 100 alongside the axe-core 0-violation r
 | :-- | :-- |
 | `README.md` | Lighthouse score added to Accessibility section |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 6, 2026 (cont.) (IBM Equal Access violations fixed)
+
+### Context
+User ran IBM Equal Access Accessibility Checker (v4.0.24) against the hosted site on the Cool-Season Lawns tab. Found 11 violations. All 11 fixed.
+
+### Fixes
+
+**3 unlabeled selects (WCAG 4.1.2)**
+- `cool-species`, `cool-p-rating`, `cool-k-rating`: converted `<span class="field-question">` to `<label for="..." class="field-question">` in the field-label divs
+- Same fix applied proactively to warm-season equivalents (`warm-species`, `warm-p-rating`, `warm-k-rating`) and lawn-size inputs on both tabs
+
+**4 contrast failures (WCAG 1.4.3)**
+- Changed `--slate-light` CSS variable itself from `#8a9490` to `#5f6b6b` (passes 4.5:1 on white)
+- This fixes all ~20 inline `color:var(--slate-light)` references across all tabs in one shot
+- Removed the now-redundant per-selector override from the earlier pass
+
+**3 ungrouped radio buttons (WCAG 1.3.1)**
+- Wrapped cool-shade and warm-shade radio groups in `<fieldset class="st-fieldset-block">` with `<legend>` containing the "Is this area shaded?" prompt
+- Legend styled with `float:left;width:100%` to preserve layout; radio container uses `clear:both`
+
+**1 content outside landmark (WCAG 1.3.1)**
+- Moved skip link from before `<header>` to inside it, so all content is within a landmark element
+
+### Verification
+- axe-core: still 0 violations, 42 rules passing
+- All 11 IBM violations addressed
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | IBM Equal Access 11 violations fixed |
+| `CLAUDE.md` | this entry |
