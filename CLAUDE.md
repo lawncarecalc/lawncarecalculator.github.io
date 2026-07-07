@@ -1852,3 +1852,43 @@ User had Claude in Chrome work through the manual Accessibility Testing Checklis
 | :-- | :-- |
 | `index.html` | 5 Claude-in-Chrome audit findings fixed |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 7, 2026 (cont.) (WAVE report fixes)
+
+### Context
+User ran WAVE (WebAIM) accessibility scanner. Found 9 input errors, 18 select alerts (13 already fixed but not deployed; 5 new), 1 orphaned label, 2 table caption issues, plus advisory items (PDF links, JS jump menus).
+
+### Fixes
+
+**9 missing input labels (WAVE errors)**
+- `lime-lawn-size`, `lime-rec`, `lime-cce`, `lime-bag-size`: lime tab field-question spans converted to `<label for="...">`
+- `gdn-n-rec`, `gdn-lime-rec`: garden tab N and lime recommendation inputs labeled
+- `flr-n-rec`, `flr-lime-rec`: flower tab N and lime recommendation inputs labeled
+- `shrub-n-rec`: shrub tab N recommendation input labeled
+
+**5 new select labels (WAVE alerts)**
+- `gdn-crop-type`: field-question span converted to `<label for="...">`
+- `gdn-product-select`, `flr-product-select`, `shrub-product-select`: no visible adjacent text, so `aria-label="Select a fertilizer product"` added
+- 13 previously fixed selects confirmed present (lime-type, gdn-type, gdn-p/k-rating, gdn-bed-status, flr-type, flr-p/k-rating, flr-bed-status, shrub-plant-type, shrub-turf, shrub-p/k-rating)
+
+**1 orphaned label**
+- Label "Showing guidance for — change to browse other crops:" was missing `for="gdn-guidance-crop"` — added
+
+**2 table caption issues**
+- Two `<td colspan>` cells styled as section headers ("Major nutrients" and "Synthetic — from VCE garden report (exact)") converted to `<th scope="colgroup">` for proper semantic markup
+
+### Not fixed (advisory, not violations)
+- 5 PDF links: already have descriptive link text; PDFs themselves are external VCE publications
+- 40 JS jump menus: onchange behavior is by design for a calculator; no context change occurs (only in-page results update)
+
+### Verification
+- axe-core: 0 violations
+- All 8 tabs activate correctly
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | WAVE fixes: 9 input labels, 5 select labels, 1 orphaned label, 2 table captions |
+| `CLAUDE.md` | this entry |

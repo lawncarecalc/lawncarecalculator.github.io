@@ -1476,12 +1476,12 @@
           <h3 class="card-header"><span class="icon" aria-hidden="true">🧪</span> Lime Calculator for Lawns</h3>
           <div class="card-body">
             <div class="field-group">
-              <div class="field-label"><span class="field-num">1</span><span class="field-question">What is the size of your lawn in square feet?</span></div>
+              <div class="field-label"><span class="field-num">1</span><span class="field-question" for="lime-lawn-size">What is the size of your lawn in square feet?</label></div>
               <input type="number" id="lime-lawn-size" placeholder="e.g. 5000" oninput="calcLime()">
               <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn.</div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">2</span><span class="field-question">How much lime is recommended on your VCE Soil Test Report?</span></div>
+              <div class="field-label"><span class="field-num">2</span><span class="field-question" for="lime-rec">How much lime is recommended on your VCE Soil Test Report?</label></div>
               <input type="number" id="lime-rec" min="0" step="0.5" placeholder="lbs. per 1,000 sq. ft." oninput="calcLime()">
               <div class="field-hint">Reported in lbs. per 1,000 sq. ft. at the bottom of your soil test report under Lime Recommendations.</div>
             </div>
@@ -1495,12 +1495,12 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question">What is the Calcium Carbonate Equivalent (CCE) listed on the bag of lime?</span></div>
+              <div class="field-label"><span class="field-num">4</span><span class="field-question" for="lime-cce">What is the Calcium Carbonate Equivalent (CCE) listed on the bag of lime?</label></div>
               <input type="number" id="lime-cce" min="50" max="175" placeholder="e.g. 100 (most pelletized lime)" oninput="calcLime()">
               <div class="field-hint">Listed as a percentage under Guaranteed Analysis on the bag. Pelletized lime is usually near 100%; calcitic 80&ndash;100%, dolomitic 95&ndash;108%. <strong>Gypsum (calcium sulfate) has no CCE &mdash; it does not raise pH and is not lime.</strong> <em>(VCE 452-510)</em></div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question">What is the size of the bag of lime (lbs.)?</span></div>
+              <div class="field-label"><span class="field-num">5</span><span class="field-question" for="lime-bag-size">What is the size of the bag of lime (lbs.)?</label></div>
               <input type="number" id="lime-bag-size" min="0" placeholder="e.g. 40" oninput="calcLime()">
             </div>
           </div>
@@ -1568,7 +1568,7 @@
 
             <!-- Crop type selector with N rate guidance -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">3</span><span class="field-question">What are you growing? <span style="font-weight:400;color:var(--slate-light);font-size:0.82rem;">(optional — helps calculate N rate)</span></span></div>
+              <div class="field-label"><span class="field-num">3</span><span class="field-question" for="gdn-crop-type">What are you growing? <span style="font-weight:400;color:var(--slate-light);font-size:0.82rem;">(optional — helps calculate N rate)</span></label></div>
               <select id="gdn-crop-type" onchange="onCropTypeChange()" style="margin-bottom:6px;">
                 <option value="">— Select a crop (optional) —</option>
                 <optgroup label="Heavy feeders (tomatoes, corn, broccoli…)">
@@ -1611,7 +1611,7 @@
 
             <!-- N recommendation -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question" id="gdn-n-rec-label">Preplant nitrogen recommendation from your report (lbs per 100 sq. ft.)?</span></div>
+              <div class="field-label"><span class="field-num">4</span><span class="field-question" id="gdn-n-rec-label" for="gdn-n-rec">Preplant nitrogen recommendation from your report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="gdn-n-rec" min="0" step="0.1" placeholder="e.g. 0.2" oninput="calcGarden()">
               <div class="field-hint" id="gdn-n-rec-hint">Enter the N figure shown on your soil test report. This is your preplant amount. Sidedress steps are calculated separately from crop research. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
             </div>
@@ -1667,7 +1667,7 @@
                 </div>
               </div>
               <div id="gdn-fert-product" style="display:none;">
-                <select id="gdn-product-select" onchange="onGardenProductSelect()">
+                <select id="gdn-product-select" aria-label="Select a fertilizer product" onchange="onGardenProductSelect()">
                   <option value="">- Select a product -</option>
                   <optgroup label="Synthetic — Nitrogen Only">
                     <option value="calcium-nitrate">Calcium Nitrate (15.5-0-0) — preferred sidedress</option>
@@ -1728,7 +1728,7 @@
 
                 <!-- Crop selector — synced from step 3 but independently browsable -->
                 <div style="margin-bottom:10px;">
-                  <label style="font-size:0.8rem;color:var(--slate-mid);display:block;margin-bottom:4px;">&#127807; Showing guidance for — change to browse other crops:</label>
+                  <label for="gdn-guidance-crop" style="font-size:0.8rem;color:var(--slate-mid);display:block;margin-bottom:4px;">&#127807; Showing guidance for — change to browse other crops:</label>
                   <select id="gdn-guidance-crop" onchange="updateCropGuidancePanel()" style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;background:white;">
                     <option value="">— Select a crop —</option>
                     <optgroup label="Heavy feeders">
@@ -1791,7 +1791,7 @@
                   <table class="fert-grade-table">
                     <thead><tr><th>Nutrient</th><th>Visual symptoms</th><th>Virginia context</th></tr></thead>
                     <tbody>
-                      <tr><td colspan="3" style="background:var(--green-deep);color:white;font-weight:600;font-size:0.75rem;padding:5px 8px;">Major nutrients</td></tr>
+                      <tr><th colspan="3" scope="colgroup" style="background:var(--green-deep);color:white;font-weight:600;font-size:0.75rem;padding:5px 8px;">Major nutrients</th></tr>
                       <tr><td><strong>Nitrogen (N)</strong></td><td>Yellowing from older leaves toward younger; stunted slow growth; reduced leaf size</td><td>Easily leached. Excess causes lush growth but inhibits flowering.</td></tr>
                       <tr><td><strong>Phosphorus (P)</strong></td><td>Purple or dark green foliage; stunted short internodes; poor flowers and fruit; delayed maturity</td><td>Poorly available at high/low pH and in cold or dry soils.</td></tr>
                       <tr><td><strong>Potassium (K)</strong></td><td>Older leaf margins scorched; weak stems; shriveled fruit with uneven ripening</td><td>Fairly easily leached on sandy soils.</td></tr>
@@ -1811,7 +1811,7 @@
             </div>
 
             <div class="field-group">
-              <div class="field-label"><span class="field-num">8</span><span class="field-question" id="gdn-lime-rec-label">Lime recommendation from your report (lbs per 100 sq. ft.)?</span></div>
+              <div class="field-label"><span class="field-num">8</span><span class="field-question" id="gdn-lime-rec-label" for="gdn-lime-rec">Lime recommendation from your report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="gdn-lime-rec" min="0" step="0.5" placeholder="e.g. 5" oninput="calcGarden()">
               <div class="field-hint" id="gdn-lime-rec-hint">Leave blank if no lime was recommended. VCE reports lime in lbs/100 sq. ft. Waypoint garden reports lime in lbs/1,000 sq. ft. — the calculator converts automatically.</div>
             </div>
@@ -1852,7 +1852,7 @@
                 <th style="padding:6px 8px;text-align:left;">Source</th>
               </tr></thead>
               <tbody id="gdn-vol-table">
-                <tr style="background:var(--green-mist);"><td colspan="4" style="padding:6px 8px;color:var(--slate-mid);font-style:italic;">Synthetic — from VCE garden report (exact)</td></tr>
+                <tr style="background:var(--green-mist);"><th colspan="4" scope="colgroup" style="padding:6px 8px;color:var(--slate-mid);font-style:italic;">Synthetic — from VCE garden report (exact)</th></tr>
                 <tr><td style="padding:6px 8px;">Nitrate of soda</td><td style="padding:6px 8px;text-align:center;">16-0-0</td><td style="padding:6px 8px;text-align:center;">1¾ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">VCE Note 19</td></tr>
                 <tr style="background:var(--green-mist);"><td style="padding:6px 8px;">Calcium nitrate</td><td style="padding:6px 8px;text-align:center;">15-0-0</td><td style="padding:6px 8px;text-align:center;">2 cups</td><td style="padding:6px 8px;color:var(--slate-mid);">VCE Note 19</td></tr>
                 <tr><td style="padding:6px 8px;">Ammonium sulfate</td><td style="padding:6px 8px;text-align:center;">21-0-0</td><td style="padding:6px 8px;text-align:center;">2½ cups</td><td style="padding:6px 8px;color:var(--slate-mid);">VCE Note 19</td></tr>
@@ -1922,7 +1922,7 @@
 
             <!-- N recommendation -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">3</span><span class="field-question" id="flr-n-rec-label">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</span></div>
+              <div class="field-label"><span class="field-num">3</span><span class="field-question" id="flr-n-rec-label" for="flr-n-rec">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="flr-n-rec" min="0" step="0.1" placeholder="e.g. 0.1" oninput="calcFlower()">
               <div class="field-hint" id="flr-n-rec-hint">Enter the N figure from your VCE or Waypoint report, or leave blank to use the research-based default for your flower type. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
             </div>
@@ -1978,7 +1978,7 @@
                 </div>
               </div>
               <div id="flr-fert-product" style="display:none;">
-                <select id="flr-product-select" onchange="onFlowerProductSelect()">
+                <select id="flr-product-select" aria-label="Select a fertilizer product" onchange="onFlowerProductSelect()">
                   <option value="">- Select a product -</option>
                   <optgroup label="Synthetic — Complete Fertilizers">
                     <option value="10-10-10">10-10-10 (General Purpose)</option>
@@ -2009,7 +2009,7 @@
 
             <!-- Lime recommendation -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">8</span><span class="field-question" id="flr-lime-rec-label">Lime recommendation from your report (lbs per 100 sq. ft.)?</span></div>
+              <div class="field-label"><span class="field-num">8</span><span class="field-question" id="flr-lime-rec-label" for="flr-lime-rec">Lime recommendation from your report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="flr-lime-rec" min="0" step="1" placeholder="e.g. 5" oninput="calcFlower()">
               <div class="field-hint" id="flr-lime-rec-hint">Leave blank if no lime was recommended. VCE reports garden lime in lbs/100 sq. ft. Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
             </div>
@@ -2135,7 +2135,7 @@
 
           <!-- Step 4 — N rec or default -->
           <div class="field-group">
-            <div class="field-label"><span class="field-num">4</span><span class="field-question">Nitrogen recommendation from your soil test report (lbs per 1,000 sq. ft.)?</span></div>
+            <div class="field-label"><span class="field-num">4</span><span class="field-question" for="shrub-n-rec">Nitrogen recommendation from your soil test report (lbs per 1,000 sq. ft.)?</label></div>
             <input type="number" id="shrub-n-rec" min="0" step="0.25" placeholder="e.g. 2" oninput="calcShrub()">
             <div class="field-hint" id="shrub-n-rec-hint">Leave blank to use the research-based default for your plant type. VCE Note 20 and VCE 430-018 give ranges — the calculator uses the midpoint of the appropriate range as the default.</div>
           </div>
@@ -2156,7 +2156,7 @@
               </div>
             </div>
             <div id="shrub-fert-product" style="display:none;">
-              <select id="shrub-product-select" onchange="onShrubProductSelect()">
+              <select id="shrub-product-select" aria-label="Select a fertilizer product" onchange="onShrubProductSelect()">
                 <option value="">— Select a product —</option>
                 <optgroup label="General — Slow-Release (≥50% WIN recommended)">
                   <option value="18-6-12">Osmocote 18-6-12 (slow-release)</option>
