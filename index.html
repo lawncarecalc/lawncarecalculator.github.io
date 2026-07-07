@@ -773,11 +773,27 @@
     font-size: 0.75rem;
     margin-bottom: 8px;
   }
+
+  /* Reflow fix: single column at very narrow widths (WCAG 1.4.10) */
+  @media (max-width: 400px) {
+    .calc-layout {
+      display: block !important;
+    }
+    .calc-layout > * {
+      width: 100% !important;
+    }
+    .st-field-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .npk-row {
+      flex-direction: column;
+    }
+  }
 </style>
 </head>
 <body>
-<header class="site-header">
 <a href="#main-content" class="skip-link">Skip to main content</a>
+<header class="site-header">
   <div class="header-inner">
     <div class="header-badge" aria-hidden="true">🌿</div>
     <div class="header-text">
@@ -803,12 +819,13 @@
 
   <!-- ===== SOIL TEST TAB ===== -->
   <div class="tab-panel active" id="tab-soiltest" role="tabpanel" aria-labelledby="btn-soiltest">
+    <h2 class="sr-only">Soil Test Report</h2>
     <div class="st-layout">
 
       <!-- Input card -->
       <div class="card st-input-card">
         <div class="card-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px;" role="heading" aria-level="2">
-          <span><span class="icon">🧪</span> Enter Your Soil Test Report Values</span>
+          <span><span class="icon" aria-hidden="true">🧪</span> Enter Your Soil Test Report Values</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <button class="st-prefill-btn no-print" onclick="prefillSampleReport('lawn')"><span aria-hidden="true">&#128203;</span> Lawn Sample</button>
             <button class="st-prefill-btn no-print" onclick="prefillSampleReport('garden')" style="background:#7a6518;border-color:#7a6518;"><span aria-hidden="true">&#127799;</span> Flower Garden Sample</button>
@@ -1137,6 +1154,7 @@
 
   <!-- ===== COOL-SEASON TAB ===== -->
   <div class="tab-panel" id="tab-cool" role="tabpanel" aria-labelledby="btn-cool">
+    <h2 class="sr-only">Cool-Season Lawns</h2>
     <div class="calc-layout">
       <div>
         <div class="card">
@@ -1291,6 +1309,7 @@
     </div>
   </div><!-- end tab-cool -->
   <div class="tab-panel" id="tab-warm" role="tabpanel" aria-labelledby="btn-warm">
+    <h2 class="sr-only">Warm-Season Lawns</h2>
     <div class="calc-layout">
       <div>
         <div class="card">
@@ -1451,6 +1470,7 @@
 
   <!-- ===== LIME TAB ===== -->
   <div class="tab-panel" id="tab-lime" role="tabpanel" aria-labelledby="btn-lime">
+    <h2 class="sr-only">Lime Calculator</h2>
     <div class="calc-layout">
         <div class="card">
           <h3 class="card-header"><span class="icon" aria-hidden="true">🧪</span> Lime Calculator for Lawns</h3>
@@ -1466,7 +1486,7 @@
               <div class="field-hint">Reported in lbs. per 1,000 sq. ft. at the bottom of your soil test report under Lime Recommendations.</div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">3</span><span class="field-question">What type of lime is recommended?</span></div>
+              <div class="field-label"><span class="field-num">3</span><span class="field-question" for="lime-type">What type of lime is recommended?</label></div>
               <select id="lime-type" onchange="calcLime()">
                 <option value="">- Select type -</option>
                 <option value="Agricultural">Agricultural</option>
@@ -1506,6 +1526,7 @@
 
   <!-- ===== GARDEN & FLOWERS TAB ===== -->
   <div class="tab-panel" id="tab-garden" role="tabpanel" aria-labelledby="btn-garden">
+    <h2 class="sr-only">Vegetable Garden</h2>
     <div class="calc-layout">
         <div class="card">
           <h3 class="card-header"><span class="icon" aria-hidden="true">🌱</span> Vegetable Garden Calculator</h3>
@@ -1514,7 +1535,7 @@
 
             <!-- Garden type -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">1</span><span class="field-question">What type of garden or bed?</span></div>
+              <div class="field-label"><span class="field-num">1</span><span class="field-question" for="gdn-type">What type of garden or bed?</label></div>
               <select id="gdn-type" onchange="calcGarden()">
                 <option value="">- Select type -</option>
                 <option value="vegetable">Vegetable Garden</option>
@@ -1597,7 +1618,7 @@
 
             <!-- P and K ratings -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question">Phosphorus (P) rating from your soil test?</span></div>
+              <div class="field-label"><span class="field-num">5</span><span class="field-question" for="gdn-p-rating">Phosphorus (P) rating from your soil test?</label></div>
               <select id="gdn-p-rating" onchange="calcGarden()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1614,7 +1635,7 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">6</span><span class="field-question">Potassium (K) rating from your soil test?</span></div>
+              <div class="field-label"><span class="field-num">6</span><span class="field-question" for="gdn-k-rating">Potassium (K) rating from your soil test?</label></div>
               <select id="gdn-k-rating" onchange="calcGarden()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1795,7 +1816,7 @@
               <div class="field-hint" id="gdn-lime-rec-hint">Leave blank if no lime was recommended. VCE reports lime in lbs/100 sq. ft. Waypoint garden reports lime in lbs/1,000 sq. ft. — the calculator converts automatically.</div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">7b</span><span class="field-question">Is this a new (preplant) or established bed?</span></div>
+              <div class="field-label"><span class="field-num">7b</span><span class="field-question" for="gdn-bed-status">Is this a new (preplant) or established bed?</label></div>
               <select id="gdn-bed-status" onchange="calcGarden()">
                 <option value="established">Established bed</option>
                 <option value="preplant">New / preplant (preparing for first planting)</option>
@@ -1854,6 +1875,7 @@
 
   <!-- ===== FLOWER GARDEN TAB ===== -->
   <div class="tab-panel" id="tab-flower" role="tabpanel" aria-labelledby="btn-flower">
+    <h2 class="sr-only">Flower Garden</h2>
     <div class="calc-layout">
         <div class="card">
           <h3 class="card-header"><span class="icon" aria-hidden="true">🌸</span> Flower Garden Calculator</h3>
@@ -1862,7 +1884,7 @@
 
             <!-- Flower type -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">1</span><span class="field-question">What type of flower bed or planting?</span></div>
+              <div class="field-label"><span class="field-num">1</span><span class="field-question" for="flr-type">What type of flower bed or planting?</label></div>
               <select id="flr-type" onchange="calcFlower()">
                 <option value="">- Select type -</option>
                 <option value="annual">Annual Flower Bed</option>
@@ -1907,7 +1929,7 @@
 
             <!-- P and K ratings -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question">Phosphorus (P) rating from your soil test?</span></div>
+              <div class="field-label"><span class="field-num">4</span><span class="field-question" for="flr-p-rating">Phosphorus (P) rating from your soil test?</label></div>
               <select id="flr-p-rating" onchange="calcFlower()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1924,7 +1946,7 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question">Potassium (K) rating from your soil test?</span></div>
+              <div class="field-label"><span class="field-num">5</span><span class="field-question" for="flr-k-rating">Potassium (K) rating from your soil test?</label></div>
               <select id="flr-k-rating" onchange="calcFlower()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1978,7 +2000,7 @@
 
             <!-- Bed status -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">7</span><span class="field-question">Is this a new (preplant) or established bed?</span></div>
+              <div class="field-label"><span class="field-num">7</span><span class="field-question" for="flr-bed-status">Is this a new (preplant) or established bed?</label></div>
               <select id="flr-bed-status" onchange="calcFlower()">
                 <option value="established">Established bed</option>
                 <option value="preplant">New bed (preplant — before planting)</option>
@@ -2021,6 +2043,7 @@
 
   <!-- ===== SHRUBS & TREES TAB ===== -->
   <div class="tab-panel" id="tab-shrub" role="tabpanel" aria-labelledby="btn-shrub">
+    <h2 class="sr-only">Shrubs and Trees</h2>
     <div class="calc-layout">
 
       <!-- Input card -->
@@ -2045,7 +2068,7 @@
 
           <!-- Step 1 — Plant type -->
           <div class="field-group">
-            <div class="field-label"><span class="field-num">1</span><span class="field-question">What type of plant?</span></div>
+            <div class="field-label"><span class="field-num">1</span><span class="field-question" for="shrub-plant-type">What type of plant?</label></div>
             <select id="shrub-plant-type" onchange="calcShrub()">
               <option value="">— Select type —</option>
               <optgroup label="Shrubs">
@@ -2101,7 +2124,7 @@
 
           <!-- Step 3 — Turf adjacency -->
           <div class="field-group">
-            <div class="field-label"><span class="field-num">3</span><span class="field-question">Is the application area adjacent to or overlapping a regularly fertilized lawn?</span></div>
+            <div class="field-label"><span class="field-num">3</span><span class="field-question" for="shrub-turf">Is the application area adjacent to or overlapping a regularly fertilized lawn?</label></div>
             <select id="shrub-turf" onchange="calcShrub()">
               <option value="no">No — mulched bed or unfertilized area</option>
               <option value="partial">Partially — some overlap with turf</option>
@@ -2156,7 +2179,7 @@
 
           <!-- Step 6 — P/K ratings -->
           <div class="field-group">
-            <div class="field-label"><span class="field-num">6</span><span class="field-question">Phosphorus (P) rating from your soil test?</span></div>
+            <div class="field-label"><span class="field-num">6</span><span class="field-question" for="shrub-p-rating">Phosphorus (P) rating from your soil test?</label></div>
             <select id="shrub-p-rating" onchange="calcShrub()">
               <option value="">— Select rating (optional) —</option>
               <optgroup label="VCE / Virginia Tech">
@@ -2173,7 +2196,7 @@
             </select>
           </div>
           <div class="field-group">
-            <div class="field-label"><span class="field-num">7</span><span class="field-question">Potassium (K) rating from your soil test?</span></div>
+            <div class="field-label"><span class="field-num">7</span><span class="field-question" for="shrub-k-rating">Potassium (K) rating from your soil test?</label></div>
             <select id="shrub-k-rating" onchange="calcShrub()">
               <option value="">— Select rating (optional) —</option>
               <optgroup label="VCE / Virginia Tech">
@@ -2217,6 +2240,7 @@
 
   <!-- ===== ABOUT TAB ===== -->
   <div class="tab-panel" id="tab-about" role="tabpanel" aria-labelledby="btn-about">
+    <h2 class="sr-only">About and Instructions</h2>
     <div class="about-layout">
       <div class="about-hero">
         <div class="about-hero-icon">🌿</div>

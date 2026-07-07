@@ -1814,3 +1814,41 @@ Converted the warm-season shade block's opening `<div>` to `<fieldset class="st-
 | :-- | :-- |
 | `index.html` | warm-season fieldset mismatch fixed |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 7, 2026 (Claude-in-Chrome accessibility audit findings fixed)
+
+### Context
+User had Claude in Chrome work through the manual Accessibility Testing Checklist. It found 5 code issues (plus 1 already-known toggle-arrow contrast item). All 5 fixed.
+
+### Fixes
+
+**Fix 1 — 13 unlabeled selects (WCAG 4.1.2, Critical)**
+- Converted `<span class="field-question">` to `<label for="..." class="field-question">` on all unlabeled selects across Lime (`lime-type`), Vegetable Garden (`gdn-type`, `gdn-p-rating`, `gdn-k-rating`, `gdn-bed-status`), Flower Garden (`flr-type`, `flr-p-rating`, `flr-k-rating`, `flr-bed-status`), and Shrubs & Trees (`shrub-plant-type`, `shrub-turf`, `shrub-p-rating`, `shrub-k-rating`) tabs
+- Also labeled 4 Lime tab number inputs (`lime-rec`, `lime-cce`, `lime-bag`, `lime-area`)
+
+**Fix 2 — Heading hierarchy h1→h3 skip (WCAG 1.3.1, Moderate)**
+- Added visually hidden `<h2 class="sr-only">` to all 8 tab panels (Soil Test Report, Cool-Season Lawns, Warm-Season Lawns, Lime Calculator, Vegetable Garden, Flower Garden, Shrubs and Trees, About and Instructions)
+- These were present in an earlier build but were lost when starting from a fresh index.html copy during the IBM Equal Access fix pass
+
+**Fix 3 — Skip link unreachable on first Tab (WCAG 2.4.1, Moderate)**
+- Moved skip link from inside `<header>` back to before it — first focusable element on the page
+- The IBM Equal Access scan had flagged it as "content outside landmark" so we moved it inside `<header>`, but that caused it to be bypassed by the browser's initial Tab focus order. Reverting fixes the skip-link reachability while accepting the IBM advisory
+
+**Fix 4 — 🧪 emoji missing aria-hidden (WCAG 1.1.1, Minor)**
+- Added `aria-hidden="true"` to the beaker emoji `<span class="icon">` in the soil test card header — the one emoji that was missed in the earlier bulk pass
+
+**Fix 5 — Reflow at ~320px width (WCAG 1.4.10, Minor)**
+- Added `@media (max-width: 400px)` breakpoint that collapses `.calc-layout` to `display: block`, `.st-field-grid` to single column, and `.npk-row` to vertical stack
+
+### Verification
+- axe-core: 0 violations, 42 rules passing
+- Puppeteer tab test: all 8 tabs activate correctly
+- Fieldsets: 7/7 balanced
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | 5 Claude-in-Chrome audit findings fixed |
+| `CLAUDE.md` | this entry |
