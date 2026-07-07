@@ -1767,3 +1767,50 @@ User ran IBM Equal Access Accessibility Checker (v4.0.24) against the hosted sit
 | :-- | :-- |
 | `index.html` | IBM Equal Access 11 violations fixed |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 6, 2026 (cont.) (IBM Equal Access clean scan confirmed)
+
+User re-ran IBM Equal Access Accessibility Checker (v4.0.24) against the updated hosted site on the Soil Test Report tab (full-page scan).
+
+### Result
+- **Violations: 0** (down from 11 in previous scan)
+- Needs review: 72 (all manual confirmations — focus-visible, onchange behavior, heading suggestions)
+- Recommendations: 8 (additional fieldset grouping, addEventListener preference)
+- Elements without violations: **100%**
+
+### Cumulative testing results
+| Tool | Result |
+| :-- | :-- |
+| axe-core 4.x (Puppeteer) | 0 violations, 42 rules passing |
+| Lighthouse | Accessibility **100** |
+| IBM Equal Access Checker | 0 violations, 100% elements clean |
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 6, 2026 (cont.) (tab-switching bug fix)
+
+### Bug
+Clicking Lime, Vegetable Garden, Flower Garden, Shrubs & Trees, or About tabs did not show their panels.
+
+### Cause
+Unbalanced `<fieldset>`/`</fieldset>` tags. The warm-season shade radio group had a `</fieldset>` closing tag (line 1367) but its matching opening `<div>` was never converted to `<fieldset>`. The browser's HTML parser treated the orphan `</fieldset>` as closing a parent element, which swallowed all subsequent tab panels from the DOM tree.
+
+### Fix
+Converted the warm-season shade block's opening `<div>` to `<fieldset class="st-fieldset-block">` with a `<legend>`, matching the pattern already applied to the cool-season shade block. Fieldset count is now 7 open / 7 close (balanced).
+
+### Verification
+- Puppeteer tab test: all 8 tabs activate correctly
+- axe-core: still 0 violations
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | warm-season fieldset mismatch fixed |
+| `CLAUDE.md` | this entry |
