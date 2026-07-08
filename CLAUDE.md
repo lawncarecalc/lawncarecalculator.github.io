@@ -1892,3 +1892,32 @@ User ran WAVE (WebAIM) accessibility scanner. Found 9 input errors, 18 select al
 | :-- | :-- |
 | `index.html` | WAVE fixes: 9 input labels, 5 select labels, 1 orphaned label, 2 table captions |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 7, 2026 (cont.) (WAVE label bug fix + PDF links + final score)
+
+### Critical bug fix — span→label
+The previous label fixes used `<span class="field-question" for="...">` instead of `<label class="field-question" for="...">`. The `for=` attribute is ignored on `<span>` elements — only `<label>` elements create programmatic associations. Fixed 23 instances across all tabs (19 simple + 4 with id attributes). Confirmed via browser console that all 9 WAVE-flagged inputs now resolve `querySelector('label[for="..."]')`.
+
+### PDF link indicators
+Added visible "(PDF)" text to all 5 PDF links in the About tab so users know the format before clicking. Screen readers now announce: "[title] (PDF) (opens in new tab)".
+
+### WAVE score: 9.4/10
+- 0 Errors, 0 Contrast Errors
+- 45 Alerts remaining: 40 JS jump menu (by design — instant recalculation is the intended UX, aria-live regions handle screen reader announcements) + 5 PDF link alerts (now addressed with visible format indicator)
+- Decision: JS jump menu alerts left as-is — adding Calculate buttons would degrade the calculator UX for all users to address an advisory, not a violation
+
+### Cumulative testing results
+| Tool | Result |
+| :-- | :-- |
+| axe-core 4.x | 0 violations, 42 rules passing |
+| Lighthouse | Accessibility **100** |
+| IBM Equal Access | 0 violations |
+| WAVE | 0 errors, 0 contrast errors, 9.4/10 |
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | 23 span→label fix + 5 PDF indicators |
+| `CLAUDE.md` | this entry |
