@@ -1476,17 +1476,17 @@
           <h3 class="card-header"><span class="icon" aria-hidden="true">🧪</span> Lime Calculator for Lawns</h3>
           <div class="card-body">
             <div class="field-group">
-              <div class="field-label"><span class="field-num">1</span><span class="field-question" for="lime-lawn-size">What is the size of your lawn in square feet?</label></div>
+              <div class="field-label"><span class="field-num">1</span><label class="field-question" for="lime-lawn-size">What is the size of your lawn in square feet?</label></div>
               <input type="number" id="lime-lawn-size" placeholder="e.g. 5000" oninput="calcLime()">
               <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn.</div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">2</span><span class="field-question" for="lime-rec">How much lime is recommended on your VCE Soil Test Report?</label></div>
+              <div class="field-label"><span class="field-num">2</span><label class="field-question" for="lime-rec">How much lime is recommended on your VCE Soil Test Report?</label></div>
               <input type="number" id="lime-rec" min="0" step="0.5" placeholder="lbs. per 1,000 sq. ft." oninput="calcLime()">
               <div class="field-hint">Reported in lbs. per 1,000 sq. ft. at the bottom of your soil test report under Lime Recommendations.</div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">3</span><span class="field-question" for="lime-type">What type of lime is recommended?</label></div>
+              <div class="field-label"><span class="field-num">3</span><label class="field-question" for="lime-type">What type of lime is recommended?</label></div>
               <select id="lime-type" onchange="calcLime()">
                 <option value="">- Select type -</option>
                 <option value="Agricultural">Agricultural</option>
@@ -1495,12 +1495,12 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question" for="lime-cce">What is the Calcium Carbonate Equivalent (CCE) listed on the bag of lime?</label></div>
+              <div class="field-label"><span class="field-num">4</span><label class="field-question" for="lime-cce">What is the Calcium Carbonate Equivalent (CCE) listed on the bag of lime?</label></div>
               <input type="number" id="lime-cce" min="50" max="175" placeholder="e.g. 100 (most pelletized lime)" oninput="calcLime()">
               <div class="field-hint">Listed as a percentage under Guaranteed Analysis on the bag. Pelletized lime is usually near 100%; calcitic 80&ndash;100%, dolomitic 95&ndash;108%. <strong>Gypsum (calcium sulfate) has no CCE &mdash; it does not raise pH and is not lime.</strong> <em>(VCE 452-510)</em></div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question" for="lime-bag-size">What is the size of the bag of lime (lbs.)?</label></div>
+              <div class="field-label"><span class="field-num">5</span><label class="field-question" for="lime-bag-size">What is the size of the bag of lime (lbs.)?</label></div>
               <input type="number" id="lime-bag-size" min="0" placeholder="e.g. 40" oninput="calcLime()">
             </div>
           </div>
@@ -1535,7 +1535,7 @@
 
             <!-- Garden type -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">1</span><span class="field-question" for="gdn-type">What type of garden or bed?</label></div>
+              <div class="field-label"><span class="field-num">1</span><label class="field-question" for="gdn-type">What type of garden or bed?</label></div>
               <select id="gdn-type" onchange="calcGarden()">
                 <option value="">- Select type -</option>
                 <option value="vegetable">Vegetable Garden</option>
@@ -1568,7 +1568,7 @@
 
             <!-- Crop type selector with N rate guidance -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">3</span><span class="field-question" for="gdn-crop-type">What are you growing? <span style="font-weight:400;color:var(--slate-light);font-size:0.82rem;">(optional — helps calculate N rate)</span></label></div>
+              <div class="field-label"><span class="field-num">3</span><label class="field-question" for="gdn-crop-type">What are you growing? <span style="font-weight:400;color:var(--slate-light);font-size:0.82rem;">(optional — helps calculate N rate)</span></label></div>
               <select id="gdn-crop-type" onchange="onCropTypeChange()" style="margin-bottom:6px;">
                 <option value="">— Select a crop (optional) —</option>
                 <optgroup label="Heavy feeders (tomatoes, corn, broccoli…)">
@@ -1611,14 +1611,14 @@
 
             <!-- N recommendation -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question" id="gdn-n-rec-label" for="gdn-n-rec">Preplant nitrogen recommendation from your report (lbs per 100 sq. ft.)?</label></div>
+              <div class="field-label"><span class="field-num">4</span><label class="field-question" id="gdn-n-rec-label" for="gdn-n-rec">Preplant nitrogen recommendation from your report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="gdn-n-rec" min="0" step="0.1" placeholder="e.g. 0.2" oninput="calcGarden()">
               <div class="field-hint" id="gdn-n-rec-hint">Enter the N figure shown on your soil test report. This is your preplant amount. Sidedress steps are calculated separately from crop research. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
             </div>
 
             <!-- P and K ratings -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question" for="gdn-p-rating">Phosphorus (P) rating from your soil test?</label></div>
+              <div class="field-label"><span class="field-num">5</span><label class="field-question" for="gdn-p-rating">Phosphorus (P) rating from your soil test?</label></div>
               <select id="gdn-p-rating" onchange="calcGarden()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1635,7 +1635,7 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">6</span><span class="field-question" for="gdn-k-rating">Potassium (K) rating from your soil test?</label></div>
+              <div class="field-label"><span class="field-num">6</span><label class="field-question" for="gdn-k-rating">Potassium (K) rating from your soil test?</label></div>
               <select id="gdn-k-rating" onchange="calcGarden()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1811,12 +1811,12 @@
             </div>
 
             <div class="field-group">
-              <div class="field-label"><span class="field-num">8</span><span class="field-question" id="gdn-lime-rec-label" for="gdn-lime-rec">Lime recommendation from your report (lbs per 100 sq. ft.)?</label></div>
+              <div class="field-label"><span class="field-num">8</span><label class="field-question" id="gdn-lime-rec-label" for="gdn-lime-rec">Lime recommendation from your report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="gdn-lime-rec" min="0" step="0.5" placeholder="e.g. 5" oninput="calcGarden()">
               <div class="field-hint" id="gdn-lime-rec-hint">Leave blank if no lime was recommended. VCE reports lime in lbs/100 sq. ft. Waypoint garden reports lime in lbs/1,000 sq. ft. — the calculator converts automatically.</div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">7b</span><span class="field-question" for="gdn-bed-status">Is this a new (preplant) or established bed?</label></div>
+              <div class="field-label"><span class="field-num">7b</span><label class="field-question" for="gdn-bed-status">Is this a new (preplant) or established bed?</label></div>
               <select id="gdn-bed-status" onchange="calcGarden()">
                 <option value="established">Established bed</option>
                 <option value="preplant">New / preplant (preparing for first planting)</option>
@@ -1884,7 +1884,7 @@
 
             <!-- Flower type -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">1</span><span class="field-question" for="flr-type">What type of flower bed or planting?</label></div>
+              <div class="field-label"><span class="field-num">1</span><label class="field-question" for="flr-type">What type of flower bed or planting?</label></div>
               <select id="flr-type" onchange="calcFlower()">
                 <option value="">- Select type -</option>
                 <option value="annual">Annual Flower Bed</option>
@@ -1922,14 +1922,14 @@
 
             <!-- N recommendation -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">3</span><span class="field-question" id="flr-n-rec-label" for="flr-n-rec">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</label></div>
+              <div class="field-label"><span class="field-num">3</span><label class="field-question" id="flr-n-rec-label" for="flr-n-rec">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="flr-n-rec" min="0" step="0.1" placeholder="e.g. 0.1" oninput="calcFlower()">
               <div class="field-hint" id="flr-n-rec-hint">Enter the N figure from your VCE or Waypoint report, or leave blank to use the research-based default for your flower type. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
             </div>
 
             <!-- P and K ratings -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><span class="field-question" for="flr-p-rating">Phosphorus (P) rating from your soil test?</label></div>
+              <div class="field-label"><span class="field-num">4</span><label class="field-question" for="flr-p-rating">Phosphorus (P) rating from your soil test?</label></div>
               <select id="flr-p-rating" onchange="calcFlower()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1946,7 +1946,7 @@
               </select>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><span class="field-question" for="flr-k-rating">Potassium (K) rating from your soil test?</label></div>
+              <div class="field-label"><span class="field-num">5</span><label class="field-question" for="flr-k-rating">Potassium (K) rating from your soil test?</label></div>
               <select id="flr-k-rating" onchange="calcFlower()">
                 <option value="">- Select rating -</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -2000,7 +2000,7 @@
 
             <!-- Bed status -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">7</span><span class="field-question" for="flr-bed-status">Is this a new (preplant) or established bed?</label></div>
+              <div class="field-label"><span class="field-num">7</span><label class="field-question" for="flr-bed-status">Is this a new (preplant) or established bed?</label></div>
               <select id="flr-bed-status" onchange="calcFlower()">
                 <option value="established">Established bed</option>
                 <option value="preplant">New bed (preplant — before planting)</option>
@@ -2009,7 +2009,7 @@
 
             <!-- Lime recommendation -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">8</span><span class="field-question" id="flr-lime-rec-label" for="flr-lime-rec">Lime recommendation from your report (lbs per 100 sq. ft.)?</label></div>
+              <div class="field-label"><span class="field-num">8</span><label class="field-question" id="flr-lime-rec-label" for="flr-lime-rec">Lime recommendation from your report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="flr-lime-rec" min="0" step="1" placeholder="e.g. 5" oninput="calcFlower()">
               <div class="field-hint" id="flr-lime-rec-hint">Leave blank if no lime was recommended. VCE reports garden lime in lbs/100 sq. ft. Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
             </div>
@@ -2068,7 +2068,7 @@
 
           <!-- Step 1 — Plant type -->
           <div class="field-group">
-            <div class="field-label"><span class="field-num">1</span><span class="field-question" for="shrub-plant-type">What type of plant?</label></div>
+            <div class="field-label"><span class="field-num">1</span><label class="field-question" for="shrub-plant-type">What type of plant?</label></div>
             <select id="shrub-plant-type" onchange="calcShrub()">
               <option value="">— Select type —</option>
               <optgroup label="Shrubs">
@@ -2124,7 +2124,7 @@
 
           <!-- Step 3 — Turf adjacency -->
           <div class="field-group">
-            <div class="field-label"><span class="field-num">3</span><span class="field-question" for="shrub-turf">Is the application area adjacent to or overlapping a regularly fertilized lawn?</label></div>
+            <div class="field-label"><span class="field-num">3</span><label class="field-question" for="shrub-turf">Is the application area adjacent to or overlapping a regularly fertilized lawn?</label></div>
             <select id="shrub-turf" onchange="calcShrub()">
               <option value="no">No — mulched bed or unfertilized area</option>
               <option value="partial">Partially — some overlap with turf</option>
@@ -2135,7 +2135,7 @@
 
           <!-- Step 4 — N rec or default -->
           <div class="field-group">
-            <div class="field-label"><span class="field-num">4</span><span class="field-question" for="shrub-n-rec">Nitrogen recommendation from your soil test report (lbs per 1,000 sq. ft.)?</label></div>
+            <div class="field-label"><span class="field-num">4</span><label class="field-question" for="shrub-n-rec">Nitrogen recommendation from your soil test report (lbs per 1,000 sq. ft.)?</label></div>
             <input type="number" id="shrub-n-rec" min="0" step="0.25" placeholder="e.g. 2" oninput="calcShrub()">
             <div class="field-hint" id="shrub-n-rec-hint">Leave blank to use the research-based default for your plant type. VCE Note 20 and VCE 430-018 give ranges — the calculator uses the midpoint of the appropriate range as the default.</div>
           </div>
@@ -2179,7 +2179,7 @@
 
           <!-- Step 6 — P/K ratings -->
           <div class="field-group">
-            <div class="field-label"><span class="field-num">6</span><span class="field-question" for="shrub-p-rating">Phosphorus (P) rating from your soil test?</label></div>
+            <div class="field-label"><span class="field-num">6</span><label class="field-question" for="shrub-p-rating">Phosphorus (P) rating from your soil test?</label></div>
             <select id="shrub-p-rating" onchange="calcShrub()">
               <option value="">— Select rating (optional) —</option>
               <optgroup label="VCE / Virginia Tech">
@@ -2196,7 +2196,7 @@
             </select>
           </div>
           <div class="field-group">
-            <div class="field-label"><span class="field-num">7</span><span class="field-question" for="shrub-k-rating">Potassium (K) rating from your soil test?</label></div>
+            <div class="field-label"><span class="field-num">7</span><label class="field-question" for="shrub-k-rating">Potassium (K) rating from your soil test?</label></div>
             <select id="shrub-k-rating" onchange="calcShrub()">
               <option value="">— Select rating (optional) —</option>
               <optgroup label="VCE / Virginia Tech">
