@@ -806,7 +806,7 @@
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
       <button class="tab-btn active" role="tab" id="btn-soiltest" data-tab="soiltest" aria-selected="true"  aria-controls="tab-soiltest" tabindex="0">Soil Test Report</button>
-      <button class="tab-btn"        role="tab" id="btn-about"    data-tab="about"    aria-selected="false" aria-controls="tab-about"    tabindex="-1">About &amp; Instructions</button>
+      <button class="tab-btn"        role="tab" id="btn-about"    data-tab="about"    aria-selected="false" aria-controls="tab-about"    tabindex="0">About &amp; Instructions</button>
       <button class="tab-btn"        role="tab" id="btn-cool"     data-tab="cool"     aria-selected="false" aria-controls="tab-cool"     tabindex="-1" style="display:none;">Cool-Season Lawns</button>
       <button class="tab-btn"        role="tab" id="btn-warm"     data-tab="warm"     aria-selected="false" aria-controls="tab-warm"     tabindex="-1" style="display:none;">Warm-Season Lawns</button>
       <button class="tab-btn"        role="tab" id="btn-lime"     data-tab="lime"     aria-selected="false" aria-controls="tab-lime"     tabindex="-1" style="display:none;">Lime</button>
@@ -2927,11 +2927,17 @@ function activateTab(tab) {
     }
   }
 
-  // Deactivate all
+  // Deactivate all — NOTE: tabindex is intentionally NOT touched here. Every visible tab button
+  // keeps tabindex="0" regardless of active state, so plain sequential Tab reaches every tab in
+  // the bar (not just the active one). The strict ARIA "roving tabindex" pattern (only the active
+  // tab in the Tab sequence, others reachable only via arrow keys) was tried and confirmed via
+  // live testing to cause a real, reported "skips the next tab" experience for users who expect
+  // Tab to reach everything sequentially. Arrow-key navigation between tabs is kept as an
+  // additional option, not the only path. Hidden/locked tabs are handled separately by
+  // updateTabLocks(), which does set tabindex="-1" on those (they're display:none anyway).
   document.querySelectorAll('.tab-btn').forEach(function(b) {
     b.classList.remove('active');
     b.setAttribute('aria-selected', 'false');
-    b.setAttribute('tabindex', '-1');
   });
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
 
@@ -3859,8 +3865,9 @@ function updateTabLocks() {
       btn.removeAttribute('disabled');
       btn.classList.remove('tab-locked');
       btn.removeAttribute('title');
-      // Only the active tab gets tabindex 0; others get -1 (roving tabindex pattern)
-      if (!btn.classList.contains('active')) btn.setAttribute('tabindex', '-1');
+      // Every visible tab is directly Tab-reachable (see activateTab() note) — not just the
+      // active one.
+      btn.setAttribute('tabindex', '0');
     } else {
       btn.style.display = 'none';
       btn.setAttribute('disabled', 'disabled');
@@ -3878,7 +3885,7 @@ function updateTabLocks() {
       limeBtn.removeAttribute('disabled');
       limeBtn.classList.remove('tab-locked');
       limeBtn.removeAttribute('title');
-      if (!limeBtn.classList.contains('active')) limeBtn.setAttribute('tabindex', '-1');
+      limeBtn.setAttribute('tabindex', '0');
     } else {
       limeBtn.style.display = 'none';
       limeBtn.setAttribute('disabled', 'disabled');
@@ -3996,8 +4003,8 @@ var WAYPOINT_TO_VCE = {'VL':'L-','LO':'L','ME':'M','OP':'H-','VH2':'VH'};
 // ===== SOIL TEST INTERPRETATION =====
 function interpretSoilTest() {
   var rt        = getReportType();
-  var isGarden  = rt.indexOf('garden') >= 0;
-  var isWaypoint= rt.indexOf('waypoint') >= 0;
+  var isGarden  = isGardenReport();
+  var isWaypoint= isWaypointReport();
   var labSource = isWaypoint ? 'waypoint' : 'vce';
   var ph      = parseFloat(document.getElementById('st-ph').value);
   var bi      = parseFloat(document.getElementById('st-bi').value);
@@ -4542,7 +4549,7 @@ function interpretSoilTest() {
 // ===== CARRY-OVER =====
 function carryOverToCalculators() {
   var rt       = getReportType();
-  var isGarden = rt.indexOf('garden') >= 0;
+  var isGarden = isGardenReport();
   var pRatRaw  = document.getElementById('st-p-rating').value;
   var kRatRaw  = document.getElementById('st-k-rating').value;
   // Waypoint "Optimum" means at-target/adequate, equivalent to VCE M+ ("not needed, but may be used"),

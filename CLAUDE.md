@@ -1,4 +1,4 @@
-# CLAUDE.md — VCE Lawn & Garden Care Calculator Project Context
+# CLAUDE.md — Soil Report Assistant Project Context
 
 Use this file to bring a new Claude session up to speed on the project.
 
@@ -6,11 +6,21 @@ Use this file to bring a new Claude session up to speed on the project.
 
 ## Project Overview
 
-A single-file interactive HTML web calculator (`lawn_garden_calc_v1_5.html`) that helps Virginia homeowners interpret soil test results and calculate fertilizer and lime applications. Supports **VCE / Virginia Tech** and **Waypoint Analytical** reports for both **lawn** and **vegetable/flower garden** contexts.
+A single-file interactive HTML web calculator (`index.html`) — named **"Soil Report Assistant"**
+(tagline: *"No more guessing what to feed your lawn or garden"*) — that helps Virginia homeowners
+interpret soil test results and calculate fertilizer and lime applications. Supports **VCE /
+Virginia Tech** and **Waypoint Analytical** reports for **lawn**, **vegetable garden**, **flower
+garden**, and **shrub/tree** contexts (four purposes × two labs = 8 report-type combinations).
 
 **Primary audience:** Chesterfield County, Virginia (Zone 7b, Piedmont clay soils). Secondary: all of Virginia.
 
 No server, no build step — single self-contained HTML file. Single-column responsive layout on all calculator tabs. Soil Test tab retains two-column `st-layout`.
+
+**Core navigation principle (added July 26–27, 2026):** the app is gated. Only **Soil Test Report**
+and **About & Instructions** are visible on load. A resident answers one question — "what is this
+report for?" (lab + purpose combined) — and the one matching calculator tab appears. This
+reflects a deliberate philosophy: a user should not be able to apply fertilizer without a soil
+test telling them their starting point. See "Session Updates — July 26–27, 2026" for full detail.
 
 ---
 
@@ -54,13 +64,20 @@ No server, no build step — single self-contained HTML file. Single-column resp
 | :---- | :---- |
 | University of Maryland Extension | N rates by feeding level (0.10/0.20/0.30 lbs/100 sq. ft.); liquid Borax method; OM-to-N credit **(garden context only** — 0.4 lbs N per 1% OM per 1,000 sq. ft.); fish emulsion in cool soils |
 | Clemson HGIC | 35% preplant / 65% sidedress split; sandy soil flag; calcium nitrate as preferred sidedress |
-| Rutgers NJAES FS626 | Organic fertilizer N% and release rates (Table 1); tomato sidedress schedule (Table 2); blood meal as medium-rapid; bat guano/bone meal/dried cow manure |
-| NC State Cooperative Extension | Calcium nitrate as preferred sidedress N source — delivers N without adding excess P or K. Blossom end rot and tip burn are calcium *uptake* disorders primarily caused by inconsistent watering and underdeveloped root systems, not soil calcium deficiency. Calcium nitrate provides direct corrective value only when soil calcium is low. |
+| Rutgers NJAES FS626 | Organic fertilizer N% and release rates (Table 1); tomato sidedress schedule (Table 2); blood meal as medium-rapid; bat guano/bone meal/dried cow manure. **NPK ratios only — FS626 does NOT give bulk density; a prior session mistakenly cited it for bone meal density and this was corrected July 26.** |
+| NC State Cooperative Extension | Calcium nitrate as preferred sidedress N source — delivers N without adding excess P or K. Blossom end rot and tip burn are calcium *uptake* disorders primarily caused by inconsistent watering and underdeveloped root systems, not soil calcium deficiency. Calcium nitrate provides direct corrective value only when soil calcium is low. **Also: manganese guidance (Torres Quezada, 2024) — see July 26–27 session.** |
 | Mid-Atlantic Commercial Veg Guide 2026/2027 | Per-crop pH targets (Table B-1); soil testing 1–3 years. **Commercial guide — principles only, not home garden rates** |
 | SARE LS16-269 | Blood meal \>80% available N within 2–4 weeks in warm soil |
 | GitHub Fertilizer Calculator | Bulk density data; Borax sodium accumulation note |
+| **Ohio State University Extension, Ohioline FABE-550** (Fulton, 2016) | *(Added July 26, 2026)* Physical Properties of Granular Fertilizers — loose bulk density ranges for Triple Superphosphate (950–1200 kg/m³) and Ammonium Nitrate (850–975 kg/m³); midpoints used |
+| **NMSU Cooperative Extension, Guide H-119** | *(Added July 26, 2026)* Determining Amounts of Fertilizer for Small Areas — direct oz/cup bulk density figures for Muriate of Potash (10.0 oz/cup loose), Elemental Sulfur (10.2 oz/cup loose), Langbeinite (11.1 oz/cup loose) |
+| **NC State Extension — Torres Quezada, 2024** | *(Added July 26, 2026)* "The Importance of Manganese in Vegetable Crop Nutrition in North Carolina" — Manganese Sulfate rates (20–25 lbs/acre broadcast, scaled to ~0.05 lbs/100 sq ft), pH-availability thresholds, chelated-Mn alkaline-soil guidance |
 
-**Source policy:** VCE always primary. UMD and Clemson co-primary for home garden where VCE is silent. Rutgers FS626 and NC State supporting. Mid-Atlantic Veg Guide principles only. Never cite OSU, UNH, or non-regional extensions.
+**Source policy:** VCE always primary. UMD and Clemson co-primary for home garden where VCE is silent. Rutgers FS626 and NC State supporting. Mid-Atlantic Veg Guide principles only. Never cite OSU, UNH, or non-regional extensions. **Exception carved out July 26, 2026: Ohio State Ohioline and NMSU Cooperative Extension are accepted specifically for bulk-density/volume-conversion data, where no closer regional source could be found and the non-.edu sourcing rule's "other universities" allowance applies — this is a narrow exception for physical/density data, not a general policy change for agronomic recommendations.**
+
+**Bulk density sourcing standard (added July 26, 2026):** a product's volume conversion (cups/lbs) is shown ONLY if backed by a named, checkable source meeting the non-.edu rule (VCE, another university Extension, a government agency, or peer-reviewed publication). Where no such source exists, the calculator shows weight only ("weigh for accuracy") rather than an estimated figure. Fabricated/vague citation labels ("Industry sources", "Est. bulk density", "FAO Database" with no specific document) are not acceptable and were purged from the codebase July 26, 2026 — see that session's notes for the full audit.
+
+**Specific gravity is NOT an acceptable density input (added July 26, 2026).** MSDS/SDS Section 9 "Specific Gravity" values reflect the pure crystal or absolute compound density, not the packaged granular/prilled form actually sold. Confirmed example: Southern Ag Sulfate of Potash SDS lists SG 2.66 (≈166 lbs/ft³ absolute crystal density) while the actual granular product is 75–81 lbs/ft³ loose — using the SDS value would understate volume by roughly half. Only bulk density (lbs/ft³ or kg/m³) from a product label or technical data sheet is accepted as user-entered density data.
 
 **Critical rule:** Never infer soil texture from CEC or Buffer Index values.
 
@@ -70,14 +87,25 @@ No server, no build step — single self-contained HTML file. Single-column resp
 
 Single HTML file — all CSS, JS, HTML inline. No external dependencies except Google Fonts CDN.
 
-### Tabs (6)
+### Tabs (8) — reordered and gated July 26–27, 2026
 
-1. **Soil Test Report** (`tab-soiltest`) — interpretation cards, carry-over  
-2. **Cool-Season Lawns** (`tab-cool`)  
-3. **Warm-Season Lawns** (`tab-warm`)  
-4. **Lime** (`tab-lime`)  
-5. **Vegetable & Flower Gardens** (`tab-garden`)  
-6. **About & Instructions** (`tab-about`)
+Tab bar order: **Soil Test Report, About & Instructions**, then six calculator tabs that are
+`display:none` until unlocked.
+
+1. **Soil Test Report** (`tab-soiltest`) — interpretation cards, carry-over, single "what is this
+   report for?" question. Always visible.
+2. **About & Instructions** (`tab-about`) — moved to position 2 (was last) so it's discoverable
+   before any data entry. Always visible.
+3. **Cool-Season Lawns** (`tab-cool`) — hidden until a lawn report + Cool grass type entered
+4. **Warm-Season Lawns** (`tab-warm`) — hidden until a lawn report + Warm grass type entered
+5. **Lime** (`tab-lime`) — hidden until ANY report has P or K values entered (not purpose-specific)
+6. **Vegetable Garden** (`tab-garden`) — hidden until a Vegetable Garden report entered
+7. **Flower Garden** (`tab-flower`) — hidden until a Flower Garden report entered
+8. **Shrubs & Trees** (`tab-shrub`) — hidden until a Shrubs & Trees report entered
+
+Only ONE calculator tab is ever visible at a time (plus Lime, which is purpose-agnostic). See
+`updateTabLocks()`, `soilTestTargetTab()`, `soilTestPurpose()` below and the July 26–27 session
+notes for full mechanics.
 
 ### Key JavaScript Functions
 
@@ -88,156 +116,268 @@ Single HTML file — all CSS, JS, HTML inline. No external dependencies except G
 | `calcAutoplan(prefix)` | Auto plan — no cap at 4 apps |
 | `calcCool()` / `calcWarm()` | Route to auto or custom |
 | `calcLime()` | Lime calculator — writes to `lime-results-panel` |
-| `calcGarden()` | Garden calculator — preplant summary \+ SIDEDRESS\_GUIDE-based application plan with volumetric output |
-| `onCropTypeChange()` | Step 3 crop change: updates hint (feeding level \+ pH), syncs `gdn-guidance-crop`, calls `updateCropGuidancePanel()` and `calcGarden()` |
-| `useRecommendedN(cropKey)` | Pre-fills N rec field from CROP\_FEEDING\_LEVELS |
-| `updateCropGuidancePanel()` | Renders crop-specific guidance in collapsible — reads from `gdn-guidance-crop` (not step 3\) |
+| `calcGarden()` | Vegetable Garden calculator — N preplant/sidedress plan + calls `renderNutrientStatusPanel()` for P/K/other nutrients; single merged "Nutrient Application Plan" card |
+| `calcFlower()` | Flower Garden calculator — **still uses the pre-restructure blended-fertilizer approach**; not yet brought to parity with `calcGarden()` |
+| `calcShrub()` | Shrubs & Trees calculator |
+| `onCropTypeChange()` | Vegetable Garden crop change: calls `renderCropInfoPanel()` (merged single guidance panel) and `calcGarden()` |
+| `renderCropInfoPanel()` | **(added, replaces `updateCropGuidancePanel`)** Single merged crop-guidance panel — reads directly from `CROP_FEEDING_LEVELS[cropKey]` and `SIDEDRESS_GUIDE[cropKey]`, both keyed by the exact crop dropdown value (no translation table). Shows feeding level, target pH, the **actual N default number**, sidedress timing, caution, all in one place — was previously split across two near-duplicate boxes |
+| `renderNutrientStatusPanel(gardenType, area)` | **(signature changed — dropped pRating/kRating params)** Renders the P/K/Ca/Mg/S/micronutrient section of the Nutrient Application Plan. P/K now read directly from `st-p-rating`/`st-k-rating` (Soil Test tab canonical fields), same as Ca/Mg/S/micros |
+| `nutrientRatingStatus(rating)` | Normalizes VCE/Waypoint/SUFF ratings to 'low'/'adequate'/'' |
+| `gdnSetNutrientChoice(key, idx)` | Persists organic/synthetic product choice per nutrient across re-renders |
+| `gdnSetTarget(key, val)` / `gdnTargets` | **(added)** Waypoint numeric nutrient targets — now entered inline in each nutrient's own row (not a separate 9-field grid); persisted in JS state (`gdnTargets` object) because the input elements are generated dynamically and don't exist when `prefillSampleReport()` runs |
+| `gdnDensityToCupsPerLb(key)` / `gdnSetDensity(key,field,val)` / `gdnDensityInputHtml(key)` / `gdnCustomDensity` | **(added)** User-entered bulk density (lbs/ft³ or kg/m³ only — specific gravity intentionally NOT accepted, see Source Documents) for products with no verified density source |
+| `cupsPerLbFromDensity(densityKgM3)` | Converts kg/m³ → cups/lb via the OSU-Extension-verified formula: `lbsPerCup = (kg/m³ × 2.20462) / 4226.75` |
 | `fmtMeasure(lbs, cupsPerLb)` | tsp / tbsp / cup fractions based on bulk density |
 | `detectProgram(fertN, winLbs)` | P1/P2/P3 WIN branch |
 | `setPlanMode(prefix, mode)` | Toggle auto/custom |
 | `printPlan(prefix)` | Always use this — never call window.print() directly |
-| `onReportTypeChange()` | Switches scales, units, labels; calls calcGarden() for garden reports |
-| `carryOverToCalculators()` | Copies soil test values to calculators; uses setTimeout |
-| `prefillSampleReport(type)` | Types: 'lawn', 'garden' (flower), 'veggie' |
-| `onGardenProductSelect()` | Fires when product dropdown changes — **must call `setGardenFertMode('product')` before `calcGarden()`** or product info is ignored |
-| `useRecommendedN()` | **REMOVED** — calculator requires a soil test |
+| `getReportType()` | **(changed)** Reads the single `st-report-type` value directly (8 possible values); no longer defaults to `'vce-lawn'` when blank — returns `''` |
+| `soilTestPurpose()` | **(added)** Returns `'vegetable'\|'flower'\|'shrub'\|'lawn'\|''` derived via substring match on the single report-type value |
+| `isGardenReport()` | **(changed)** `true` for vegetable/flower/shrub (was a `'garden'` substring match against the old 4-value scheme) |
+| `isWaypointReport()` | Substring 'waypoint' — unchanged behavior, still correct against the new 8-value scheme |
+| `soilTestTargetTab()` | **(added)** Resolves which single calculator tab a report unlocks: 'garden'\|'flower'\|'shrub'\|'cool'\|'warm'\|null |
+| `updateTabLocks()` | **(added)** Shows/hides calculator tabs (`display:none`, not dimmed) based on `soilTestTargetTab()`; redirects to Soil Test tab if the active tab gets hidden out from under the user |
+| `activateTab(tab)` | **(changed)** Gate now checks `style.display === 'none'` (was `hasAttribute('disabled')`); central chokepoint for all tab-switch entry points (click, arrow-key, Continue button) |
+| `onReportTypeChange()` | **(changed)** Toggles `inert` alongside `display` on hidden field blocks via a `setVisible()` helper (accessibility fix — hidden fields were previously still in tab order); calls `updateTabLocks()` |
+| `carryOverToCalculators()` | Copies soil test values to calculators; uses setTimeout. Simplified July 26 — sub-type values (rose/deciduous-shrub/etc.) no longer carried over from Soil Test tab since that question moved entirely to the destination tab (asked once, not twice) |
+| `prefillSampleReport(type)` | Types: `'lawn'`, `'garden'` (flower, now `waypoint-flower`), `'veggie'` (now `waypoint-vegetable`), `'vce-veggie'` (now `vce-vegetable`). Also resets/sets `gdnTargets` directly (not DOM fields) |
+| `toggleCollapsible(baseId)` | **(added)** Generic collapsible toggle for About-tab per-tab mini-guides — replaces one-off dedicated toggle functions for new sections |
+| ~~`updateCropGuidancePanel()`~~ | **REMOVED** — renamed/replaced by `renderCropInfoPanel()` |
+| ~~`CROP_DATA` / `CROP_GUIDANCE_MAP`~~ | **REMOVED (dead code)** — only 2 of CROP_DATA's 5 fields were ever rendered; SIDEDRESS_GUIDE already covered every crop directly and more completely (including potato/okra/sweet potato/asparagus, which CROP_DATA lacked) |
+| ~~`onGardenProductSelect()` / `setGardenFertMode()`~~ | **REMOVED** — the blended N-P-K product picker (old step 6) no longer exists for vegetable gardens; replaced by the single Nitrogen Source dropdown + per-nutrient amendment system |
+| ~~`sgToCupsPerLb()` / `gdnCustomSG` / `gdnSGInputHtml()`~~ | **REMOVED** — specific gravity input removed entirely, see Source Documents |
+| ~~`useRecommendedN()`~~ | Removed in an earlier session, **then the underlying rule was reversed July 21, 2026** — see "Nitrogen is NOT a lab-measured parameter" below. The N field is optional and defaults to the CROP_FEEDING_LEVELS research rate when blank; there is no separate `useRecommendedN()` function anymore because this is now the automatic default behavior, not an opt-in action |
 
 ---
 
-## Vegetable & Flower Gardens Tab
+## Vegetable Garden Tab (restructured July 21–27, 2026)
 
-### Field numbering
+**This tab was fully restructured across the July 21 and July 26–27 sessions.** Everything below
+supersedes the old "Vegetable & Flower Gardens Tab" documentation, which described a single
+shared 8-step tab. Vegetable Garden and Flower Garden are now architecturally different — see the
+separate "Flower Garden Tab (legacy, not yet restructured)" section below.
 
-1. Garden type  
-2. Bed size  
-3. Crop selector (`gdn-crop-type`) — syncs collapsible, shows N rate hint in both units  
-4. N recommendation  
-5. P rating  
-6. K rating  
-7. Fertilizer  
-8. Lime recommendation
+### Field numbering (current — 3 numbered steps, down from 8)
+
+1. Lime recommendation from report (moved up from old position 8)
+2. Crop selector (`gdn-crop-type`) — shows merged guidance panel (feeding level, target pH,
+   research-based N default **number**, sidedress timing, caution) via `renderCropInfoPanel()`;
+   N-override toggle sits directly below it, not ten lines away
+3. "Calculate your Nutrient Application Rates" — bed status, Nitrogen Source (single-nutrient,
+   organic or synthetic — no blended N-P-K picker), and (if a Waypoint report) numeric targets
+   entered inline in each nutrient's own row in the results below
+
+Bed size is an unnumbered practical sub-field under step 1's umbrella. Garden type (`gdn-type`,
+vegetable/mixed) was **removed entirely July 26** — mixed beds folded under vegetable, since the
+logic was identical; garden type/purpose is now established once, on the Soil Test tab.
+
+### What was removed (do not reintroduce without explicit request)
+
+- The blended N-P-K fertilizer picker (old step 6) — vegetable gardens address nitrogen as a
+  single-nutrient choice; P/K/Ca/Mg/S/micronutrients are each handled individually below
+- The "Can't find the recommended grade?" substitution table
+- The standalone P/K rating select fields — P/K now auto-fill from the Soil Test tab's canonical
+  fields (`st-p-rating`/`st-k-rating`), exactly like Ca/Mg/S/micronutrients already did
+- The separate 9-field Waypoint numeric-target grid — targets are now entered inline per-nutrient
+- `CROP_DATA` / `CROP_GUIDANCE_MAP` (dead code, see Key Functions table)
+- Specific gravity as a density input option (see Source Documents)
 
 ### Report type and N/lime units
 
-| Report type | N unit | Lime unit | calcGarden() handling |
+| Report type value | N unit | Lime unit | calcGarden() handling |
 | :---- | :---- | :---- | :---- |
-| vce-garden | lbs/100 sq. ft. | lbs/100 sq. ft. | direct |
-| waypoint-garden | lbs/1,000 sq. ft. | lbs/1,000 sq. ft. | ÷ 10 before calculating |
+| vce-vegetable | lbs/100 sq. ft. | lbs/100 sq. ft. | direct |
+| waypoint-vegetable | lbs/1,000 sq. ft. | lbs/1,000 sq. ft. | ÷ 10 before calculating |
 
-### CROP\_FEEDING\_LEVELS — seasonal N rates
+(Report-type values changed July 26 from `vce-garden`/`waypoint-garden` — see "Single Combined
+Report-Type Question" in the July 26–27 session notes.)
+
+### CROP\_FEEDING\_LEVELS — seasonal N rates (unchanged data, now the sole source for guidance)
 
 | Level | Rate | Crops |
 | :---- | :---- | :---- |
 | Heavy | 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft. | Tomato, pepper, potato, broccoli, cabbage, corn, beet, spinach, onion, okra |
 | Medium | 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft. | Leafy greens, lettuce, cucumber, squash, melon, sweet potato, asparagus |
 | Light | 0.10 lbs/100 sq. ft. \= 1 lb/1,000 sq. ft. | Beans/peas, carrot, root crops |
-| Mixed | 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft., pH target 6.5 | Mixed bed (vegetables & flowers) — no fixed sidedress schedule; advisory note only |
-| Annual flower | 0.10 lbs/100 sq. ft., pH 5.5–6.5, `flowerCaution: true` | Annual flowers — preplant from soil test; light mid-season at half rate for heavy bloomers only |
-| Perennial flower | 0.10 lbs/100 sq. ft., pH 6.5, `flowerCaution: true` | Perennial flowers — early spring only; no sidedress; compost often sufficient |
-| Rose | 0.20 lbs/100 sq. ft., pH 6.5, `flowerCaution: true`, `roseMonthly: true` | Roses — monthly March–August per VCE Note 19 |
+| Mixed | 0.20 lbs/100 sq. ft. \= 2 lbs/1,000 sq. ft., pH target 6.5 | Mixed bed key retained in data for legacy compatibility but no longer selectable (folded under vegetable July 26) |
+| Annual/Perennial/Rose flower | (unchanged) | Retained in CROP_FEEDING_LEVELS/SIDEDRESS_GUIDE for the Vegetable Garden tab's crop dropdown, which still includes flower options as a legacy holdover — **not the same as the separate Flower Garden tab** |
 
-### Application plan architecture (current)
+### Nitrogen — research default is now visibly shown (fixed July 26)
 
-**Key principle:** Step 4 N rec \= **preplant amount only** — entered exactly as shown on the soil test report. Sidedress amounts are **additional** fixed applications from crop research, not a split. This matches VCE and Rutgers soil test reports (2 lbs N/1,000 sq. ft. preplant \+ separate midseason). This calculator requires a soil test — it does not provide N rates for users without one.
+Previously the crop hint said "leave it blank to use this research-based default" but never showed
+the actual number. `renderCropInfoPanel()` now prints it directly: e.g. *"Research-based N default:
+**0.20 lbs N per 100 sq. ft.** at planting."* The N-override toggle sits immediately below this
+line (was a collapsible ten lines further down the page). Its hint text now also acknowledges that
+a soil test report is sometimes a *range* (not a single number) when no specific crop was disclosed
+on the original lab submission form.
 
-**`SIDEDRESS_GUIDE` data object** — 20 crops \+ 3 flower types:
+**Key principle (unchanged):** Step 3's N field \= **preplant amount only**, defaulting to
+CROP\_FEEDING\_LEVELS when blank. Sidedress amounts are **additional** fixed applications from crop
+research (SIDEDRESS_GUIDE), not a split.
 
-- `apps: [{n: lbs actual N/1,000 sq. ft., trigger: timing string}]`  
-- `note` — source-grounded caution with citation  
-- Carrots: `apps: []` — no standard sidedress  
-- `SIDEDRESS_DEFAULT`: 1.0 lb N/1,000 sq. ft. at 3–4 weeks for unlisted **vegetable** crops only
+### SIDEDRESS\_GUIDE — now the sole source, keyed directly by crop dropdown value
 
-**Flower entries in SIDEDRESS\_GUIDE:**
+`SIDEDRESS_GUIDE[cropKey]` covers all ~24 crop dropdown values directly (no translation table).
+Confirmed to cover several crops CROP_DATA never had (potato, okra, sweet potato, asparagus).
+Structure unchanged: `apps: [{n, trigger}]`, `note` (source-grounded caution + citation),
+`SIDEDRESS_DEFAULT` fallback for unlisted vegetable crops only.
+
+### Single-Nutrient Amendment System (`NUTRIENT_AMENDMENTS`, added July 21, expanded July 26)
+
+For vegetable gardens, `renderNutrientStatusPanel()` renders one row per nutrient (P, K, Ca, Mg, S,
+Zn, Mn, Cu, Fe, B) reading ratings directly from the Soil Test tab's canonical fields. Three calc modes:
+
+- `calc:'flat'` — VCE Soil Test Note 19 flat rates (lbs/100 sq ft), fires when rating is Low
+- `calc:'target'` — synthetic (or in some cases organic) products sized from the report's own
+  numeric target via guaranteed-analysis %. **Fires even when the rating is Adequate**, if a
+  Waypoint report prints a nonzero target — Waypoint's target is a maintenance figure, not just a
+  deficiency flag (added July 26; lead-in text: "Rated adequate, but your report's own target
+  calls for…")
+- `calc:'none'` — VCE/other source names the product but publishes no specific rate (e.g. Chelated
+  Manganese for alkaline soils, Borax liquid method)
+
+**Manganese (added July 26, NC State Extension — Torres Quezada 2024):** Manganese Sulfate
+(28–32% Mn) flat ~0.05 lbs/100 sq ft (scaled from 20–25 lbs/acre), plus a sized-to-target variant,
+plus Chelated Manganese for alkaline soils. Mn removed from `NUTRIENT_NO_RATE_NOTE` accordingly.
+S, Zn, Cu remain in `NUTRIENT_NO_RATE_NOTE` ("seldom a problem… no rate published").
+
+**Waypoint numeric targets are entered inline** in each nutrient's own row (`gdnTargets` JS state
+object, `gdnSetTarget()`), not in a separate grid — see Key Functions table.
+
+**Bulk density / volume estimates:** shown only when a source meets the sourcing standard (see
+Source Documents). Where not sourced, the panel shows weight only plus an inline widget for the
+user to enter their own product's bulk density (lbs/ft³ or kg/m³ — **not** specific gravity).
+
+### Output — single merged "Nutrient Application Plan" card (changed July 26)
+
+Previously two separate cards ("Nitrogen Application Plan" + "Nutrient Status & Individual
+Amendments"). Now ONE card: Nitrogen section first, "Phosphorus, Potassium & Other Nutrients"
+section second, ONE "Print Plan" button after both (previously the print button was embedded
+inside the nitrogen-only HTML, sandwiching it between the two sections — fixed).
+
+### Organic product sidedress logic (unchanged)
+
+**Fast-release organics** (`fastOrganic: true` — blood meal, fish meal, fish emulsion, bat guano)
+\+ warm-season crops: can sidedress. **Fast-release organics \+ cool-season crops** OR
+**slow-release organics**: all preplant. **Warm-season crops:** tomato, pepper, potato, corn,
+squash, cucumber, melon, okra, beans, sweetpotato.
+
+### GARDEN\_PRODUCTS — key fields (bulk density sourcing corrected July 26)
+
+All products: `name`, `npk[N,P,K]`, `cupsPerLb`, `organic`, `fastOrganic`, `source`, `note19Rate`, `note`
+
+| Product | fastOrganic | cupsPerLb source |
+| :---- | :---- | :---- |
+| Blood meal (13% N) | true | **No verified density source** — weigh for accuracy (was mislabeled "FAO Database") |
+| Fish meal (10-6-2) | true | **No verified density source** — weigh for accuracy |
+| Fish emulsion (~5-1-1) | true | Liquid; fast even in cool soil |
+| Bat guano (10% N) | true | **No verified density source** — weigh for accuracy |
+| Feather meal (10% N) | false | **No verified density source** — weigh for accuracy |
+| Soybean/cottonseed/poultry/bone meal | false | **No verified density source** — weigh for accuracy (bone meal was mislabeled "Rutgers FS626," which only ever gave NPK ratios, never density — corrected July 26) |
+| Calcium Nitrate, Nitrate of Soda, Ammonium Sulfate, Urea | — | VCE Note 19 / actual VCE garden report — exact, sourced |
+| Ammonium Nitrate (34-0-0, added July 26) | false | Ohio State Ohioline FABE-550 |
+
+Cottonseed meal NPK corrected to **6-3-2** (was 7-3-2 in an earlier pass; verify against Rutgers
+FS626 Table 1 before changing again).
+
+### fmtMeasure(lbs, cupsPerLb) — unchanged
+
+- ≥ 4 cups → cups to nearest half
+- 0.5–4 cups → cups as Unicode fractions
+- 1–16 tbsp → tablespoons
+- \< 1 tbsp → teaspoons
+- Always flagged as approximate
+
+---
+
+## Flower Garden Tab (legacy architecture — NOT yet restructured)
+
+**Explicitly documented as a known gap, not an oversight.** The Flower Garden tab still uses the
+pre-restructure architecture: a manual P/K rating select, and a single blended-fertilizer picker
+(enter one N-P-K grade or choose a common product) for the whole bed — the same approach the
+Vegetable Garden tab had before July 21. It has NOT been brought to the single-nutrient,
+auto-fill-from-Soil-Test-tab system described above.
+
+This is stated explicitly in the app's own About tab instructions so users aren't misled into
+thinking both tabs work the same way. **Next planned restructure target**, per the user's own
+stated sequencing: vegetable garden → flower garden → trees & shrubs.
+
+Field numbering, N/lime unit handling, and the `annual`/`perennial`/`rose`/`bulb` crop-type
+architecture (feeding levels, flower caution box, `SIDEDRESS_GUIDE` flower entries) are unchanged
+from the pre-July-21 documentation:
+
+### Report type and N/lime units
+
+| Report type value | N unit | Lime unit | calcFlower() handling |
+| :---- | :---- | :---- | :---- |
+| vce-flower | lbs/100 sq. ft. | lbs/100 sq. ft. | direct |
+| waypoint-flower | lbs/1,000 sq. ft. | lbs/1,000 sq. ft. | ÷ 10 before calculating |
+
+(Changed July 26 from the shared `vce-garden`/`waypoint-garden` values — see July 26–27 session.)
+
+**Flower entries in SIDEDRESS\_GUIDE** (unchanged):
 
 | Key | apps | Note |
 | :---- | :---- | :---- |
-| `annual-flower` | 1 app: 0.5 lbs N/1,000 sq. ft. at mid-season peak bloom, half preplant rate | Wash fertilizer off foliage; excess N suppresses flowers. *(VCE Note 19\)* |
-| `perennial-flower` | `apps: []` — no sidedress | Established perennials; early spring only; compost often sufficient; late-season N causes frost damage. *(VCE Note 19\)* |
-| `rose` | 5 apps: 0.5 lbs N/1,000 sq. ft. each for April, May, June, July, August | Monthly March–August per VCE Note 19 |
+| `annual` | 1 app: 0.5 lbs N/1,000 sq. ft. at mid-season peak bloom, half preplant rate | Wash fertilizer off foliage; excess N suppresses flowers. *(VCE Note 19\)* |
+| `perennial` | `apps: []` — no sidedress | Established perennials; early spring only; compost often sufficient; late-season N causes frost damage. *(VCE Note 19\)* |
+| `rose` | 5 apps: 0.5 lbs N/1,000 sq. ft. each for April–August | Monthly March–August per VCE Note 19 |
 
-**`SIDEDRESS_DEFAULT` fallback exclusion** — flower crop keys (`annual-flower`, `perennial-flower`, `rose`) bypass `SIDEDRESS_DEFAULT` entirely. Without this, they would incorrectly receive the generic vegetable sidedress plan (1.0 lb N at 3–4 weeks).
+**`SIDEDRESS_DEFAULT` fallback exclusion** — flower crop keys bypass `SIDEDRESS_DEFAULT` entirely.
 
-**Flower caution box** — amber advisory box appears in the application plan header whenever a flower crop type is selected: *"Avoid excessive nitrogen — promotes vegetative growth at the expense of blooms."* Source: VCE Note 19\. `isFlowerType` detection: `['annual-flower','perennial-flower','rose'].indexOf(cropKey) >= 0 || gardenType === 'annual' || gardenType === 'perennial'`
+**Flower caution box** — amber advisory whenever a flower crop type is selected: *"Avoid excessive
+nitrogen — promotes vegetative growth at the expense of blooms."* Source: VCE Note 19.
 
-**Sidedress product logic (`useUserProduct`):**
-
-- Zero-P/K product selected (`fertAlreadyZeroPK`): use user's product throughout — consistent  
-- Complete fertilizer (10-10-10, 5-10-5): default to calcium nitrate for sidedress  
-- `fertAlreadyZeroPK = (fertP === 0 && fertK === 0)`
-
-**`gardenFertMode`** — global var, default `'npk'`. **`onGardenProductSelect()` must call `setGardenFertMode('product')` before `calcGarden()`** — otherwise productKey stays empty and all product info is ignored (caused calcium nitrate to always appear regardless of selected product).
-
-**Application Timing card** — `display:none` when `nRec > 0 && fertN > 0`. Only shown when inputs incomplete.
-
-**P/K flags** — suppressed when `fertAlreadyZeroPK`. Also suppressed for tomato/pepper (handled in plan).
-
-**OM credit (garden only)** — when `st-om` ≥ 5%: yellow notice showing `omVal * 0.4` lbs N/1,000 sq. ft. natural release, converted to lbs/100 sq. ft. and lbs for user's actual bed. Source: UMD Extension. **Not applicable to lawn tabs** — VCE does not ground lawn N recommendations in OM level; lawn equivalent is the clipping return credit (VCE 430-011, SPES-384NP: 0.5–1 lb N/year, up to one-third of seasonal requirement). Never cite Rutgers FS626 or UMD OM formula in lawn context.
-
-**Per sq. ft. application rate row** — `lbsPerHundred / 100 * 16` \= oz/sq. ft.; converted to tbsp or tsp via bulk density. Allows gardeners to measure directly over the bed.
-
-**`CROP_FEEDING_LEVELS` `nPer100`** — **0.20 for heavy feeders, 0.20 for medium, 0.10 for light** (lbs/100 sq. ft. \= preplant amount). Validated against VCE Lab 23-15911 and Rutgers reports 2016-55189/55190/55191. Old 0.30 heavy feeder value was total seasonal N — incorrect for this field.
-
-**Step 3 crop hint** — shows feeding level, target pH, and prompt to enter soil test N in step 4\. No N amounts shown. `useRecommendedN()` removed — calculator requires soil test.
-
-### Organic product sidedress logic
-
-**Fast-release organics** (`fastOrganic: true` — blood meal, fish meal, fish emulsion, bat guano) \+ warm-season crops: can sidedress (soil warm enough for microbial release)
-
-**Fast-release organics \+ cool-season crops** OR **slow-release organics**: all preplant
-
-**Warm-season crops:** tomato, pepper, potato, corn, squash, cucumber, melon, okra, beans, sweetpotato
-
-### Vegetable guidance collapsible
-
-- `gdn-guidance-crop` selector — synced from step 3 but independently browsable  
-- `updateCropGuidancePanel()` reads from `gdn-guidance-crop`, renders feeding level \+ sidedress timing from SIDEDRESS\_GUIDE \+ note  
-- Old CROP\_DATA preplant/sidedress/caution table removed — was conflicting with the application plan  
-- General timing rule and banding note always visible below selector
-
-### GARDEN\_PRODUCTS — key fields
-
-All products: `name`, `npk[N,P,K]`, `cupsPerLb`, `organic`, `fastOrganic`, `source`, `note19Rate`, `note`, `liquid`
-
-| Product | fastOrganic | Notes |
-| :---- | :---- | :---- |
-| Blood meal (\~13-0-0) | true | Medium-rapid in warm soil (\>60°F); slow in cool soil |
-| Fish meal (\~10-6-2) | true | Moderate-fast in warm soil |
-| Fish emulsion (\~5-1-1) | true | Liquid; fast even in cool soil |
-| Bat guano (\~10-4-2) | true | Medium-rapid |
-| Feather/soybean/cottonseed/poultry/bone/dried cow | false | Preplant only |
-
-Cottonseed meal corrected to **7-3-2** per Rutgers FS626.
-
-### fmtMeasure(lbs, cupsPerLb)
-
-- ≥ 4 cups → cups to nearest half  
-- 0.5–4 cups → cups as Unicode fractions  
-- 1–16 tbsp → tablespoons  
-- \< 1 tbsp → teaspoons  
-- Always flagged as approximate
+**OM credit (garden-family tabs only)** — when `st-om` ≥ 5%: yellow notice showing `omVal * 0.4`
+lbs N/1,000 sq. ft. natural release. Source: UMD Extension. **Not applicable to lawn tabs** —
+lawn equivalent is the clipping return credit (VCE 430-011).
 
 ---
 
 ## Soil Test Report Tab
 
-### Report type options
+### Report type options (changed July 26, 2026 — one question, not two)
 
-| Value | Lab | Context | Lime unit | Carry-over |
+Previously report type (lab) and garden purpose were two separate questions/fields. **Now a single
+`#st-report-type` dropdown asks both at once** — 8 values, 2 labs × 4 purposes, grouped by lab in
+optgroups. The separate `#st-garden-type` field is **removed entirely**.
+
+| Value | Lab | Purpose | Lime unit | Unlocks |
 | :---- | :---- | :---- | :---- | :---- |
-| vce-lawn | VCE | Lawn | lbs/1,000 sq. ft. | Cool \+ Warm \+ Lime |
-| waypoint-lawn | Waypoint | Lawn | lbs/1,000 sq. ft. | Cool \+ Warm \+ Lime |
-| vce-garden | VCE | Garden | lbs/100 sq. ft. | Garden |
-| waypoint-garden | Waypoint | Garden | lbs/1,000 sq. ft. | Garden |
+| vce-lawn | VCE | Lawn | lbs/1,000 sq. ft. | Cool or Warm (needs Grass Type too) + Lime |
+| waypoint-lawn | Waypoint | Lawn | lbs/1,000 sq. ft. | Cool or Warm (needs Grass Type too) + Lime |
+| vce-vegetable | VCE | Vegetable Garden | lbs/100 sq. ft. | Vegetable Garden + Lime |
+| waypoint-vegetable | Waypoint | Vegetable Garden | lbs/1,000 sq. ft. | Vegetable Garden + Lime |
+| vce-flower | VCE | Flower Garden | lbs/100 sq. ft. | Flower Garden + Lime |
+| waypoint-flower | Waypoint | Flower Garden | lbs/1,000 sq. ft. | Flower Garden + Lime |
+| vce-shrub | VCE | Shrubs & Trees | lbs/100 sq. ft. | Shrubs & Trees + Lime |
+| waypoint-shrub | Waypoint | Shrubs & Trees | lbs/1,000 sq. ft. | Shrubs & Trees + Lime |
 
-### Sample report buttons (PII-free)
+For lawn reports, Grass Type (`st-crop`: cool/warm) is still asked separately — that's a
+legitimate remaining question the Soil Test tab can't resolve on its own. For garden/flower/shrub
+reports, the single dropdown fully resolves which tab unlocks; the finer sub-type (which flower,
+which shrub/tree) is asked exactly once, on the destination tab itself (was previously asked
+TWICE — once via `st-garden-type`, again on the destination tab — this redundancy is why the field
+was removed).
 
-| Button | Type | Key values |
-| :---- | :---- | :---- |
-| 📋 Lawn Sample | VCE warm-season | pH 5.5, K Low, lime 60 lbs |
-| 🌸 Flower Garden Sample | Waypoint annual flowers | pH 5.2, P Low, K Optimum, OM 5.6%, lime 87 lbs/1,000 sf, agricultural lime |
-| 🌿 Vegetable Garden Sample | Waypoint vegetable | pH 7.1, P/K/Ca Very High, OM 11.4%, no lime |
+New helpers: `soilTestPurpose()`, `soilTestTargetTab()`. See Key Functions table.
+
+### Sample report buttons (PII-free) — 4 buttons (was 3)
+
+| Button | Type | report-type value | Key values |
+| :---- | :---- | :---- | :---- |
+| 📋 Lawn Sample | VCE warm-season | vce-lawn | pH 5.5, K Low, lime 60 lbs |
+| 🌸 Flower Garden Sample | Waypoint annual flowers | waypoint-flower | pH 5.2, P Low, K Optimum, OM 5.6%, lime 87 lbs/1,000 sf, agricultural lime |
+| 🌿 Vegetable Garden Sample (Waypoint) | Waypoint vegetable | waypoint-vegetable | Jim Myracle, Report No. 26-188-0532. P Very High (394 ppm), K Low (100 ppm) — the exact adequate-P/low-K case the Nutrient Status panel was built to handle. Sets `gdnTargets` (K2O 2.0, S 0.13, B 0.04, Mn 0.05) directly, not DOM fields |
+| 🌿 VCE Vegetable Garden Sample | VCE vegetable | vce-vegetable | *(Added July 21)* Jim Myracle, VCE Lab ID 23-15911, Sample "VEGGD" (2023). All nutrients VH/SUFF, N-only fertilizer recommended, lime 3 lbs/100 sq ft. Contains VCE's own cup conversions for 4 N products — demonstrates the report's own math matches CROP_FEEDING_LEVELS defaults exactly |
 
 Micronutrient prefill values must use `L`, `M`, `SUFF`, `H` — not Waypoint keys (ME, OP, VH).
+
+### "Need to see the instructions?" prompt (added July 26)
+
+Dismissible callout at the very top of the Soil Test tab card body (not inside the `role="heading"`
+card-header — that was an ARIA violation, fixed; see July 26–27 session notes). "Yes, show me"
+jumps to About & Instructions; "No thanks" dismisses. Either hides it for the session.
 
 ### Soil test card notes
 
@@ -262,24 +402,32 @@ Micronutrient prefill values must use `L`, `M`, `SUFF`, `H` — not Waypoint key
 
 ## Critical Implementation Rules
 
-1. Never infer soil texture from CEC or Buffer Index  
-2. Only use thresholds explicitly stated in source documents  
-3. "Your result:" always on new paragraph  
-4. Action boxes use `abox()` — genuine actions only  
-5. No backtick template literals — string concatenation only (Safari)  
-6. No Unicode/emoji in JS string literals — HTML entities only  
-7. `numApps` never capped in `calcAutoplan` — warn if \>4 needed  
-8. `carryOverToCalculators()` setTimeout must not be removed  
-9. `printPlan(prefix)` always — never call `window.print()` directly  
-10. `calcLime()` writes to `lime-results-panel` — old individual IDs gone  
-11. Micronutrient selects: `L`, `M`, `SUFF`, `H` only  
-12. No PII anywhere in code or comments  
-13. Soil Test tab `st-layout` is two-column — do NOT change  
-14. `showCropGuidance()` is removed — use `updateCropGuidancePanel()`  
-15. Soil testing: "3–4 years" lawns; "every 2–3 years" active vegetable beds  
-16. Never recommend brand names — NPK ratios and WIN % only  
-17. `onGardenProductSelect()` must call `setGardenFertMode('product')` before `calcGarden()` — without this, selected product is completely ignored and calcium nitrate appears in sidedress steps regardless  
-18. This calculator requires a soil test — do not add N rate suggestions for users without one; `useRecommendedN()` has been removed for this reason
+1. Never infer soil texture from CEC or Buffer Index
+2. Only use thresholds explicitly stated in source documents
+3. "Your result:" always on new paragraph
+4. Action boxes use `abox()` — genuine actions only
+5. No backtick template literals — string concatenation only (Safari)
+6. No Unicode/emoji in JS string literals — HTML entities only
+7. `numApps` never capped in `calcAutoplan` — warn if \>4 needed
+8. `carryOverToCalculators()` setTimeout must not be removed
+9. `printPlan(prefix)` always — never call `window.print()` directly
+10. `calcLime()` writes to `lime-results-panel` — old individual IDs gone
+11. Micronutrient selects: `L`, `M`, `SUFF`, `H` only
+12. No PII anywhere in code or comments
+13. Soil Test tab `st-layout` is two-column — do NOT change
+14. ~~`showCropGuidance()` is removed — use `updateCropGuidancePanel()`~~ **SUPERSEDED**: `updateCropGuidancePanel()` itself removed July 26 — use `renderCropInfoPanel()`
+15. Soil testing: "3–4 years" lawns; "every 2–3 years" active vegetable beds
+16. Never recommend brand names — NPK ratios and WIN % only
+17. ~~`onGardenProductSelect()` must call `setGardenFertMode('product')`~~ **REMOVED July 26** — both functions no longer exist; the blended product picker they governed is gone
+18. **REVERSED July 21, 2026** (was: "calculator requires a soil test — do not add N rate suggestions"): Nitrogen is NOT a lab-measured parameter (nitrate-N leaches within a day or two of rain; neither VCE nor Waypoint lab-measures it — the report's "N" figure is a generic crop-based recommendation, not a test result). The N field is optional for vegetable/flower gardens; when blank, falls back to the CROP_FEEDING_LEVELS research default. The research default number is now **shown to the user directly**, not just used silently (fixed July 26 — previously computed but never displayed)
+19. **(Added July 21)** Each visible Soil Test field carries a `data-canon` attribute pointing at its hidden canonical counterpart in `#st-canonical-fields`. `interpretSoilTest()`, `carryOverToCalculators()`, and all downstream calculation functions read ONLY from canonical fields — never the suffixed -vce/-wp IDs directly. `stSync(el)` and `stPushBlockToCanonical(blockId)` are the only bridge
+20. **(Added July 26)** Each soil sample gets its own report for one purpose. The Soil Test tab's job is to identify ONE destination calculator tab — never ask the same purpose/sub-type question twice (once on Soil Test tab, again on the destination tab). If a destination tab has its own legitimate sub-type question (e.g. Flower Garden's annual/perennial/rose/bulb), the Soil Test tab must NOT also ask for it
+21. **(Added July 26)** Locked/not-yet-relevant calculator tabs must be `display:none` AND carry `inert` on their container if they hold form fields that could otherwise remain in tab order — `display:none` alone does not reliably remove content from screen-reader/keyboard navigation in all cases actually tested
+22. **(Added July 26)** Never put interactive elements (buttons, inputs, links) inside an element carrying `role="heading"` — this caused a real, confirmed focus-skip bug in Chrome (sample-report buttons became unreachable by Tab). Card headers needing action buttons must place those buttons in a sibling element, not inside the heading role
+23. **(Added July 26)** Bulk density volume estimates require a named, checkable source (VCE, another university Extension, a government agency, or peer-reviewed publication) — see Source Documents sourcing standard. Specific gravity from an MSDS/SDS is NEVER an acceptable substitute density input (crystal density ≠ packaged granular density)
+24. **(Added July 27)** Always call the shared `isGardenReport()` / `isWaypointReport()` / `soilTestPurpose()` helpers to inspect `st-report-type` — never re-implement the check locally (e.g. `rt.indexOf('garden')`). A stale local re-implementation of this exact check in both `carryOverToCalculators()` and `interpretSoilTest()` silently broke garden/flower/shrub carry-over and soil-test interpretation for an entire session after the report-type scheme changed from 4 values to 8 (see July 27 session notes). Any future change to the `st-report-type` value scheme must `grep` the whole file for every raw string inspection of report-type values, not just confirm the shared helpers were updated
+25. **(Added July 27)** Tab bar buttons must NOT use the strict ARIA "roving tabindex" pattern (only the active tab in the Tab sequence, `tabindex="-1"` on the rest) — confirmed via live testing on the deployed site that this causes a real, reported "Tab skips the next tab" experience. Every visible, enabled tab button keeps `tabindex="0"` at all times; arrow-key navigation between tabs is offered as an addition, not a replacement, for sequential Tab
+26. **(Added July 27)** When a reported bug can't be reproduced via static code reading, live-test the actual deployed page (a real, publicly reachable URL) with simulated keyboard/mouse input and `document.activeElement`/DOM inspection — this sandbox cannot reach a locally-hosted file from the real browser (file://, localhost, and data: URLs are all blocked from that context), so static analysis alone repeatedly failed to catch two real, confirmed bugs this session that live testing found immediately
 
 ---
 
@@ -296,7 +444,7 @@ Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State
 
 | File | Description |
 | :---- | :---- |
-| `lawn_garden_calc_v1_5.html` | Main application |
+| `index.html` | Main application — **Soil Report Assistant** (renamed July 26, 2026; was `lawn_garden_calc_v1_5.html` / "VCE Lawn & Garden Care Calculator") |
 | `CLAUDE.md` | Project context for AI-assisted development |
 | `README.md` | User-facing documentation |
 
@@ -1921,3 +2069,319 @@ Added visible "(PDF)" text to all 5 PDF links in the About tab so users know the
 | :-- | :-- |
 | `index.html` | 23 span→label fix + 5 PDF indicators |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 21, 2026 (Vegetable Garden Restructure, Part 1 — architecture groundwork + N-rule reversal)
+
+### Context
+Implementing a prepared "Vegetable Garden Restructure — Implementation Spec." This is the first of
+what became a multi-session restructure (continued July 26–27).
+
+### Soil Test tab — two-block input architecture (Option 4)
+The soil test input fields are duplicated into two static, correctly-ordered blocks:
+- `#st-block-vce` — fields ordered to match a VCE report (nutrients first, chemistry second)
+- `#st-block-waypoint` — fields ordered to match a Waypoint report (chemistry first, nutrients interleaved)
+
+`onReportTypeChange()` toggles `display` between them — no CSS `order`, no live DOM reorder, so tab
+order and screen-reader order always match what's visually shown (WCAG 2.4.3). Each visible field
+carries `data-canon` pointing at its hidden canonical counterpart in `#st-canonical-fields`.
+`stSync(el)` syncs on every input/change; `stPushBlockToCanonical(blockId)` bulk-syncs after a
+report-type switch or sample load. **Rule: all downstream logic reads ONLY canonical fields.**
+
+### Nitrogen handling — rule reversed, with evidence
+**Reversed:** "calculator requires a soil test" (N field removed for users without one) →
+**Nitrogen is NOT a lab-measured parameter.** Nitrate-N is highly mobile and leaches within a day
+or two of rain, so a snapshot measurement wouldn't stay accurate — neither VCE nor Waypoint
+lab-measures it; the report's "N" figure is a generic crop-based recommendation, not a test result.
+
+Consequence: N input is optional for vegetable/flower gardens. Blank → falls back to
+`CROP_FEEDING_LEVELS[cropKey].nPer100`. Demoted from a numbered step to a collapsed override in
+step 3, labeled "Have a different N recommendation? (rare — e.g. a private agronomist consult)."
+
+Validated against: VCE Soil Test Note 19 (452-719), VCE 426-323, multiple Waypoint reports (N
+figure identical regardless of soil chemistry), and Jim Myracle's VCE Lab 23-15911 vegetable
+garden report.
+
+### NUTRIENT_AMENDMENTS — individual nutrient corrections added
+For vegetable/mixed gardens, a new Nutrient Status panel suggests single-nutrient corrections when
+one nutrient is low but others adequate, so the user isn't forced to over-apply a blended
+fertilizer. Three calc modes: `'flat'` (VCE Note 19 rates), `'target'` (synthetic products sized
+from Waypoint's numeric target via guaranteed-analysis %), `'none'` (VCE names the product, no
+rate). Lime-conditional logic on Ca/Mg entries (gypsum/Epsom salts) checks whether lime is already
+being recommended first. S/Zn/Mn/Cu: "seldom a problem in Virginia soils" per VCE 426-323, no
+home-garden rate published — stated honestly via `NUTRIENT_NO_RATE_NOTE` rather than fabricating one.
+
+### Waypoint rating scale confirmed
+5-level scale, no plus/minus: Very Low, Low, Medium, Optimum, Very High. No rating text printed on
+the report itself — only a colored bar on a gradient. Dropdown values: VL, LO, ME, OP, VH2 (VH2 to
+distinguish from VCE's VH). Confirmed against 14+ real uploaded Waypoint reports.
+
+### New sources added
+VCE 426-323 (SPES-803P), VCE 452-719 (SPES-687P) — both already in the Source Documents table
+above. Garden Fertilizer Calculator (bulk density database) — **later superseded**; see July 26–27
+sourcing audit, which found this and similar unnamed bulk-density charts don't meet the sourcing
+standard and replaced them with Ohio State Ohioline / NMSU citations.
+
+### Validated reports added
+- Jim Myracle, Waypoint Report No. 26-188-0532, Sample "2-Vegetable Beds" (07/09/2026) — P Very
+  High, K Low. The adequate-P/low-K case the Nutrient Status panel was built for.
+- Jim Myracle, VCE Lab ID 23-15911, Sample "VEGGD" (2023) — all nutrients VH/SUFF, N-only
+  recommended. Contains VCE's own cup conversions for 4 N products.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Two-block soil test architecture, N-rule reversal, NUTRIENT_AMENDMENTS added |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 26–27, 2026 (Vegetable Garden Restructure, Part 2 — streamlining, app rename, report-type consolidation, tab gating, bulk-density sourcing audit, accessibility)
+
+### Context
+Continuation of the vegetable garden restructure, expanding into app-wide navigation and identity
+changes. Sequenced: user requested vegetable garden first, then flower garden, then shrubs & trees
+— flower and shrub restructuring have NOT started; only vegetable garden's calculator logic itself
+was rebuilt. Navigation, naming, sourcing, and accessibility changes apply app-wide.
+
+### Vegetable Garden — steps consolidated 7→4→3
+Removed the blended N-P-K fertilizer picker (step 6), the P/K rating selects (auto-fill from Soil
+Test tab now), the "Can't find the recommended grade?" substitution table, and the separate 9-field
+Waypoint target grid (targets now inline per-nutrient). Merged what had become two near-duplicate
+crop-guidance boxes into one (`renderCropInfoPanel()`), which also now **shows the actual
+research-based N number** instead of just referencing it. Merged the two output cards ("Nitrogen
+Application Plan" + "Nutrient Status") into one "Nutrient Application Plan" card, fixing a bug
+where the Print Plan button was sandwiched between the two sections instead of after both. Garden
+type (`gdn-type`, vegetable/mixed) removed — folded under vegetable, logic was identical for both.
+
+**Dead code removed:** `CROP_DATA` + `CROP_GUIDANCE_MAP` (only 2 of CROP_DATA's 5 fields were ever
+rendered; `SIDEDRESS_GUIDE` already covered every crop directly, and more completely — it has
+potato/okra/sweet potato/asparagus entries CROP_DATA never had).
+
+### Bulk density sourcing audit (significant)
+The prior `BULK_DENSITIES` table cited "FAO Database," "Industry sources," and "Scientific
+literature" — none of which are real, checkable citations, and none satisfy the non-.edu sourcing
+rule. Corrected via live web research:
+- **Now sourced:** Triple Superphosphate & Ammonium Nitrate ← Ohio State Ohioline FABE-550; Muriate
+  of Potash, Elemental Sulfur, Langbeinite ← NMSU Cooperative Extension Guide H-119 (direct oz/cup
+  figures)
+- **No source found → weight-only:** Blood Meal, Feather Meal, Bone Meal, Rock Phosphate, Borax.
+  One specific correction: bone meal's density had been mislabeled "Rutgers FS626" — FS626 only
+  ever gave NPK ratios, never a bulk density.
+- **Specific gravity removed as a user input entirely.** Initially added as a toggle alongside bulk
+  density, then removed once evidence showed SDS Section 9 specific gravity reflects the pure
+  crystal/absolute compound density, not the packaged granular form. Confirmed example: Southern
+  Ag Sulfate of Potash SDS lists SG 2.66 (≈166 lbs/ft³ absolute crystal density) vs. the actual
+  granular product's 75–81 lbs/ft³ loose bulk density — using the SDS value would understate
+  volume by roughly half. Bulk density (lbs/ft³ or kg/m³) from the product label/technical data
+  sheet is the only accepted density input now.
+
+### Manganese guidance added (NC State Extension)
+Mn moved from `NUTRIENT_NO_RATE_NOTE` (previously "no rate published") to real amendments, sourced
+to NC State Extension (Torres Quezada, 2024): Manganese Sulfate flat rate (~0.05 lbs/100 sq ft,
+scaled from 20–25 lbs/acre) + sized-to-target variant + Chelated Manganese for alkaline soils.
+Similar target-calc amendments added for S (Elemental Sulfur, Gypsum), B (granular Borax), and Mg
+(Epsom Salts sized-to-target).
+
+### App renamed
+"Lawn & Garden Calculator" / "VCE Lawn & Garden Care Calculator" → **"Soil Report Assistant"**,
+tagline "No more guessing what to feed your lawn or garden." Updated in `<title>`, header `<h1>`,
+header subtitle, dynamic per-tab `document.title`, and About tab `<h2>` (with a one-line VCE /
+Chesterfield County attribution retained beneath it).
+
+### Report-type question consolidated — one question, not two (SUPERSEDES the July 21 two-block
+### section's report-type handling; the VCE/Waypoint block-switching mechanism is unchanged, only
+### how "purpose" is captured changed)
+Previously: `st-report-type` (lab, 4 values incl. `vce-garden`/`waypoint-garden`) + a separate
+`st-garden-type` field asking vegetable/annual/perennial/rose/bulb/shrub-and-tree-subtypes. **Now:**
+one `st-report-type` dropdown, 8 values (2 labs × 4 purposes: lawn/vegetable/flower/shrub),
+grouped by lab. `st-garden-type` removed entirely. New helpers `soilTestPurpose()` and (rewritten)
+`soilTestTargetTab()` derive everything downstream from the single value.
+
+Went through two iterations before landing here: first tried grouping the old 12-value
+`st-garden-type` list into three visually distinct optgroups (Vegetable/Flower/Shrub headers) —
+correctly identified as still asking "what kind of test is this" in two places (report type, then
+sub-type), since the sub-type chosen here also had to be re-asked on the destination tab (Flower
+Garden's own annual/perennial/rose/bulb selector, Shrubs & Trees' own plant-type selector). Second
+iteration collapsed `st-garden-type` to exactly 3 generic values (vegetable/flower/shrub) — better,
+but still two separate dropdowns/questions. Final iteration merged lab + purpose into the single
+8-value `st-report-type` dropdown, eliminating the second question entirely. **Mixed bed folded
+into "Vegetable Garden"** at this same step (no separate value).
+
+Sub-type detail (which flower type, which shrub/tree species) is asked exactly once now — on the
+destination tab, not duplicated on the Soil Test tab. `carryOverToCalculators()` simplified
+accordingly (no longer tries to pre-fill `flr-type`/`shrub-plant-type` from a Soil Test tab value
+that no longer carries that detail).
+
+### Tab navigation — hidden until unlocked (SUPERSEDES a same-session earlier "dimmed with lock
+### icon" approach)
+Calculator tabs are `display:none` until the Soil Test tab resolves a target
+(`soilTestTargetTab()`) — not dimmed-but-visible as first implemented. Only ONE calculator tab is
+ever visible at a time (Lime is the exception — purpose-agnostic, appears for any report with P/K
+values). Tab bar reordered: **Soil Test Report, About & Instructions**, then calculator tabs — About
+moved to position 2 (was last) so it's discoverable before any data entry. If the currently active
+tab gets hidden out from under a user (they changed report type), they're redirected to Soil Test.
+Warning banners that existed to catch users who'd reached a calculator tab without soil test data
+("Before you start…", "No Soil Test tab data found yet…") were removed as redundant once this gate
+existed — a "Need to see the instructions?" prompt (Yes/No, jumps to About) was added to the Soil
+Test tab instead, as a positive on-ramp rather than a defensive warning.
+
+### Accessibility fixes (real bugs, not just polish)
+- **Confirmed root cause of a reported "tabbing skips things" bug:** the Soil Test card header
+  used `<div role="heading">` and contained the sample-report buttons inside it. ARIA prohibits
+  interactive content inside a heading role, and this caused Chrome to skip those buttons (and,
+  separately, the "need instructions?" prompt) during Tab navigation. Fixed by moving the buttons
+  into a sibling `role="toolbar"` element and removing `role="heading"` from the div.
+- Hidden Soil Test field blocks (`st-block-vce`, `st-block-waypoint`, `st-canonical-fields`,
+  lawn-specific fields) now carry `inert` when hidden, toggled alongside `display` by a
+  `setVisible()` helper inside `onReportTypeChange()` — previously their inputs remained in tab
+  order even while invisible.
+- Arrow-key tablist navigation now filters to visible tabs only — previously it could try to focus
+  a hidden (locked) tab and get silently rejected, breaking the rotation.
+- Added `aria-label` to the dynamically-generated amendment-choice `<select>` (had no accessible
+  name at all) and to the inline Waypoint target `<input>`s (visible `<label>` existed but wasn't
+  programmatically associated — no `for=` possible since these are generated in an innerHTML
+  string with no stable id per row).
+- Shade radio buttons (cool/warm) given unique `id`s + explicit `<label for>` (previously
+  unassociated).
+- **Not verified — flagged, not claimed clean:** actual color-contrast ratios of the CSS custom
+  properties against their backgrounds. Static analysis can't confirm WCAG contrast minimums; a
+  browser-based tool (axe/Lighthouse) would be needed.
+
+### `renderNutrientStatusPanel` signature changed
+`renderNutrientStatusPanel(gardenType, area, pRating, kRating)` →
+`renderNutrientStatusPanel(gardenType, area)` — P/K ratings read directly from the Soil Test tab's
+canonical fields (`st-p-rating`/`st-k-rating`) inside the function now, matching how Ca/Mg/S/micros
+already worked. Any code still calling the 4-arg version needs updating.
+
+### Waypoint targets — from a separate grid to inline per-nutrient, backed by JS state
+The 9-field target grid in step 3/4 is gone. Each nutrient's target is entered directly in that
+nutrient's row in the results. Backed by `gdnTargets` (persistent JS object), not DOM element
+values, because the input elements are generated dynamically inside
+`renderNutrientStatusPanel()`'s innerHTML and don't exist yet when `prefillSampleReport()` tries to
+populate them. `gdnSetTarget(key, val)` is the setter; `prefillSampleReport()` now assigns
+`gdnTargets` directly and resets it on every sample load.
+
+### Sample data updated for new report-type values
+- Flower sample: `waypoint-garden` → `waypoint-flower`
+- Waypoint veggie sample: `waypoint-garden` → `waypoint-vegetable`
+- VCE veggie sample: `vce-garden` → `vce-vegetable`
+- All `st-garden-type` keys removed from sample fields objects (field no longer exists)
+
+### CLAUDE.md itself
+This file was not updated during the July 21 session (an updates doc was prepared but never
+merged) or during most of this session. Both are now merged in as of this entry — see all "changed
+July 21," "changed/added July 26," and "REVERSED/SUPERSEDED" annotations throughout the document
+above for exactly what moved.
+
+### Open items / next steps
+- Flower Garden tab restructure (per user's stated sequence: vegetable → flower → shrubs & trees)
+- Shrubs & Trees tab restructure
+- Color contrast verification via a real accessibility scanning tool (not yet re-run since the
+  July 6–7 axe/Lighthouse/IBM/WAVE passes, which predate this session's markup changes)
+- Consider whether Elemental Sulfur / Langbeinite (sourced via NMSU H-119 this session) should be
+  added as selectable K/S amendment options — they're in `BULK_DENSITIES` but not yet wired into
+  any dropdown
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Vegetable Garden streamlining, app rename, report-type consolidation, tab gating, bulk-density sourcing audit + specific-gravity removal, manganese guidance, accessibility fixes |
+| `CLAUDE.md` | this entry — merges the July 21 updates doc and this session's changes into the master for the first time |
+
+---
+
+## Session Updates — July 27, 2026 (cont.) (Tab focus-order fix + critical `isGarden` substring bug from the report-type consolidation)
+
+### Context
+User reported "tabbing skips the sample reports and need instructions" on the Soil Test tab,
+across two rounds of investigation. Static code analysis (checking for `role="heading"` violations,
+`inert` handling, duplicate IDs, stray keydown listeners) repeatedly came up clean and did not
+reproduce the bug. **Root cause was only found by live-testing the actual deployed site**
+(https://lawncarecalc.github.io/lawncarecalculator.github.io/) with real simulated Tab keypresses
+and inspecting `document.activeElement` after each one — this environment cannot reach a locally
+sandboxed file from the real browser (file://, localhost, and data: URLs are all blocked from that
+context), so a publicly reachable URL was necessary to actually catch this.
+
+### Bug 1 — `btn-about` had `tabindex="-1"` (roving tabindex pattern)
+Live test: Tab #1 correctly landed on "Soil Test Report," but Tab #2 skipped "About & Instructions"
+entirely and landed on the first sample-report button instead. Cause: the tab bar used the standard
+ARIA "roving tabindex" pattern for tab widgets — only the currently active tab keeps `tabindex="0"`;
+all others get `tabindex="-1"`, with the expectation that arrow keys (not Tab) move between tabs.
+This is spec-compliant per the WAI-ARIA APG Tabs pattern, but does not match ordinary user
+expectation of sequential Tab reaching everything, and was the literal cause of the reported skip.
+
+**Fix:** every visible, enabled tab button now keeps `tabindex="0"` regardless of active state, so
+plain sequential Tab reaches every tab in the bar. Arrow-key navigation between tabs (added earlier
+this session) is kept as an *additional* option, not the only path. Changed in three places:
+`activateTab()` (no longer sets `tabindex="-1"` on deactivated tabs), `updateTabLocks()` (newly
+unlocked tabs get `tabindex="0"` unconditionally, not only when active — two occurrences, calculator
+tabs and Lime), and the static HTML for `btn-about` (`tabindex="-1"` → `"0"`, since it's always
+visible from page load).
+
+**Verified live** by patching the fix directly into the deployed page's console and re-running the
+identical Tab-key sequence: Tab #2 now correctly lands on "About & Instructions."
+
+### Not a bug — Safari default keyboard navigation
+User separately reported the fix "not working in Safari" while confirming it worked in Chrome, and
+separately confirmed Option+Tab worked in Safari. This is expected, long-standing Safari/macOS
+behavior, not a code issue: Safari's default Tab key only moves between text fields and lists, not
+buttons/links/custom widgets, unless the user enables "Full Keyboard Access" (Safari → Settings →
+Advanced → "Press Tab to highlight each item on a webpage," or System Settings → Keyboard →
+"Keyboard navigation"). Confirmed via live search rather than relying on memory (menu names shift
+between macOS versions) — true since at least macOS Catalina, still true in current Safari/macOS.
+Does not affect VoiceOver users, who have their own navigation model. `tabindex="0"` is still the
+objectively correct code — it's what makes elements reachable once a Safari user enables the
+setting, and is what Chrome/Firefox/Windows screen readers already rely on by default. No code
+change was made or needed for this half of the report.
+
+### Bug 2 — Critical: stale `rt.indexOf('garden') >= 0` checks from before the report-type
+### consolidation (SUPERSEDES parts of the "Single Combined Report-Type Question" section above)
+User reported the Flower Garden sample prefills the Soil Test tab but doesn't carry over to the
+Flower Garden tab's own fields. Live-tested (not just read statically) by calling
+`prefillSampleReport('garden')` then `carryOverToCalculators()` directly in the console on the
+deployed site and inspecting `flr-p-rating`/`flr-k-rating`/`flr-lime-rec` afterward — confirmed all
+stayed empty.
+
+**Root cause:** two functions computed `isGarden` locally via `rt.indexOf('garden') >= 0` instead of
+calling the shared `isGardenReport()` helper. That substring check was correct under the *old*
+4-value report-type scheme (`vce-garden`, `waypoint-garden`) but the July 26 consolidation to 8
+granular values (`vce-vegetable`, `waypoint-flower`, `vce-shrub`, etc.) means **none of the new
+values contain the literal substring "garden" anymore** — so this check silently evaluated to
+`false` for every vegetable/flower/shrub report, always, since that consolidation shipped.
+`isGardenReport()` itself (the shared helper) had already been correctly updated at consolidation
+time — these were two separate, local re-implementations of the same check that got missed.
+
+**Affected functions (fixed — both now call `isGardenReport()`):**
+- `carryOverToCalculators()` — was always taking the lawn carry-over branch regardless of actual
+  report type, so `flr-*`/`gdn-*` fields never got P/K ratings, lime rec, or area size carried over
+  for ANY garden-family report (vegetable, flower, or shrub) — not just flower.
+- `interpretSoilTest()` — **the more significant half of this bug.** This is the function that
+  builds every interpretation card on the Soil Test tab itself. Since the July 26 consolidation,
+  it had been silently treating every vegetable/flower/shrub report as a lawn report for its own
+  internal logic (card content, garden-specific messaging, etc.) — not just the carry-over step.
+  This had been live and broken since the report-type consolidation shipped, undetected until this
+  session.
+
+**Verified live** for both the Flower Garden and Vegetable Garden sample paths: patched the fix
+into the deployed page's console, re-ran `carryOverToCalculators()`, confirmed `flr-p-rating`
+correctly resolves to "M", `flr-k-rating` to "M+", and `gdn-lime-rec` correctly carries "0" from
+the Waypoint sample data.
+
+### Lesson for future report-type-scheme changes
+Any future change to the `st-report-type` value scheme must grep the whole file for **every**
+place that inspects the raw string (`indexOf`, direct equality, etc.) rather than assuming the
+shared helpers (`isGardenReport()`, `isWaypointReport()`, `soilTestPurpose()`) are the only call
+sites — this session found two local re-implementations of the same check that had drifted out of
+sync with the helper. `grep -n "indexOf('garden')\|indexOf(\"garden\")\|'vce-garden'\|'waypoint-garden'"`
+across the whole file should be part of the verification checklist for any future report-type
+scheme change, not just checking that the helper functions themselves were updated.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Tab-bar `tabindex` fixed (About & Instructions no longer skipped by sequential Tab); critical stale `isGarden` substring check fixed in `carryOverToCalculators()` and `interpretSoilTest()` |
+| `CLAUDE.md` | this entry |
+
+
