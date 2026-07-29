@@ -2828,9 +2828,46 @@
                   <p>Confirms calcium nitrate as the preferred sidedress N source for tomatoes and cole crops (supplies Ca alongside N, reducing blossom end rot and tip burn).</p>
                 </div>
                 <div class="about-source">
+                  <div class="about-source-title"><a href="https://content.ces.ncsu.edu/the-importance-of-manganese-in-vegetable-crop-nutrition-in-north-carolina" target="_blank" rel="noopener" style="color:var(--green-mid);">NC State Extension — The Importance of Manganese in Vegetable Crop Nutrition in North Carolina<span class="sr-only"> (opens in new tab)</span></a></div>
+                  <div class="about-source-meta">Emmanuel Torres Quezada, Assistant Professor &amp; Vegetable Specialist &mdash; NC State Extension, 2024</div>
+                  <p>Source for: Manganese Sulfate application rates for tomatoes, peppers, and brassicas (20&ndash;25 lbs/acre broadcast, scaled to this calculator's home-garden rate), the soil pH threshold where Mn availability drops sharply (above pH 7.5) versus where it's enhanced (below pH 6.0), Chelated Manganese as the preferred source for alkaline soils, and the toxicity caution against over-application in already-acidic soil.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://www.hood.edu/sites/default/files/Coastal%20Studies/FFSN/HG42_Soil_Amendments_and_Fertilizers_2.pdf" target="_blank" rel="noopener" style="color:var(--green-mid);">Soil Amendments and Fertilizers &mdash; Farm to Fork/Food Systems Network School &amp; Community Garden Curriculum<span class="sr-only"> (opens in new tab)</span></a></div>
+                  <div class="about-source-meta">Hood College Center for Coastal and Watershed Studies, Farm to Fork/Food Systems Network (FFSN)</div>
+                  <p>Source for the general principle that a water-soluble fertilizer can be dissolved in water and applied directly to the soil in place of a dry broadcast &mdash; used in this calculator's Manganese Sulfate and granular Borax guidance, where the calculated amount for a small bed is often too little dry material to spread evenly by hand. This document does not give a manganese- or boron-specific dilution rate; it's cited for the general dissolve-and-apply method only, not a per-nutrient rate.</p>
+                </div>
+                <div class="about-source">
                   <div class="about-source-title"><a href="https://www.pubs.ext.vt.edu/456/456-420/456-420.html" target="_blank" rel="noopener" style="color:var(--green-mid);">2026/2027 Mid-Atlantic Commercial Vegetable Production Recommendations<span class="sr-only"> (opens in new tab)</span></a></div>
                   <div class="about-source-meta">VCE &middot; UMD &middot; Rutgers &middot; PSU &middot; U. of Delaware &middot; WVU &mdash; 2026</div>
                   <p>Source for per-crop pH targets (Table B-1) and the 1&ndash;3 year soil testing recommendation for vegetable production. <strong>Note: This is a commercial grower guide</strong> &mdash; rates and timing are calibrated for field production, not home raised beds. Cited for principles only.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- BULK DENSITY / VOLUME CONVERSION SOURCES — collapsible. These are a genuinely
+                 different category from the agronomic-recommendation sources above: they supply
+                 only a physical measurement (bulk density, for converting a weight into a
+                 volume/cup measurement), not a fertilizer rate or timing recommendation. Added
+                 July 26, 2026 after auditing the previous bulk-density citations and finding
+                 several were fabricated/vague ("Industry sources," "Est. bulk density") and did
+                 not meet this app's sourcing standard. -->
+            <div style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 8px;">&#9878;&#65039; Bulk Density / Volume Conversion Sources</div>
+            <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:8px;">These sources supply only a physical measurement &mdash; a product's bulk density, used to convert a calculated weight into a cups/tablespoons volume estimate &mdash; not a fertilizer rate or agronomic recommendation. Neither is a Virginia or Mid-Atlantic regional source; both are cited under a narrow exception for physical/density data specifically, where no closer regional source publishes the equivalent figure. Where no source meeting this standard could be found for a product, this calculator shows weight only rather than an estimated volume.</p>
+            <div class="fert-chooser no-print" style="margin-bottom:14px;">
+              <button class="fert-chooser-toggle" id="about-density-sources-btn" aria-expanded="false" aria-controls="about-density-sources-body" onclick="toggleAboutDensitySources()" style="font-size:0.82rem;">
+                <span>&#9878;&#65039; Ohio State &amp; NMSU Bulk Density Data</span><span class="toggle-arrow">&#9660;</span>
+              </button>
+              <div class="fert-chooser-body" id="about-density-sources-body">
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://ohioline.osu.edu/factsheet/fabe-550" target="_blank" rel="noopener" style="color:var(--green-mid);">Ohio State University Extension, Ohioline FABE-550 &mdash; Physical Properties of Granular Fertilizers and Impact on Spreading<span class="sr-only"> (opens in new tab)</span></a></div>
+                  <div class="about-source-meta">Fulton &mdash; Ohio State University Extension, 2016</div>
+                  <p>Source for: loose bulk density ranges for Triple Superphosphate (950&ndash;1200 kg/m&sup3;) and Ammonium Nitrate (850&ndash;975 kg/m&sup3;); this calculator uses the midpoint of each range for the volume estimate shown.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://pubs.nmsu.edu/_h/H119.pdf" target="_blank" rel="noopener" style="color:var(--green-mid);">NMSU Cooperative Extension Guide H-119 &mdash; Determining Amounts of Fertilizer for Small Areas<span class="sr-only"> (opens in new tab)</span></a></div>
+                  <div class="about-source-meta">New Mexico State University Cooperative Extension Service</div>
+                  <p>Source for: direct oz/cup bulk density figures (Table 2) for Muriate of Potash (10.0 oz/cup, loose), Elemental Sulfur (10.2 oz/cup, granular loose), and Langbeinite (11.1 oz/cup, loose) &mdash; used directly rather than converted from a kg/m&sup3; density, since this source already publishes the cup measurement.</p>
                 </div>
               </div>
             </div>
@@ -4856,6 +4893,16 @@ function toggleAboutSuppSources() {
   btn.setAttribute('aria-expanded', String(!open));
 }
 
+function toggleAboutDensitySources() {
+  var btn  = document.getElementById('about-density-sources-btn');
+  var body = document.getElementById('about-density-sources-body');
+  if (!btn || !body) return;
+  var open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  btn.classList.toggle('open', !open);
+  btn.setAttribute('aria-expanded', String(!open));
+}
+
 function toggleAboutFlowerSources() {
   var btn  = document.getElementById('about-flower-sources-btn');
   var body = document.getElementById('about-flower-sources-body');
@@ -5158,9 +5205,9 @@ var NUTRIENT_AMENDMENTS = {
   Zn: [],
   Mn: [
     { name:'Manganese Sulfate (28\u201332% Mn)', organic:false, calc:'flat', rate:0.05, verified:true,
-      note:'~0.05 lbs per 100 sq. ft. broadcast/preplant \u2014 scaled down from NC State\u2019s 20\u201325 lbs/acre vegetable-garden guideline (tomatoes, peppers, brassicas). Most soluble, most commonly used Mn source. <strong>Best for acidic-to-neutral soils (pH below ~6.8)</strong> \u2014 availability drops sharply above pH 7.5. VCE notes Mn deficiency is seldom a problem in Virginia except on sandy Coastal Plain soils; retest pH first if a deficiency shows up unexpectedly. Avoid over-application, especially in already-acidic soil \u2014 excess Mn can cause leaf browning and reduced vigor. <em>(NC State Extension \u2014 Torres Quezada, 2024; VCE 426-323, Table 1)</em>' },
+      note:'~0.05 lbs per 100 sq. ft. broadcast/preplant \u2014 scaled down from NC State\u2019s 20\u201325 lbs/acre vegetable-garden guideline (tomatoes, peppers, brassicas). At small-bed scale this is often too little dry material to broadcast evenly by hand \u2014 <strong>dissolve the calculated amount in 1\u20132 gallons of water and pour evenly over the bed instead</strong> (water-soluble fertilizers can be applied this way in place of dry broadcast; Hood College FFSN school garden curriculum). Most soluble, most commonly used Mn source. <strong>Best for acidic-to-neutral soils (pH below ~6.8)</strong> \u2014 availability drops sharply above pH 7.5. VCE notes Mn deficiency is seldom a problem in Virginia except on sandy Coastal Plain soils; retest pH first if a deficiency shows up unexpectedly. Avoid over-application, especially in already-acidic soil \u2014 excess Mn can cause leaf browning and reduced vigor. <em>(NC State Extension \u2014 Torres Quezada, 2024; VCE 426-323, Table 1)</em>' },
     { name:'Manganese Sulfate (28\u201332% Mn) \u2014 sized to report target', organic:false, calc:'target', pct:30, unit:'Mn', verified:true,
-      note:'Same product as above, sized from your Waypoint report\u2019s own Mn target instead of the flat rate. <em>(NC State Extension \u2014 Torres Quezada, 2024)</em>' },
+      note:'Same product as above, sized from your Waypoint report\u2019s own Mn target instead of the flat rate. This is often an even smaller amount than the flat rate \u2014 dissolve it in 1\u20132 gallons of water and pour evenly over the bed rather than broadcasting the dry powder. <em>(NC State Extension \u2014 Torres Quezada, 2024)</em>' },
     { name:'Chelated Manganese (for alkaline soils, pH above 7.0)', organic:false, calc:'none', verified:true,
       note:'Follow the product label \u2014 chelated forms vary 5\u201312% Mn by brand and stay available even in alkaline soil, where manganese sulfate becomes far less effective. A foliar spray (product label rate) corrects an in-season deficiency faster than a soil application; soil application suits preplant correction better. <em>(NC State Extension \u2014 Torres Quezada, 2024)</em>' }
   ],
@@ -5173,7 +5220,7 @@ var NUTRIENT_AMENDMENTS = {
     { name:'Borax (liquid method)', organic:false, calc:'none', verified:true,
       note:'1 tbsp per gallon of water, applied per 100 sq. ft. <em>(University of Maryland Extension \u2014 supplements VCE, which recommends regular organic matter additions as the primary way boron is managed; see VCE 426-323, Table 1.)</em>' },
     { name:'Borax (granular, weighed to target)', organic:false, calc:'target', pct:11, unit:'B', verified:true,
-      note:'Sized from your Waypoint report\u2019s own B target (borax, Na\u2082B\u2084O\u2087\u00b710H\u2082O, is about 11% B by formula weight). Boron has a very narrow safe range \u2014 measure by weight, not volume, and don\u2019t exceed the calculated amount. <em>(No verified bulk density source found \u2014 weigh for accuracy.)</em>' }
+      note:'Sized from your Waypoint report\u2019s own B target (borax, Na\u2082B\u2084O\u2087\u00b710H\u2082O, is about 11% B by formula weight). This is usually only a few grams \u2014 far too little to broadcast evenly as a dry powder by hand. <strong>Dissolve the calculated amount in 1\u20132 gallons of water and pour evenly over the bed instead</strong> (water-soluble fertilizers can be applied this way in place of dry broadcast; Hood College FFSN school garden curriculum). This matters more for boron than most nutrients: boron has the narrowest gap between deficient and toxic of any plant nutrient, so an uneven dry application risks a locally toxic patch even when the total amount is correct \u2014 dissolving and pouring is not just more convenient here, it\u2019s the safer method. If you\u2019d rather avoid weighing out a tiny dry quantity at all, the liquid method above uses the same product at an already-diluted, VCE/UMD-sourced rate. <em>(No verified bulk density source found for the dry product \u2014 weigh for accuracy if measuring dry.)</em>' }
   ]
 };
 // VCE Note 19 and 426-323, Table 1 both describe S, Zn, Mn, and Cu deficiencies as "seldom a

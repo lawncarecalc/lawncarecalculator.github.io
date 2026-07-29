@@ -239,7 +239,10 @@ Zn, Mn, Cu, Fe, B) reading ratings directly from the Soil Test tab's canonical f
 **Manganese (added July 26, NC State Extension — Torres Quezada 2024):** Manganese Sulfate
 (28–32% Mn) flat ~0.05 lbs/100 sq ft (scaled from 20–25 lbs/acre), plus a sized-to-target variant,
 plus Chelated Manganese for alkaline soils. Mn removed from `NUTRIENT_NO_RATE_NOTE` accordingly.
-S, Zn, Cu remain in `NUTRIENT_NO_RATE_NOTE` ("seldom a problem… no rate published").
+S, Zn, Cu remain in `NUTRIENT_NO_RATE_NOTE` ("seldom a problem… no rate published"). **Both Mn
+entries and Borax's "granular, weighed to target" entry now recommend dissolving the calculated
+amount in 1–2 gallons of water and pouring over the bed, rather than dry-broadcasting — see
+"Application method for tiny quantities" in the July 27–28 session notes for the full reasoning.**
 
 **Waypoint numeric targets are entered inline** in each nutrient's own row (`gdnTargets` JS state
 object, `gdnSetTarget()`), not in a separate grid — see Key Functions table.
@@ -428,6 +431,7 @@ jumps to About & Instructions; "No thanks" dismisses. Either hides it for the se
 24. **(Added July 27)** Always call the shared `isGardenReport()` / `isWaypointReport()` / `soilTestPurpose()` helpers to inspect `st-report-type` — never re-implement the check locally (e.g. `rt.indexOf('garden')`). A stale local re-implementation of this exact check in both `carryOverToCalculators()` and `interpretSoilTest()` silently broke garden/flower/shrub carry-over and soil-test interpretation for an entire session after the report-type scheme changed from 4 values to 8 (see July 27 session notes). Any future change to the `st-report-type` value scheme must `grep` the whole file for every raw string inspection of report-type values, not just confirm the shared helpers were updated
 25. **(Added July 27)** Tab bar buttons must NOT use the strict ARIA "roving tabindex" pattern (only the active tab in the Tab sequence, `tabindex="-1"` on the rest) — confirmed via live testing on the deployed site that this causes a real, reported "Tab skips the next tab" experience. Every visible, enabled tab button keeps `tabindex="0"` at all times; arrow-key navigation between tabs is offered as an addition, not a replacement, for sequential Tab
 26. **(Added July 27)** When a reported bug can't be reproduced via static code reading, live-test the actual deployed page (a real, publicly reachable URL) with simulated keyboard/mouse input and `document.activeElement`/DOM inspection — this sandbox cannot reach a locally-hosted file from the real browser (file://, localhost, and data: URLs are all blocked from that context), so static analysis alone repeatedly failed to catch two real, confirmed bugs this session that live testing found immediately
+27. **(Added July 28)** Never write a citation URL into the app or About tab based on a search-result snippet alone — navigate to (or `fetch()`) the actual URL and confirm it resolves (HTTP 200, correct content type) before citing it. A source first attributed to "Maryland Department of Agriculture" from a snippet turned out, on direct verification, to be a 404 — the real document was hosted by Hood College instead. The organization named in a search snippet's displayed URL path is not guaranteed to be who's actually hosting the content once you follow the link
 
 ---
 
@@ -2383,5 +2387,136 @@ scheme change, not just checking that the helper functions themselves were updat
 | :-- | :-- |
 | `index.html` | Tab-bar `tabindex` fixed (About & Instructions no longer skipped by sequential Tab); critical stale `isGarden` substring check fixed in `carryOverToCalculators()` and `interpretSoilTest()` |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 27–28, 2026 (Manganese pH-threshold verification, application-method fix for small quantities, About tab bibliography additions)
+
+### Context
+User pointed out a manufacturer's product page (Greenway Biotech, chelated manganese EDTA) gives a
+different pH crossover point than what's in the app, and separately raised that the app's
+manganese sulfate flat rate (0.05 lbs/100 sq ft) computes to an amount that's genuinely too small
+to broadcast evenly by hand on a typical small bed (e.g., ~0.02 lbs / ~2 tsp on a 40 sq ft bed).
+
+### pH threshold cross-check (thorough multi-source search performed)
+Compared the app's existing NC State-sourced guidance (Mn sulfate effective below ~6.8, sharp
+availability drop above 7.5; switch to chelated above 7.0) against Greenway Biotech's page (sulfate
+"unreliable" above 5.5; switch to chelated at 5.5; chelate itself stops working above 7.0).
+
+Searched seven independent sources to adjudicate:
+- **Cornell Nutrient Management Spear Program** (Factsheet 49): Mn most available pH 5–6.5; above
+  6.5 could cause deficiency
+- **University of Maryland Extension**: Mn less available above pH 6.5
+- **Michigan State University Extension**: deficiency most likely above pH 6.5
+- **University of Wisconsin–Madison** (A2526): toxicity below 5.5, deficiency risk rises toward
+  neutral/alkaline
+- **University of Delaware**: Manganese Availability Index formula (continuous decline with rising
+  pH, not a hard cutoff)
+- **Zubieta et al., 2025** — *Agrosystems, Geosciences & Environment* (University of Florida,
+  peer-reviewed, open access, Wiley/ASA-CSSA): directly tested MnSO₄ vs. Mn-EDTA in the field;
+  found **no yield or leaf-Mn difference between the two product forms**, and concluded foliar Mn
+  generally isn't needed below soil pH 6.2
+- **Purdue University Extension** (AY-276-W): states Mn-EDTA chelate is **not as effective** as Mn
+  sulfate for foliar application tank-mixed with glyphosate — directly contradicts Greenway
+  Biotech's claim that EDTA is "preferred for glyphosate mixes"
+
+**Conclusion:** every neutral source clusters around pH 6.0–6.5 as the meaningful threshold — not
+5.5. This matches the app's existing NC State-sourced guidance closely and does **not** support the
+manufacturer's earlier crossover point. The manufacturer's pH claims are unattributed marketing
+copy on the same page that does properly cite Delaware/Virginia/Cornell/Michigan State for a
+different claim (field rates) — the pH thresholds themselves carry no citation. Combined with the
+Purdue contradiction on a second specific technical claim (glyphosate compatibility), and the
+inherent conflict of interest (a manufacturer's own product page recommending an earlier switch to
+its pricier chelated product), the app's existing threshold was left unchanged as the better-
+supported figure. **No source meeting this project's standard was found to justify changing it.**
+Commercial/manufacturer sources remain excluded from this app's sourcing per existing policy —
+this was a real-world test of that policy holding up under an actual disagreement, not just a
+restatement of it.
+
+### Application method for tiny quantities (the more actionable finding)
+Separately searched for a legitimate source specifically for a manganese-sulfate-in-water soil
+drench dilution rate (e.g., "X teaspoons per gallon"), since dry-broadcasting ~0.02 lbs of powder
+over a 40 sq ft bed by hand is not practically achievable and risks patchy over/under-application —
+worse for boron than manganese, given boron's narrow deficient-to-toxic margin.
+
+**Result: no qualifying source found.** Every result for "manganese sulfate soil drench" was
+commercial or unverified consumer content (succulentes.net, Alibaba/lifetips, BioLogix, BRANDT,
+Sprinkler Warehouse, Facebook/Instagram posts, Greenway Biotech again) — the same "1–2 tsp/tbsp per
+gallon" figure repeats across many of these, but repetition across non-authoritative sources does
+not confer legitimacy under this project's rule, and no per-gallon concentration rate was added to
+the app on that basis.
+
+**The actual fix needed no new citation.** The insight: the *rate* (total weight of Mn needed) is
+already correctly sourced (NC State) — what was missing was application *method* guidance, and a
+water-dissolve method doesn't need its own separate sourced dilution ratio, because it isn't a new
+dose — it's a more practical way to deliver the same already-correct total amount evenly.
+Concentration in the water doesn't affect total Mn delivered to the bed; only total amount and
+even distribution matter. This is supported by a legitimate, if general, source: a school/community
+garden curriculum document, *Soil Amendments and Fertilizers*, hosted by **Hood College's Center
+for Coastal and Watershed Studies** as part of their Farm to Fork/Food Systems Network (FFSN),
+states plainly that a water-soluble fertilizer can be "dissolved in water... used as a foliar spray
+or applied directly to soil" — confirming the general principle without needing a manganese-
+specific rate. **Correction, logged so the mistake pattern is visible:** this was first attributed
+to "Maryland Department of Agriculture" based on a search-result snippet, without navigating to the
+actual URL. When later verified directly (a live HTTP fetch), that guessed `mda.maryland.gov` URL
+404'd — the real, working document is the Hood College one above (confirmed via `fetch()` returning
+HTTP 200, `content-type: application/pdf`). Both the About tab entry and the two inline code
+citations (Manganese Sulfate, granular Borax) were corrected to the verified attribution. **Lesson:
+always navigate to and verify a source URL directly before writing it into a citation — a search
+snippet describing where a source is hosted is not the same as confirming the actual link
+resolves.**
+
+**Applied to both Manganese Sulfate entries** (flat and sized-to-target) in `NUTRIENT_AMENDMENTS.Mn`:
+notes now recommend dissolving the calculated amount in 1–2 gallons of water and pouring evenly
+over the bed instead of dry broadcast, citing the MD Dept. of Agriculture principle.
+
+**Also applied to Boron** — user asked directly whether the same reasoning extends to Borax. It
+does, and matters more there: boron has the narrowest deficient-to-toxic margin of any plant
+nutrient (well-established across virtually every source on boron), so uneven dry distribution
+risks a locally toxic patch even when the total amount is correct — dissolving isn't just more
+convenient for boron, it's the safer method. The existing "Borax (liquid method)" entry already had
+a real sourced rate (UMD Extension, 1 tbsp/gallon/100 sq ft) and needed no change. The **"Borax
+(granular, weighed to target)"** entry — the one sized from a Waypoint numeric target, which is
+often just a few grams — did not have this guidance and now does, with the boron-specific safety
+reasoning made explicit in the note, plus a pointer back to the already-diluted liquid method as an
+alternative for users who'd rather not weigh out a tiny dry quantity at all.
+
+### Process note — a confirmation didn't actually get implemented
+User said "yes" to the Manganese drench-method fix in an earlier turn this session; that turn's
+response acknowledged the change but the actual code edit was never made. This was caught only
+because implementing the parallel Boron fix required re-reading the current Manganese code first,
+at which point the note text was found unchanged. **Lesson: verify a described change actually
+landed in the file (grep for the new text) before treating a "yes" as done, not just after saying
+so** — do not assume a conversational confirmation implies the corresponding tool calls occurred
+unless independently checked.
+
+### About tab bibliography — four sources added, one caught and corrected via direct URL
+### verification (had been missing/wrong since first cited in code)
+Cross-checked the About tab's Source Documents section against every citation string actually used
+in the code (not just spot-checked) and found gaps:
+- **NC State Extension — Torres Quezada, 2024** (manganese) — added to the existing "UMD, Clemson,
+  Rutgers, NC State & Mid-Atlantic Veg Guide" collapsible, alongside the pre-existing generic NC
+  State entry
+- **Ohio State University Extension, Ohioline FABE-550** and **NMSU Cooperative Extension Guide
+  H-119** — given their own new collapsible, "Bulk Density / Volume Conversion Sources," since
+  they're a different kind of source (physical density data, not agronomic recommendations,
+  neither from a Virginia/Mid-Atlantic institution) and needed their own framing note explaining
+  the narrow exception under which they're cited
+- **Hood College FFSN "Soil Amendments and Fertilizers"** (the drench-method source, see above) —
+  added alongside the manganese entry. Caught and corrected mid-addition: initially written in as
+  "Maryland Department of Agriculture" from a search snippet without checking the actual URL; a
+  live `fetch()` verification found that guessed URL 404'd, and the real, working document
+  (confirmed HTTP 200) turned out to be hosted by Hood College instead. Both the About tab entry
+  and the two inline code citations were corrected to match.
+- New JS function `toggleAboutDensitySources()` added, matching the existing per-section toggle
+  pattern (`toggleAboutSuppSources()`, etc.)
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Manganese pH threshold verified against 7 independent sources (unchanged, now better-documented); drench-application guidance added to both Manganese Sulfate entries and the granular-target Borax entry; 4 sources added to About tab bibliography (one caught and corrected via direct URL verification after an initial wrong attribution) |
+| `CLAUDE.md` | this entry |
+
+
 
 
