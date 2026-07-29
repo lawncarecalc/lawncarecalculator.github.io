@@ -702,6 +702,15 @@
     body.printing-flower #flr-results,
     body.printing-shrub  #shrub-results       { display: block !important; }
 
+    /* Timing cards: excluded from print by default (.timing-card above), but the specific tab
+       being printed should include its own Timing of Applications section — otherwise the
+       printed plan is missing when to actually apply what it just calculated. */
+    body.printing-cool   #tab-cool   .timing-card,
+    body.printing-warm   #tab-warm   .timing-card,
+    body.printing-garden #tab-garden .timing-card,
+    body.printing-flower #tab-flower .timing-card,
+    body.printing-shrub   #tab-shrub  .timing-card { display: block !important; }
+
     /* Results card visible for printing */
     .results-card { display: block !important; }
 
@@ -1755,17 +1764,17 @@
     <h2 class="sr-only">Lime Calculator</h2>
     <div class="calc-layout">
         <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">🧪</span> Lime Calculator for Lawns</h3>
+          <h3 class="card-header"><span class="icon" aria-hidden="true">🧪</span> Lime Calculator for Lawns &amp; Gardens</h3>
           <div class="card-body">
             <div class="field-group">
-              <div class="field-label"><span class="field-num">1</span><label class="field-question" for="lime-lawn-size">What is the size of your lawn in square feet?</label></div>
+              <div class="field-label"><span class="field-num">1</span><label class="field-question" for="lime-lawn-size">What is the size of your lawn or garden bed in square feet?</label></div>
               <input type="number" id="lime-lawn-size" placeholder="e.g. 5000" oninput="calcLime()">
-              <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn.</div>
+              <div style="font-size:0.76rem;color:var(--slate-light);font-style:italic;margin-top:4px;">Don't know your exact size? Enter 1000 to see results per 1,000 sq. ft., then scale to your lawn or garden.</div>
             </div>
             <div class="field-group">
-              <div class="field-label"><span class="field-num">2</span><label class="field-question" for="lime-rec">How much lime is recommended on your VCE Soil Test Report?</label></div>
+              <div class="field-label"><span class="field-num">2</span><label class="field-question" id="lime-rec-label" for="lime-rec">How much lime is recommended on your VCE or Waypoint Soil Test Report?</label></div>
               <input type="number" id="lime-rec" min="0" step="0.5" placeholder="lbs. per 1,000 sq. ft." oninput="calcLime()">
-              <div class="field-hint">Reported in lbs. per 1,000 sq. ft. at the bottom of your soil test report under Lime Recommendations.</div>
+              <div class="field-hint" id="lime-rec-hint">Reported at the bottom of your soil test report under Lime Recommendations. VCE lawn reports and all Waypoint reports: lbs. per 1,000 sq. ft. <strong>VCE vegetable/flower garden reports: lbs. per 100 sq. ft.</strong> — enter the number exactly as printed; this calculator converts automatically based on what you selected on the Soil Test tab.</div>
             </div>
             <div class="field-group">
               <div class="field-label"><span class="field-num">3</span><label class="field-question" for="lime-type">What type of lime is recommended?</label></div>
@@ -1847,6 +1856,19 @@
               <div class="field-label"><span class="field-num">1</span><label class="field-question" id="gdn-lime-rec-label" for="gdn-lime-rec">Lime recommendation from your report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="gdn-lime-rec" min="0" step="0.5" placeholder="e.g. 5" oninput="calcGarden()">
               <div class="field-hint" id="gdn-lime-rec-hint">Leave blank if no lime was recommended. VCE reports lime in lbs/100 sq. ft. Waypoint garden reports lime in lbs/1,000 sq. ft. — the calculator converts automatically.</div>
+              <!-- CCE + bag size — added here so this tab gives a complete, precise lime answer
+                   on its own, instead of sending you to a separate Lime tab for these two fields. -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+                <div>
+                  <label for="gdn-lime-cce" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Lime's CCE % <span style="color:var(--slate-light);">(optional — from the bag)</span></label>
+                  <input type="number" id="gdn-lime-cce" min="0" max="175" placeholder="e.g. 100" oninput="calcGarden()">
+                </div>
+                <div>
+                  <label for="gdn-lime-bag-size" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Bag size (lbs.) <span style="color:var(--slate-light);">(optional)</span></label>
+                  <input type="number" id="gdn-lime-bag-size" min="0" placeholder="e.g. 40" oninput="calcGarden()">
+                </div>
+              </div>
+              <div class="field-hint" style="margin-top:6px;">Calcium Carbonate Equivalent (CCE) is listed as a percentage under Guaranteed Analysis on the bag &mdash; pelletized lime is usually near 100%, calcitic 80&ndash;100%, dolomitic 95&ndash;108%. Leave blank to assume 100%. <strong>Gypsum (calcium sulfate) has no CCE</strong> &mdash; it does not raise pH and is not lime. <em>(VCE 452-510)</em></div>
             </div>
 
             <!-- Crop type selector with N rate guidance -->
@@ -2132,80 +2154,90 @@
               <div class="field-hint" id="flr-n-rec-hint">Soil tests don't measure nitrogen — nitrate-N is highly mobile and can leach out within a day or two of rain, so a snapshot measurement wouldn't stay accurate. Enter the N figure from your VCE or Waypoint report if you have one, or leave blank to use the research-based default for your flower type. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
             </div>
 
-            <!-- P and K ratings -->
-            <div class="field-group">
-              <div class="field-label"><span class="field-num">4</span><label class="field-question" for="flr-p-rating">Phosphorus (P) rating from your soil test?</label></div>
-              <select id="flr-p-rating" onchange="calcFlower()">
-                <option value="">- Select rating -</option>
-                <optgroup label="VCE / Virginia Tech">
-                  <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
-                  <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
-                  <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
-                  <option value="VH">VH</option>
-                </optgroup>
-                <optgroup label="Waypoint Analytical">
-                  <option value="VL">Very Low</option><option value="LO">Low</option>
-                  <option value="ME">Medium</option><option value="OP">Optimum</option>
-                  <option value="VH2">Very High</option>
-                </optgroup>
-              </select>
-            </div>
-            <div class="field-group">
-              <div class="field-label"><span class="field-num">5</span><label class="field-question" for="flr-k-rating">Potassium (K) rating from your soil test?</label></div>
-              <select id="flr-k-rating" onchange="calcFlower()">
-                <option value="">- Select rating -</option>
-                <optgroup label="VCE / Virginia Tech">
-                  <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
-                  <option value="M-">M-</option><option value="M">M</option><option value="M+">M+</option>
-                  <option value="H-">H-</option><option value="H">H</option><option value="H+">H+</option>
-                  <option value="VH">VH</option>
-                </optgroup>
-                <optgroup label="Waypoint Analytical">
-                  <option value="VL">Very Low</option><option value="LO">Low</option>
-                  <option value="ME">Medium</option><option value="OP">Optimum</option>
-                  <option value="VH2">Very High</option>
-                </optgroup>
-              </select>
-            </div>
+            <!-- P and K ratings removed (July 28) — now auto-filled from the Soil Test tab's
+                 canonical fields (st-p-rating/st-k-rating), same as Ca/Mg/S/micronutrients below,
+                 whenever "Individual N, P, K Fertilizers" mode is chosen. In "Complete Fertilizer"
+                 mode P/K are supplied by that single product instead. -->
 
-            <!-- Fertilizer product -->
+            <!-- Fertilizer mode: Complete N-P-K product, or individual single-nutrient fertilizers -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">6</span><span class="field-question">Fertilizer: enter N-P-K grade or choose a common product</span></div>
+              <div class="field-label"><span class="field-num">4</span><span class="field-question">How do you want to fertilize?</span></div>
               <div style="display:flex;gap:8px;margin-bottom:10px;">
-                <button id="flr-fert-mode-npk" class="st-unit-btn active" onclick="setFlowerFertMode('npk')" style="padding:5px 14px;font-size:0.82rem;">Enter N-P-K</button>
-                <button id="flr-fert-mode-product" class="st-unit-btn" onclick="setFlowerFertMode('product')" style="padding:5px 14px;font-size:0.82rem;">Choose Product</button>
+                <button id="flr-fertmode-complete" class="st-unit-btn active" onclick="setFlowerFertilizerMode('complete')" style="padding:5px 14px;font-size:0.82rem;">Complete N-P-K Fertilizer</button>
+                <button id="flr-fertmode-individual" class="st-unit-btn" onclick="setFlowerFertilizerMode('individual')" style="padding:5px 14px;font-size:0.82rem;">Individual N, P, K Fertilizers</button>
               </div>
-              <div id="flr-fert-npk">
-                <div class="npk-row">
-                  <div class="npk-item"><label for="flr-fert-n">N %</label><input type="number" id="flr-fert-n" min="0" max="100" placeholder="0" oninput="calcFlower()"></div>
-                  <div class="npk-item"><label for="flr-fert-p">P %</label><input type="number" id="flr-fert-p" min="0" max="100" placeholder="0" oninput="calcFlower()"></div>
-                  <div class="npk-item"><label for="flr-fert-k">K %</label><input type="number" id="flr-fert-k" min="0" max="100" placeholder="0" oninput="calcFlower()"></div>
+
+              <!-- Complete Fertilizer mode: one N-P-K product supplies all three nutrients together.
+                   This is the default, least-surprising choice and matches how this tab has always
+                   worked. Phosphorus and potassium are NOT tracked separately in this mode — they're
+                   a byproduct of whichever grade is chosen to hit the nitrogen target — so the
+                   Nutrient Status panel below suppresses its P/K rows to avoid double-applying both. -->
+              <div id="flr-fertmode-complete-body">
+                <p style="font-size:0.78rem;color:var(--slate-mid);margin:0 0 8px;">One product supplies nitrogen, phosphorus, and potassium together. If your soil test already rates P or K High or Very High, consider a lower-P/K grade below to avoid over-application.</p>
+                <div style="display:flex;gap:8px;margin-bottom:10px;">
+                  <button id="flr-fert-mode-npk" class="st-unit-btn active" onclick="setFlowerFertMode('npk')" style="padding:5px 14px;font-size:0.82rem;">Enter N-P-K</button>
+                  <button id="flr-fert-mode-product" class="st-unit-btn" onclick="setFlowerFertMode('product')" style="padding:5px 14px;font-size:0.82rem;">Choose Product</button>
+                </div>
+                <div id="flr-fert-npk">
+                  <div class="npk-row">
+                    <div class="npk-item"><label for="flr-fert-n">N %</label><input type="number" id="flr-fert-n" min="0" max="100" placeholder="0" oninput="calcFlower()"></div>
+                    <div class="npk-item"><label for="flr-fert-p">P %</label><input type="number" id="flr-fert-p" min="0" max="100" placeholder="0" oninput="calcFlower()"></div>
+                    <div class="npk-item"><label for="flr-fert-k">K %</label><input type="number" id="flr-fert-k" min="0" max="100" placeholder="0" oninput="calcFlower()"></div>
+                  </div>
+                </div>
+                <div id="flr-fert-product" style="display:none;">
+                  <select id="flr-product-select" aria-label="Select a fertilizer product" onchange="onFlowerProductSelect()">
+                    <option value="">- Select a product -</option>
+                    <optgroup label="Synthetic — Complete Fertilizers">
+                      <option value="10-10-10">10-10-10 (General Purpose)</option>
+                      <option value="5-10-5">5-10-5 (lower N, higher P — good for flowering)</option>
+                      <option value="calcium-nitrate">Calcium Nitrate (15.5-0-0) — roses, sidedress</option>
+                    </optgroup>
+                    <optgroup label="Organic Sources">
+                      <option value="blood-meal">Blood Meal (~13-0-0) — medium-rapid release</option>
+                      <option value="fish-emulsion">Fish Emulsion (~5-1-1) — liquid, fast</option>
+                      <option value="soybean-meal">Soybean Meal (~7-2-1) — slow-medium release</option>
+                      <option value="cottonseed-meal">Cottonseed Meal (~7-3-2) — slow-medium, acidifying</option>
+                      <option value="bone-meal">Bone Meal (~1-15-0) — P source for bulbs</option>
+                      <option value="poultry-manure">Poultry Manure (~3-2-2) — slow release</option>
+                    </optgroup>
+                  </select>
+                  <div id="flr-product-note" style="font-size:0.8rem;color:var(--slate-mid);margin-top:6px;"></div>
                 </div>
               </div>
-              <div id="flr-fert-product" style="display:none;">
-                <select id="flr-product-select" aria-label="Select a fertilizer product" onchange="onFlowerProductSelect()">
-                  <option value="">- Select a product -</option>
-                  <optgroup label="Synthetic — Complete Fertilizers">
-                    <option value="10-10-10">10-10-10 (General Purpose)</option>
-                    <option value="5-10-5">5-10-5 (lower N, higher P — good for flowering)</option>
-                    <option value="calcium-nitrate">Calcium Nitrate (15.5-0-0) — roses, sidedress</option>
+
+              <!-- Individual mode: Nitrogen Source only, single-nutrient (no blended NPK products).
+                   P/K/Ca/Mg/S/micronutrients are addressed individually in the Nutrient Status
+                   panel below instead of asked here. -->
+              <div id="flr-fertmode-individual-body" style="display:none;">
+                <p style="font-size:0.78rem;color:var(--slate-mid);margin:0 0 8px;">Nitrogen is addressed on its own below; phosphorus, potassium, calcium, magnesium, sulfur, and micronutrients each get their own amendment in the Nutrient Status panel in the results, pulled automatically from the Soil Test tab.</p>
+                <label class="field-question" for="flr-n-source" style="font-size:0.85rem;display:block;margin-bottom:6px;">Nitrogen source</label>
+                <select id="flr-n-source" onchange="calcFlower()">
+                  <option value="">- Select a nitrogen source -</option>
+                  <optgroup label="Synthetic — Nitrogen Only">
+                    <option value="calcium-nitrate">Calcium Nitrate (15.5-0-0) — preferred sidedress</option>
+                    <option value="nitrate-soda">Nitrate of Soda (16-0-0)</option>
+                    <option value="ammonium-sulfate">Ammonium Sulfate (21-0-0)</option>
+                    <option value="urea">Urea (46-0-0)</option>
+                    <option value="ammonium-nitrate">Ammonium Nitrate (34-0-0)</option>
                   </optgroup>
-                  <optgroup label="Organic Sources">
-                    <option value="blood-meal">Blood Meal (~13-0-0) — medium-rapid release</option>
-                    <option value="fish-emulsion">Fish Emulsion (~5-1-1) — liquid, fast</option>
-                    <option value="soybean-meal">Soybean Meal (~7-2-1) — slow-medium release</option>
-                    <option value="cottonseed-meal">Cottonseed Meal (~7-3-2) — slow-medium, acidifying</option>
-                    <option value="bone-meal">Bone Meal (~1-15-0) — P source for bulbs</option>
-                    <option value="poultry-manure">Poultry Manure (~3-2-2) — slow release</option>
+                  <optgroup label="Organic — by guaranteed analysis %">
+                    <option value="blood-meal">Blood Meal (13% N) — medium-rapid release</option>
+                    <option value="fish-meal">Fish Meal (10% N) — medium-fast release</option>
+                    <option value="feather-meal">Feather Meal (10% N) — slow release</option>
+                    <option value="soybean-meal">Soybean Meal (7% N) — slow-medium release</option>
+                    <option value="cottonseed-meal">Cottonseed Meal (6% N) — slow-medium release</option>
+                    <option value="poultry-manure">Poultry Manure (~3% N) — slow release</option>
+                    <option value="bat-guano">Bat Guano (10% N) — medium-rapid release</option>
                   </optgroup>
                 </select>
-                <div id="flr-product-note" style="font-size:0.8rem;color:var(--slate-mid);margin-top:6px;"></div>
+                <div id="flr-n-source-note" style="font-size:0.78rem;color:var(--slate-mid);margin-top:6px;"></div>
               </div>
             </div>
 
             <!-- Bed status -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">7</span><label class="field-question" for="flr-bed-status">Is this a new (preplant) or established bed?</label></div>
+              <div class="field-label"><span class="field-num">5</span><label class="field-question" for="flr-bed-status">Is this a new (preplant) or established bed?</label></div>
               <select id="flr-bed-status" onchange="calcFlower()">
                 <option value="established">Established bed</option>
                 <option value="preplant">New bed (preplant — before planting)</option>
@@ -2214,9 +2246,22 @@
 
             <!-- Lime recommendation -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">8</span><label class="field-question" id="flr-lime-rec-label" for="flr-lime-rec">Lime recommendation from your report (lbs per 100 sq. ft.)?</label></div>
+              <div class="field-label"><span class="field-num">6</span><label class="field-question" id="flr-lime-rec-label" for="flr-lime-rec">Lime recommendation from your report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="flr-lime-rec" min="0" step="1" placeholder="e.g. 5" oninput="calcFlower()">
               <div class="field-hint" id="flr-lime-rec-hint">Leave blank if no lime was recommended. VCE reports garden lime in lbs/100 sq. ft. Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
+              <!-- CCE + bag size — added here so this tab gives a complete, precise lime answer
+                   on its own, instead of sending you to a separate Lime tab for these two fields. -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+                <div>
+                  <label for="flr-lime-cce" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Lime's CCE % <span style="color:var(--slate-light);">(optional — from the bag)</span></label>
+                  <input type="number" id="flr-lime-cce" min="0" max="175" placeholder="e.g. 100" oninput="calcFlower()">
+                </div>
+                <div>
+                  <label for="flr-lime-bag-size" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Bag size (lbs.) <span style="color:var(--slate-light);">(optional)</span></label>
+                  <input type="number" id="flr-lime-bag-size" min="0" placeholder="e.g. 40" oninput="calcFlower()">
+                </div>
+              </div>
+              <div class="field-hint" style="margin-top:6px;">Calcium Carbonate Equivalent (CCE) is listed as a percentage under Guaranteed Analysis on the bag &mdash; pelletized lime is usually near 100%, calcitic 80&ndash;100%, dolomitic 95&ndash;108%. Leave blank to assume 100%. <strong>Gypsum (calcium sulfate) has no CCE</strong> &mdash; it does not raise pH and is not lime. <em>(VCE 452-510)</em></div>
             </div>
 
             <!-- Excess-N caution — always visible on flower tab -->
@@ -2227,11 +2272,23 @@
           </div>
         </div>
 
-        <!-- Results card -->
-        <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">📋</span> Fertilizer &amp; Lime Plan</h3>
-          <div class="card-body" id="flr-results" aria-live="polite" aria-atomic="false">
-            <p style="color:var(--slate-light);font-size:0.875rem;">Select flower type and enter bed size to see recommendations.</p>
+        <!-- Results card — merged, matching Vegetable Garden's pattern. Fertilizer/N section first
+             (shape depends on Complete vs Individual mode), then Phosphorus/Potassium/Other
+             Nutrients (P/K rows suppressed in Complete mode), one Print button after both. -->
+        <div class="card results-card">
+          <h3 class="card-header"><span class="icon" aria-hidden="true">📋</span> Nutrient Application Plan</h3>
+          <div class="card-body">
+            <h4 style="font-size:0.85rem;color:var(--green-deep);margin:0 0 8px;">Fertilizer</h4>
+            <div id="flr-results" aria-live="polite" aria-atomic="false">
+              <p style="color:var(--slate-light);font-size:0.875rem;">Select flower type and enter bed size to see recommendations.</p>
+            </div>
+            <div id="flr-nutrient-status-card" style="display:none;margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+              <h4 style="font-size:0.85rem;color:var(--green-deep);margin:0 0 8px;">Phosphorus, Potassium &amp; Other Nutrients</h4>
+              <div id="flr-nutrient-status" aria-live="polite" aria-atomic="false"></div>
+            </div>
+            <div id="flr-print-btn-wrap" style="display:none;">
+              <button class="print-plan-btn no-print" onclick="printPlan('flower')" style="margin-top:14px;">&#128424; Print Plan</button>
+            </div>
           </div>
         </div>
 
@@ -2830,7 +2887,22 @@
                 <div class="about-source">
                   <div class="about-source-title"><a href="https://content.ces.ncsu.edu/the-importance-of-manganese-in-vegetable-crop-nutrition-in-north-carolina" target="_blank" rel="noopener" style="color:var(--green-mid);">NC State Extension — The Importance of Manganese in Vegetable Crop Nutrition in North Carolina<span class="sr-only"> (opens in new tab)</span></a></div>
                   <div class="about-source-meta">Emmanuel Torres Quezada, Assistant Professor &amp; Vegetable Specialist &mdash; NC State Extension, 2024</div>
-                  <p>Source for: Manganese Sulfate application rates for tomatoes, peppers, and brassicas (20&ndash;25 lbs/acre broadcast, scaled to this calculator's home-garden rate), the soil pH threshold where Mn availability drops sharply (above pH 7.5) versus where it's enhanced (below pH 6.0), Chelated Manganese as the preferred source for alkaline soils, and the toxicity caution against over-application in already-acidic soil.</p>
+                  <p>Source for the Manganese Sulfate application rate (20&ndash;25 lbs/acre broadcast for tomatoes, peppers, and brassicas, scaled to this calculator's home-garden rate) and the Chelated Manganese product guidance. <strong>This is a vegetable-crop-specific source</strong> &mdash; the rate is not separately validated for ornamental/flower plantings, though it's the closest sourced application rate available and used there for lack of a flower-specific equivalent. The pH-availability relationship itself is general soil chemistry rather than crop-specific; see the three corroborating sources below.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title">Cornell Nutrient Management Spear Program — Factsheet 49, Manganese</div>
+                  <div class="about-source-meta">Cornell University Cooperative Extension</div>
+                  <p>Independently confirms the manganese-availability-by-pH threshold: "most available at soil pH levels of 5 to 6.5... above 6.5 could lead to Mn deficiency" &mdash; corroborates the NC State-sourced rate above with a source not tied to any one crop type.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title">University of Maryland Extension — Manganese Deficiency</div>
+                  <div class="about-source-meta">University of Maryland Extension</div>
+                  <p>Independently confirms the same pH threshold: manganese becomes less available "particularly in soils with a pH above 6.5."</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title">Michigan State University Extension — Manganese Deficiency</div>
+                  <div class="about-source-meta">Michigan State University Extension</div>
+                  <p>Independently confirms the same pH threshold: deficiency is "most likely to occur... on soils with a pH above 6.5." Cross-checked against a manufacturer's product page (Greenway Biotech) that claimed a lower pH 5.5 switch-over point to its chelated product; that claim was unsourced on the manufacturer's own page and contradicted by this and the two sources above, so it was not adopted.</p>
                 </div>
                 <div class="about-source">
                   <div class="about-source-title"><a href="https://www.hood.edu/sites/default/files/Coastal%20Studies/FFSN/HG42_Soil_Amendments_and_Fertilizers_2.pdf" target="_blank" rel="noopener" style="color:var(--green-mid);">Soil Amendments and Fertilizers &mdash; Farm to Fork/Food Systems Network School &amp; Community Garden Curriculum<span class="sr-only"> (opens in new tab)</span></a></div>
@@ -3749,11 +3821,28 @@ var LIME_TIMING = {
 };
 function calcLime() {
   var lawnSize = parseFloat(document.getElementById('lime-lawn-size').value) || 0;
-  var limeRec  = parseFloat(document.getElementById('lime-rec').value) || 0;
+  var limeRecRaw = parseFloat(document.getElementById('lime-rec').value) || 0;
   var limeType = document.getElementById('lime-type').value;
   var cce      = parseFloat(document.getElementById('lime-cce').value) || 100;
   var bagSize  = parseFloat(document.getElementById('lime-bag-size').value) || 0;
   var kSq      = lawnSize / 1000;
+
+  // VCE vegetable/flower garden reports print lime in lbs/100 sq. ft.; VCE lawn reports and all
+  // Waypoint reports (lawn or garden) print lbs/1,000 sq. ft., which is this function's internal
+  // basis. Convert so the person can always enter the number exactly as printed on their report.
+  var isVceGardenReport = isGardenReport() && !isWaypointReport();
+  var limeRec = limeRecRaw * (isVceGardenReport ? 10 : 1);
+
+  var limeRecLabel = document.getElementById('lime-rec-label');
+  var limeRecHint  = document.getElementById('lime-rec-hint');
+  if (isVceGardenReport) {
+    if (limeRecLabel) limeRecLabel.textContent = 'How much lime is recommended on your VCE Soil Test Report?';
+    if (limeRecHint)  limeRecHint.innerHTML = 'Reported at the bottom of your soil test report under Lime Recommendations. <strong>Your VCE vegetable/flower garden report gives this in lbs. per 100 sq. ft.</strong> \u2014 enter that number as printed; this calculator converts it to the 1,000 sq. ft. basis used below automatically.';
+  } else {
+    if (limeRecLabel) limeRecLabel.textContent = 'How much lime is recommended on your VCE or Waypoint Soil Test Report?';
+    if (limeRecHint)  limeRecHint.innerHTML = 'Reported at the bottom of your soil test report under Lime Recommendations, in lbs. per 1,000 sq. ft.';
+  }
+
   var adjRate  = (limeRec > 0 && cce > 0) ? (limeRec * 100) / cce : 0;
   var apps     = limeApps(adjRate);
   var panelEl  = document.getElementById('lime-results-panel');
@@ -3769,7 +3858,7 @@ function calcLime() {
   else { noteEl.style.display = 'none'; }
 
   if (!lawnSize || !limeRec) {
-    if (panelEl) panelEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your lawn size and lime recommendation to see results.</p>';
+    if (panelEl) panelEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your lawn or garden size and lime recommendation to see results.</p>';
     var timingEl = document.getElementById('lime-timing');
     if (timingEl) timingEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p>';
     return;
@@ -3800,7 +3889,7 @@ function calcLime() {
     if (limeRec > 0 && cce > 0 && cce < 50) {
       html += '<div class="warning-badge" style="margin-top:8px;">&#9888; A CCE this low is unusual for lime. <strong>Gypsum (calcium sulfate) has a CCE of zero &mdash; it does not neutralize acidity or raise pH.</strong> Check that your product is actually a liming material (calcitic or dolomitic limestone), not gypsum. <em>(VCE 452-510)</em></div>';
     }
-    html += '<div class="result-row"><div class="result-label">Total lbs. of lime per application to your lawn</div><div class="result-value">' + lbsPerAppDisplay + '</div></div>';
+    html += '<div class="result-row"><div class="result-label">Total lbs. of lime per application to your lawn or garden</div><div class="result-value">' + lbsPerAppDisplay + '</div></div>';
     html += '<div class="result-row"><div class="result-label">Total lbs. of lime (3-year period)</div><div class="result-value">' + (totalLbs > 0 ? fmt(totalLbs,0) + ' lbs' : '-') + '</div></div>';
     if (bagSize > 0) {
       html += '<div class="result-row"><div class="result-label">Total bags needed (3 years)</div><div class="result-value">' + (bagsTotal > 0 ? bagsTotal + (bagsTotal===1?' bag':' bags') : '-') + '</div></div>';
@@ -3810,8 +3899,8 @@ function calcLime() {
     if (apps > 0 && adjRate > 0 && kSq > 0) {
       html += '<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">';
       html += '<div style="font-weight:600;color:var(--green-deep);margin-bottom:8px;font-size:0.9rem;">&#128290; Application schedule &amp; spreader rates</div>';
-      html += '<p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:10px;">Set your spreader to deliver the lbs/1,000 sq. ft. rate shown for each application. Never apply more than 50 lbs per 1,000 sq. ft. at one time.</p>';
-      html += '<table class="auto-plan-table"><thead><tr><th>#</th><th>Lbs / 1,000 sq. ft.</th><th>Total lbs for your lawn</th><th>Timing</th></tr></thead><tbody>';
+      html += '<p style="font-size:0.8rem;color:var(--slate-mid);margin-bottom:10px;">For lawns, set your spreader to deliver the lbs/1,000 sq. ft. rate shown for each application (or broadcast and rake into the top few inches for garden beds). As a lawn topdressing, never apply more than 50 lbs per 1,000 sq. ft. at one time; new garden beds being tilled in before planting can typically accept more per application — see VCE Soil Test Note 19 for your specific bed status.</p>';
+      html += '<table class="auto-plan-table"><thead><tr><th>#</th><th>Lbs / 1,000 sq. ft.</th><th>Total lbs for your bed</th><th>Timing</th></tr></thead><tbody>';
 
       var fullApps2   = Math.floor(adjRate / 50);
       var remainder2  = adjRate - (fullApps2 * 50);
@@ -3915,9 +4004,14 @@ function updateTabLocks() {
 
   // Lime unlocks for any report with values, regardless of purpose — same logic as before
   // but now shows/hides instead of dims
+  // Lime unlocks for Lawn and Shrubs & Trees reports only (not Vegetable/Flower Garden — those
+  // tabs now do the complete CCE-adjusted, bag-count lime calculation inline themselves, so
+  // there's no reason to also send that purpose to a separate tab for it).
   var limeBtn = document.getElementById('btn-lime');
   if (limeBtn) {
-    if (hasValues) {
+    var limePurpose = soilTestPurpose();
+    var limeApplies = hasValues && (limePurpose === 'lawn' || limePurpose === 'shrub');
+    if (limeApplies) {
       limeBtn.style.display = '';
       limeBtn.removeAttribute('disabled');
       limeBtn.classList.remove('tab-locked');
@@ -4173,6 +4267,17 @@ function interpretSoilTest() {
   }
 
   // ---- Buffer Index ----
+  // Where lime is actually calculated for this purpose — computed once, reused by every card
+  // below that offers a "go calculate your lime" button. Vegetable/Flower Garden do the complete
+  // CCE-adjusted calculation inline themselves; Lawn and Shrubs & Trees still use the standalone
+  // Lime tab.
+  var limeGoBtn = '';
+  if (!isNaN(limeRec) && limeRec > 0) {
+    if (crop === 'vegetable') limeGoBtn = goBtn('garden', 'Open Vegetable Garden Calculator');
+    else if (crop === 'flower') limeGoBtn = goBtn('flower', 'Open Flower Garden Calculator');
+    else limeGoBtn = goBtn('lime', 'Open Lime Calculator');
+  }
+
   if (!isNaN(bi)) {
     var biMsg, biAction;
     if (bi >= 6.5) {
@@ -4187,7 +4292,7 @@ function interpretSoilTest() {
     cards.push(card('&#128208;', biTitle, 'Scale: 6.00-6.60', 'Higher = less lime needed', bi.toFixed(2),
       biWhatMeans,
       'It determines how much lime your soil needs to reach the correct pH.',
-      biAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn('lime','Open Lime Calculator') : ''));
+      biAction, limeGoBtn));
   }
 
   // ---- Base Saturation ----
@@ -4202,17 +4307,20 @@ function interpretSoilTest() {
     } else {
       bsAction = abox('action-good', 'No corrective action needed based on this reading. Continue monitoring with periodic soil tests.');
     }
+    // Route to wherever lime is actually calculated for this purpose (limeGoBtn computed above,
+    // shared with the Buffer Index card).
     cards.push(card('&#9878;', 'Base Saturation &amp; Acidity', 'Acidity % = 100 minus Base Saturation %', '',
       'Base sat: ' + basesat.toFixed(1) + '% / Acidity: ' + acidity + '%',
       'Base saturation is the percentage of your soil\'s nutrient-holding sites occupied by beneficial ions. The remainder is % Acidity — sites occupied by acid-forming hydrogen ions.',
       'In most home lawn and landscape situations base saturation is background information. What matters for your soil is its pH and whether lime is recommended — if your report lists a pH or lime figure, enter those for specific guidance. Liming gradually raises base saturation as soil acidity is neutralized. <em>(SPES-384)</em>',
-      bsAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn('lime','Open Lime Calculator') : ''));
+      bsAction, limeGoBtn));
   }
 
   // ---- Lime Recommendation ----
   if (!isNaN(limeRec) && limeRec > 0) {
-    if (isGarden) {
-      // Waypoint garden reports give lime in lbs/1,000 sq. ft.; the garden tab works in lbs/100, so convert.
+    if (crop === 'vegetable' || crop === 'flower') {
+      // Vegetable/Flower Garden do the complete CCE-adjusted, bag-count lime calculation inline
+      // themselves (July 28) — route there, not to the standalone Lime tab.
       var isWaypointGdn = isWaypointReport();
       var limeRec100 = isWaypointGdn ? (limeRec / 10) : limeRec;
       var limeConvNote = isWaypointGdn ? ' (your report lists ' + limeRec + ' lbs/1,000 sq. ft., which is ' + limeRec100 + ' lbs/100 sq. ft.)' : '';
@@ -4222,11 +4330,27 @@ function interpretSoilTest() {
       var lTypeNote = limeTyp === 'Dolomitic' ? 'Dolomitic limestone is recommended — it supplies both calcium and magnesium.'
         : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone is recommended.'
         : 'No specific lime type listed.';
+      var destTabForLime = crop === 'flower' ? 'flower' : 'garden';
+      var destLabelForLime = crop === 'flower' ? 'Flower Garden' : 'Vegetable Garden';
       cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec100 + ' lbs / 100 sq. ft.' + limeConvNote,
         'Virginia soils naturally acidify. ' + lTypeNote + ' Per Note 19: never apply more than ' + limeMaxPer + ' lbs per 100 sq. ft. at one time (' + (bedStatus==='preplant'?'preplant':'established bed') + '). Your total of ' + limeRec100 + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + '.',
         'Lime restores the pH needed for nutrients to be available to garden plants. Lime should not be applied annually — the recommended amount covers a three-year period. <em>(SPES-384)</em>',
-        abox('action-needed', 'Use the ' + (crop === 'flower' ? 'Flower Garden' : 'Vegetable Garden') + ' tab to calculate lime for your specific bed size.'),
-        goBtn('garden', 'Open Garden Calculator')));
+        abox('action-needed', 'Use the ' + destLabelForLime + ' tab to calculate lime for your specific bed size, including CCE and bag size.'),
+        goBtn(destTabForLime, 'Open ' + destLabelForLime + ' Calculator')));
+    } else if (crop === 'shrub') {
+      // Shrubs & Trees has no lime section of its own — this is the one garden-family purpose
+      // that still routes to the standalone Lime tab, same as Lawn.
+      var isWaypointShrub = isWaypointReport();
+      var limeRec100s = isWaypointShrub ? (limeRec / 10) : limeRec;
+      var limeConvNoteS = isWaypointShrub ? ' (your report lists ' + limeRec + ' lbs/1,000 sq. ft., which is ' + limeRec100s + ' lbs/100 sq. ft.)' : '';
+      var lTypeNoteS = limeTyp === 'Dolomitic' ? 'Dolomitic limestone is recommended — it supplies both calcium and magnesium.'
+        : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone is recommended.'
+        : 'No specific lime type listed.';
+      cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec100s + ' lbs / 100 sq. ft.' + limeConvNoteS,
+        'Virginia soils naturally acidify. ' + lTypeNoteS + ' Many acid-loving shrubs and trees (azaleas, rhododendrons, blueberries) should NOT be limed at all even if a general lime figure is printed — confirm your specific plant actually needs it before applying.',
+        'Lime restores the pH needed for nutrients to be available to most landscape plants, but acid-loving species are the exception. <em>(SPES-384)</em>',
+        abox('action-needed', 'Use the Lime Calculator tab to enter your bed size, CCE, and bag size for precise quantities.'),
+        goBtn('lime','Open Lime Calculator')));
     } else {
       var lApps    = Math.min(Math.ceil(limeRec / 50), 6);
       var lTypeNote = limeTyp === 'Dolomitic' ? 'Dolomitic limestone is recommended - it supplies both calcium and magnesium.'
@@ -4641,9 +4765,9 @@ function carryOverToCalculators() {
       setTimeout(function() { calcShrub(); }, 0);
     } else if (crop === 'flower') {
       // Flower bed sub-type (annual/perennial/rose/bulb) is asked on the Flower Garden tab
-      // itself (Step 1 there) — don't pre-fill here.
-      setSelect('flr-p-rating', pRat);
-      setSelect('flr-k-rating', kRat);
+      // itself (Step 1 there) — don't pre-fill here. P/K ratings no longer carried over either
+      // (July 28) — the Nutrient Status panel reads st-p-rating/st-k-rating directly from the
+      // Soil Test tab, same as Ca/Mg/etc.
       if (limeRec) setInput('flr-lime-rec', limeRec); else clearInput('flr-lime-rec');
       if (areaSize) { setInput('flr-area-direct', areaSize); setFlowerSizeMode('area'); } else clearInput('flr-area-direct');
       setTimeout(function() { calcFlower(); }, 0);
@@ -5205,11 +5329,11 @@ var NUTRIENT_AMENDMENTS = {
   Zn: [],
   Mn: [
     { name:'Manganese Sulfate (28\u201332% Mn)', organic:false, calc:'flat', rate:0.05, verified:true,
-      note:'~0.05 lbs per 100 sq. ft. broadcast/preplant \u2014 scaled down from NC State\u2019s 20\u201325 lbs/acre vegetable-garden guideline (tomatoes, peppers, brassicas). At small-bed scale this is often too little dry material to broadcast evenly by hand \u2014 <strong>dissolve the calculated amount in 1\u20132 gallons of water and pour evenly over the bed instead</strong> (water-soluble fertilizers can be applied this way in place of dry broadcast; Hood College FFSN school garden curriculum). Most soluble, most commonly used Mn source. <strong>Best for acidic-to-neutral soils (pH below ~6.8)</strong> \u2014 availability drops sharply above pH 7.5. VCE notes Mn deficiency is seldom a problem in Virginia except on sandy Coastal Plain soils; retest pH first if a deficiency shows up unexpectedly. Avoid over-application, especially in already-acidic soil \u2014 excess Mn can cause leaf browning and reduced vigor. <em>(NC State Extension \u2014 Torres Quezada, 2024; VCE 426-323, Table 1)</em>' },
+      note:'~0.05 lbs per 100 sq. ft. broadcast/preplant. <strong>Best for acidic-to-neutral soils (pH below ~6.5)</strong> \u2014 manganese availability declines as pH rises and becomes limiting above roughly 6.5, and drops sharply above pH 7.5. This pH relationship is general soil chemistry, not specific to any one type of planting \u2014 confirmed independently by Cornell, University of Maryland, and Michigan State Extension, all of which place the same threshold around pH 6.5. VCE notes Mn deficiency is seldom a problem in Virginia except on sandy Coastal Plain soils; retest pH first if a deficiency shows up unexpectedly. Avoid over-application, especially in already-acidic soil \u2014 excess Mn can cause leaf browning and reduced vigor. At small-bed scale this is often too little dry material to broadcast evenly by hand \u2014 <strong>dissolve the calculated amount in 1\u20132 gallons of water and pour evenly over the bed instead</strong> (water-soluble fertilizers can be applied this way in place of dry broadcast; Hood College FFSN school garden curriculum). <em>(Rate scaled from NC State Extension\u2019s 20\u201325 lbs/acre vegetable-crop guideline \u2014 Torres Quezada, 2024, tomatoes/peppers/brassicas \u2014 the closest sourced application rate available; not separately validated for ornamental plantings. pH threshold: VCE 426-323, Table 1; Cornell Nutrient Management Spear Program Factsheet 49; University of Maryland Extension; Michigan State University Extension.)</em>' },
     { name:'Manganese Sulfate (28\u201332% Mn) \u2014 sized to report target', organic:false, calc:'target', pct:30, unit:'Mn', verified:true,
-      note:'Same product as above, sized from your Waypoint report\u2019s own Mn target instead of the flat rate. This is often an even smaller amount than the flat rate \u2014 dissolve it in 1\u20132 gallons of water and pour evenly over the bed rather than broadcasting the dry powder. <em>(NC State Extension \u2014 Torres Quezada, 2024)</em>' },
+      note:'Same product as above, sized from your Waypoint report\u2019s own Mn target instead of the flat rate. This is often an even smaller amount than the flat rate \u2014 dissolve it in 1\u20132 gallons of water and pour evenly over the bed rather than broadcasting the dry powder.' },
     { name:'Chelated Manganese (for alkaline soils, pH above 7.0)', organic:false, calc:'none', verified:true,
-      note:'Follow the product label \u2014 chelated forms vary 5\u201312% Mn by brand and stay available even in alkaline soil, where manganese sulfate becomes far less effective. A foliar spray (product label rate) corrects an in-season deficiency faster than a soil application; soil application suits preplant correction better. <em>(NC State Extension \u2014 Torres Quezada, 2024)</em>' }
+      note:'Follow the product label \u2014 chelated forms vary 5\u201312% Mn by brand and stay available even in alkaline soil, where manganese sulfate becomes far less effective as pH rises. A foliar spray (product label rate) corrects an in-season deficiency faster than a soil application; soil application suits preplant correction better. <em>(Availability-by-pH relationship: VCE 426-323; Cornell Nutrient Management Spear Program Factsheet 49; University of Maryland Extension; Michigan State University Extension. Product-form guidance drawn from NC State Extension \u2014 Torres Quezada, 2024, a vegetable-crop-focused source.)</em>' }
   ],
   Cu: [],
   Fe: [
@@ -5322,22 +5446,24 @@ function gdnSetTarget(key, val) {
   calcGarden();
 }
 
-function renderNutrientStatusPanel(gardenType, area) {
-  var card = document.getElementById('gdn-nutrient-status-card');
-  var panel = document.getElementById('gdn-nutrient-status');
+// Shared by Vegetable Garden (prefix 'gdn') and Flower Garden (prefix 'flr', added when Flower
+// Garden's per-nutrient system was built). All state-object keys (gdnTargets, gdnCustomDensity,
+// gdnNutrientChoice) are prefixed with the tab's prefix so entering a Waypoint target or an
+// organic/synthetic choice on one tab never leaks into the other's saved state, even though both
+// share the same underlying JS objects. suppressPK is true only for Flower Garden's "Complete
+// N-P-K Fertilizer" mode, where P and K are already being handled by that single product and
+// showing an independent P/K amendment suggestion would risk double-applying both nutrients.
+function renderNutrientStatusPanel(prefix, area, suppressPK) {
+  var card = document.getElementById(prefix + '-nutrient-status-card');
+  var panel = document.getElementById(prefix + '-nutrient-status');
   if (!card || !panel) return;
-
-  if (gardenType !== 'vegetable') {
-    card.style.display = 'none';
-    return;
-  }
   card.style.display = '';
 
   var hundredths = area > 0 ? area / 100 : 0;
 
   var nutrients = [
-    { key:'P',  label:'Phosphorus (P)', rating: (document.getElementById('st-p-rating')  || {}).value,   targetKey:'p2o5' },
-    { key:'K',  label:'Potassium (K)',  rating: (document.getElementById('st-k-rating')  || {}).value,   targetKey:'k2o'  },
+    { key:'P',  label:'Phosphorus (P)', rating: (document.getElementById('st-p-rating')  || {}).value,   targetKey:'p2o5', suppressible:true },
+    { key:'K',  label:'Potassium (K)',  rating: (document.getElementById('st-k-rating')  || {}).value,   targetKey:'k2o',  suppressible:true },
     { key:'Ca', label:'Calcium (Ca)',   rating: (document.getElementById('st-ca-rating') || {}).value,   targetKey: null },
     { key:'Mg', label:'Magnesium (Mg)', rating: (document.getElementById('st-mg-rating') || {}).value,   targetKey:'mg' },
     { key:'S',  label:'Sulfur (S)',     rating: (document.getElementById('st-s-rating')  || {}).value,   targetKey:'s'  },
@@ -5353,22 +5479,30 @@ function renderNutrientStatusPanel(gardenType, area) {
 
   for (var i = 0; i < nutrients.length; i++) {
     var n = nutrients[i];
-    var status = nutrientRatingStatus(n.rating);
-    var targetRaw = n.targetKey ? (gdnTargets[n.targetKey] || '') : '';
-    var target = targetRaw ? (parseFloat(targetRaw) || 0) : 0;
 
     html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap;">';
     html += '<div style="min-width:125px;font-weight:600;font-size:0.85rem;">' + n.label + '</div>';
+
+    if (n.suppressible && suppressPK) {
+      html += '<div style="flex:1;font-size:0.82rem;color:var(--slate-mid);">Handled by your Complete N-P-K Fertilizer selection above \u2014 not tracked separately in this mode.</div>';
+      html += '</div>';
+      continue;
+    }
+
+    var status = nutrientRatingStatus(n.rating);
+    var targetStateKey = n.targetKey ? (prefix + ':' + n.targetKey) : null;
+    var targetRaw = targetStateKey ? (gdnTargets[targetStateKey] || '') : '';
+    var target = targetRaw ? (parseFloat(targetRaw) || 0) : 0;
 
     // Waypoint numeric target — integrated directly into this nutrient's own row instead of a
     // separate grid you'd fill out before seeing any result. VCE reports never populate this
     // (leave blank); Ca has no numeric target field on Waypoint's own report, so it's skipped.
     if (n.targetKey) {
       html += '<div style="min-width:150px;">'
-        + '<label style="font-size:0.7rem;color:var(--slate-mid);display:block;" id="gdn-target-lbl-' + n.targetKey + '">Waypoint report target <span style="color:var(--slate-light);">(lbs/1,000 sq. ft.)</span></label>'
+        + '<label style="font-size:0.7rem;color:var(--slate-mid);display:block;" id="' + prefix + '-target-lbl-' + n.targetKey + '">Waypoint report target <span style="color:var(--slate-light);">(lbs/1,000 sq. ft.)</span></label>'
         + '<input type="number" min="0" step="0.01" value="' + targetRaw + '" placeholder="optional"'
         + ' aria-label="Waypoint report target for ' + n.label + ' (lbs per 1,000 sq. ft.)"'
-        + ' onchange="gdnSetTarget(\'' + n.targetKey + '\', this.value)" style="width:90px;font-size:0.8rem;padding:3px 5px;">'
+        + ' onchange="gdnSetTarget(\'' + targetStateKey + '\', this.value)" style="width:90px;font-size:0.8rem;padding:3px 5px;">'
         + '</div>';
     }
 
@@ -5401,20 +5535,21 @@ function renderNutrientStatusPanel(gardenType, area) {
         var noRateNote = NUTRIENT_NO_RATE_NOTE[n.key] || 'No VCE-published product or rate for this nutrient.';
         html += '<div style="flex:1;font-size:0.82rem;">Low \u2014 ' + noRateNote + ' Contact your local Extension office if a deficiency is suspected.</div>';
       } else {
-        var chosenIdx = gdnNutrientChoice[n.key];
+        var choiceStateKey = prefix + ':' + n.key;
+        var chosenIdx = gdnNutrientChoice[choiceStateKey];
         if (chosenIdx == null || chosenIdx >= amendments.length) chosenIdx = 0;
         var a = amendments[chosenIdx];
 
         // Ca/Mg: VCE Soil Test Note 19 says gypsum/Epsom salts apply only when lime (dolomitic,
         // for Mg) isn't already being recommended, since lime already corrects it.
-        var limeRecVal = parseFloat((document.getElementById('gdn-lime-rec') || {}).value) || 0;
+        var limeRecVal = parseFloat((document.getElementById(prefix + '-lime-rec') || {}).value) || 0;
         var limeType = ((document.getElementById('st-lime-type') || {}).value || '').toLowerCase();
         var isDolomitic = limeType.indexOf('dolomit') >= 0;
         var supersededByLime = a.limeConditional && limeRecVal > 0 && (!a.dolomiteOnly || isDolomitic);
 
         html += '<div style="flex:1;">';
         if (amendments.length > 1) {
-          html += '<select aria-label="Choose amendment for ' + n.label + '" onchange="gdnSetNutrientChoice(\'' + n.key + '\', this.value)" style="font-size:0.8rem;margin-bottom:6px;width:100%;max-width:320px;">';
+          html += '<select aria-label="Choose amendment for ' + n.label + '" onchange="gdnSetNutrientChoice(\'' + choiceStateKey + '\', this.value)" style="font-size:0.8rem;margin-bottom:6px;width:100%;max-width:320px;">';
           for (var j = 0; j < amendments.length; j++) {
             html += '<option value="' + j + '"' + (j === chosenIdx ? ' selected' : '') + '>'
               + amendments[j].name + ' \u2014 ' + (amendments[j].organic ? 'Organic' : 'Synthetic') + '</option>';
@@ -5436,7 +5571,7 @@ function renderNutrientStatusPanel(gardenType, area) {
           if (area > 0) {
             var lbsFlat = a.rate * hundredths;
             var cplFlatSourced = a.cupsPerLb || (a.densityKey ? cupsPerLbFromDensity(BULK_DENSITIES[a.densityKey]) : null);
-            var sgKeyFlat = n.key + ':' + a.name;
+            var sgKeyFlat = prefix + ':' + n.key + ':' + a.name;
             var cplFlat = cplFlatSourced || gdnDensityToCupsPerLb(sgKeyFlat);
             var volFlat = cplFlat ? fmtMeasure(lbsFlat, cplFlat) : null;
             html += '<div style="font-size:0.82rem;margin-bottom:4px;"><strong>' + lbsFlat.toFixed(2) + ' lbs</strong>'
@@ -5452,7 +5587,7 @@ function renderNutrientStatusPanel(gardenType, area) {
         } else {
           // calc === 'target' — synthetic, sized from the report's own numeric target
           var lead;
-          var sgKeyTarget = n.key + ':' + a.name;
+          var sgKeyTarget = prefix + ':' + n.key + ':' + a.name;
           if (target > 0 && area > 0) {
             var lbsProduct = (target * hundredths) / (a.pct / 100);
             var cplTargetSourced = a.cupsPerLb || (a.densityKey ? cupsPerLbFromDensity(BULK_DENSITIES[a.densityKey]) : null);
@@ -5608,7 +5743,7 @@ function calcGarden() {
   // Nutrient Status panel (macro + micro) — always visible for vegetable/mixed gardens,
   // rendered before the area early-return below so it still shows ratings even if bed size
   // hasn't been entered yet.
-  renderNutrientStatusPanel(gardenType, area);
+  renderNutrientStatusPanel('gdn', area, false);
 
   var resultsEl = document.getElementById('gdn-results');
   var timingEl  = document.getElementById('gdn-timing');
@@ -5815,17 +5950,31 @@ function calcGarden() {
   }
   if (pkHtml) html += '<div style="margin-top:12px;">' + pkHtml + '</div>';
 
-  // Lime
+  // Lime — CCE-adjusted rate + bag count, matching the standalone Lime tab's own formula, so
+  // this tab gives a complete precise answer without sending anyone to a separate tab for it.
   if (limeRec > 0) {
+    var limeCce = parseFloat(document.getElementById('gdn-lime-cce').value) || 100;
+    var limeBagSize = parseFloat(document.getElementById('gdn-lime-bag-size').value) || 0;
+    var limeAdjRate = limeCce > 0 ? (limeRec * 100) / limeCce : limeRec; // lbs/100 sq. ft., CCE-adjusted
     var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
-    var limeLbsTotal = limeRec * hundredths;
-    var limeAppsNeeded = Math.max(1, Math.ceil(limeRec / limeMaxPer));
+    var limeLbsTotal = limeAdjRate * hundredths;
+    var limeAppsNeeded = Math.max(1, Math.ceil(limeAdjRate / limeMaxPer));
     var limeLbsPerApp  = limeLbsTotal / limeAppsNeeded;
+    var limeBagsTotal = (limeBagSize > 0 && limeLbsTotal > 0) ? Math.ceil(limeLbsTotal / limeBagSize) : 0;
     html += '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-top:16px;">';
     html += '<div style="font-weight:600;color:#7d5a00;margin-bottom:8px;">&#129704; Lime for Your Bed</div>';
+    if (limeCce !== 100) {
+      html += '<div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:4px;">CCE-adjusted rate: <strong>' + fmt(limeAdjRate, 1) + ' lbs/100 sq. ft.</strong> (report\u2019s ' + fmt(limeRec, 1) + ' lbs/100 sq. ft. \u00f7 ' + limeCce + '% CCE).</div>';
+    }
+    if (limeCce > 0 && limeCce < 50) {
+      html += '<div class="warning-badge" style="margin-top:4px;margin-bottom:8px;">&#9888; A CCE this low is unusual for lime. <strong>Gypsum (calcium sulfate) has a CCE of zero</strong> \u2014 check that your product is actually a liming material (calcitic or dolomitic limestone), not gypsum. <em>(VCE 452-510)</em></div>';
+    }
     html += '<div style="font-size:0.875rem;color:var(--slate-mid);">Total: <strong>' + fmt(limeLbsTotal, 1) + ' lbs</strong> in ' + limeAppsNeeded + ' application' + (limeAppsNeeded > 1 ? 's' : '') + ' of up to ' + limeMaxPer + ' lbs/100 sq. ft. (' + (bedStatus==='preplant'?'preplant limit':'established bed limit') + ').</div>';
     if (limeAppsNeeded > 1) {
       html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">' + fmt(limeLbsPerApp, 1) + ' lbs per application, spaced 1-6 months apart.</div>';
+    }
+    if (limeBagsTotal > 0) {
+      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">Bags needed: <strong>' + limeBagsTotal + (limeBagsTotal===1?' bag':' bags') + '</strong> (' + fmt(limeBagSize,0) + ' lb bags).</div>';
     }
     html += '</div>';
   }
@@ -5884,6 +6033,8 @@ function calcGarden() {
 
 var flowerSizeMode = 'rect';
 var flowerFertMode = 'npk';
+// Complete N-P-K Fertilizer vs Individual N/P/K Fertilizers — default matches prior behavior
+var flowerFertilizerMode = 'complete';
 
 // Default N rates per flower type (lbs per 100 sq. ft.) when no soil test N is entered
 // Sources: VCE Note 19 (SPES-687P); UMD Extension Care of Annuals and Perennials;
@@ -5936,6 +6087,18 @@ function setFlowerFertMode(mode) {
   document.getElementById('flr-fert-mode-product').classList.toggle('active', mode === 'product');
   document.getElementById('flr-fert-npk').style.display = mode === 'npk' ? '' : 'none';
   document.getElementById('flr-fert-product').style.display = mode === 'product' ? '' : 'none';
+  calcFlower();
+}
+
+// Complete N-P-K Fertilizer vs Individual N/P/K Fertilizers — a choice specific to Flower Garden.
+// Vegetable Garden deliberately does not offer this (single-nutrient only); see July 28 session
+// notes for why the two tabs are allowed to work differently here.
+function setFlowerFertilizerMode(mode) {
+  flowerFertilizerMode = mode;
+  document.getElementById('flr-fertmode-complete').classList.toggle('active', mode === 'complete');
+  document.getElementById('flr-fertmode-individual').classList.toggle('active', mode === 'individual');
+  document.getElementById('flr-fertmode-complete-body').style.display = mode === 'complete' ? '' : 'none';
+  document.getElementById('flr-fertmode-individual-body').style.display = mode === 'individual' ? '' : 'none';
   calcFlower();
 }
 
@@ -6003,8 +6166,6 @@ function calcFlower() {
     : (nRecRaw / (isWaypointGarden ? 10 : 1));
 
   var limeRec = (parseFloat(document.getElementById('flr-lime-rec').value) || 0) / (isWaypointGarden ? 10 : 1);
-  var pRating = document.getElementById('flr-p-rating').value;
-  var kRating = document.getElementById('flr-k-rating').value;
   var bedStatus = document.getElementById('flr-bed-status').value;
 
   // Area
@@ -6017,9 +6178,34 @@ function calcFlower() {
     area = parseFloat(document.getElementById('flr-area-direct').value) || 0;
   }
 
-  // Fertilizer
+  // Fertilizer — mode determines how fertN/fertP/fertK/cupsPerLb get sourced. Everything
+  // downstream (quantity rows, application plan table) works identically regardless of mode,
+  // since it only cares about the resulting N%/P%/K%/cupsPerLb, not where they came from.
   var fertN = 0, fertP = 0, fertK = 0, productKey = '', cupsPerLb = 0, isOrganic = false;
-  if (flowerFertMode === 'product') {
+  if (flowerFertilizerMode === 'individual') {
+    // Nitrogen Source only — single-nutrient, matching Vegetable Garden's approach. P/K are
+    // handled entirely by the Nutrient Status panel below, not sourced from this product at all.
+    var nSrcKey = document.getElementById('flr-n-source') ? document.getElementById('flr-n-source').value : '';
+    productKey = nSrcKey;
+    if (nSrcKey && GARDEN_PRODUCTS[nSrcKey]) {
+      var nsProd = GARDEN_PRODUCTS[nSrcKey];
+      fertN = nsProd.npk[0]; fertP = 0; fertK = 0;
+      cupsPerLb = nsProd.cupsPerLb || gdnDensityToCupsPerLb('flr-n:' + nSrcKey);
+      isOrganic = nsProd.organic;
+    }
+    var nSourceNoteEl = document.getElementById('flr-n-source-note');
+    if (nSourceNoteEl) {
+      if (nSrcKey && GARDEN_PRODUCTS[nSrcKey]) {
+        var nsNote = GARDEN_PRODUCTS[nSrcKey];
+        nSourceNoteEl.innerHTML = '<span style="color:var(--green-mid);font-weight:600;">' + nsNote.name + '</span> \u2014 '
+          + (nsNote.cupsPerLb ? 'volume sourced from ' + nsNote.source : (cupsPerLb ? 'volume estimated from your entered bulk density' : 'volume estimate not available for this product \u2014 weigh using a kitchen scale for accuracy'))
+          + (nsNote.note ? '<br>' + nsNote.note : '')
+          + (nsNote.cupsPerLb ? '' : gdnDensityInputHtml('flr-n:' + nSrcKey));
+      } else {
+        nSourceNoteEl.innerHTML = '';
+      }
+    }
+  } else if (flowerFertMode === 'product') {
     productKey = document.getElementById('flr-product-select').value;
     if (productKey && GARDEN_PRODUCTS[productKey]) {
       var pd = GARDEN_PRODUCTS[productKey];
@@ -6121,42 +6307,10 @@ function calcFlower() {
     html += '<div class="result-row"><div class="result-label">N recommendation</div><div class="result-value" style="color:var(--slate-light);">No default available — select flower type</div></div>';
   }
 
-  // P/K flags
-  var pRat = WAYPOINT_TO_VCE[pRating] || pRating;
-  var kRat = WAYPOINT_TO_VCE[kRating] || kRating;
-  var pkHtml = '';
-  if (pRat && P_REC[pRat]) {
-    var pr = P_REC[pRat];
-    pkHtml += '<div class="rec-box ' + pr.cls + '" style="margin-top:8px;"><span class="rec-icon">' + pr.icon + '</span><span><strong>Phosphorus:</strong> ' + pr.msg + '</span></div>';
-  }
-  if (kRat && K_REC[kRat]) {
-    var kr = K_REC[kRat];
-    pkHtml += '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
-  }
-  if (pkHtml) html += '<div style="margin-top:12px;">' + pkHtml + '</div>';
-
-  // Mod 3 (VCE Note 19): when P or K tests Low/Medium, offer VCE's organic-amendment materials.
-  // VCE corrects P/K only at Low/Medium (never at Optimum/High) — so this only fires for those ratings.
-  var pLowMed = (pRat === 'L-' || pRat === 'L' || pRat === 'L+' || pRat === 'M-' || pRat === 'M' || pRat === 'M+');
-  var kLowMed = (kRat === 'L-' || kRat === 'L' || kRat === 'L+' || kRat === 'M-' || kRat === 'M' || kRat === 'M+');
-  if (pLowMed || kLowMed) {
-    var matHtml = '<div style="font-size:0.78rem;background:#eef5ee;border:1px solid #cfe3d6;border-radius:4px;padding:8px 11px;margin-top:10px;">'
-      + '<strong>&#127793; Organic / amendment option (VCE Note 19):</strong> instead of a bagged fertilizer you can bring these up with materials per 100 sq. ft.:';
-    if (pLowMed) matHtml += '<div style="margin-top:4px;">&bull; <strong>Phosphorus:</strong> ~10 lb bone meal or rock phosphate.</div>';
-    if (kLowMed) matHtml += '<div style="margin-top:4px;">&bull; <strong>Potassium:</strong> ~10 lb granite dust or greensand. (Wood ash also works but only on acid soils below pH 6.0, and reduce lime by 5 lb per 10 lb ash.)</div>';
-    matHtml += '<div style="margin-top:4px;font-style:italic;color:var(--slate-mid);">VCE recommends correcting phosphorus and potassium only when they test Medium or Low. <em>(VCE Note 19)</em></div>';
-    matHtml += '</div>';
-    html += matHtml;
-  }
-
-  // Mod 3 (sulfur): optional advisory only. VCE Note 19 does not treat sulfur as a routine flower
-  // nutrient (per SPES-384 it is mainly a pH-lowering amendment), so we flag it lightly when low,
-  // and name the AF8-consistent sulfate sources rather than computing a VCE rate.
-  var sVal = parseFloat(document.getElementById('st-s') ? document.getElementById('st-s').value : '') || 0;
-  if (sVal > 0 && sVal < 10) {
-    html += '<div style="font-size:0.78rem;background:#eef5ee;border:1px solid #cfe3d6;border-radius:4px;padding:8px 11px;margin-top:10px;">'
-      + '&#129516; <strong>Sulfur reads low (' + sVal + ' ppm).</strong> Some labs (e.g. Waypoint) suggest a small sulfur application at this level; sulfate sources such as gypsum, ammonium sulfate, or potassium sulfate are appropriate (elemental sulfur is slow to become available). VCE\'s home-garden guidance treats sulfur mainly as a pH-lowering amendment rather than a routine nutrient, so for most flower beds a sulfur application is optional. Follow the product label for the rate. <em>(Waypoint Agronomy Facts 8; VCE SPES-384)</em></div>';
-  }
+  // P/K, sulfur, and the ad-hoc "no lime but Ca/Mg low" advisory that used to live here are now
+  // handled by the shared Nutrient Status panel below (renderNutrientStatusPanel) — same
+  // organic/synthetic choice, precise per-nutrient amounts, and sourcing as Vegetable Garden,
+  // instead of the old generic flag boxes. See July 28 session notes.
 
   // Lime
   // Mod 1 (VCE Note 19): lime TYPE depends on Mg. Low Mg + lime -> dolomitic (corrects Mg);
@@ -6169,15 +6323,28 @@ function calcFlower() {
   var mgIsLow = (mgRatF === 'L-' || mgRatF === 'L' || mgRatF === 'L+');
   var caIsLow = (caRatF === 'L-' || caRatF === 'L' || caRatF === 'L+');
   if (limeRec > 0) {
+    var limeCce = parseFloat(document.getElementById('flr-lime-cce').value) || 100;
+    var limeBagSize = parseFloat(document.getElementById('flr-lime-bag-size').value) || 0;
+    var limeAdjRate = limeCce > 0 ? (limeRec * 100) / limeCce : limeRec; // lbs/100 sq. ft., CCE-adjusted
     var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
-    var limeLbsTotal = limeRec * hundredths;
-    var limeAppsNeeded = Math.max(1, Math.ceil(limeRec / limeMaxPer));
+    var limeLbsTotal = limeAdjRate * hundredths;
+    var limeAppsNeeded = Math.max(1, Math.ceil(limeAdjRate / limeMaxPer));
     var limeLbsPerApp  = limeLbsTotal / limeAppsNeeded;
+    var limeBagsTotal = (limeBagSize > 0 && limeLbsTotal > 0) ? Math.ceil(limeLbsTotal / limeBagSize) : 0;
     html += '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-top:16px;">';
     html += '<div style="font-weight:600;color:#7d5a00;margin-bottom:8px;">&#129704; Lime for Your Bed</div>';
+    if (limeCce !== 100) {
+      html += '<div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:4px;">CCE-adjusted rate: <strong>' + fmt(limeAdjRate, 1) + ' lbs/100 sq. ft.</strong> (report\u2019s ' + fmt(limeRec, 1) + ' lbs/100 sq. ft. \u00f7 ' + limeCce + '% CCE).</div>';
+    }
+    if (limeCce > 0 && limeCce < 50) {
+      html += '<div class="warning-badge" style="margin-top:4px;margin-bottom:8px;">&#9888; A CCE this low is unusual for lime. <strong>Gypsum (calcium sulfate) has a CCE of zero</strong> \u2014 check that your product is actually a liming material (calcitic or dolomitic limestone), not gypsum. <em>(VCE 452-510)</em></div>';
+    }
     html += '<div style="font-size:0.875rem;color:var(--slate-mid);">Total: <strong>' + fmt(limeLbsTotal, 1) + ' lbs</strong> in ' + limeAppsNeeded + ' application' + (limeAppsNeeded > 1 ? 's' : '') + ' of up to ' + limeMaxPer + ' lbs/100 sq. ft. (' + (bedStatus === 'preplant' ? 'preplant limit' : 'established bed limit') + '). <em>(VCE Note 19)</em></div>';
     if (limeAppsNeeded > 1) {
       html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">' + fmt(limeLbsPerApp, 1) + ' lbs per application, spaced 1\u20136 months apart.</div>';
+    }
+    if (limeBagsTotal > 0) {
+      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">Bags needed: <strong>' + limeBagsTotal + (limeBagsTotal===1?' bag':' bags') + '</strong> (' + fmt(limeBagSize,0) + ' lb bags).</div>';
     }
     if (mgIsLow) {
       html += '<div style="font-size:0.82rem;margin-top:8px;color:#7d5a00;border-top:1px dashed #e0c87a;padding-top:6px;">&#127807; <strong>Use dolomitic limestone.</strong> Your magnesium tests low, and dolomitic lime raises pH <em>and</em> supplies magnesium in one step. <em>(VCE Note 19)</em></div>';
@@ -6185,21 +6352,24 @@ function calcFlower() {
       html += '<div style="font-size:0.82rem;margin-top:8px;color:var(--slate-mid);border-top:1px dashed #e0c87a;padding-top:6px;">Either calcitic or dolomitic limestone works here (magnesium is adequate). <em>(VCE Note 19)</em></div>';
     }
     html += '</div>';
-  } else if (mgIsLow || caIsLow) {
-    html += '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-top:16px;">';
-    html += '<div style="font-weight:600;color:#7d5a00;margin-bottom:8px;">&#129704; No lime needed &mdash; but a secondary nutrient is low</div>';
-    html += '<div style="font-size:0.875rem;color:var(--slate-mid);">Your pH is in range, so no lime is recommended. Because lime is the usual way to supply calcium and magnesium, address the low nutrient directly:</div>';
-    if (mgIsLow) {
-      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">&bull; <strong>Low magnesium:</strong> apply about <strong>1 lb Epsom salts per 100 sq. ft.</strong> <em>(VCE Note 19)</em></div>';
-    }
-    if (caIsLow) {
-      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">&bull; <strong>Low calcium:</strong> apply about <strong>10 lb gypsum per 100 sq. ft.</strong> <em>(VCE Note 19)</em></div>';
-    }
-    html += '</div>';
   }
+  // "No lime needed but Ca/Mg low" case is now handled by the shared Nutrient Status panel below
+  // (with organic/synthetic choice and precise volume) instead of this fixed Epsom-salts/gypsum note.
 
-  if (html) { html += '<button class="print-plan-btn no-print" onclick="printPlan(\'flower\')" style="margin-top:14px;">&#128424; Print Plan</button>'; }
   resultsEl.innerHTML = html || '<p style="color:var(--slate-light);font-size:0.875rem;">Enter nitrogen recommendation and fertilizer grade to see quantities.</p>';
+
+  // Nutrient Status panel — P/K/Ca/Mg/S/micronutrients, suppressing P/K rows in Complete
+  // Fertilizer mode (they're a byproduct of that single product, not tracked separately).
+  renderNutrientStatusPanel('flr', area, flowerFertilizerMode === 'complete');
+
+  // One shared Print Plan button, shown only once both the fertilizer section and the nutrient
+  // status section have something to show, placed after both.
+  var flrPrintBtnWrap = document.getElementById('flr-print-btn-wrap');
+  if (flrPrintBtnWrap) {
+    var flrNutrientCardEl = document.getElementById('flr-nutrient-status-card');
+    var flrNutrientCardVisible = flrNutrientCardEl && flrNutrientCardEl.style.display !== 'none';
+    flrPrintBtnWrap.style.display = (html || flrNutrientCardVisible) ? '' : 'none';
+  }
 
   // Timing
   var FLOWER_TIMING = {
