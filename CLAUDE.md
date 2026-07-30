@@ -2716,6 +2716,62 @@ target content).
 | `index.html` | Fixed incomplete `:not()` exclusion list on the default print-view rule — Soil Test tab was printing simultaneously with Flower Garden (and would have with Shrubs & Trees) any time those were printed, most likely burying their own later sections including the Timing card |
 | `CLAUDE.md` | this entry |
 
+---
+
+## Session Updates — July 29, 2026 (cont. 2) (Print Plan button relocated after the Timing card — four tabs)
+
+### Context
+Even after the print output itself was confirmed correct (both the `.timing-card` override and the
+`:not()` exclusion-list bugs from the two prior entries), the user flagged a UX problem: the
+"Print Plan" button visually sits at the bottom of the results card, immediately followed by a
+*separate* Timing of Applications/Application Timing card. That placement makes the button look
+like it only covers the box it's physically inside, even though it has always covered the Timing
+card too — a correct behavior that reads as suspicious due to layout alone.
+
+### Scope check done before fixing
+Grepped every tab for this pattern rather than fixing only where reported. Confirmed it's universal
+across **Vegetable Garden, Flower Garden, Lime, and Shrubs & Trees** — all four are single-column
+layouts with a results card ending in a Print Plan button, immediately followed by a separate
+`.timing-card`. **Cool-Season and Warm-Season Lawns were checked and found structurally
+different** — a two-column layout where the Print Plan button lives in the *left* (input) column's
+custom-plan mode, not stacked directly above the *right* column's results-then-Timing-card
+sequence. Deliberately left unfixed this pass; flagged to the user as a related but different
+problem needing its own approach, not silently bundled into this fix or silently ignored.
+
+### Fix
+Moved each of the four tabs' Print Plan button to sit **after** that tab's Timing card, so it
+visually reads as covering everything above it (which it always did).
+
+- **Vegetable Garden, Flower Garden** — these already used a static `<div id="{prefix}-print-btn-
+  wrap">` pattern (from earlier session work); just relocated the wrapper's HTML position to after
+  the Timing card. No JS changes needed — `calcGarden()`/`calcFlower()` already toggled this
+  wrapper's visibility correctly regardless of its position in the DOM.
+- **Lime, Shrubs & Trees** — these built their Print Plan button as part of a JS-generated HTML
+  string appended directly into the results panel's `innerHTML` (no static wrapper existed). Real
+  rewiring needed: removed the inline `html += '<button ...>'` append in both `calcLime()` and
+  `calcShrub()`; added a new static `#lime-print-btn-wrap` / `#shrub-print-btn-wrap` div after each
+  tab's Timing card in the HTML; added show/hide logic at the end of each calc function (and in
+  Lime's early-return "no input yet" branch, which needed to explicitly hide the wrapper too, since
+  that branch returns before reaching the end-of-function show logic).
+
+### Verification
+- Confirmed via `grep` that each wrapper now has exactly one occurrence, correctly positioned.
+- Simulated `calcLime()` directly: wrapper shows (`display: ''`) with valid input, hides
+  (`display: 'none'`) when the lawn/garden size is cleared — both directions confirmed.
+- For `calcShrub()`: confirmed by direct inspection (rather than a full simulation, given the
+  function's length and number of dependencies) that the `shrubHasContent` flag is captured using
+  the exact same condition the old inline check used, and that `html` is not reassigned between
+  where the flag is captured and where it's read — so the flag can't go stale.
+- Full HTML/JS validation clean; no new orphaned `getElementById` references beyond the
+  pre-existing, already-documented harmless set.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Print Plan button moved to after the Timing card on Vegetable Garden, Flower Garden, Lime, and Shrubs & Trees; Lime and Shrub's buttons converted from inline JS-appended HTML to a static wrapper with proper show/hide logic. Cool/Warm Lawns identified as having a related but structurally different issue, intentionally not addressed this pass. |
+| `CLAUDE.md` | this entry |
+
+
 
 
 

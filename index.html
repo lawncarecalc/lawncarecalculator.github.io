@@ -1812,6 +1812,9 @@
             <div class="note-banner">ℹ️ Once the full amount of lime is applied, no additional lime is needed for up to three years. Repeat soil testing after 3–4 years to determine future needs.</div>
           </div>
         </div>
+        <div id="lime-print-btn-wrap" style="display:none;margin-top:16px;">
+          <button class="print-plan-btn no-print" onclick="printPlan('lime')">&#128424; Print Plan</button>
+        </div>
     </div>
   </div><!-- end tab-lime -->
 
@@ -2022,11 +2025,8 @@
               <h4 style="font-size:0.85rem;color:var(--green-deep);margin:0 0 8px;">Phosphorus, Potassium &amp; Other Nutrients</h4>
               <div id="gdn-nutrient-status" aria-live="polite" aria-atomic="false"></div>
             </div>
-            <!-- One Print Plan button for the whole merged plan — sits after both sections above,
-                 never in between them. Shown/hidden by calcGarden() once both have rendered. -->
-            <div id="gdn-print-btn-wrap" style="display:none;">
-              <button class="print-plan-btn no-print" onclick="printPlan('garden')" style="margin-top:14px;">&#128424; Print Plan</button>
-            </div>
+            <!-- gdn-print-btn-wrap moved below, after the Application Timing card, so it visually
+                 sits after everything it covers instead of appearing to belong only to this box. -->
           </div>
         </div>
         <div class="card timing-card">
@@ -2036,6 +2036,12 @@
             <div id="gdn-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Enter garden type and fertilizer inputs to see timing guidance.</p></div>
             <div class="note-banner">ℹ️ Per VCE Soil Test Note 19. Recommendations may be repeated for up to three growing seasons. Retest after 3–4 years.</div>
           </div>
+        </div>
+        <!-- One Print Plan button for the whole plan — sits after the Application Timing card,
+             not inside the Nutrient Application Plan box above it, so it doesn't visually read as
+             excluding the Timing section. Shown/hidden by calcGarden(). -->
+        <div id="gdn-print-btn-wrap" style="display:none;margin-top:16px;">
+          <button class="print-plan-btn no-print" onclick="printPlan('garden')">&#128424; Print Plan</button>
         </div>
         <div class="card">
           <h3 class="card-header"><span class="icon" aria-hidden="true">📐</span> Volume Reference Table</h3>
@@ -2286,9 +2292,7 @@
               <h4 style="font-size:0.85rem;color:var(--green-deep);margin:0 0 8px;">Phosphorus, Potassium &amp; Other Nutrients</h4>
               <div id="flr-nutrient-status" aria-live="polite" aria-atomic="false"></div>
             </div>
-            <div id="flr-print-btn-wrap" style="display:none;">
-              <button class="print-plan-btn no-print" onclick="printPlan('flower')" style="margin-top:14px;">&#128424; Print Plan</button>
-            </div>
+            <!-- flr-print-btn-wrap moved below, after the Timing of Applications card. -->
           </div>
         </div>
 
@@ -2299,6 +2303,11 @@
             <div id="flr-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Select flower type to see timing guidance.</p></div>
             <div class="note-banner">&#8505;&#65039; Lime applied to flower beds is effective for up to three years. Retest after 3&ndash;4 years to determine future needs. <em>(VCE Note 19)</em></div>
           </div>
+        </div>
+        <!-- One Print Plan button for the whole plan — sits after the Timing card, not inside the
+             box above it, so it doesn't visually read as excluding the Timing section. -->
+        <div id="flr-print-btn-wrap" style="display:none;margin-top:16px;">
+          <button class="print-plan-btn no-print" onclick="printPlan('flower')">&#128424; Print Plan</button>
         </div>
     </div>
   </div><!-- end tab-flower -->
@@ -2495,6 +2504,9 @@
           </div>
           <div class="note-banner" style="margin-top:12px;">&#8505;&#65039; Sweep or blow any fertilizer that lands on driveways, sidewalks, or hard surfaces back into the landscape immediately — prevent it from washing into storm drains. <em>(VCE Note 20)</em></div>
         </div>
+      </div>
+      <div id="shrub-print-btn-wrap" style="display:none;margin-top:16px;">
+        <button class="print-plan-btn no-print" onclick="printPlan('shrub')">&#128424; Print Plan</button>
       </div>
 
     </div>
@@ -3861,6 +3873,8 @@ function calcLime() {
     if (panelEl) panelEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your lawn or garden size and lime recommendation to see results.</p>';
     var timingEl = document.getElementById('lime-timing');
     if (timingEl) timingEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p>';
+    var limePrintWrapEarly = document.getElementById('lime-print-btn-wrap');
+    if (limePrintWrapEarly) limePrintWrapEarly.style.display = 'none';
     return;
   }
 
@@ -3915,7 +3929,6 @@ function calcLime() {
 
     html += '<div style="margin-top:14px;font-size:0.78rem;background:#eef4ff;border:1px solid #b8cce8;border-radius:4px;padding:8px 11px;color:var(--slate-mid);line-height:1.5;">&#128167; <strong>If you are using pelletized lime:</strong> the pellet must absorb moisture and slake (break back down into its fine powder) before it can react with the soil &mdash; so pH change is actually <em>slower</em> to start than the marketing suggests, and it stalls in dry soil. Apply when soil moisture is reliable (fall or early spring, or just before expected rain), not into a dry summer lawn. For garden beds, working it into the top few inches speeds the reaction. Pelletized lime also reacts and then runs out sooner than coarse aglime, which is why the recommended amount is split into the applications above rather than applied all at once. <em>(NC State Extension; VCE 452-510)</em></div>';
 
-    html += '<button class="print-plan-btn no-print" onclick="printPlan(\'lime\')" style="margin-top:14px;">&#128424; Print Plan</button>';
     panelEl.innerHTML = html;
   }
 
@@ -3927,6 +3940,11 @@ function calcLime() {
       timingEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p>';
     }
   }
+
+  // One Print Plan button after the Timing card (not inside the results card above it), shown
+  // now that both sections have real content.
+  var limePrintWrap = document.getElementById('lime-print-btn-wrap');
+  if (limePrintWrap) limePrintWrap.style.display = '';
 }
 
 // ===== REPORT TYPE HELPERS =====
@@ -6820,7 +6838,7 @@ function calcShrub() {
     html += '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
   }
 
-  if (html && html.indexOf('Enter') !== 0) { html += '<button class="print-plan-btn no-print" onclick="printPlan(\'shrub\')" style="margin-top:14px;">&#128424; Print Plan</button>'; }
+  var shrubHasContent = !!(html && html.indexOf('Enter') !== 0);
   resultsEl.innerHTML = html;
 
   // Timing guidance
@@ -6868,6 +6886,10 @@ function calcShrub() {
   // Apply glossary to new content
   applyGlossary(resultsEl);
   applyGlossary(timingEl);
+
+  // One Print Plan button after the Timing card, not inside the results card above it.
+  var shrubPrintWrap = document.getElementById('shrub-print-btn-wrap');
+  if (shrubPrintWrap) shrubPrintWrap.style.display = shrubHasContent ? '' : 'none';
 }
 
 // ===== GLOSSARY TOOLTIPS =====
