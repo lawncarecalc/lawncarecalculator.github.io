@@ -2529,11 +2529,9 @@
           <h3 class="card-header"><span class="icon" aria-hidden="true">📖</span> How to Use This Calculator</h3>
           <div class="card-body">
             <p class="about-section-intro">This tool accepts soil test reports from Virginia Cooperative Extension (VCE) / Virginia Tech and Waypoint Analytical. Every calculator starts the same way, on the <strong>Soil Test Report</strong> tab:</p>
-            <div class="about-step"><div class="about-step-num">1</div><div><strong>Get a soil test and enter it.</strong> Select your lab — <strong>VCE / Virginia Tech</strong> or <strong>Waypoint Analytical</strong> — and rating scales and units adjust automatically.</div></div>
-            <div class="about-step"><div class="about-step-num">2</div><div><strong>Answer one question: what is this report for?</strong> Select your lab and what was tested — for example "VCE / Virginia Tech — Vegetable Garden" or "Waypoint Analytical — Lawn." That single answer tells the app which field format to show, which rating scale to use, and which calculator tab to unlock. Each soil sample gets its own report for one purpose, so this is always one answer, never two.</div></div>
-            <div class="about-step"><div class="about-step-num">3</div><div><strong>One calculator tab appears.</strong> The calculator tabs are hidden until a report is entered and its purpose disclosed — the matching tab appears once you do, since you shouldn't be applying fertilizer without a soil test to tell you your starting point. Lime appears alongside any report, since lime math isn't purpose-specific. Click <strong>"Continue to [X] Calculator"</strong> to jump there with your values already carried over.</div></div>
-            <div class="about-step"><div class="about-step-num">4</div><div><strong>Have more than one area?</strong> A lawn, a vegetable bed, a flower bed, and a shrub bed each need their own soil sample and their own report. Come back to the Soil Test tab, enter the next report and its purpose, and the tab bar switches to match it.</div></div>
-            <div class="about-step"><div class="about-step-num">5</div><div><strong>Retest after three years.</strong> All fertilizer and lime recommendations are valid for up to three growing seasons.</div></div>
+            <div class="about-step"><div class="about-step-num">1</div><div><strong>Enter your report.</strong> Select <strong>"What is this report for?"</strong> — your lab and what was tested (e.g., "VCE / Virginia Tech — Vegetable Garden"). Enter your lawn or garden size first, since it's what enables the carry-over button later. Then type in every value from your physical report exactly as printed — P, K, Ca, Mg, micronutrients, pH, organic matter, salts, the lime recommendation — and an interpretation card appears for each one. <strong>Enter at least your P and K values before trying to continue</strong> — a "Continue to [X] Calculator" button appears as soon as you disclose your report's purpose, but it won't actually work until P or K is filled in; clicking it early just leaves you on this tab. Once you've entered your values, click <strong>"Continue to [X] Calculator"</strong> to jump to your calculator tab (it appears automatically, scrolled to the top) with everything carried over.</div></div>
+            <div class="about-step"><div class="about-step-num">2</div><div><strong>Have more than one area?</strong> A lawn, a vegetable bed, a flower bed, and a shrub bed each need their own soil sample and their own report. Come back to this tab, enter the next report, and the calculator tab bar switches to match it.</div></div>
+            <div class="about-step"><div class="about-step-num">3</div><div><strong>Retest after three years.</strong> All fertilizer and lime recommendations are valid for up to three growing seasons.</div></div>
 
             <p style="font-weight:700;color:var(--green-deep);font-size:0.88rem;margin:18px 0 10px;">What's different once you're on your tab:</p>
 
@@ -2542,7 +2540,10 @@
                 <span>&#127807; Cool-Season Lawns</span><span class="toggle-arrow">&#9660;</span>
               </button>
               <div class="fert-chooser-body" id="about-howto-cool-body">
-                <p>Choose your grass species first — it sets the nitrogen ceiling and per-application limit for that species. Build your application plan by adding up to 4 application slots, each with its own N-P-K grade and WIN% (see "Understanding WIN &amp; Nitrogen Programs" below for what WIN% means and why it changes your per-application limit). The Season Summary tracks your cumulative N, P, and K against the soil test recommendation as you add slots. If you mulch-mow and return clippings, you can reduce your total annual nitrogen by up to a third. <em>(VCE 430-011)</em></p>
+                <p><strong>1.</strong> Choose your grass species — sets the nitrogen ceiling and per-application limit for that species.</p>
+                <p><strong>2.</strong> Build your application plan: add up to 4 application slots, each with its own N-P-K grade and WIN% (see "Understanding WIN &amp; Nitrogen Programs" below for what WIN% means and why it changes your per-application limit).</p>
+                <p><strong>3.</strong> Check the Season Summary — it tracks your cumulative N, P, and K against the soil test recommendation as you add slots.</p>
+                <p><strong>4.</strong> Mulch-mowing and returning clippings? Reduce your total annual nitrogen by up to a third. <em>(VCE 430-011)</em></p>
               </div>
             </div>
 
@@ -2551,7 +2552,11 @@
                 <span>&#9728;&#65039; Warm-Season Lawns</span><span class="toggle-arrow">&#9660;</span>
               </button>
               <div class="fert-chooser-body" id="about-howto-warm-body">
-                <p>Works the same way as Cool-Season Lawns above — species-specific N ceiling, up to 4 application slots with N-P-K grade and WIN%, cumulative Season Summary, clipping-recycling adjustment — but with warm-season species options and per-application/seasonal limits (e.g., bermudagrass and St. Augustine grass tolerate a higher per-application rate than cool-season species). <em>(VCE 430-011, 430-522)</em></p>
+                <p>Works the same way as Cool-Season Lawns above:</p>
+                <p><strong>1.</strong> Choose your warm-season species — bermudagrass and St. Augustine grass tolerate a higher per-application rate than cool-season species do.</p>
+                <p><strong>2.</strong> Add up to 4 application slots with N-P-K grade and WIN%.</p>
+                <p><strong>3.</strong> Check the cumulative Season Summary.</p>
+                <p><strong>4.</strong> Mulch-mowing? Reduce total N by up to a third. <em>(VCE 430-011, 430-522)</em></p>
               </div>
             </div>
 
@@ -2560,6 +2565,7 @@
                 <span>&#129381; Lime</span><span class="toggle-arrow">&#9660;</span>
               </button>
               <div class="fert-chooser-body" id="about-howto-lime-body">
+                <p><strong>Only appears for Lawn and Shrubs & Trees reports</strong> — Vegetable Garden and Flower Garden calculate lime on their own tab instead (see below), so there's exactly one place per purpose to do it, not two.</p>
                 <p>Enter your lawn size, the lime recommendation from your report (lbs per 1,000 sq. ft.), the lime type (Agricultural or Dolomitic), the Calcium Carbonate Equivalent (CCE) from the bag's Guaranteed Analysis, and the bag size — the calculator tells you how many bags to buy. <strong>Gypsum is not lime</strong> &mdash; it has no CCE and doesn't raise soil pH. <em>(VCE 452-510)</em></p>
               </div>
             </div>
@@ -2569,8 +2575,11 @@
                 <span>&#127807; Vegetable Garden</span><span class="toggle-arrow">&#9660;</span>
               </button>
               <div class="fert-chooser-body" id="about-howto-garden-body">
-                <p>Enter your garden type, bed size, and the lime recommendation from your report. Then pick what you're growing — this shows the crop's feeding level, target soil pH, research-based nitrogen default, and sidedress timing together in one place, with the option to enter a different nitrogen number if you have one from another source (your own report's separate suggestion, or a private agronomist consult).</p>
-                <p>The "Calculate your Nutrient Application Rates" step is where you choose your bed status and nitrogen source (organic or synthetic — always a single nutrient, never a blended fertilizer) and, if you have a Waypoint report, enter its numeric nutrient targets directly in each nutrient's own row in the results below. The output is one "Nutrient Application Plan": nitrogen first, then phosphorus, potassium, and every other nutrient that needs attention — with P, K, calcium, magnesium, sulfur, and micronutrient ratings pulled automatically from what you entered on the Soil Test tab, nothing re-entered.</p>
+                <p><strong>1.</strong> Enter your bed size first — nothing below can calculate without it.</p>
+                <p><strong>2.</strong> Enter your lime recommendation, plus (optionally) your lime product's CCE % and bag size for exact bags-needed math — right on this tab, no separate Lime tab involved.</p>
+                <p><strong>3.</strong> Pick what you're growing (optional) — this shows the crop's feeding level, target soil pH, research-based nitrogen default, and sidedress timing together in one place, with the option to enter a different nitrogen number if you have one from another source (your own report's separate suggestion, or a private agronomist consult).</p>
+                <p><strong>4.</strong> Choose your bed status (new/established) and a nitrogen source (organic or synthetic — always a single nutrient, never a blended fertilizer).</p>
+                <p>Your results are one "Nutrient Application Plan": nitrogen (preplant amount, sidedress schedule, and lime) first, then phosphorus, potassium, and every other nutrient — with P, K, calcium, magnesium, sulfur, and micronutrient ratings pulled automatically from what you entered on the Soil Test tab, nothing re-entered. If you have a Waypoint report, enter its numeric nutrient targets directly in each nutrient's own row in the results.</p>
                 <p>See the <strong>"Single-Nutrient Amendment Philosophy"</strong> card below for the reasoning behind how individual nutrients, organic-vs-synthetic choices, and volume estimates are handled on this tab.</p>
               </div>
             </div>
@@ -2580,8 +2589,10 @@
                 <span>&#127802; Flower Garden</span><span class="toggle-arrow">&#9660;</span>
               </button>
               <div class="fert-chooser-body" id="about-howto-flower-body">
-                <p>For annual beds, perennial borders, rose gardens, and spring-flowering bulbs. Pick your flower type and bed size, then either enter the nitrogen recommendation from your report or leave it blank for a research-based default for that flower type. Enter your P and K ratings from your soil test, then either type in a fertilizer's N-P-K grade directly or choose a common product.</p>
-                <p style="color:var(--slate-mid);font-size:0.82rem;"><strong>Note:</strong> this tab still uses the older single-blended-fertilizer approach (one N-P-K grade or product for the whole bed) rather than the per-nutrient system described for Vegetable Garden above. Bringing Flower Garden up to the same approach is planned but not yet built.</p>
+                <p><strong>1.</strong> Pick your flower type (annual, perennial, rose, or spring-flowering bulb) and bed size.</p>
+                <p><strong>2.</strong> Choose how to fertilize: <strong>Complete N-P-K Fertilizer</strong> (default — one blended product supplies nitrogen, phosphorus, and potassium together; enter a grade directly or pick a common product) or <strong>Individual N, P, K Fertilizers</strong> (the same single-nutrient system as Vegetable Garden — pick a nitrogen source on its own, and phosphorus/potassium/calcium/magnesium/sulfur/micronutrients each get their own amendment in the results, auto-filled from the Soil Test tab). In Complete mode, the phosphorus and potassium rows in the results show they're being handled by the blended product instead of an independent recommendation, so you're never told to add either one twice.</p>
+                <p><strong>3.</strong> Enter your lime recommendation, plus (optionally) CCE % and bag size, on this same tab — no separate Lime tab needed for Flower Garden reports.</p>
+                <p>Either the nitrogen field or the flower type's research-based default is used — leave the nitrogen recommendation blank to use the default for your flower type.</p>
               </div>
             </div>
 
@@ -2590,7 +2601,10 @@
                 <span>&#127795; Shrubs &amp; Trees</span><span class="toggle-arrow">&#9660;</span>
               </button>
               <div class="fert-chooser-body" id="about-howto-shrub-body">
-                <p>Start with the health check — VCE recommends fertilizing only when specific deficiency symptoms are visible (paler, smaller, or fewer leaves; stunted or deformed growth; reduced buds or flowers; premature fall color or leaf drop; reduced twig growth). A healthy plant, especially one near a fertilized lawn, usually needs nothing. If fertilizing is warranted, pick your plant type, then its canopy size — the calculator automatically applies fertilizer to twice the canopy area, since most feeder roots extend well past the drip line. <em>(VCE Soil Test Note 20)</em></p>
+                <p><strong>1.</strong> Check for deficiency symptoms first — VCE recommends fertilizing only when specific signs are visible (paler, smaller, or fewer leaves; stunted or deformed growth; reduced buds or flowers; premature fall color or leaf drop; reduced twig growth). A healthy plant, especially one near a fertilized lawn, usually needs nothing.</p>
+                <p><strong>2.</strong> If fertilizing is warranted, pick your plant type.</p>
+                <p><strong>3.</strong> Enter its canopy size — the calculator automatically applies fertilizer to twice the canopy area, since most feeder roots extend well past the drip line.</p>
+                <p><strong>4.</strong> Need lime? Use the Lime tab — Shrubs &amp; Trees is one of the two purposes (with Lawn) that still routes there. <em>(VCE Soil Test Note 20)</em></p>
               </div>
             </div>
           </div>
