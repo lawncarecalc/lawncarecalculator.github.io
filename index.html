@@ -1504,7 +1504,7 @@
                 <span>&#9851; <strong>I mulch-mow and return clippings.</strong> Reduces your annual nitrogen target by up to one-third (capped at 1 lb/1,000 sq. ft., the nitrogen clippings return). <em>(VCE 430-011, SPES-384)</em></span>
               </label>
               <fieldset class="st-fieldset-block" style="margin-top:12px;padding:10px 12px;background:var(--cream);border:1px solid var(--border);border-radius:6px;">
-                <legend style="font-size:0.82rem;color:var(--slate-mid);line-height:1.4;margin-bottom:8px;float:left;width:100%;">&#9729;&#65039; <strong>Is this area shaded?</strong> VCE 430-011: <em>"Grasses growing in heavily shaded areas require only one-half to two-thirds as much nitrogen as grasses growing in full sun."</em> You judge how shaded the area is and choose accordingly.</legend>
+                <legend style="font-size:0.82rem;color:var(--slate-mid);line-height:1.4;margin-bottom:8px;float:left;width:100%;text-transform:none;">&#9729;&#65039; <strong>Is this area shaded?</strong> VCE 430-011: <em>"Grasses growing in heavily shaded areas require only one-half to two-thirds as much nitrogen as grasses growing in full sun."</em> You judge how shaded the area is and choose accordingly.</legend>
                 <div style="display:flex;gap:4px;flex-wrap:wrap;clear:both;">
                   <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
                     <input type="radio" id="cool-shade-full" name="cool-shade" value="1" checked onchange="calcCool()"><label for="cool-shade-full"> Full sun</label>
@@ -1661,7 +1661,7 @@
                 <span>&#9851; <strong>I mulch-mow and return clippings.</strong> Reduces your annual nitrogen target by up to one-third (capped at 1 lb/1,000 sq. ft., the nitrogen clippings return). <em>(VCE 430-011, SPES-384)</em></span>
               </label>
               <fieldset class="st-fieldset-block" style="margin-top:12px;padding:10px 12px;background:var(--cream);border:1px solid var(--border);border-radius:6px;">
-                <legend style="font-size:0.82rem;color:var(--slate-mid);line-height:1.4;margin-bottom:8px;float:left;width:100%;">&#9729;&#65039; <strong>Is this area shaded?</strong> VCE 430-011: <em>"Grasses growing in heavily shaded areas require only one-half to two-thirds as much nitrogen as grasses growing in full sun."</em> You judge how shaded the area is and choose accordingly. Note: shaded warm-season grasses are more prone to winterkill — avoid late-season nitrogen in shade.</legend>
+                <legend style="font-size:0.82rem;color:var(--slate-mid);line-height:1.4;margin-bottom:8px;float:left;width:100%;text-transform:none;">&#9729;&#65039; <strong>Is this area shaded?</strong> VCE 430-011: <em>"Grasses growing in heavily shaded areas require only one-half to two-thirds as much nitrogen as grasses growing in full sun."</em> You judge how shaded the area is and choose accordingly. Note: shaded warm-season grasses are more prone to winterkill — avoid late-season nitrogen in shade.</legend>
                 <div style="display:flex;gap:4px;flex-wrap:wrap;clear:both;">
                   <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
                     <input type="radio" id="warm-shade-full" name="warm-shade" value="1" checked onchange="calcWarm()"><label for="warm-shade-full"> Full sun</label>
@@ -2898,7 +2898,7 @@
                 <div class="about-source">
                   <div class="about-source-title"><a href="https://hgic.clemson.edu/factsheet/fertilizing-vegetables/" target="_blank" rel="noopener" style="color:var(--green-mid);">Clemson HGIC — Fertilizing Vegetables<span class="sr-only"> (opens in new tab)</span></a></div>
                   <div class="about-source-meta">Clemson Home &amp; Garden Information Center</div>
-                  <p>Source for: 30&ndash;40% preplant / 60&ndash;70% sidedress split for synthetic fertilizers, sandy soil guidance (split sidedress into two applications), calcium nitrate as preferred sidedress product (supplies Ca alongside N, reduces blossom end rot and tip burn), and annual soil testing recommendation for active vegetable beds.</p>
+                  <p>Source for: 30&ndash;40% preplant / 60&ndash;70% sidedress split for synthetic fertilizers, sandy soil guidance (split sidedress into two applications), calcium nitrate as preferred sidedress product (supplies Ca alongside N), and annual soil testing recommendation for active vegetable beds. <strong>Note:</strong> blossom end rot and tip burn are primarily calcium-uptake disorders driven by inconsistent watering, not usually a soil calcium shortage &mdash; added calcium helps most reliably when soil calcium itself tests low.</p>
                 </div>
                 <div class="about-source">
                   <div class="about-source-title"><a href="https://njaes.rutgers.edu/FS626/" target="_blank" rel="noopener" style="color:var(--green-mid);">Rutgers NJAES FS626 — Fertilizing the Home Vegetable Garden<span class="sr-only"> (opens in new tab)</span></a></div>
@@ -2908,7 +2908,7 @@
                 <div class="about-source">
                   <div class="about-source-title">NC State Cooperative Extension — Vegetable Fertilization</div>
                   <div class="about-source-meta">NC State University</div>
-                  <p>Confirms calcium nitrate as the preferred sidedress N source for tomatoes and cole crops (supplies Ca alongside N, reducing blossom end rot and tip burn).</p>
+                  <p>Confirms calcium nitrate as the preferred sidedress N source for tomatoes and cole crops (supplies Ca alongside N). Blossom end rot and tip burn are primarily calcium-uptake disorders caused by inconsistent watering and underdeveloped root systems, not usually a soil calcium deficiency &mdash; calcium nitrate provides direct corrective value mainly when soil calcium itself tests low.</p>
                 </div>
                 <div class="about-source">
                   <div class="about-source-title"><a href="https://content.ces.ncsu.edu/the-importance-of-manganese-in-vegetable-crop-nutrition-in-north-carolina" target="_blank" rel="noopener" style="color:var(--green-mid);">NC State Extension — The Importance of Manganese in Vegetable Crop Nutrition in North Carolina<span class="sr-only"> (opens in new tab)</span></a></div>
@@ -3805,28 +3805,28 @@ function calcWarm() {
   else calcMulti('warm');
 }
 var P_REC = {
-  'L-':{ cls:'rec-p',      icon:'&#10003;', msg:'Use a Fertilizer With Phosphorus (P)' },
-  'L': { cls:'rec-p',      icon:'&#10003;', msg:'Use a Fertilizer With Phosphorus (P)' },
-  'L+':{ cls:'rec-p',      icon:'&#10003;', msg:'Use a Fertilizer With Phosphorus (P)' },
-  'M-':{ cls:'rec-p-no',   icon:'&#9888;',  msg:'Phosphorus (P) is not needed, but may be used' },
-  'M': { cls:'rec-p-no',   icon:'&#9888;',  msg:'Phosphorus (P) is not needed, but may be used' },
-  'M+':{ cls:'rec-p-no',   icon:'&#9888;',  msg:'Phosphorus (P) is not needed, but may be used' },
-  'H-':{ cls:'rec-p-zero', icon:'&#9940;',  msg:'Use a Zero Phosphorus (P) Fertilizer' },
-  'H': { cls:'rec-p-zero', icon:'&#9940;',  msg:'Use a Zero Phosphorus (P) Fertilizer' },
-  'H+':{ cls:'rec-p-zero', icon:'&#9940;',  msg:'Use a Zero Phosphorus (P) Fertilizer' },
-  'VH':{ cls:'rec-p-zero', icon:'&#9940;',  msg:'Use a Zero Phosphorus (P) Fertilizer' }
+  'L-':{ cls:'rec-p',      icon:'&#10003;', msg:'Use a fertilizer with phosphorus (P).' },
+  'L': { cls:'rec-p',      icon:'&#10003;', msg:'Use a fertilizer with phosphorus (P).' },
+  'L+':{ cls:'rec-p',      icon:'&#10003;', msg:'Use a fertilizer with phosphorus (P).' },
+  'M-':{ cls:'rec-p-no',   icon:'&#9888;',  msg:'Not needed, but may be used.' },
+  'M': { cls:'rec-p-no',   icon:'&#9888;',  msg:'Not needed, but may be used.' },
+  'M+':{ cls:'rec-p-no',   icon:'&#9888;',  msg:'Not needed, but may be used.' },
+  'H-':{ cls:'rec-p-zero', icon:'&#9940;',  msg:'Use a zero-phosphorus fertilizer.' },
+  'H': { cls:'rec-p-zero', icon:'&#9940;',  msg:'Use a zero-phosphorus fertilizer.' },
+  'H+':{ cls:'rec-p-zero', icon:'&#9940;',  msg:'Use a zero-phosphorus fertilizer.' },
+  'VH':{ cls:'rec-p-zero', icon:'&#9940;',  msg:'Use a zero-phosphorus fertilizer.' }
 };
 var K_REC = {
-  'L-':{ cls:'rec-k',      icon:'&#10003;', msg:'Use a Fertilizer With Potassium (K)' },
-  'L': { cls:'rec-k',      icon:'&#10003;', msg:'Use a Fertilizer With Potassium (K)' },
-  'L+':{ cls:'rec-k',      icon:'&#10003;', msg:'Use a Fertilizer With Potassium (K)' },
-  'M-':{ cls:'rec-k-no',   icon:'&#9888;',  msg:'Potassium (K) is not needed, but may be used' },
-  'M': { cls:'rec-k-no',   icon:'&#9888;',  msg:'Potassium (K) is not needed, but may be used' },
-  'M+':{ cls:'rec-k-no',   icon:'&#9888;',  msg:'Potassium (K) is not needed, but may be used' },
-  'H-':{ cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a Zero Potassium (K) Fertilizer' },
-  'H': { cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a Zero Potassium (K) Fertilizer' },
-  'H+':{ cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a Zero Potassium (K) Fertilizer' },
-  'VH':{ cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a Zero Potassium (K) Fertilizer' }
+  'L-':{ cls:'rec-k',      icon:'&#10003;', msg:'Use a fertilizer with potassium (K).' },
+  'L': { cls:'rec-k',      icon:'&#10003;', msg:'Use a fertilizer with potassium (K).' },
+  'L+':{ cls:'rec-k',      icon:'&#10003;', msg:'Use a fertilizer with potassium (K).' },
+  'M-':{ cls:'rec-k-no',   icon:'&#9888;',  msg:'Not needed, but may be used.' },
+  'M': { cls:'rec-k-no',   icon:'&#9888;',  msg:'Not needed, but may be used.' },
+  'M+':{ cls:'rec-k-no',   icon:'&#9888;',  msg:'Not needed, but may be used.' },
+  'H-':{ cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a zero-potassium fertilizer.' },
+  'H': { cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a zero-potassium fertilizer.' },
+  'H+':{ cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a zero-potassium fertilizer.' },
+  'VH':{ cls:'rec-k-zero', icon:'&#9940;',  msg:'Use a zero-potassium fertilizer.' }
 };
 
 // ===== P/K RECOMMENDATION MAPS =====
@@ -4271,6 +4271,19 @@ function interpretSoilTest() {
     return '<span class="st-rating-pill ' + cls + '">' + label + '</span>';
   }
 
+  // Where lime is actually calculated for this purpose — computed once, reused by every card
+  // below that offers a "go calculate your lime" button. Vegetable/Flower Garden do the complete
+  // CCE-adjusted calculation inline themselves; Lawn and Shrubs & Trees still use the standalone
+  // Lime tab. Moved here (before the pH card) after finding the pH card's own button used a
+  // simpler isGarden-only check that, like the Lime Recommendation/Base Saturation/Buffer Index
+  // cards before this fix, mislabeled and misrouted Shrub and Flower reports.
+  var limeGoBtn = '';
+  if (!isNaN(limeRec) && limeRec > 0) {
+    if (crop === 'vegetable') limeGoBtn = goBtn('garden', 'Open Vegetable Garden Calculator');
+    else if (crop === 'flower') limeGoBtn = goBtn('flower', 'Open Flower Garden Calculator');
+    else limeGoBtn = goBtn('lime', 'Open Lime Calculator');
+  }
+
   // ---- pH ----
   if (!isNaN(ph)) {
     var phClass, phMsg, phAction;
@@ -4295,21 +4308,10 @@ function interpretSoilTest() {
       '<span class="st-rating-pill ' + phClass + '">' + ph.toFixed(1) + '</span>',
       'pH measures soil acidity or alkalinity on a 0-14 scale (7 = neutral). Virginia soils naturally acidify over time.</p><p><strong>Your result:</strong> ' + phMsg,
       isGarden ? 'Soil pH controls nutrient availability to your plants. The target for vegetable and flower gardens (6.0-6.8) is slightly higher than for lawns.' : 'Soil pH controls how available nutrients are to your grass. When pH is outside the target range, even well-fertilized soil may not feed your lawn effectively.',
-      phAction, (!isNaN(limeRec) && limeRec > 0) ? goBtn(isGarden ? 'garden' : 'lime', isGarden ? 'Open Garden Calculator' : 'Open Lime Calculator') : ''));
+      phAction, limeGoBtn));
   }
 
   // ---- Buffer Index ----
-  // Where lime is actually calculated for this purpose — computed once, reused by every card
-  // below that offers a "go calculate your lime" button. Vegetable/Flower Garden do the complete
-  // CCE-adjusted calculation inline themselves; Lawn and Shrubs & Trees still use the standalone
-  // Lime tab.
-  var limeGoBtn = '';
-  if (!isNaN(limeRec) && limeRec > 0) {
-    if (crop === 'vegetable') limeGoBtn = goBtn('garden', 'Open Vegetable Garden Calculator');
-    else if (crop === 'flower') limeGoBtn = goBtn('flower', 'Open Flower Garden Calculator');
-    else limeGoBtn = goBtn('lime', 'Open Lime Calculator');
-  }
-
   if (!isNaN(bi)) {
     var biMsg, biAction;
     if (bi >= 6.5) {
@@ -5282,18 +5284,18 @@ function gdnDensityInputHtml(key) {
 // Organic: calculated from FAO/extension bulk density data
 var GARDEN_PRODUCTS = {
   'calcium-nitrate':  { name:'Calcium Nitrate (15.5-0-0)', npk:[15.5,0,0], cupsPerLb:2.0,  organic:false, source:'VCE Note 19', note19Rate:null,
-    note:'Preferred sidedress N source — supplies calcium alongside nitrogen, reducing blossom end rot in tomatoes and tip burn in cole crops. <em>(Clemson, NC State, Rutgers)</em>' },
+    note:'Preferred sidedress N source — supplies calcium alongside nitrogen. Note: blossom end rot and tip burn are usually caused by inconsistent water uptake rather than a true soil calcium shortage, so this helps most reliably when soil calcium itself tests low; consistent watering is the primary fix either way. <em>(Clemson, NC State, Rutgers)</em>' },
   'nitrate-soda':     { name:'Nitrate of Soda (16-0-0)',   npk:[16,0,0],   cupsPerLb:1.75, organic:false, source:'VCE Note 19', note19Rate:null, note:'' },
   'ammonium-sulfate': { name:'Ammonium Sulfate (21-0-0)',  npk:[21,0,0],   cupsPerLb:2.5,  organic:false, source:'VCE Note 19', note19Rate:null, note:'Also supplies sulfur (24% S).' },
   'urea':             { name:'Urea (46-0-0)',              npk:[46,0,0],   cupsPerLb:2.5,  organic:false, source:'VCE Note 19', note19Rate:null, note:'High analysis — small quantities needed. Use carefully to avoid burn.' },
   '10-10-10':         { name:'10-10-10',                  npk:[10,10,10], cupsPerLb:1.75, organic:false, source:'Est. (granular)', note19Rate:null, note:'' },
   '5-10-5':           { name:'5-10-5',                    npk:[5,10,5],   cupsPerLb:1.75, organic:false, source:'Est. (granular)', note19Rate:null, note:'' },
   'blood-meal':       { name:'Blood Meal (13% N)',       npk:[13,0,0],   cupsPerLb:null, organic:true,  fastOrganic:true,  source:'No verified bulk density source found \u2014 weigh for accuracy', note19Rate:'5 lbs per 100 sq. ft.',
-    note:'Fastest-releasing organic N. In warm soil (above 60\u00b0F) releases comparably to a medium-speed synthetic \u2014 effective as a sidedress for warm-season crops planted after May 1 (tomatoes, corn, peppers). In cool spring soil (below 55\u00b0F) release is much slower \u2014 for early-season cole crops and root vegetables planted in March\u2013April, use a synthetic N source for sidedressing instead. <em>(Rutgers FS626, SARE LS16-269, UMD Extension)</em>' },
+    note:'Fastest-releasing organic N. In warm soil (above 60\u00b0F) releases comparably to a medium-speed synthetic \u2014 a reasonable choice for sidedressing once soil has warmed in late spring. In cool spring soil (below 55\u00b0F) release is much slower \u2014 for early-season applications, use a synthetic N source instead. <em>(Rutgers FS626, SARE LS16-269, UMD Extension)</em>' },
   'fish-meal':        { name:'Fish Meal (10% N)',        npk:[10,6,2],   cupsPerLb:null,  organic:true,  fastOrganic:true,  source:'VCE Note 19', note19Rate:'5 lbs per 100 sq. ft.',
     note:'Moderate-fast release in warm soils. Can be sidedressed for warm-season crops. <em>(SARE LS16-269)</em>' },
   'fish-emulsion':    { name:'Fish Emulsion (~5-1-1)',     npk:[5,1,1],    cupsPerLb:null, organic:true,  fastOrganic:true,  source:'UMD Extension', note19Rate:null,
-    note:'Liquid \u2014 dilute per label. Fast-acting even in cool soils (85% of nutrients available quickly) \u2014 good choice for early-season cole crops and root vegetables. <em>(UMD Extension)</em>', liquid:true },
+    note:'Liquid \u2014 dilute per label. Fast-acting even in cool soils (85% of nutrients available quickly) \u2014 a good choice for early-season applications when other organic sources release too slowly. <em>(UMD Extension)</em>', liquid:true },
   'soybean-meal':     { name:'Soybean Meal (7% N)',      npk:[7,2,1],    cupsPerLb:null,  organic:true,  fastOrganic:false, source:'VCE Note 19', note19Rate:'10 lbs per 100 sq. ft.', note:'Slow-medium release. Best applied preplant and incorporated.' },
   'cottonseed-meal':  { name:'Cottonseed Meal (6% N)',   npk:[6,3,2],    cupsPerLb:null, organic:true,  fastOrganic:false, source:'Rutgers FS626', note19Rate:'10 lbs per 100 sq. ft.', note:'Slow-medium release. Best applied preplant and incorporated.' },
   'feather-meal':     { name:'Feather Meal (10% N)',     npk:[10,0,0],   cupsPerLb:null, organic:true,  fastOrganic:false, source:'No verified bulk density source found \u2014 weigh for accuracy', note19Rate:null, note:'Very slow release \u2014 best for preplant incorporation only.' },
@@ -5696,10 +5698,7 @@ function calcGarden() {
   // Convert Waypoint lbs/1000 to lbs/100 for all calculations
   var limeRec  = (parseFloat(document.getElementById('gdn-lime-rec').value) || 0) / (isWaypointGarden ? 10 : 1);
   // P/K ratings no longer entered here — auto-filled from the Soil Test tab's canonical fields
-  // (st-p-rating / st-k-rating), same as Ca/Mg/etc. in renderNutrientStatusPanel(). Still needed
-  // locally below for the tomato/pepper high-P/K split note and the P/K recommendation boxes.
-  var pRating = (document.getElementById('st-p-rating') || {}).value || '';
-  var kRating = (document.getElementById('st-k-rating') || {}).value || '';
+  // (st-p-rating / st-k-rating) directly inside renderNutrientStatusPanel(), same as Ca/Mg/etc.
   var bedStatus   = document.getElementById('gdn-bed-status').value;
 
   var area = 0;
@@ -5885,6 +5884,15 @@ function calcGarden() {
       html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Fast-release organic (warm-season crop):</strong> Effective as sidedress in warm soil above 60\u00b0F. Sidedress amounts shown below use the same product at equivalent N rates. <em>(Rutgers FS626, SARE LS16-269)</em></div>';
     }
 
+    // High P/K for tomato/pepper: VCE Note 19 says split preplant N in half rather than over-
+    // fertilizing when soil already has plenty of P/K. This is about nitrogen *timing*, not a
+    // P/K amendment recommendation (that's the Nutrient Application Plan's own section below) —
+    // kept separate from, and unrelated to, the old P/K flag system removed above.
+    var pRatForSplit = WAYPOINT_TO_VCE[(document.getElementById('st-p-rating') || {}).value] || (document.getElementById('st-p-rating') || {}).value || '';
+    var kRatForSplit = WAYPOINT_TO_VCE[(document.getElementById('st-k-rating') || {}).value] || (document.getElementById('st-k-rating') || {}).value || '';
+    var pHigh = ['H-','H','H+','VH'].indexOf(pRatForSplit) >= 0;
+    var kHigh = ['H-','H','H+','VH'].indexOf(kRatForSplit) >= 0;
+
     // Build plan table
     html += '<table class="auto-plan-table"><thead><tr><th>Step</th><th>When</th><th>Amount for your bed</th></tr></thead><tbody>';
 
@@ -5950,37 +5958,18 @@ function calcGarden() {
     html += '<div class="result-row"><div class="result-label">Fertilizer needed</div><div class="result-value" style="color:var(--slate-light);">Enter N rec. &amp; fertilizer grade above</div></div>';
   }
 
-  // P/K flags
-  var pRat = WAYPOINT_TO_VCE[pRating] || pRating;
-  var kRat = WAYPOINT_TO_VCE[kRating] || kRating;
-  var pkHtml = '';
+  // P/K, and the old tomato/pepper "split your total fertilizer" note, are now handled entirely
+  // by the Nutrient Application Plan's Phosphorus/Potassium/Other Nutrients section below
+  // (renderNutrientStatusPanel) — this block predated that system and was never removed when it
+  // was built. Found and removed July 30, 2026: with certain Nitrogen Source choices that aren't
+  // 0% P/K (Fish Meal, Bat Guano, etc.), this old code was still firing and showing "Use a zero-
+  // phosphorus fertilizer" — a blended-fertilizer-era instruction that makes no sense in the
+  // single-nutrient system, duplicating and contradicting the correct guidance already given
+  // below. See July 30 session notes for how this was found (a live evaluation walkthrough).
 
   // Suppress Application Timing card when plan is showing
   var timingCard = document.querySelector('#tab-garden .timing-card');
   if (timingCard) timingCard.style.display = (nRec > 0 && fertN > 0) ? 'none' : '';
-
-  // Tomato/pepper split note — suppress when plan already handled it
-  var pHigh = pRat && ['H-','H','H+','VH'].indexOf(pRat) >= 0;
-  var kHigh = kRat && ['H-','H','H+','VH'].indexOf(kRat) >= 0;
-  if (!fertAlreadyZeroPK && (pHigh || kHigh) && (gardenType === 'vegetable') && nRec > 0 && fertN > 0
-      && cropKey !== 'tomato' && cropKey !== 'pepper') {
-    pkHtml += '<div style="background:#fff0f0;border:1px solid #e07070;border-radius:6px;padding:10px 14px;margin-top:8px;font-size:0.85rem;line-height:1.6;">'
-      + '&#127813; <strong>Tomatoes, green peppers, and lima beans:</strong> Your soil tests '
-      + (pHigh ? 'High or Very High for phosphorus' : '')
-      + (pHigh && kHigh ? ' and ' : '')
-      + (kHigh ? 'High or Very High for potassium' : '')
-      + '. Per Note 19, apply <strong>half the total fertilizer before planting</strong> and the <strong>remaining half after fruit set</strong>. Too much fertilizer applied early encourages vegetative growth and reduces fruit set.'
-      + '</div>';
-  }
-  if (!fertAlreadyZeroPK && pRat && P_REC[pRat]) {
-    var pr = P_REC[pRat];
-    pkHtml += '<div class="rec-box ' + pr.cls + '" style="margin-top:8px;"><span class="rec-icon">' + pr.icon + '</span><span><strong>Phosphorus:</strong> ' + pr.msg + '</span></div>';
-  }
-  if (!fertAlreadyZeroPK && kRat && K_REC[kRat]) {
-    var kr = K_REC[kRat];
-    pkHtml += '<div class="rec-box ' + kr.cls + '" style="margin-top:6px;"><span class="rec-icon">' + kr.icon + '</span><span><strong>Potassium:</strong> ' + kr.msg + '</span></div>';
-  }
-  if (pkHtml) html += '<div style="margin-top:12px;">' + pkHtml + '</div>';
 
   // Lime — CCE-adjusted rate + bag count, matching the standalone Lime tab's own formula, so
   // this tab gives a complete precise answer without sending anyone to a separate tab for it.
@@ -6836,7 +6825,7 @@ function calcShrub() {
   // pH note for plant type
   if (config.pHNote) {
     html += '<div style="background:var(--green-mist);border-radius:6px;padding:8px 12px;margin-top:10px;font-size:0.82rem;line-height:1.6;">'
-      + '&#127789; <strong>Soil pH target for ' + config.label + ':</strong> ' + config.pHTarget + '<br>'
+      + '&#127777; <strong>Soil pH target for ' + config.label + ':</strong> ' + config.pHTarget + '<br>'
       + config.pHNote + '</div>';
   }
 

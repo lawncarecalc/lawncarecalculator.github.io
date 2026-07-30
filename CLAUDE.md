@@ -448,6 +448,8 @@ jumps to About & Instructions; "No thanks" dismisses. Either hides it for the se
 28. **(Added July 29)** When verifying whether a specific CSS rule exists or is winning the cascade on a live page, walk the parsed CSSOM by rule type and check individual `selectorText` values — never rely on a substring match against a large block's concatenated `cssText` (e.g. an entire `@media` block), since unrelated rules sharing vocabulary can produce a false "it's there" positive. This exact mistake was made and caught in the same debugging session — see July 28–29 notes
 29. **(Added July 29)** `index.html` is produced here; the user deploys it to GitHub Pages as a separate manual step with no push access from this side. "Is this fixed in the file" and "is this fixed on the live URL" are two different questions — when a user reports a bug that should already be fixed, check the deployed site directly (and re-check after they say they've redeployed) rather than assuming the latest local file is what they're looking at
 30. **(Added July 29)** Any `body:not(.printing-X):not(.printing-Y)...` exclusion list controlling default print visibility must be updated every time a new `printing-*` prefix is added — the list is not self-maintaining. This was missed for `.printing-flower` and `.printing-shrub` when those prefixes were added, causing the Soil Test tab to print simultaneously with whichever of those two was actually requested. More generally: when a specific, confirmed-correct fix doesn't resolve a reported symptom, widen the search to every rule in the same media block rather than re-confirming the same rule again — the actual cause can be adjacent to, not inside, the thing already under suspicion
+31. **(Added July 30)** When a routing/labeling bug tied to purpose (vegetable/flower/shrub/lawn) is found and fixed in one card, `grep` the whole file for the same raw pattern (e.g. `isGarden ? 'garden' : ...`) before considering it resolved — do not assume inspection caught every instance. This exact bug (a card using a simple `isGarden` check instead of the three-way vegetable/flower/shrub split) was fixed for three cards in one session and found again, missed, in a fourth (the pH card) the next session
+32. **(Added July 30)** Live user-simulation testing (actually operating the deployed app via the browser tool, reading every explanation as a first-time user would, not just checking navigation) surfaces bugs that code review does not. This session's most significant find — a legacy P/K flag system still actively contradicting the new single-nutrient system for certain Nitrogen Source choices (Fish Meal, Bat Guano) — was invisible to static review and had gone undetected through several prior sessions' worth of smoke-testing, because every Nitrogen Source tried previously happened to be 0% P/K. When removing code found this way, check immediately whether anything else in the same function depends on variables the removed block declared — a genuine regression (breaking the still-valid tomato/pepper N-timing split) was introduced and caught only because a live-patch test threw a `ReferenceError`, not because of prior inspection
 
 ---
 
@@ -2770,6 +2772,110 @@ visually reads as covering everything above it (which it always did).
 | :-- | :-- |
 | `index.html` | Print Plan button moved to after the Timing card on Vegetable Garden, Flower Garden, Lime, and Shrubs & Trees; Lime and Shrub's buttons converted from inline JS-appended HTML to a static wrapper with proper show/hide logic. Cool/Warm Lawns identified as having a related but structurally different issue, intentionally not addressed this pass. |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 30, 2026 (Live user-simulation evaluation pass — found and fixed one active fertilizer-advice bug, several content/copy issues, and a recurring routing-bug class)
+
+### Context
+User asked Claude to "wear the shoes of a user" — actually operate the deployed app end-to-end via
+the browser tool (not reason about the code) and evaluate every explanation encountered, not just
+navigation. This is the same technique used for the July 28–29 print-button work, now applied
+specifically to *content correctness*, not just navigation flow. It found a materially more
+significant bug than any of the wording issues.
+
+### Most significant finding: a dead-looking legacy P/K flag system was still active in
+### `calcGarden()`, giving contradictory single-nutrient-era advice
+While reading Vegetable Garden's live output with a Fish Meal nitrogen source selected (P rated
+Very High), a box appeared reading **"Phosphorus: Use a Zero Phosphorus (P) Fertilizer"** —
+directly alongside the new Nutrient Application Plan's own correct "Adequate — no addition needed"
+guidance for the same nutrient. This old `pkHtml`/`P_REC`/`K_REC` block predates the July 21–28
+single-nutrient restructure and was never removed. It didn't fire during earlier smoke-testing
+because every Nitrogen Source tried up to that point (Calcium Nitrate, Urea, etc.) happens to be
+0% P/K, which coincidentally kept the block's `!fertAlreadyZeroPK` guard false. **Fish Meal and Bat
+Guano are NOT 0% P/K** (Fish Meal is 10-6-2), so selecting either un-suppressed it — a real,
+reachable, contradictory-advice bug, not dead code.
+
+**Fixed:** removed the entire legacy `pkHtml`/tomato-pepper-split-note/`P_REC`/`K_REC` block from
+`calcGarden()`. **A genuine regression was introduced and caught immediately while doing this**:
+a separate, still-valid piece of logic a few lines earlier (VCE Note 19's "split preplant N in
+half when P or K rates High/Very High for tomato/pepper" — a nitrogen *timing* rule, unrelated to
+the P/K amendment system) depended on the same `pHigh`/`kHigh` variables the removed block
+declared. Restored a clean, correctly-sourced `pHigh`/`kHigh` computation (reading directly from
+`st-p-rating`/`st-k-rating` via `WAYPOINT_TO_VCE`) in the right place, and verified both things at
+once via a live patch-and-test on the deployed site: the "zero fertilizer" message is gone, and the
+tomato/pepper split still fires correctly (`pHigh=true kHigh=true`, split logic confirmed).
+Also removed now-orphaned `pRating`/`kRating` variable declarations left unused after the block's
+removal.
+
+### Recurring bug class: cards using a simpler `isGarden` check instead of the three-way
+### vegetable/flower/shrub routing (SUPERSEDES the assumption, from the July 29 entry, that all
+### affected cards had been found)
+The July 29 fix corrected Lime Recommendation, Base Saturation, and Buffer Index to route/label
+correctly per purpose (vegetable → Garden tab, flower → Flower tab, shrub → Lime tab) instead of
+lumping all garden-family purposes together. **The Soil pH card had the identical bug and was
+missed in that pass** — found this session via the user pointing at stale-looking "go to lime
+calculator" text and asking for it to be removed, which led to checking every remaining
+`goBtn(isGarden ? ...)` pattern rather than just the one instance mentioned. Fixed by moving the
+shared `limeGoBtn` variable (computed once) to before the pH card instead of after it, so the pH
+card now reuses the same correctly-routed variable instead of an independent, drift-prone
+`isGarden`-only check. **Lesson: when a routing/labeling bug is found and fixed in N places, grep
+for the same raw pattern (`isGarden ? 'garden' : ...` etc.) across the whole file rather than
+assuming every instance was caught by inspection** — this is the second time in as many sessions a
+bug was fixed in some places but not found everywhere it existed until a later prompt surfaced it.
+
+### Vegetable-specific language leaking into Flower Garden's shared nitrogen-source data
+Flower Garden's "Individual N, P, K Fertilizers" mode (added July 28) reuses the same
+`GARDEN_PRODUCTS` object Vegetable Garden uses for its Nitrogen Source dropdown. Three entries had
+vegetable-crop-specific examples that don't make sense to a Flower Garden user: Calcium Nitrate
+("blossom end rot in tomatoes and tip burn in cole crops"), Blood Meal ("effective as a sidedress
+for warm-season crops... tomatoes, corn, peppers"), Fish Emulsion ("good choice for early-season
+cole crops and root vegetables"). All three generalized to be crop-neutral while keeping the
+genuinely useful, non-crop-specific parts (soil-temperature release behavior, etc.).
+
+### Blossom end rot / tip burn causal claim was overstated (user's own science critique, not just
+### a wording preference)
+User flagged that describing calcium nitrate as reducing blossom end rot in tomatoes "stretches
+the science" — correct: BER and tip burn are primarily calcium-**uptake** disorders driven by
+inconsistent watering and root development, not usually a true soil calcium shortage; added
+calcium only helps reliably when soil calcium itself tests low. Fixed in **three** places that made
+the same overreach: the Calcium Nitrate product note itself, the Clemson HGIC bibliography
+description, and the NC State bibliography description. **Left unchanged, deliberately:** the
+Nutrient Deficiency Symptoms Reference table's mention of "blossom end rot in tomatoes" as a visual
+*symptom* of calcium deficiency — that one already correctly hedges ("Properly limed soils usually
+supply adequate calcium") and isn't making a treatment-efficacy claim the other three were.
+
+### Minor content/copy fixes found via direct reading
+- **Wrong emoji**: Shrubs & Trees' "Soil pH target" line used `&#127789;` — decoded and confirmed
+  this is literally the hot dog emoji (🌭), not a rendering artifact. Replaced with a thermometer
+  (`&#127777;`).
+- **Redundant nutrient-name repetition**: every card offering a P/K recommendation box prepends a
+  bold "Phosphorus:"/"Potassium:" label via the *calling* code, but the shared `P_REC`/`K_REC`
+  message text *also* repeated the nutrient name ("Phosphorus: Phosphorus (P) is not needed...").
+  Fixed at the data level (all `P_REC`/`K_REC` entries), not per call site, since all four call
+  sites shared the same redundant pattern.
+- **ALL-CAPS shade question** (Cool/Warm Lawns): the "Is this area shaded?" legend was rendering in
+  full uppercase — traced to a shared CSS class (`fieldset.st-fieldset-block > legend`) designed
+  for short section labels (its original, correct use: the "Micronutrients" section header) but
+  reused here for a long conversational paragraph, inheriting `text-transform: uppercase`
+  unintentionally. Fixed with a targeted inline `text-transform:none` override on just these two
+  instances (Cool and Warm), leaving the shared class and its original usage untouched.
+
+### Flagged, not yet acted on (subjective content/design calls, not bugs — presented as options)
+- pH, Buffer Index, and Lime Recommendation cards on the Soil Test tab all independently give
+  overlapping "go apply lime" guidance: could strip the diagnostic cards' (pH, Buffer Index) action
+  buttons and leave Lime Recommendation as the single actionable destination, or leave as-is since
+  each answers a genuinely different question.
+- Base Saturation card is thin — mostly defers to "look at pH/lime instead" — could be shortened to
+  a single line rather than its current multi-paragraph structure, without claiming more precision
+  than VCE's own treatment of base saturation (background info) supports.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Removed an actively-firing legacy P/K flag system from `calcGarden()` that contradicted the new Nutrient Application Plan for certain Nitrogen Source choices; restored the still-valid tomato/pepper N-timing split logic that briefly broke during that removal; fixed the pH card's lime-routing bug (same class as the July 29 fix, missed in that pass); de-vegetable-ified three shared nitrogen-source notes now used by Flower Garden; corrected an overstated blossom-end-rot/calcium causal claim in three places; fixed a wrong emoji and an ALL-CAPS CSS bug; removed redundant nutrient-name repetition in P/K recommendation text |
+| `CLAUDE.md` | this entry |
+
 
 
 
