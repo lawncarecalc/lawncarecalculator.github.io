@@ -1,6 +1,8 @@
-# 🌱 VCE Lawn & Garden Care Calculator
+# 🌱 Soil Report Assistant
 
-![Version](https://img.shields.io/badge/version-1.7-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
+![Version](https://img.shields.io/badge/version-2.0-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
+
+> **No more guessing what to feed your lawn or garden.**
 
 An interactive web tool for Virginia homeowners to interpret soil test results and calculate fertilizer and lime needs for **lawns, vegetable gardens, flower beds, and landscape shrubs and trees** — built entirely from official Virginia Cooperative Extension publications and peer-reviewed regional research.
 
@@ -10,26 +12,30 @@ An interactive web tool for Virginia homeowners to interpret soil test results a
 
 ## 🧪 Overview
 
-The calculator accepts soil test reports from two labs and adjusts rating scales, units, and interpretation notes automatically when you select your lab:
+The calculator accepts soil test reports from two labs. **One question** on the Soil Test tab — "what is this report for?" — tells the app both the lab (VCE / Virginia Tech or Waypoint Analytical) and the purpose (lawn, vegetable garden, flower garden, or shrubs & trees), and every rating scale, unit, and interpretation note adjusts automatically from that single answer.
 
 > 🏛️ **VCE / Virginia Tech Soil Testing Laboratory** — reports in lb/A (P, K) and lbs/1,000 sq. ft. (lawn lime) or lbs/100 sq. ft. (garden lime).
 
 > 🔬 **Waypoint Analytical** — reports in ppm (P, K, micronutrients), dS/m (salts), and lbs/1,000 sq. ft. (all lime). Rating bands use Waypoint's own published values from Agronomy Facts 8.
 
+**The tool is gated by design.** Only the Soil Test Report and About & Instructions tabs are visible when you first open it — every calculator tab is hidden until you've entered a report and disclosed its purpose. This reflects a deliberate philosophy: you shouldn't be able to apply fertilizer without a soil test telling you your starting point. Once you answer that one question, the single matching calculator tab appears (Lime appears alongside Lawn or Shrubs & Trees reports specifically, since lime math applies to either).
+
 ---
 
-## 📋 The Eight Tabs
+## 📋 The Tabs
+
+Tab bar order: **Soil Test Report, About & Instructions** (always visible), then six calculator tabs that appear one at a time as your soil test discloses its purpose.
 
 | | Tab | What it does |
 | :-- | :-- | :-- |
-| 🩺 | **1. Soil Test Report** | Interprets every value — pH, Buffer Index, P, K, Ca, Mg, organic matter, salts, CEC, base saturation, lime, micronutrients — each with a plain-English card, rating pill, and action. **Apply to Calculators** pre-fills the other tabs. |
-| ❄️ | **2. Cool-Season Lawns** | Tall fescue, bluegrass, ryegrass, fine fescue. Up to 4 custom application slots, each with its own N-P-K and WIN%. Includes clipping-return and shade adjustments. |
-| ☀️ | **3. Warm-Season Lawns** | Bermuda, St. Augustine, zoysia, centipede — distinct N ceilings per species. Clipping and shade controls; no nitrogen after August 15. |
-| 🪨 | **4. Lime** | Lime quantities adjusted by product CCE and bag size. Schedules multiple applications, warns on gypsum, explains pelletized-lime timing. |
-| 🥬 | **5. Vegetable Garden** | 20 crops with preplant N rates and separate sidedress schedules. Organic-matter nitrogen credit for high-OM beds. |
-| 🌸 | **6. Flower Garden** | Annuals, perennials, roses, spring bulbs. Nitrogen field optional (research-based defaults). Bloom-aware advisory for high-OM beds. |
-| 🌳 | **7. Shrubs & Trees** | Six plant types. Fertilize only on signs of deficiency. Application area = twice the canopy. |
-| 📖 | **8. About & Instructions** | Source documentation, WIN/program guide, VCE-vs-Waypoint rating comparison, step-by-step usage. |
+| 🩺 | **Soil Test Report** | Interprets every value — pH, Buffer Index, P, K, Ca, Mg, organic matter, salts, CEC, base saturation, lime, micronutrients — each with a plain-English card, rating pill, and action. One combined question ("what is this report for?") determines lab, units, and which calculator tab appears. **Continue to [X] Calculator** pre-fills that tab. |
+| 📖 | **About & Instructions** | Universal on-ramp (how the gating works), a per-tab mini-guide for each calculator, a dedicated explainer for the Vegetable Garden tab's single-nutrient philosophy, source documentation, and the WIN/program guide. |
+| ❄️ | **Cool-Season Lawns** | Tall fescue, bluegrass, ryegrass, fine fescue. Up to 4 custom application slots, each with its own N-P-K and WIN%. Includes clipping-return and shade adjustments. |
+| ☀️ | **Warm-Season Lawns** | Bermuda, St. Augustine, zoysia, centipede — distinct N ceilings per species. Clipping and shade controls; no nitrogen after August 15. |
+| 🪨 | **Lime** | For **Lawn** and **Shrubs & Trees** reports only — Vegetable and Flower Garden now do the complete CCE-adjusted calculation inline on their own tabs (see below). Lime quantities adjusted by product CCE and bag size; schedules multiple applications; warns on gypsum. |
+| 🥬 | **Vegetable Garden** | Single-nutrient system: pick a crop to see feeding level, target pH, research-based N default, and sidedress timing together; choose a nitrogen source (organic or synthetic, never a blended N-P-K product); phosphorus, potassium, calcium, magnesium, sulfur, and micronutrients each get their own amendment — auto-filled from the Soil Test tab, with an organic/synthetic choice per nutrient and full CCE-adjusted lime math built in. |
+| 🌸 | **Flower Garden** | Choose **Complete N-P-K Fertilizer** (one blended product, the default) or **Individual N, P, K Fertilizers** (single-nutrient, same system as Vegetable Garden). Annuals, perennials, roses, spring bulbs. Nitrogen field optional (research-based defaults). Full CCE-adjusted lime math built in. |
+| 🌳 | **Shrubs & Trees** | Six plant types. Fertilize only on signs of deficiency. Application area = twice the canopy. Lime, when needed, uses the standalone Lime tab. |
 
 ---
 
@@ -125,11 +131,13 @@ WIN is listed on the fertilizer bag. If no WIN is listed, assume Program 1 — u
 
 ---
 
-## 🪨 Lime & CCE &nbsp; `enhanced v1.7`
+## 🪨 Lime & CCE
 
-The Lime tab adjusts the recommended amount by the product's **Calcium Carbonate Equivalent (CCE)**, validated against **VCE 452-510**: the adjustment factor is simply 100 ÷ CCE.
+Lime quantities are adjusted by the product's **Calcium Carbonate Equivalent (CCE)**, validated against **VCE 452-510**: the adjustment factor is simply 100 ÷ CCE.
 
-> 🚫 **Gypsum is not lime** — gypsum (calcium sulfate) has a CCE of zero and does not raise pH. The Lime tab warns if a near-zero CCE is entered.
+> 🔀 **Lime now lives in three places, by purpose, not one.** The standalone **Lime tab** only appears for **Lawn** and **Shrubs & Trees** reports. Vegetable Garden and Flower Garden each do the complete CCE-adjusted calculation on their own tab instead — enter your product's CCE and bag size right there, no need to visit a separate tab. This replaced an earlier design where the garden tabs gave an approximate, non-CCE-adjusted number and then told you to go use the Lime tab for the precise one — two calculators for one answer, one of them worse. Now there's exactly one place per purpose, and it's always the precise one.
+
+> 🚫 **Gypsum is not lime** — gypsum (calcium sulfate) has a CCE of zero and does not raise pH. Every lime calculator warns if a near-zero CCE is entered.
 
 > 💧 **Pelletized lime timing** — the pellet must absorb moisture and slake before it reacts, so apply it when soil moisture is reliable (fall/early spring or before rain), not into a dry summer lawn. For beds, work it in.
 
@@ -137,20 +145,19 @@ The Lime tab adjusts the recommended amount by the product's **Calcium Carbonate
 
 ## 🥬 Vegetable Garden
 
-Based on **VCE 452-719 / SPES-687P (Soil Test Note 19)** and **VCE 426-323 / SPES-803P (Fertilizing the Vegetable Garden)**, supplemented by UMD Extension (N rates by feeding level; organic-matter N credit), Clemson HGIC (sidedress guidance; calcium nitrate), and Rutgers NJAES FS626 (organic fertilizer release rates).
+Based on **VCE 452-719 / SPES-687P (Soil Test Note 19)** and **VCE 426-323 / SPES-803P (Fertilizing the Vegetable Garden)**, supplemented by UMD Extension, Clemson HGIC, Rutgers NJAES FS626, NC State Extension, Ohio State University Extension, and NMSU Cooperative Extension (see Primary Sources below).
 
-The tab calculates a **preplant N rate** and a separate **sidedress schedule** for 20 crops, organized by nitrogen demand:
+### A single-nutrient system, not a blended fertilizer
+
+Rather than recommending one N-P-K product for the whole bed, this tab addresses each nutrient that's actually low on its own — VCE Note 19's own approach. Pick a crop and one merged panel shows its feeding level, target soil pH, research-based nitrogen default, and sidedress timing together. Choose a nitrogen source (organic or synthetic, always single-nutrient). Phosphorus, potassium, calcium, magnesium, sulfur, and every micronutrient (zinc, manganese, copper, iron, boron) then each get their own row in the results — rating and amount pulled automatically from the Soil Test tab, with a choice between an organic and a synthetic source wherever both exist, so you're never forced to over-apply one nutrient to correct another. Lime is calculated on this same tab, CCE and bag size included.
+
+If you have a Waypoint report, its "SOIL FERTILITY GUIDELINES" numeric target for any nutrient can be entered directly in that nutrient's own row for a precise amount — sized even when the rating comes back adequate, since Waypoint's target is a maintenance figure, not just a deficiency flag. VCE reports don't print an equivalent number, so those fall back to VCE Note 19's rating-based flat rates instead.
 
 | Feeding level | Crops |
 | :-- | :-- |
 | **Heavy feeders** | Tomatoes, peppers & eggplant, potatoes, sweet corn, broccoli & cauliflower, beets & Swiss chard, spinach, onions/garlic/shallots |
 | **Medium feeders** | Leafy greens (kale, collards, mustard), lettuce, cucumbers, squash & pumpkins, melons, sweet potatoes, asparagus |
 | **Light feeders** | Beans & peas, carrots, root crops (radishes, turnips, parsnips) |
-| **Mixed** | Mixed bed (vegetables & flowers) |
-
-### Organic matter N credit
-
-High-organic-matter beds (OM ≥ 5%) receive a nitrogen credit — the calculator reduces the preplant N recommendation by 0.4 lbs per 1% OM per 1,000 sq. ft. (UMD Extension). This prevents over-application in heavily amended raised beds.
 
 ### Sidedress timing
 
@@ -162,13 +169,19 @@ The calculator applies VCE's three-to-four-week timing rule: a nitrogen applicat
 - **Cucumbers & squash** — sidedress one week after blossoming; repeat three weeks later.
 - **Melons** — sidedressing generally not recommended.
 
-### Fertilizer sources
+### Nitrogen sources
 
-Both synthetic and organic sources are available in the sidedress selector. Calcium nitrate (15.5-0-0) is the preferred synthetic sidedress product — it supplies calcium alongside nitrogen, reducing blossom end rot and tip burn in tomatoes and cole crops. Organic options include blood meal (medium-rapid release), feather meal (slow release), soybean meal, and cottonseed meal.
+Both synthetic and organic sources are available. Calcium nitrate (15.5-0-0) is the preferred synthetic sidedress product — it supplies calcium alongside nitrogen, reducing blossom end rot and tip burn in tomatoes and cole crops. Organic options include blood meal (medium-rapid release), fish meal, feather meal (slow release), soybean meal, cottonseed meal, poultry manure, and bat guano. VCE Soil Test Note 19's own flat rates (e.g. 5 lbs blood meal per 100 sq. ft.) are offered as a bypass that skips the percentage calculation entirely.
 
-## 🌸 Flower Garden Defaults
+### Volume estimates and bulk density
 
-The nitrogen field is **optional** — research-based defaults are used when left blank.
+Where a product's bulk density is backed by a source meeting this project's sourcing standard (see Primary Sources), the calculator shows both weight and a cups/tablespoons volume estimate. Where no such source exists, it shows weight only and invites you to enter your own product's bulk density (lbs/ft³ or kg/m³, from the label or technical data sheet) for an estimate — **not** the specific gravity from an MSDS/SDS, which reflects the pure crystal or absolute compound density rather than the packaged granular form (confirmed with a real product: a Sulfate of Potash SDS lists SG 2.66 ≈ 166 lbs/ft³ absolute crystal density, while the actual granular product is 75–81 lbs/ft³ loose — using the SDS figure would understate the correct volume by roughly half).
+
+---
+
+## 🌸 Flower Garden
+
+For annual beds, perennial borders, rose gardens, and spring-flowering bulbs. The nitrogen field is **optional** — research-based defaults are used when left blank.
 
 | Type | Default N rate | Key timing rule |
 | :-- | :-- | :-- |
@@ -177,7 +190,18 @@ The nitrogen field is **optional** — research-based defaults are used when lef
 | Roses | 0.20 lbs/100 sq. ft. monthly | March–August; stop by August 15 |
 | Spring-flowering bulbs | 0.40 lbs/100 sq. ft. | At planting + at emergence; **never after flowering** |
 
-> 🌼 **High organic matter** — because excess nitrogen suppresses bloom, high-OM beds get a flower-specific advisory to lean toward the low end of any nitrogen rate, or skip it.
+> 🌼 **Avoid excess nitrogen** — it produces lush foliage at the direct expense of blooms.
+
+### Choose how you fertilize
+
+Unlike Vegetable Garden, Flower Garden offers a choice:
+
+- **Complete N-P-K Fertilizer** *(default)* — one blended product supplies nitrogen, phosphorus, and potassium together. Enter a grade directly or pick a common product.
+- **Individual N, P, K Fertilizers** — the same single-nutrient system as Vegetable Garden: pick a nitrogen source on its own, and phosphorus/potassium/calcium/magnesium/sulfur/micronutrients each get their own amendment in the results, auto-filled from the Soil Test tab.
+
+In Complete Fertilizer mode, the phosphorus and potassium rows in the results show that they're being handled by the blended product instead of an independent recommendation — so you're never told to add P or K twice.
+
+Lime, in either mode, uses the same CCE-adjusted calculation as Vegetable Garden — enter your product's CCE and bag size directly on this tab.
 
 ---
 
@@ -239,18 +263,25 @@ Plus the per-crop 426-series vegetable guides (tomatoes, potatoes, sweet corn, b
 
 **Supplementary regional sources** — used only where VCE is silent; all from land-grant Cooperative Extension programs and consistent with VCE on material points:
 
-- 🌿 **UMD Extension** — vegetable N rates by feeding level; organic-matter N credit; annual/perennial flower care; tree & shrub guidance
+- 🌿 **UMD Extension** — vegetable N rates by feeding level; organic-matter N credit; annual/perennial flower care; tree & shrub guidance; general water-soluble-fertilizer application method
 - 🌿 **Clemson HGIC** — sidedress guidance; calcium nitrate; tree & shrub timing (ANSI A300)
-- 🌿 **Rutgers NJAES** — FS626 organic fertilizer release rates & sidedress amounts; FS1220 spring bulbs
-- 🌿 **NC State Extension** — calcium nitrate rationale; blossom-end-rot framing; spring bulb rates; **pelletized-lime timing**
+- 🌿 **Rutgers NJAES** — FS626 organic fertilizer N% and release rates (NPK content only — not a bulk-density source); FS1220 spring bulbs
+- 🌿 **NC State Extension** — calcium nitrate rationale; blossom-end-rot framing; spring bulb rates; pelletized-lime timing; manganese application rates and pH-availability guidance (Torres Quezada, 2024 — vegetable-crop-specific rate, cited as the closest sourced figure available, not separately validated for ornamentals)
+- 🌿 **Cornell Nutrient Management Spear Program, University of Maryland Extension, Michigan State University Extension** — independently corroborate the manganese pH-availability threshold (~6.5) as general soil chemistry, not tied to any one crop
 - 🌿 **UT Extension** — Program 3 (>50% WIN) application-rate corroboration
 - 🌿 **Waypoint Agronomy Facts 8** — rating labels, units, Buffer pH terminology, K optimum bands by CEC
+- 🌿 **Hood College Center for Coastal and Watershed Studies (FFSN)** — general principle that a water-soluble fertilizer can be dissolved in water and applied to soil in place of a dry broadcast (used for small-quantity micronutrients like manganese and boron, where the calculated amount is often too little dry material to spread evenly by hand)
+
+**Bulk density / volume conversion sources** — a narrow exception to the policy below, used only for physical density data (converting a weight into a cups/volume estimate), never for an agronomic rate or recommendation:
+
+- 🌿 **Ohio State University Extension, Ohioline FABE-550** — bulk density for triple superphosphate and ammonium nitrate
+- 🌿 **NMSU Cooperative Extension, Guide H-119** — direct oz/cup bulk density for muriate of potash, elemental sulfur, langbeinite
 
 ---
 
 ## ⚖️ Source Policy
 
-VCE is always primary. UMD Extension and Clemson HGIC are co-primary where VCE is silent. Rutgers NJAES and NC State are supporting sources. Sources outside the Mid-Atlantic land-grant network are not used.
+VCE is always primary. UMD Extension and Clemson HGIC are co-primary where VCE is silent. Rutgers NJAES and NC State are supporting sources. Sources outside the Mid-Atlantic land-grant network are not used, **except** for bulk-density/volume-conversion data specifically (Ohio State, NMSU above) — a narrow exception for physical measurements where no closer regional source publishes the equivalent figure, not a general policy change for agronomic recommendations. Where no source meeting this standard exists for a product's bulk density, the calculator shows weight only rather than an estimated volume, and never accepts an MSDS/SDS specific gravity as a substitute (see Vegetable Garden section above).
 
 > 📐 **Conformance principle** — trace every figure to the **primary** publication, not a secondary or abridged one. The condensed Soil Test Notes (17/18) describe only Programs 1–2; the full **430-011** defines all three. When program structure or per-application caps are in question, 430-011 is the source of truth.
 
@@ -258,12 +289,13 @@ VCE is always primary. UMD Extension and Clemson HGIC are co-primary where VCE i
 
 ## ⚠️ Limitations
 
-- **Requires a soil test** for lawn and vegetable calculators. Flower and shrub/tree tabs offer research-based defaults when no test is available.
-- **Lawn N cannot be estimated from a soil test** — VCE 430-011 is explicit. The N figure on a lawn report is a research-based guideline, not a measured deficiency.
+- **The tool is gated by design** — every calculator tab is hidden until you enter a soil test report and disclose its purpose on the Soil Test tab. You cannot reach a lawn, garden, or shrub calculator without a soil test's starting point; this is intentional, not a bug.
+- **Lawn N cannot be estimated from a soil test** — VCE 430-011 is explicit. The N figure on a lawn report is a research-based guideline, not a measured deficiency. The same is true for vegetable and flower gardens — the nitrogen field is optional and falls back to a research-based default for your crop/flower type when left blank.
 - **Healthy shrubs and trees do not need fertilizer** — VCE Note 20 is explicit.
 - **Recommendations are valid for ~three years** — retest every 3–4 years for lawns, 2–3 for active vegetable beds.
 - **Soil texture is never inferred** from CEC or Buffer Index values.
 - **Virginia soils and climate** — primary audience is Chesterfield County and the Piedmont clay belt (Zone 7b); recommendations are appropriate statewide.
+- **Flower Garden's "Complete Fertilizer" mode is not available on Vegetable Garden** — this is a deliberate difference between the two tabs, not an inconsistency to be fixed; Vegetable Garden is single-nutrient only.
 
 ---
 
@@ -271,24 +303,29 @@ VCE is always primary. UMD Extension and Clemson HGIC are co-primary where VCE i
 
 The calculator targets **WCAG 2.1 AA** conformance, the standard required by Virginia Tech Policy 7215 and ADA Title II (effective April 24, 2026).
 
+> ⚠️ **The specific counts and automated-tool results below are from the July 6–7, 2026 audit and predate the July 21–29 restructure** (single-nutrient system, tab gating, report-type consolidation, Flower Garden's mode toggle, and related markup changes). The underlying practices remain in place and new instances of each pattern were applied to new markup as it was built, but the exact figures (23 headers, 39 links, etc.) and the axe/Lighthouse scores have not been re-run against the current build. Treat this section as "what the approach has been," not a current scorecard, until a fresh automated pass is run.
+
 ### What was done
 
-- **Form labels** — every `<label>` is programmatically associated with its input via `for`/`id` pairing (~70 fields across all tabs, including dynamically generated application slots).
-- **Tab widget** — full ARIA tab pattern (`role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`, `aria-controls`) with arrow-key navigation (Left/Right/Home/End) between tabs.
-- **Live regions** — all seven result panels use `aria-live="polite"` so screen readers announce updated calculations. Soil test input is debounced at 300ms to prevent announcement chatter.
-- **Heading hierarchy** — 23 card-header divs converted to semantic `<h3>` elements; visually hidden `<h2>` added to each tab panel; decorative emoji marked `aria-hidden="true"`.
+- **Form labels** — every `<label>` is programmatically associated with its input via `for`/`id` pairing, including dynamically generated fields (application slots, per-nutrient amendment rows, inline Waypoint targets).
+- **Tab widget** — full ARIA tab pattern (`role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`, `aria-controls`). Every visible tab keeps `tabindex="0"` so plain sequential Tab reaches all of them — an earlier "roving tabindex" design (only the active tab in the Tab sequence, others reachable only by arrow key) was tried, found to cause a real, confirmed "Tab skips the next tab" bug via live testing, and reverted. Arrow-key navigation (Left/Right/Home/End) remains available as an additional way to move between tabs, filtered to only the tabs currently visible.
+- **Live regions** — result panels use `aria-live="polite"` so screen readers announce updated calculations. Soil test input is debounced at 300ms to prevent announcement chatter.
+- **Heading hierarchy** — card-header divs converted to semantic `<h3>` elements; visually hidden `<h2>` added to each tab panel; decorative emoji marked `aria-hidden="true"`. Interactive elements (e.g. sample-report buttons) are never placed inside a `role="heading"` element — this caused a real, confirmed focus-skip bug in Chrome and was fixed by moving the buttons into a sibling `role="toolbar"` region.
 - **Color independence** — action boxes include screen-reader-only status prefixes ("Action needed:", "Monitor:", "Good:") so status is conveyed by text, not color alone.
 - **Fieldset grouping** — related input pairs (P value + P rating, K, Ca, Mg) wrapped in `<fieldset>` with `<legend>`; micronutrient block grouped with a visible legend.
-- **External links** — all 39 `target="_blank"` links include a screen-reader-only "(opens in new tab)" notice and `rel="noopener"`.
-- **Toggle buttons** — nine collapsible-section buttons have `aria-expanded` and `aria-controls`, synced in JavaScript on every open/close.
-- **Contrast** — all text passes 4.5:1 minimum contrast ratio against its background. Hint text raised from `#8a9490` to `#5f6b6b`; gold buttons darkened to `#7a6518`.
+- **Hidden fields removed from tab order** — form blocks that are hidden until a report type is selected (e.g. the VCE/Waypoint field layouts, lawn-specific fields) carry `inert` alongside `display:none`, so their inputs can't be reached by keyboard while invisible.
+- **External links** — `target="_blank"` links include a screen-reader-only "(opens in new tab)" notice and `rel="noopener"`.
+- **Toggle buttons** — collapsible-section buttons have `aria-expanded` and `aria-controls`, synced in JavaScript on every open/close.
+- **Contrast** — text is designed to pass 4.5:1 minimum contrast ratio against its background; not independently re-verified since the July 6–7 audit (see warning above).
 - **Font-size floor** — no text smaller than 0.75rem (12px).
 - **Validation** — N-rate inputs linked to validation output via `aria-describedby`; ceiling violations set `aria-invalid="true"` and announce via `role="alert"`.
 - **Skip link** — hidden "Skip to main content" link appears on first Tab keypress.
 
 ### Testing
 
-Automated: **axe-core 4.x** via Puppeteer — **0 violations**, 42 rules passing. **Lighthouse** — **100 Accessibility** (plus 100 Best Practices, 91 Performance, 90 SEO). See [`Accessibility_Testing_Checklist.md`](Accessibility_Testing_Checklist.md) for the full 34-item manual testing plan covering keyboard navigation, screen reader verification, and visual/zoom checks.
+Automated (July 6–7, 2026, predates the restructure — see warning above): **axe-core 4.x** via Puppeteer — 0 violations, 42 rules passing. **Lighthouse** — 100 Accessibility. See [`Accessibility_Testing_Checklist.md`](Accessibility_Testing_Checklist.md) for the full manual testing plan.
+
+**WAVE re-scan (July 2026, current build):** 0 errors, 0 contrast errors, AIM Score 9.3/10. 60 alerts, all in two accepted, deliberate categories — "JavaScript jump menu" (every `onchange`-triggered select recalculates instantly rather than waiting for a submit button, by design, for the instant-feedback UX this tool depends on; mitigated via `aria-live` regions rather than adding confirm buttons to ~55 dropdowns) and "Link to PDF document" (external VCE publication links, which already carry a visible "(PDF)" indicator).
 
 ---
 

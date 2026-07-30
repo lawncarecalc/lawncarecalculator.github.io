@@ -293,17 +293,30 @@ FS626 Table 1 before changing again).
 
 ---
 
-## Flower Garden Tab (legacy architecture — NOT yet restructured)
+## Flower Garden Tab (partially restructured July 28, 2026 — SUPERSEDES "legacy, not restructured")
 
-**Explicitly documented as a known gap, not an oversight.** The Flower Garden tab still uses the
-pre-restructure architecture: a manual P/K rating select, and a single blended-fertilizer picker
-(enter one N-P-K grade or choose a common product) for the whole bed — the same approach the
-Vegetable Garden tab had before July 21. It has NOT been brought to the single-nutrient,
-auto-fill-from-Soil-Test-tab system described above.
+**No longer accurately described as untouched legacy.** As of July 28, Flower Garden has a
+**Complete N-P-K Fertilizer / Individual N, P, K Fertilizers** mode toggle (`flowerFertilizerMode`,
+default `'complete'`) — a choice deliberately NOT offered on Vegetable Garden (single-nutrient
+only there; the two tabs are allowed to diverge by explicit user decision). "Complete" mode is the
+original blended-picker architecture, kept byte-for-byte as one of two paths, not removed.
+"Individual" mode is the new build: a Nitrogen Source dropdown (mirrors Vegetable Garden's, no
+Note-19-flat-rate bypass) plus the same shared, prefix-namespaced Nutrient Status panel Vegetable
+Garden uses (`renderNutrientStatusPanel('flr', area, suppressPK)` — see Key Functions table).
+`suppressPK` is true only in Complete mode, where P/K rows show "Handled by your Complete N-P-K
+Fertilizer selection above" instead of an independent amendment, avoiding double-applying P/K the
+blended product already supplies. The old manual `flr-p-rating`/`flr-k-rating` selects are gone —
+P/K auto-fill from the Soil Test tab regardless of mode, same as Vegetable Garden.
 
-This is stated explicitly in the app's own About tab instructions so users aren't misled into
-thinking both tabs work the same way. **Next planned restructure target**, per the user's own
-stated sequencing: vegetable garden → flower garden → trees & shrubs.
+**Lime is also now fully absorbed here** (July 28) — CCE % and bag-size fields, real
+CCE-adjusted-rate + bag-count math, matching the standalone Lime tab's precision exactly. The
+standalone Lime tab no longer unlocks for Flower (or Vegetable) purposes at all — see "Lime Tab"
+section below.
+
+This is stated explicitly in the app's own About tab instructions so users aren't misled about
+which mode does what. **Still not brought over:** Vegetable Garden's crop-specific N guidance panel
+(feeding level/pH/sidedress-timing merged card) has no Flower Garden equivalent — Flower Garden's
+own crop-type-driven N defaults and caution box (below) remain its own separate, unmerged system.
 
 Field numbering, N/lime unit handling, and the `annual`/`perennial`/`rose`/`bulb` crop-type
 architecture (feeding levels, flower caution box, `SIDEDRESS_GUIDE` flower entries) are unchanged
@@ -432,6 +445,8 @@ jumps to About & Instructions; "No thanks" dismisses. Either hides it for the se
 25. **(Added July 27)** Tab bar buttons must NOT use the strict ARIA "roving tabindex" pattern (only the active tab in the Tab sequence, `tabindex="-1"` on the rest) — confirmed via live testing on the deployed site that this causes a real, reported "Tab skips the next tab" experience. Every visible, enabled tab button keeps `tabindex="0"` at all times; arrow-key navigation between tabs is offered as an addition, not a replacement, for sequential Tab
 26. **(Added July 27)** When a reported bug can't be reproduced via static code reading, live-test the actual deployed page (a real, publicly reachable URL) with simulated keyboard/mouse input and `document.activeElement`/DOM inspection — this sandbox cannot reach a locally-hosted file from the real browser (file://, localhost, and data: URLs are all blocked from that context), so static analysis alone repeatedly failed to catch two real, confirmed bugs this session that live testing found immediately
 27. **(Added July 28)** Never write a citation URL into the app or About tab based on a search-result snippet alone — navigate to (or `fetch()`) the actual URL and confirm it resolves (HTTP 200, correct content type) before citing it. A source first attributed to "Maryland Department of Agriculture" from a snippet turned out, on direct verification, to be a 404 — the real document was hosted by Hood College instead. The organization named in a search snippet's displayed URL path is not guaranteed to be who's actually hosting the content once you follow the link
+28. **(Added July 29)** When verifying whether a specific CSS rule exists or is winning the cascade on a live page, walk the parsed CSSOM by rule type and check individual `selectorText` values — never rely on a substring match against a large block's concatenated `cssText` (e.g. an entire `@media` block), since unrelated rules sharing vocabulary can produce a false "it's there" positive. This exact mistake was made and caught in the same debugging session — see July 28–29 notes
+29. **(Added July 29)** `index.html` is produced here; the user deploys it to GitHub Pages as a separate manual step with no push access from this side. "Is this fixed in the file" and "is this fixed on the live URL" are two different questions — when a user reports a bug that should already be fixed, check the deployed site directly (and re-check after they say they've redeployed) rather than assuming the latest local file is what they're looking at
 
 ---
 
@@ -2516,6 +2531,136 @@ in the code (not just spot-checked) and found gaps:
 | :-- | :-- |
 | `index.html` | Manganese pH threshold verified against 7 independent sources (unchanged, now better-documented); drench-application guidance added to both Manganese Sulfate entries and the granular-target Borax entry; 4 sources added to About tab bibliography (one caught and corrected via direct URL verification after an initial wrong attribution) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 28–29, 2026 (Flower Garden single-nutrient system, Lime CCE absorbed into garden tabs, print-fix verification saga)
+
+### Flower Garden gets a Complete/Individual fertilizer choice (Vegetable Garden does not)
+User explicitly requested Flower Garden offer a choice between "Complete N-P-K Fertilizer" (the
+existing blended picker, kept as-is, now the default) and "Individual N, P, K Fertilizers" (new —
+mirrors Vegetable Garden's single-nutrient system). Vegetable Garden deliberately does NOT get
+this choice; the two tabs are allowed to diverge here by explicit user decision.
+
+**`renderNutrientStatusPanel()` generalized** — signature changed to
+`renderNutrientStatusPanel(prefix, area, suppressPK)` (was `(gardenType, area)`). `suppressPK` is
+true only in Flower Garden's Complete Fertilizer mode, where P/K rows show "Handled by your
+Complete N-P-K Fertilizer selection above" instead of an independent amendment (avoiding
+double-applying P/K that the blended product already supplies). Ca/Mg/S/micronutrients are
+unaffected by the mode and always show.
+
+**State namespacing** — `gdnTargets`, `gdnNutrientChoice`, `gdnCustomDensity` remain single shared
+objects (no signature change to their setters), but every key used to address them is now prefixed
+(`'flr:k2o'` vs `'gdn:k2o'`, `'flr:P:Bone Meal'` vs `'gdn:P:Bone Meal'`) so switching between a
+Vegetable and Flower report in the same session can't leak one tab's entered Waypoint target or
+organic/synthetic choice into the other. Verified directly: set a target under the `gdn` prefix,
+confirmed it does not appear when rendering under the `flr` prefix.
+
+New: `flowerFertilizerMode` (default `'complete'`), `setFlowerFertilizerMode(mode)`. New Flower
+Garden HTML: Nitrogen Source dropdown (Individual mode only, same organic/synthetic-by-% options as
+Vegetable Garden, no Note-19-flat-rate bypass — deliberately narrower scope). `calcFlower()`'s
+fertN/fertP/fertK sourcing now branches on mode; everything downstream (quantity display,
+application-plan table) is unchanged regardless of which mode supplied those three numbers.
+
+**Removed from Flower Garden as redundant, now superseded by the shared panel:** the generic P/K
+flag boxes (`P_REC`/`K_REC` messages), the "~10 lb bone meal or rock phosphate" VCE amendment note,
+the raw-ppm sulfur advisory, and the "no lime but Ca/Mg low" Epsom-salts/gypsum branch. Kept: lime
+quantity math and dolomitic-vs-calcitic guidance (genuinely lime-specific, not covered by the
+nutrient panel).
+
+Verified via simulation: Complete mode suppresses P/K correctly; Individual mode shows real
+amendment choices (Bone Meal/Rock Phosphate, etc.); Manganese/other micronutrients show correctly
+in both modes.
+
+### Manganese note reworded to be crop-neutral (Flower Garden now shares this note with Vegetable
+### Garden)
+Previously framed entirely around vegetable crops ("scaled down from NC State's... vegetable-garden
+guideline, tomatoes, peppers, brassicas"). Now explicitly separates the pH-availability
+relationship (general soil chemistry, corroborated by Cornell/UMD/Michigan State — not crop-
+specific) from the application *rate* (still vegetable-crop-derived, now explicitly flagged as "not
+separately validated for ornamental plantings" rather than silently implied to apply equally).
+Applied to both Manganese Sulfate entries and the Chelated Manganese entry.
+
+**Citation caught and fixed again during this pass** (second time this project — see the July 27–28
+entry for the first): a Cornell factsheet URL was added to the About tab, then verified directly
+per the standing rule (never cite a URL without checking it resolves) — it 404'd. A second,
+differently-pathed URL from a different search result ALSO came back as an error page (`text/html`,
+empty title). Rather than keep guessing, converted to a plain-text citation with no link, matching
+how University of Maryland and Michigan State were already listed (neither has a verified link
+either — no link was fabricated for those, and none was fabricated here once the guessed ones
+failed).
+
+### Lime — CCE and bag-size absorbed into Vegetable Garden and Flower Garden directly; standalone
+### Lime tab no longer serves garden purposes at all (SUPERSEDES the "Lime unlocks for any report"
+### rule stated in the July 26–27 entry)
+User pushed back on an initial fix that had only updated the standalone Lime tab's wording/units for
+garden reports ("Lawns" → "Lawns/Gardens"). Correct diagnosis: Vegetable Garden and Flower Garden
+already had their OWN inline lime sections, but those were less precise than the standalone tab —
+`limeLbsTotal = limeRec * hundredths` with **no CCE adjustment at all** (silently assumed 100% CCE)
+and no bag-count math, while the Soil Test tab's own advisory literally told garden users to *go
+use the separate Lime tab* for that precision. Two calculators for one number, one of them worse,
+is the actual problem — not the standalone tab's wording.
+
+**Fix:** Vegetable Garden and Flower Garden both got CCE % and bag-size input fields, and their
+inline lime math upgraded to the real formula: `limeAdjRate = (limeRec * 100) / limeCce`, per-
+application splitting (5 lbs/100 sq ft established / 10 lbs/100 sq ft preplant, per VCE Note 19),
+bag count. Verified the formula directly: 5 lbs/100 sq ft report figure at 80% CCE correctly
+computes to 6.25 lbs/100 sq ft adjusted, needing 2 applications and 1 bag of 40.
+
+**`updateTabLocks()` — Lime is no longer purpose-agnostic.** Previously unlocked for any report
+with P/K values, regardless of purpose. Now: `soilTestPurpose() === 'lawn' || 'shrub'` only.
+Vegetable/Flower Garden purposes no longer unlock the Lime tab at all — verified via simulation
+across all four purposes (vegetable → Lime locked, flower → Lime locked, shrub → Lime unlocked,
+lawn → Lime unlocked). Shrubs & Trees has no lime section of its own to absorb this into, so it
+(like Lawn) still routes to the standalone tab.
+
+**Pre-existing bug found and fixed while implementing this:** the Soil Test tab's own
+interpretation cards (Lime Recommendation, Base Saturation, Buffer Index) treated ALL garden-family
+purposes as one group. A **Shrubs & Trees** report with a lime recommendation was being labeled
+"Vegetable Garden" and routed to the `garden` tab — which has no shrub-specific handling at all.
+Fixed with a proper three-way branch (vegetable → Garden tab, flower → Flower tab, shrub → Lime
+tab) and consolidated into one shared `limeGoBtn` variable (computed once, reused by all three
+cards) so the routing can't drift out of sync between cards the way it just had.
+
+### Timing-card print fix — a two-part debugging story worth recording in full
+User reported the Timing of Applications section missing from printed Flower Garden plans, despite
+the July 26–27 fix (`.timing-card` shown via print-media override) already being in the codebase.
+
+**First verification attempt was itself wrong, and it's important to know why.** A substring check
+(`rule.cssText.indexOf('printing-flower') >= 0 && rule.cssText.indexOf('timing-card') >= 0`) run
+against the deployed site's stylesheet returned `true`, appearing to confirm the fix was live. It
+was a false positive: the check ran against the *entire* `@media print` block's concatenated
+`cssText` (since `CSSMediaRule.cssText` includes all nested rules as one string), which contains
+both substrings *somewhere*, just not in the same rule. A second, more careful check — walking
+`CSSStyleRule`-type rules specifically and checking each one's own `selectorText` — found only 2
+rules mentioning `printing-flower` on the deployed site, and **the actual `.timing-card` override
+rule was entirely absent**. The deployed site was running a version of `index.html` that predates
+that fix.
+
+**Root cause: a deployment gap, not a code bug.** This project's `index.html` is produced here and
+the user deploys it to GitHub Pages separately — Claude has no push access. The fix was correct in
+the working file the whole time; it just hadn't been pushed yet when first reported.
+
+**User then pushed an update and reported the SAME issue persisting.** Re-ran the careful
+(non-substring, per-rule) verification against the freshly deployed site with a cache-busting query
+string and confirmed the rule genuinely is now present, confirmed no competing print-media rule
+touches `.timing-card` besides the intended two, and computed the CSS specificity by hand
+(override: 1 ID + 2 classes + 1 type vs. general suppressor: 1 class alone — override correctly
+wins). The fix is confirmed live and correct as of this session.
+
+**Lesson, added as a rule below:** when verifying whether a CSS/JS fix actually reached a deployed
+site, check for the *specific* rule/behavior directly (walk parsed CSSOM rules by type and compare
+selectors) — a broad substring match against a large concatenated block (e.g. a whole `@media`
+block's `cssText`) can produce false positives when unrelated rules happen to share vocabulary.
+Also: distinguish "is this fixed in the file I'm producing" from "is this fixed on the URL you're
+looking at" — those are two different questions when the user has a separate deploy step.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Flower Garden Complete/Individual fertilizer mode toggle with shared, namespaced Nutrient Status panel; Manganese note reworded crop-neutral; Cornell citation corrected (unlinked, matching UMD/Michigan State) after a second broken-URL catch; CCE/bag-size lime calculation absorbed into Vegetable Garden and Flower Garden; Lime tab purpose-gated to Lawn/Shrub only; three-way lime-routing bug fixed on the Soil Test tab; Flower Garden's print output confirmed (via direct CSSOM inspection on the live deployed site, not just the local file) to correctly include its Timing of Applications section |
+| `CLAUDE.md` | this entry |
+
 
 
 
