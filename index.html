@@ -1542,8 +1542,6 @@
               </select>
             </div>
 
-            <div id="cool-fert-chooser"></div>
-
             <!-- Plan mode toggle + planner -->
             <div style="margin-top:20px;border-top:2px solid var(--green-pale);padding-top:16px;">
               <div style="font-weight:600;color:var(--green-deep);font-size:0.95rem;margin-bottom:10px;">&#128197; Application Plan</div>
@@ -1566,6 +1564,7 @@
                     <input type="number" id="cool-auto-win" min="0" max="100" step="0.1" placeholder="0" oninput="calcAutoplan('cool')">
                   </div>
                 </div>
+                <div id="cool-fert-chooser" style="margin-top:14px;"></div>
                 <div id="cool-auto-result" class="inline-plan-result"></div>
               </div>
 
@@ -1699,8 +1698,6 @@
               </select>
             </div>
 
-            <div id="warm-fert-chooser"></div>
-
             <!-- Plan mode toggle + planner -->
             <div style="margin-top:20px;border-top:2px solid var(--green-pale);padding-top:16px;">
               <div style="font-weight:600;color:var(--green-deep);font-size:0.95rem;margin-bottom:10px;">&#128197; Application Plan</div>
@@ -1723,6 +1720,7 @@
                     <input type="number" id="warm-auto-win" min="0" max="100" step="0.1" placeholder="0" oninput="calcAutoplan('warm')">
                   </div>
                 </div>
+                <div id="warm-fert-chooser" style="margin-top:14px;"></div>
                 <div id="warm-auto-result" class="inline-plan-result"></div>
               </div>
 
@@ -2529,7 +2527,15 @@
           <h3 class="card-header"><span class="icon" aria-hidden="true">📖</span> How to Use This Calculator</h3>
           <div class="card-body">
             <p class="about-section-intro">This tool accepts soil test reports from Virginia Cooperative Extension (VCE) / Virginia Tech and Waypoint Analytical. Every calculator starts the same way, on the <strong>Soil Test Report</strong> tab:</p>
-            <div class="about-step"><div class="about-step-num">1</div><div><strong>Enter your report.</strong> Select <strong>"What is this report for?"</strong> — your lab and what was tested (e.g., "VCE / Virginia Tech — Vegetable Garden"). Enter your lawn or garden size first, since it's what enables the carry-over button later. Then type in every value from your physical report exactly as printed — P, K, Ca, Mg, micronutrients, pH, organic matter, salts, the lime recommendation — and an interpretation card appears for each one. <strong>Enter at least your P and K values before trying to continue</strong> — a "Continue to [X] Calculator" button appears as soon as you disclose your report's purpose, but it won't actually work until P or K is filled in; clicking it early just leaves you on this tab. Once you've entered your values, click <strong>"Continue to [X] Calculator"</strong> to jump to your calculator tab (it appears automatically, scrolled to the top) with everything carried over.</div></div>
+            <div class="about-step"><div class="about-step-num">1</div><div><strong>Enter your report.</strong>
+              <ul style="margin:8px 0 0 20px;padding:0;">
+                <li style="margin-bottom:6px;">Select <strong>"What is this report for?"</strong> — your lab and what was tested (e.g., "VCE / Virginia Tech — Vegetable Garden").</li>
+                <li style="margin-bottom:6px;">Enter your lawn or garden size first, since it's what enables the carry-over button later.</li>
+                <li style="margin-bottom:6px;">Type in every value from your physical report exactly as printed — P, K, Ca, Mg, micronutrients, pH, organic matter, salts, the lime recommendation — and an interpretation card appears for each one.</li>
+                <li style="margin-bottom:6px;"><strong>Enter at least your P and K values before trying to continue</strong> — a "Continue to [X] Calculator" button appears as soon as you disclose your report's purpose, but it won't actually work until P or K is filled in; clicking it early just leaves you on this tab.</li>
+                <li>Once you've entered your values, click <strong>"Continue to [X] Calculator"</strong> to jump to your calculator tab (it appears automatically, scrolled to the top) with everything carried over.</li>
+              </ul>
+            </div></div>
             <div class="about-step"><div class="about-step-num">2</div><div><strong>Have more than one area?</strong> A lawn, a vegetable bed, a flower bed, and a shrub bed each need their own soil sample and their own report. Come back to this tab, enter the next report, and the calculator tab bar switches to match it.</div></div>
             <div class="about-step"><div class="about-step-num">3</div><div><strong>Retest after three years.</strong> All fertilizer and lime recommendations are valid for up to three growing seasons.</div></div>
 
@@ -4308,7 +4314,7 @@ function interpretSoilTest() {
       '<span class="st-rating-pill ' + phClass + '">' + ph.toFixed(1) + '</span>',
       'pH measures soil acidity or alkalinity on a 0-14 scale (7 = neutral). Virginia soils naturally acidify over time.</p><p><strong>Your result:</strong> ' + phMsg,
       isGarden ? 'Soil pH controls nutrient availability to your plants. The target for vegetable and flower gardens (6.0-6.8) is slightly higher than for lawns.' : 'Soil pH controls how available nutrients are to your grass. When pH is outside the target range, even well-fertilized soil may not feed your lawn effectively.',
-      phAction, limeGoBtn));
+      phAction, ''));
   }
 
   // ---- Buffer Index ----
@@ -4326,7 +4332,7 @@ function interpretSoilTest() {
     cards.push(card('&#128208;', biTitle, 'Scale: 6.00-6.60', 'Higher = less lime needed', bi.toFixed(2),
       biWhatMeans,
       'It determines how much lime your soil needs to reach the correct pH.',
-      biAction, limeGoBtn));
+      biAction, ''));
   }
 
   // ---- Base Saturation ----

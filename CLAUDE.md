@@ -2876,6 +2876,53 @@ supply adequate calcium") and isn't making a treatment-efficacy claim the other 
 | `index.html` | Removed an actively-firing legacy P/K flag system from `calcGarden()` that contradicted the new Nutrient Application Plan for certain Nitrogen Source choices; restored the still-valid tomato/pepper N-timing split logic that briefly broke during that removal; fixed the pH card's lime-routing bug (same class as the July 29 fix, missed in that pass); de-vegetable-ified three shared nitrogen-source notes now used by Flower Garden; corrected an overstated blossom-end-rot/calcium causal claim in three places; fixed a wrong emoji and an ALL-CAPS CSS bug; removed redundant nutrient-name repetition in P/K recommendation text |
 | `CLAUDE.md` | this entry |
 
+---
+
+## Session Updates — July 30, 2026 (cont.) (Fertilizer-chooser relocation on Cool/Warm Lawns, pH/Buffer Index action buttons removed, About-tab Step 1 reformatted as a bulleted list)
+
+### Fertilizer-chooser button relocated (Cool-Season and Warm-Season Lawns)
+User flagged (with a screenshot of the deployed site) that "Help me choose a fertilizer at the
+garden center" sat disconnected above the entire Application Plan section, rather than near the
+N%/P%/K%/WIN% fields it's meant to help with. Moved `#cool-fert-chooser` / `#warm-fert-chooser`
+from before the Application Plan / mode-toggle block to immediately after the auto-mode ("Build a
+plan for me") WIN% input, before the inline result. Scoped to auto mode only, matching what the
+screenshot showed — not duplicated into Custom mode's multi-slot builder, which asks for N/P/K per
+slot in a different shape; flagged to the user as a follow-up if wanted there too.
+`fertChooserHTML()`'s insertion logic (`document.getElementById('cool-fert-chooser').outerHTML =
+...`) needed no change — same id, just relocated in the DOM tree, verified exactly one instance of
+each id remains.
+
+### pH and Buffer Index cards' "go to Lime Calculator" buttons removed (Soil Test tab)
+Implements option (a) from the July 30 assessment of the three overlapping lime-related cards —
+proposed earlier in the same session but not actually acted on until the user pointed out the
+button was still there. pH and Buffer Index are now pure diagnostic cards (what's wrong, why it
+matters) with no action button; Lime Recommendation remains the single card offering "go
+calculate your lime," now the one clear destination instead of three competing ones. Base
+Saturation's button was deliberately left in place — it was not part of this specific proposal;
+still flagged separately as a candidate for the same treatment if wanted.
+
+**Process note:** this was presented as an open option and the user was asked to choose; when they
+responded, only the pH card's separate routing bug got fixed (see prior entry) and option (a)
+itself was never actually implemented, despite having been described as if it might be. Confirm an
+approved change actually landed (grep for it) rather than assuming a related fix in the same
+turn covered it — this is the same class of gap as the "said yes, didn't implement" mistake from
+the July 27–28 Manganese session, now recurring in a different form (partial implementation
+mistaken for complete, rather than a skipped implementation).
+
+### About tab — Step 1 reformatted as a bulleted list
+Step 1 of the universal on-ramp ("Enter your report") was one dense paragraph covering five
+distinct actions (select report type, enter size, enter every value, the P/K-before-continuing
+gotcha, click Continue). Converted to a `<ul>` with one bullet per action, keeping the bolded
+"Enter your report." lead-in and the bolded P/K-gotcha sentence intact. Steps 2 and 3 are short
+enough as single sentences and were left as prose.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fertilizer-chooser collapsible relocated to after the WIN% field on both lawn tabs' auto-plan mode; pH and Buffer Index cards' Lime Calculator action buttons removed per the approved option (a); About tab Step 1 reformatted as a bulleted list |
+| `CLAUDE.md` | this entry |
+
+
 
 
 
