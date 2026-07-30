@@ -316,7 +316,7 @@ The calculator targets **WCAG 2.1 AA** conformance, the standard required by Vir
 - **Hidden fields removed from tab order** — form blocks that are hidden until a report type is selected (e.g. the VCE/Waypoint field layouts, lawn-specific fields) carry `inert` alongside `display:none`, so their inputs can't be reached by keyboard while invisible.
 - **External links** — `target="_blank"` links include a screen-reader-only "(opens in new tab)" notice and `rel="noopener"`.
 - **Toggle buttons** — collapsible-section buttons have `aria-expanded` and `aria-controls`, synced in JavaScript on every open/close.
-- **Contrast** — text is designed to pass 4.5:1 minimum contrast ratio against its background; not independently re-verified since the July 6–7 audit (see warning above).
+- **Contrast** — text is designed to pass 4.5:1 minimum contrast ratio against its background. One real failure from this gap was found and fixed July 30, 2026 (two card-header subtitles reused a color token designed for light backgrounds against a dark one, actual ratio 2.2:1) — every other color pairing introduced since the restructure was then checked by computing actual WCAG ratios and all pass, closest margins ~4.76–4.84:1. This was a manual, targeted check, not a full automated re-run — see warning above.
 - **Font-size floor** — no text smaller than 0.75rem (12px).
 - **Validation** — N-rate inputs linked to validation output via `aria-describedby`; ceiling violations set `aria-invalid="true"` and announce via `role="alert"`.
 - **Skip link** — hidden "Skip to main content" link appears on first Tab keypress.

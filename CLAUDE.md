@@ -2922,6 +2922,61 @@ enough as single sentences and were left as prose.
 | `index.html` | Fertilizer-chooser collapsible relocated to after the WIN% field on both lawn tabs' auto-plan mode; pH and Buffer Index cards' Lime Calculator action buttons removed per the approved option (a); About tab Step 1 reformatted as a bulleted list |
 | `CLAUDE.md` | this entry |
 
+---
+
+## Session Updates — July 30, 2026 (cont. 2) (Color contrast bug found via WAVE, fixed, then systematically swept across all restructure-era markup)
+
+### Context
+User reported WAVE contrast errors on two card header subtitles ("(Vegetable Garden tab)" on the
+Single-Nutrient Amendment Philosophy card, "(Lawn tabs only)" on the WIN & Nitrogen Programs card —
+both added during the July 26–29 About tab rewrite). This is exactly the kind of regression the
+July 6–7 accessibility audit's automated scores could not have caught, since neither card existed
+yet at that point — see the standing warning already in the README's Accessibility section.
+
+### Root cause, confirmed by computing the actual ratio rather than assuming
+Both subtitles used `color: var(--slate-light)` (#5f6b6b) against the dark green `.card-header`
+background (`--green-deep`, #1a3d1f). Computed via the real WCAG relative-luminance formula (not
+eyeballed): **2.2:1**, against the 4.5:1 minimum required for this text size. The `--slate-light`
+token has an existing code comment noting it was "darkened from #8a9490 for WCAG AA contrast" —
+but that adjustment was made for use against *light* backgrounds (cream/white), and got reused here
+against a dark one by mistake. Grepped the whole file for the same pattern
+(`card-header"><span` combined with a `color:` style) and confirmed these were the only two
+instances — not a wider pattern in the new markup.
+
+**Fix:** switched both to `--green-pale` (#d4edda), an existing token already in the palette rather
+than introducing a new one-off color. Recomputed: **9.78:1**.
+
+### Full systematic sweep of restructure-era markup (not just the two reported instances)
+Rather than stop at the reported bug, computed actual contrast ratios for every distinct
+color-on-background pairing introduced or touched during the July 21–30 restructure, using the
+real WCAG formula (including proper alpha-blending for any semi-transparent color, e.g. the tab
+bar's `rgba(255,255,255,0.55)` inactive state — blended against its background before computing,
+not treated as if it were an opaque color):
+
+| Element | Ratio |
+| :-- | :-- |
+| Sample report buttons (4 background variants) | 5.67 – 9.98 |
+| P/K recommendation boxes (`.rec-p`/`.rec-k` adequate/low/zero states) | 4.76 – 9.78 |
+| `.warning-badge` (red on pink) | 4.76 |
+| `.note-banner` (brown on gold) | 6.23 |
+| Bulk-density widget / `.lime-notes` box | 5.88 |
+| Organic/Synthetic badges (Nutrient Status panel) | 5.65 – 11.14 |
+| Complete/Individual & auto/custom mode toggle buttons (`.st-unit-btn`, active + inactive) | 6.41 – 6.42 |
+| Main tab bar — active, inactive (alpha-blended), hover (alpha-blended) | 4.84 – 9.23 |
+| `.results-card .card-header` (lighter green variant) with white text | 6.42 |
+
+All pass. Closest margins: the red-on-pink warning badge (4.76:1) and the inactive tab bar text
+(4.84:1, the alpha-blended one) — both clear the 4.5:1 minimum but with little room, worth
+rechecking if either color or background changes in a future edit. No other instance of the
+reused-wrong-context color-token pattern that caused the original bug was found.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fixed contrast failure on two card-header subtitles (`--slate-light` → `--green-pale`); systematically verified contrast (computed, not assumed) across every other color pairing introduced in the July 21–30 restructure — all pass |
+| `CLAUDE.md` | this entry |
+
+
 
 
 
