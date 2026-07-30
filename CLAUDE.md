@@ -447,6 +447,7 @@ jumps to About & Instructions; "No thanks" dismisses. Either hides it for the se
 27. **(Added July 28)** Never write a citation URL into the app or About tab based on a search-result snippet alone — navigate to (or `fetch()`) the actual URL and confirm it resolves (HTTP 200, correct content type) before citing it. A source first attributed to "Maryland Department of Agriculture" from a snippet turned out, on direct verification, to be a 404 — the real document was hosted by Hood College instead. The organization named in a search snippet's displayed URL path is not guaranteed to be who's actually hosting the content once you follow the link
 28. **(Added July 29)** When verifying whether a specific CSS rule exists or is winning the cascade on a live page, walk the parsed CSSOM by rule type and check individual `selectorText` values — never rely on a substring match against a large block's concatenated `cssText` (e.g. an entire `@media` block), since unrelated rules sharing vocabulary can produce a false "it's there" positive. This exact mistake was made and caught in the same debugging session — see July 28–29 notes
 29. **(Added July 29)** `index.html` is produced here; the user deploys it to GitHub Pages as a separate manual step with no push access from this side. "Is this fixed in the file" and "is this fixed on the live URL" are two different questions — when a user reports a bug that should already be fixed, check the deployed site directly (and re-check after they say they've redeployed) rather than assuming the latest local file is what they're looking at
+30. **(Added July 29)** Any `body:not(.printing-X):not(.printing-Y)...` exclusion list controlling default print visibility must be updated every time a new `printing-*` prefix is added — the list is not self-maintaining. This was missed for `.printing-flower` and `.printing-shrub` when those prefixes were added, causing the Soil Test tab to print simultaneously with whichever of those two was actually requested. More generally: when a specific, confirmed-correct fix doesn't resolve a reported symptom, widen the search to every rule in the same media block rather than re-confirming the same rule again — the actual cause can be adjacent to, not inside, the thing already under suspicion
 
 ---
 
@@ -2660,6 +2661,61 @@ looking at" — those are two different questions when the user has a separate d
 | :-- | :-- |
 | `index.html` | Flower Garden Complete/Individual fertilizer mode toggle with shared, namespaced Nutrient Status panel; Manganese note reworded crop-neutral; Cornell citation corrected (unlinked, matching UMD/Michigan State) after a second broken-URL catch; CCE/bag-size lime calculation absorbed into Vegetable Garden and Flower Garden; Lime tab purpose-gated to Lawn/Shrub only; three-way lime-routing bug fixed on the Soil Test tab; Flower Garden's print output confirmed (via direct CSSOM inspection on the live deployed site, not just the local file) to correctly include its Timing of Applications section |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 29, 2026 (cont.) (Print bug, part 3 — the actual root cause: incomplete `:not()` exclusion list)
+
+### Context
+After the July 28–29 fix was confirmed present and correctly winning the cascade on the deployed
+site, the user reported the Timing of Applications section was *still* missing from Flower
+Garden's printed output. The `.timing-card` override itself was not the problem — a third,
+different bug was.
+
+### The real bug
+The "default print view" rule — the one that shows the Soil Test tab when no plan-specific print
+is active — was:
+```css
+body:not(.printing-cool):not(.printing-warm):not(.printing-lime):not(.printing-garden) #tab-soiltest { display: block !important; }
+```
+**Missing `:not(.printing-flower)` and `:not(.printing-shrub)`.** This rule was written before
+those two prefixes existed and never updated when they were added. Consequence: when printing
+Flower Garden (`body.printing-flower`), this selector still matched (none of cool/warm/lime/garden
+were present), so `#tab-soiltest` got `display: block !important` **at the same time** as
+`#tab-flower` did from its own rule. Both tab panels' entire contents rendered into the same print
+job — the Soil Test tab's own lengthy interpretation-card content most likely pushed Flower
+Garden's later sections (including its Timing card, which itself was rendering correctly) onto
+later pages that weren't reviewed. Same bug would affect Shrubs & Trees printing.
+
+**Fix:** added the two missing exclusions. Verified: dumped every rule in the print media block
+in exact source order (29 rules total) via the live deployed site, confirmed only one rule
+addresses `#tab-soiltest`'s default visibility and it now excludes all six prefixes; confirmed the
+fix doesn't regress the Soil Test tab's own print button (`printSoilTestResults()` → plain
+`window.print()`, no class set at all — all six `:not()` conditions remain true when no class is
+present, so that path is unaffected).
+
+### Why this took three passes to find
+1. First pass: confirmed the `.timing-card` override rule existed in the file — true, but
+   irrelevant, since the site hadn't been redeployed yet (a deployment gap, not a code bug).
+2. Second pass (after redeployment): confirmed the `.timing-card` override rule was live and
+   correctly winning the cascade by specificity — also true, and still not the actual cause,
+   because a *different* rule was additionally showing the wrong tab panel at the same time.
+3. Third pass: only found by dumping literally every rule inside the print media block, in order,
+   rather than just the rules directly relevant to the one element (`.timing-card`) already under
+   suspicion. The bug was adjacent to, not inside, the thing being investigated.
+
+**Lesson, added as a rule below:** when a specific override rule is confirmed correct in isolation
+but the reported symptom persists, widen the investigation to every rule in the same media block —
+a correct fix for one selector doesn't rule out an unrelated, adjacent rule causing the same
+visible symptom by a different mechanism (here: showing an extra tab's content, not hiding the
+target content).
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fixed incomplete `:not()` exclusion list on the default print-view rule — Soil Test tab was printing simultaneously with Flower Garden (and would have with Shrubs & Trees) any time those were printed, most likely burying their own later sections including the Timing card |
+| `CLAUDE.md` | this entry |
+
 
 
 
