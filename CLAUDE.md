@@ -3347,3 +3347,80 @@ and the fix was found within one round of switching to an actual phone.
 | :-- | :-- |
 | `index.html` | Added "Start Over" button (confirm + full reload) to the Soil Test tab; fixed `.st-layout`'s missing mobile reflow rule — the Soil Test tab's two-column grid had no `@media (max-width: 400px)` collapse, unlike every calculator tab's `.calc-layout` (v2.4, 2026-08-01) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 1, 2026 (cont. 5) (Master Gardener survey link added to all six calculator tabs — a real prefix-mismatch bug found only through live debugging, not through static review or isolated simulation)
+
+### Feature: dismissible survey prompt on every calculator tab
+Ahead of a broader Master Gardener rollout, added a dismissible callout — "📋 Help us improve
+this tool — take a 2-minute survey" with a "Take Survey" link (`https://virginiatech.questionpro.com/calculatortool`)
+and a "No thanks" dismiss button — positioned after Print Plan, before "Back to Soil Test Report,"
+on all six calculator tabs (Cool, Warm, Lime, Vegetable Garden, Flower Garden, Shrubs & Trees).
+Shown only once real results exist (same condition as the Print Plan button), dismissible per tab
+(not globally — a user can legitimately complete two separate tasks, e.g. a lawn report and a
+separate vegetable garden report, in one sitting, and dismissing on one shouldn't hide it on the
+other), and dismissal is session-only (no localStorage, matching the rest of this app).
+
+**Discovered while adding this: three tabs (Vegetable Garden, Flower Garden, Shrubs & Trees) were
+missing "Back to Soil Test Report" entirely.** The July 31 session that added this link only
+touched Cool, Warm, and Lime. Added the missing link to the other three at the same time, since
+the survey feature's placement depends on it existing.
+
+### A real, shipped bug found only through live debugging — not the isolated JS simulation
+Built `updateSurveyPrompt(prefix, shouldShow)` and `dismissSurvey(prefix)` as small shared
+functions, and verified the *logic* with a clean Node.js simulation (shows/hides/persists/
+per-tab-independent — all passed). That simulation used made-up, self-consistent prefix names
+(`'cool'`, `'warm'`, etc.) and never caught the actual defect, because the defect wasn't in the
+logic — it was a **string mismatch between the calling convention and the real element IDs**:
+
+- Vegetable Garden's tab prefix is `gdn` everywhere in this codebase (`gdn-crop-type`,
+  `gdn-lawn-size`, etc.) — but the new code called `updateSurveyPrompt('garden', ...)` and
+  `dismissSurvey('garden')`, constructing the DOM lookup `'garden-survey-prompt'`, which does not
+  match the actual element `id="gdn-survey-prompt"`.
+- Flower Garden has the identical pattern: internal prefix `flr`, but the new code used
+  `'flower'`.
+- Cool, Warm, Lime, and Shrub were unaffected only because those four tabs' internal element
+  prefixes happen to exactly equal the JS-level word used to call the functions — the bug was
+  invisible on 4 of 6 tabs purely by coincidence of naming, and would have shipped completely
+  silent on the two that abbreviate their prefix.
+
+**How this was actually found:** live-testing in the browser kept showing the prompt as `none`
+regardless of what should have made it show. Ruled out, in order: the function logic itself
+(correct, confirmed via isolated expression evaluation), the `surveyDismissed` state (correctly
+`false`), duplicate DOM IDs (only one element existed), and cross-`javascript_exec`-call context
+loss (state and functions both persisted correctly across calls). The actual proof came from
+writing a version of the function that *returns* whether it found an element at all — it returned
+`'NO ELEMENT'`. That is the exact bug: `getElementById('garden' + '-survey-prompt')` legitimately
+finds nothing, because no such ID exists.
+
+**Also worth recording:** `file://` navigation was tried as a way to test the real local file
+directly (rather than approximating it via injection) and doesn't work — the browser being
+controlled is the user's own machine via the Chrome extension, not this sandbox's filesystem, so
+local paths aren't reachable that way. The eventual fix came from extracting the *actual* current
+`calcGarden()` function from the real file and injecting that exact code (the same proven
+technique used earlier this session for the `calcAutoplan()` duplication-bug verification) rather
+than a hand-approximated version — which is precisely what surfaced the real prefix string used in
+the shipped code, instead of whatever prefix I assumed while manually testing.
+
+**Fix:** changed both calls and the dismiss buttons' `onclick` attributes to use `'gdn'`/`'flr'`
+(matching the real element IDs) instead of `'garden'`/`'flower'`, and renamed the corresponding
+keys in the `surveyDismissed` state object to match. Re-verified with the real, corrected
+`calcGarden()` logic injected live: shows on first calculation, hides on dismiss, **stays hidden
+through a subsequent recalculation** (the one behavior an isolated simulation can't meaningfully
+test when the actual bug is a string/ID mismatch rather than a logic error).
+
+**Lesson for future work in this codebase:** when a tab's internal element-ID prefix differs from
+the natural English word used to describe it (`gdn`≠garden, `flr`≠flower — a naming inconsistency
+that predates this session and exists throughout the file), any new shared function taking a
+`prefix` argument for that tab must be called with the *actual* ID prefix, not the descriptive
+name — and this class of mismatch will not show up in a logic-only simulation that doesn't use the
+real ID strings. Grep for the real `id="..."` values before wiring up a new cross-tab shared
+function, rather than assuming the prefix used elsewhere in a conversation (like `'garden'`
+earlier in this same conversation, referring to the report *purpose*) is also the right DOM prefix.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added dismissible Master Gardener survey prompt to all six calculator tabs (after Print Plan, before Back to Soil Test Report); added the missing "Back to Soil Test Report" link to Vegetable Garden, Flower Garden, and Shrubs & Trees (a gap from July 31); found and fixed a real `'garden'`/`'gdn'` and `'flower'`/`'flr'` prefix mismatch that would have made the survey prompt permanently non-functional on exactly those two tabs (v2.6, 2026-08-01) |
+| `CLAUDE.md` | this entry |

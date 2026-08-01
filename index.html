@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msvalidate.01" content="36E733185C108B9F566DBA5BD46CF336">
 <meta name="google-site-verification" content="wjBcxb8K4CRzSDumr4gm5edKoNzsgmAKQzmdBQyhGjM">
-<meta name="app-version" content="2.4 (2026-08-01)">
+<meta name="app-version" content="2.6 (2026-08-01)">
 <title>Soil Report Assistant — No more guessing what to feed your lawn or garden</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
 <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
@@ -821,7 +821,7 @@
       <h1>Soil Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.4 &middot; 2026-08-01</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.6 &middot; 2026-08-01</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -1639,6 +1639,13 @@
         </div>
       </div>
     </div>
+    <div id="cool-survey-prompt" class="no-print" style="display:none;background:var(--green-mist);border:1px solid var(--green-light);border-radius:6px;padding:14px 18px;margin-top:16px;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <span style="font-size:0.88rem;color:var(--slate-mid);">&#128203; <strong style="color:var(--green-deep);">Help us improve this tool</strong> &mdash; take a 2-minute survey to share your feedback.</span>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <a href="https://virginiatech.questionpro.com/calculatortool" target="_blank" rel="noopener" class="print-plan-btn" style="text-decoration:none;">Take Survey <span aria-hidden="true">&rarr;</span> <span class="sr-only">(opens in new tab)</span></a>
+        <button type="button" onclick="dismissSurvey('cool')" style="background:none;border:1px solid var(--slate-light);color:var(--slate-mid);border-radius:5px;padding:6px 14px;font-size:0.82rem;cursor:pointer;">No thanks</button>
+      </div>
+    </div>
     <div class="no-print" style="display:flex;gap:12px;justify-content:center;margin-top:20px;padding:14px 0;border-top:1px solid var(--border);">
       <button class="st-unit-btn" onclick="activateTab('soiltest')" style="padding:6px 16px;font-size:0.82rem;">&#8592; Back to Soil Test Report</button>
     </div>
@@ -1828,6 +1835,13 @@
         </div>
       </div>
     </div>
+    <div id="warm-survey-prompt" class="no-print" style="display:none;background:var(--green-mist);border:1px solid var(--green-light);border-radius:6px;padding:14px 18px;margin-top:16px;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <span style="font-size:0.88rem;color:var(--slate-mid);">&#128203; <strong style="color:var(--green-deep);">Help us improve this tool</strong> &mdash; take a 2-minute survey to share your feedback.</span>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <a href="https://virginiatech.questionpro.com/calculatortool" target="_blank" rel="noopener" class="print-plan-btn" style="text-decoration:none;">Take Survey <span aria-hidden="true">&rarr;</span> <span class="sr-only">(opens in new tab)</span></a>
+        <button type="button" onclick="dismissSurvey('warm')" style="background:none;border:1px solid var(--slate-light);color:var(--slate-mid);border-radius:5px;padding:6px 14px;font-size:0.82rem;cursor:pointer;">No thanks</button>
+      </div>
+    </div>
     <div class="no-print" style="display:flex;gap:12px;justify-content:center;margin-top:20px;padding:14px 0;border-top:1px solid var(--border);">
       <button class="st-unit-btn" onclick="activateTab('soiltest')" style="padding:6px 16px;font-size:0.82rem;">&#8592; Back to Soil Test Report</button>
     </div>
@@ -1891,6 +1905,13 @@
         <div id="lime-print-btn-wrap" style="display:none;margin-top:16px;">
           <button class="print-plan-btn no-print" onclick="printPlan('lime')">&#128424; Print Plan</button>
         </div>
+    <div id="lime-survey-prompt" class="no-print" style="display:none;background:var(--green-mist);border:1px solid var(--green-light);border-radius:6px;padding:14px 18px;margin-top:16px;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <span style="font-size:0.88rem;color:var(--slate-mid);">&#128203; <strong style="color:var(--green-deep);">Help us improve this tool</strong> &mdash; take a 2-minute survey to share your feedback.</span>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <a href="https://virginiatech.questionpro.com/calculatortool" target="_blank" rel="noopener" class="print-plan-btn" style="text-decoration:none;">Take Survey <span aria-hidden="true">&rarr;</span> <span class="sr-only">(opens in new tab)</span></a>
+        <button type="button" onclick="dismissSurvey('lime')" style="background:none;border:1px solid var(--slate-light);color:var(--slate-mid);border-radius:5px;padding:6px 14px;font-size:0.82rem;cursor:pointer;">No thanks</button>
+      </div>
+    </div>
     <div class="no-print" style="display:flex;gap:12px;justify-content:center;margin-top:20px;padding:14px 0;border-top:1px solid var(--border);">
       <button class="st-unit-btn" onclick="activateTab('soiltest')" style="padding:6px 16px;font-size:0.82rem;">&#8592; Back to Soil Test Report</button>
     </div>
@@ -2183,6 +2204,16 @@
           </div>
         </div>
     </div>
+    <div id="gdn-survey-prompt" class="no-print" style="display:none;background:var(--green-mist);border:1px solid var(--green-light);border-radius:6px;padding:14px 18px;margin-top:16px;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <span style="font-size:0.88rem;color:var(--slate-mid);">&#128203; <strong style="color:var(--green-deep);">Help us improve this tool</strong> &mdash; take a 2-minute survey to share your feedback.</span>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <a href="https://virginiatech.questionpro.com/calculatortool" target="_blank" rel="noopener" class="print-plan-btn" style="text-decoration:none;">Take Survey <span aria-hidden="true">&rarr;</span> <span class="sr-only">(opens in new tab)</span></a>
+        <button type="button" onclick="dismissSurvey('gdn')" style="background:none;border:1px solid var(--slate-light);color:var(--slate-mid);border-radius:5px;padding:6px 14px;font-size:0.82rem;cursor:pointer;">No thanks</button>
+      </div>
+    </div>
+    <div class="no-print" style="display:flex;gap:12px;justify-content:center;margin-top:20px;padding:14px 0;border-top:1px solid var(--border);">
+      <button class="st-unit-btn" onclick="activateTab('soiltest')" style="padding:6px 16px;font-size:0.82rem;">&#8592; Back to Soil Test Report</button>
+    </div>
   </div><!-- end tab-garden -->
 
   <!-- ===== FLOWER GARDEN TAB ===== -->
@@ -2389,6 +2420,16 @@
           <button class="print-plan-btn no-print" onclick="printPlan('flower')">&#128424; Print Plan</button>
         </div>
     </div>
+    <div id="flr-survey-prompt" class="no-print" style="display:none;background:var(--green-mist);border:1px solid var(--green-light);border-radius:6px;padding:14px 18px;margin-top:16px;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <span style="font-size:0.88rem;color:var(--slate-mid);">&#128203; <strong style="color:var(--green-deep);">Help us improve this tool</strong> &mdash; take a 2-minute survey to share your feedback.</span>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <a href="https://virginiatech.questionpro.com/calculatortool" target="_blank" rel="noopener" class="print-plan-btn" style="text-decoration:none;">Take Survey <span aria-hidden="true">&rarr;</span> <span class="sr-only">(opens in new tab)</span></a>
+        <button type="button" onclick="dismissSurvey('flr')" style="background:none;border:1px solid var(--slate-light);color:var(--slate-mid);border-radius:5px;padding:6px 14px;font-size:0.82rem;cursor:pointer;">No thanks</button>
+      </div>
+    </div>
+    <div class="no-print" style="display:flex;gap:12px;justify-content:center;margin-top:20px;padding:14px 0;border-top:1px solid var(--border);">
+      <button class="st-unit-btn" onclick="activateTab('soiltest')" style="padding:6px 16px;font-size:0.82rem;">&#8592; Back to Soil Test Report</button>
+    </div>
   </div><!-- end tab-flower -->
 
   <!-- ===== SHRUBS & TREES TAB ===== -->
@@ -2588,6 +2629,16 @@
         <button class="print-plan-btn no-print" onclick="printPlan('shrub')">&#128424; Print Plan</button>
       </div>
 
+    </div>
+    <div id="shrub-survey-prompt" class="no-print" style="display:none;background:var(--green-mist);border:1px solid var(--green-light);border-radius:6px;padding:14px 18px;margin-top:16px;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <span style="font-size:0.88rem;color:var(--slate-mid);">&#128203; <strong style="color:var(--green-deep);">Help us improve this tool</strong> &mdash; take a 2-minute survey to share your feedback.</span>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <a href="https://virginiatech.questionpro.com/calculatortool" target="_blank" rel="noopener" class="print-plan-btn" style="text-decoration:none;">Take Survey <span aria-hidden="true">&rarr;</span> <span class="sr-only">(opens in new tab)</span></a>
+        <button type="button" onclick="dismissSurvey('shrub')" style="background:none;border:1px solid var(--slate-light);color:var(--slate-mid);border-radius:5px;padding:6px 14px;font-size:0.82rem;cursor:pointer;">No thanks</button>
+      </div>
+    </div>
+    <div class="no-print" style="display:flex;gap:12px;justify-content:center;margin-top:20px;padding:14px 0;border-top:1px solid var(--border);">
+      <button class="st-unit-btn" onclick="activateTab('soiltest')" style="padding:6px 16px;font-size:0.82rem;">&#8592; Back to Soil Test Report</button>
     </div>
   </div><!-- end tab-shrub -->
 
@@ -3334,6 +3385,26 @@ function printPlan(prefix) {
 // ===== PLAN MODE =====
 var planMode = { cool: 'auto', warm: 'auto' };
 
+// Survey prompt (added August 1, 2026, ahead of the Master Gardener rollout) — shown alongside
+// the Print Plan button on every calculator tab once real results exist, dismissible per tab so
+// closing it on one tab doesn't affect a different tab's own completion moment (a user can
+// legitimately complete two separate tasks — e.g. a lawn report and a separate vegetable garden
+// report — in one sitting). Dismissal is intentionally session-only, not persisted (no
+// localStorage — matches the rest of this app, and "Start Over" already gives a clean slate).
+var surveyDismissed = { cool:false, warm:false, lime:false, gdn:false, flr:false, shrub:false };
+function dismissSurvey(prefix) {
+  surveyDismissed[prefix] = true;
+  var el = document.getElementById(prefix + '-survey-prompt');
+  if (el) el.style.display = 'none';
+}
+// Called alongside each tab's own print-btn-wrap visibility toggle, with the same condition
+// (shouldShow) that decides whether the Print Plan button itself is visible.
+function updateSurveyPrompt(prefix, shouldShow) {
+  var el = document.getElementById(prefix + '-survey-prompt');
+  if (!el) return;
+  el.style.display = (shouldShow && !surveyDismissed[prefix]) ? 'flex' : 'none';
+}
+
 function setPlanMode(prefix, mode) {
   planMode[prefix] = mode;
   document.getElementById(prefix + '-mode-auto').classList.toggle('active', mode === 'auto');
@@ -3911,20 +3982,20 @@ function calcCool() {
   else calcMulti('cool');
   renderLimeForLawn('cool');
   var coolPrintWrap = document.getElementById('cool-print-btn-wrap');
-  if (coolPrintWrap) {
-    var coolPanel = document.getElementById('cool-results-panel');
-    coolPrintWrap.style.display = (coolPanel && coolPanel.innerHTML.trim()) ? '' : 'none';
-  }
+  var coolPanel = document.getElementById('cool-results-panel');
+  var coolHasResults = !!(coolPanel && coolPanel.innerHTML.trim());
+  if (coolPrintWrap) coolPrintWrap.style.display = coolHasResults ? '' : 'none';
+  updateSurveyPrompt('cool', coolHasResults);
 }
 function calcWarm() {
   if (planMode['warm'] === 'auto') calcAutoplan('warm');
   else calcMulti('warm');
   renderLimeForLawn('warm');
   var warmPrintWrap = document.getElementById('warm-print-btn-wrap');
-  if (warmPrintWrap) {
-    var warmPanel = document.getElementById('warm-results-panel');
-    warmPrintWrap.style.display = (warmPanel && warmPanel.innerHTML.trim()) ? '' : 'none';
-  }
+  var warmPanel = document.getElementById('warm-results-panel');
+  var warmHasResults = !!(warmPanel && warmPanel.innerHTML.trim());
+  if (warmPrintWrap) warmPrintWrap.style.display = warmHasResults ? '' : 'none';
+  updateSurveyPrompt('warm', warmHasResults);
 }
 
 // Lime for Cool/Warm-Season Lawns (added July 31, 2026) — a dedicated section rather than folding
@@ -4057,6 +4128,7 @@ function calcLime() {
     if (timingEl) timingEl.innerHTML = '<p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p>';
     var limePrintWrapEarly = document.getElementById('lime-print-btn-wrap');
     if (limePrintWrapEarly) limePrintWrapEarly.style.display = 'none';
+    updateSurveyPrompt('lime', false);
     return;
   }
 
@@ -4127,6 +4199,7 @@ function calcLime() {
   // now that both sections have real content.
   var limePrintWrap = document.getElementById('lime-print-btn-wrap');
   if (limePrintWrap) limePrintWrap.style.display = '';
+  updateSurveyPrompt('lime', true);
 }
 
 // ===== REPORT TYPE HELPERS =====
@@ -6196,11 +6269,11 @@ function calcGarden() {
   // renderNutrientStatusPanel() earlier in this function) have something to show, and placed after
   // both rather than sandwiched between them.
   var printBtnWrap = document.getElementById('gdn-print-btn-wrap');
-  if (printBtnWrap) {
-    var nutrientStatusCardEl = document.getElementById('gdn-nutrient-status-card');
-    var nutrientCardVisible = nutrientStatusCardEl && nutrientStatusCardEl.style.display !== 'none';
-    printBtnWrap.style.display = (html || nutrientCardVisible) ? '' : 'none';
-  }
+  var nutrientStatusCardEl = document.getElementById('gdn-nutrient-status-card');
+  var nutrientCardVisible = nutrientStatusCardEl && nutrientStatusCardEl.style.display !== 'none';
+  var gdnHasResults = !!(html || nutrientCardVisible);
+  if (printBtnWrap) printBtnWrap.style.display = gdnHasResults ? '' : 'none';
+  updateSurveyPrompt('gdn', gdnHasResults);
 
   // Timing
   var timingHtml = '';
@@ -6573,11 +6646,11 @@ function calcFlower() {
   // One shared Print Plan button, shown only once both the fertilizer section and the nutrient
   // status section have something to show, placed after both.
   var flrPrintBtnWrap = document.getElementById('flr-print-btn-wrap');
-  if (flrPrintBtnWrap) {
-    var flrNutrientCardEl = document.getElementById('flr-nutrient-status-card');
-    var flrNutrientCardVisible = flrNutrientCardEl && flrNutrientCardEl.style.display !== 'none';
-    flrPrintBtnWrap.style.display = (html || flrNutrientCardVisible) ? '' : 'none';
-  }
+  var flrNutrientCardEl = document.getElementById('flr-nutrient-status-card');
+  var flrNutrientCardVisible = flrNutrientCardEl && flrNutrientCardEl.style.display !== 'none';
+  var flrHasResults = !!(html || flrNutrientCardVisible);
+  if (flrPrintBtnWrap) flrPrintBtnWrap.style.display = flrHasResults ? '' : 'none';
+  updateSurveyPrompt('flr', flrHasResults);
 
   // Timing
   var FLOWER_TIMING = {
@@ -7092,6 +7165,7 @@ function calcShrub() {
   // One Print Plan button after the Timing card, not inside the results card above it.
   var shrubPrintWrap = document.getElementById('shrub-print-btn-wrap');
   if (shrubPrintWrap) shrubPrintWrap.style.display = shrubHasContent ? '' : 'none';
+  updateSurveyPrompt('shrub', shrubHasContent);
 }
 
 // ===== GLOSSARY TOOLTIPS =====
