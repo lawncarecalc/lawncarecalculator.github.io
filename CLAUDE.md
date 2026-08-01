@@ -96,9 +96,9 @@ Tab bar order: **Soil Test Report, About & Instructions**, then six calculator t
    report for?" question. Always visible.
 2. **About & Instructions** (`tab-about`) — moved to position 2 (was last) so it's discoverable
    before any data entry. Always visible.
-3. **Cool-Season Lawns** (`tab-cool`) — hidden until a lawn report + Cool grass type entered
-4. **Warm-Season Lawns** (`tab-warm`) — hidden until a lawn report + Warm grass type entered
-5. **Lime** (`tab-lime`) — hidden until ANY report has P or K values entered (not purpose-specific)
+3. **Cool-Season Lawns** (`tab-cool`) — hidden until a lawn report + Cool grass type entered. Includes inline CCE-adjusted lime calculation (July 31).
+4. **Warm-Season Lawns** (`tab-warm`) — hidden until a lawn report + Warm grass type entered. Includes inline CCE-adjusted lime calculation (July 31).
+5. **Lime** (`tab-lime`) — hidden until a **Shrubs & Trees** report has P or K values entered. As of July 31, this is the only remaining purpose that routes here; Cool/Warm Lawns, Vegetable Garden, and Flower Garden all do lime math on their own tab now.
 6. **Vegetable Garden** (`tab-garden`) — hidden until a Vegetable Garden report entered
 7. **Flower Garden** (`tab-flower`) — hidden until a Flower Garden report entered
 8. **Shrubs & Trees** (`tab-shrub`) — hidden until a Shrubs & Trees report entered
@@ -115,7 +115,9 @@ notes for full mechanics.
 | `calcMulti(prefix)` | Custom plan engine for cool/warm |
 | `calcAutoplan(prefix)` | Auto plan — no cap at 4 apps |
 | `calcCool()` / `calcWarm()` | Route to auto or custom |
-| `calcLime()` | Lime calculator — writes to `lime-results-panel` |
+| `calcLime()` | Standalone Lime calculator — writes to `lime-results-panel`. **Now only serves Shrubs & Trees reports** (July 31). Still uses its own internal lime math (not yet refactored to `calcLimeForBed()` since that tab is approaching retirement for all but Shrub). |
+| `calcLimeForBed(limeRec, cce, areaUnits, maxPerApp, bagSize)` | **(added July 31)** Shared lime math — CCE-adjusted rate, total lbs, applications needed, lbs per app, bags needed. Used by `calcGarden()`, `calcFlower()`, and `renderLimeForLawn()`. Caller passes everything in a consistent basis (Garden/Flower: lbs/100 sq ft, areaUnits = area/100, maxPerApp = 5 or 10; Lawns: lbs/1,000 sq ft, areaUnits = lawnSize/1000, maxPerApp = 50). The function itself is unit-agnostic. |
+| `renderLimeForLawn(prefix)` | **(added July 31)** Dedicated lime display for Cool/Warm Lawns — reads from `{prefix}-lime-rec`, `{prefix}-lime-cce`, `{prefix}-lime-bag-size`, `{prefix}-lime-type`, `{prefix}-lawn-size`; writes to `{prefix}-lime-display`. Called by `calcCool()`/`calcWarm()` regardless of auto/custom plan mode, since lime is independent of the N-P-K plan. |
 | `calcGarden()` | Vegetable Garden calculator — N preplant/sidedress plan + calls `renderNutrientStatusPanel()` for P/K/other nutrients; single merged "Nutrient Application Plan" card |
 | `calcFlower()` | Flower Garden calculator — **still uses the pre-restructure blended-fertilizer approach**; not yet brought to parity with `calcGarden()` |
 | `calcShrub()` | Shrubs & Trees calculator |
@@ -2975,6 +2977,88 @@ reused-wrong-context color-token pattern that caused the original bug was found.
 | :-- | :-- |
 | `index.html` | Fixed contrast failure on two card-header subtitles (`--slate-light` → `--green-pale`); systematically verified contrast (computed, not assumed) across every other color pairing introduced in the July 21–30 restructure — all pass |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — July 31, 2026 (Lime absorbed into Cool/Warm-Season Lawns, Lime tab now Shrub-only, shared calcLimeForBed function, navigation cleanup)
+
+### Context
+User proposed either (a) adding bottom-of-tab navigation links between Cool/Warm and Lime, or
+(b) absorbing lime calculations into Cool/Warm directly and eliminating the Lime tab for lawn
+purposes — and asked Claude's point of view. Claude recommended option (b), on the grounds that
+it's the same architecture already built for Vegetable Garden and Flower Garden and solves the
+same underlying problem ("two calculators for one number" is worse than one, regardless of how
+well you navigate between them), plus recommended factoring the now-four-times-duplicated lime
+math into one shared function while in there. User agreed.
+
+### Shared `calcLimeForBed(limeRec, cce, areaUnits, maxPerApp, bagSize)` — one formula, four
+### callers (SUPERSEDES the three separate copies mentioned in earlier entries)
+Extracted the CCE-adjusted-rate + total-lbs + apps-needed + bags-needed math into a single
+shared function used by Vegetable Garden, Flower Garden, Cool-Season Lawns, and Warm-Season
+Lawns — was previously copy-pasted three times (Garden, Flower, and the standalone Lime tab's
+`calcLime()`) with a fourth about to be written. The function is caller-agnostic:
+`calcLimeForBed(60, 80, 5, 50, 40)` = 60 lbs/1,000 sq ft report figure, 80% CCE, 5 × 1,000 sq ft
+units, 50 lbs max/app, 40 lb bags → adjRate 75.0, totalLbs 375.0, 2 applications, 10 bags.
+Verified the formula directly with both a lawn test case and a garden test case to confirm the
+same function works in both unit bases. `calcGarden()` and `calcFlower()` refactored to call it
+(their inline math removed); `renderLimeForLawn()` was built using it from the start.
+
+### Cool-Season and Warm-Season Lawns — lime calculated directly, no separate tab
+Added Step 6 to both tabs: lime recommendation (lbs/1,000 sq ft), lime type
+(Agricultural/Dolomitic), CCE %, and bag size — matching the Vegetable Garden and Flower Garden
+pattern. `renderLimeForLawn(prefix)` computes and displays lime results inside the existing
+results card (separate from the N-P-K plan, since lime is independent of auto/custom plan mode),
+using `calcLimeForBed()` in the lawn basis (lbs/1,000 sq ft, 50 lbs/1,000 sq ft max per
+application per VCE 430-011). Wired into both `calcCool()` and `calcWarm()`, called regardless
+of plan mode.
+
+**Implementation note — a structural mistake made and caught mid-edit:** the first attempt at
+inserting Cool tab's lime fields accidentally deleted the "Build a plan for me" toggle button
+from the Application Plan section (the `str_replace` old-string was too broad and consumed the
+next block's opening lines). Caught immediately via an HTML balance check showing only one of the
+two toggle buttons remaining, and fixed before continuing. The same edit for Warm tab was done
+more carefully as a result (a narrower, more precisely-bounded replacement string) and landed
+cleanly on the first try.
+
+### `updateTabLocks()` — Lime tab now Shrub-only (SUPERSEDES the "Lawn + Shrub" rule from July 29)
+Previously: `limePurpose === 'lawn' || limePurpose === 'shrub'`. Now: `limePurpose === 'shrub'`
+only. Lawn purposes no longer unlock the Lime tab at all. Only Shrubs & Trees still relies on the
+standalone Lime tab for its lime math (Shrubs & Trees has no lime section of its own to absorb
+this into, and VCE actively discourages lime for many shrub/tree species — building inline lime
+math there is a genuinely separate decision from the other four tabs).
+
+### Interpretation card "Open Calculator" buttons — removed for lawn purposes
+Removed the "Open Cool-Season/Warm-Season Calculator" buttons from the Phosphorus, Potassium,
+Grass Type & Lawn Status, and Nitrogen Recommendation Check interpretation cards. The single
+"Continue to [X] Calculator" carry-over banner plus the new bottom-of-tab navigation links are the
+intended navigation path now. **Carefully preserved** the garden-routing button on the Phosphorus
+and Potassium cards (`isGarden ? goBtn('garden',...) : ''`) — those weren't part of this request.
+
+Updated the Lime Recommendation card's lawn branch: no longer shows "Open Lime Calculator" /
+routes to the standalone Lime tab; action text now says "Enter your product's CCE and bag size on
+the Cool-Season or Warm-Season Lawn tab."
+
+Updated the shared `limeGoBtn` variable: Lawn purposes produce no button (lime is on their own
+tab); Shrub still routes to the Lime tab; Vegetable/Flower still route to their own tabs. This
+affects the pH, Buffer Index, Base Saturation, and Lime Recommendation cards simultaneously.
+
+### Bottom-of-tab navigation links added
+"← Back to Soil Test Report" button added at the bottom of Cool-Season Lawns, Warm-Season Lawns,
+and the Lime tab — styled consistently, hidden from print output via `no-print`.
+
+### About tab instructions updated
+- Cool-Season Lawns: now shows 9 numbered steps (was 4) including lawn size, lime as step 6,
+  and the application plan as steps 7–9.
+- Warm-Season Lawns: same structure, matching Cool.
+- Lime: updated to say "Only appears for Shrubs & Trees reports" (was "Lawn and Shrubs & Trees").
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Lime CCE-adjusted calculation absorbed into Cool/Warm-Season Lawns via shared `calcLimeForBed()` (refactored Garden/Flower to use the same function); Lime tab gated to Shrub-only; four lawn "Open Calculator" buttons removed from interpretation cards; Lime Recommendation card's lawn branch updated; bottom-of-tab nav links added to Cool/Warm/Lime; About tab instructions updated for all three |
+| `CLAUDE.md` | this entry |
+| `README.md` | Updated tabs table (Cool/Warm now mention inline lime; Lime tab described as Shrub-only); Lime & CCE section updated to reflect Shrub-only scope and shared function |
+
 
 
 

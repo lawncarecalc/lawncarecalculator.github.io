@@ -811,7 +811,7 @@
     <div class="header-badge" aria-hidden="true">🌿</div>
     <div class="header-text">
       <h1>Soil Report Assistant</h1>
-      <div class="subtitle">No more guessing what to feed your lawn or garden</div>
+      <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
@@ -1544,6 +1544,33 @@
               </select>
             </div>
 
+            <!-- Lime — calculated directly on this tab now (July 31, 2026), so there's no need
+                 to send lawn users to a separate Lime tab for it. -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">6</span><label for="cool-lime-rec" class="field-question">Lime recommendation from your report (lbs per 1,000 sq. ft.)?</label></div>
+              <input type="number" id="cool-lime-rec" min="0" step="0.5" placeholder="e.g. 60" oninput="calcCool()">
+              <div class="field-hint">Leave blank if no lime was recommended.</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+                <div>
+                  <label for="cool-lime-type" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Lime type</label>
+                  <select id="cool-lime-type" onchange="calcCool()">
+                    <option value="">- Select -</option>
+                    <option value="Agricultural">Agricultural (calcitic)</option>
+                    <option value="Dolomitic">Dolomitic</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="cool-lime-cce" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Lime's CCE % <span style="color:var(--slate-light);">(optional — from the bag)</span></label>
+                  <input type="number" id="cool-lime-cce" min="0" max="175" placeholder="e.g. 100" oninput="calcCool()">
+                </div>
+              </div>
+              <div style="max-width:260px;margin-top:10px;">
+                <label for="cool-lime-bag-size" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Bag size (lbs.) <span style="color:var(--slate-light);">(optional)</span></label>
+                <input type="number" id="cool-lime-bag-size" min="0" placeholder="e.g. 40" oninput="calcCool()">
+              </div>
+              <div class="field-hint" style="margin-top:6px;">Calcium Carbonate Equivalent (CCE) is listed as a percentage under Guaranteed Analysis on the bag &mdash; pelletized lime is usually near 100%, calcitic 80&ndash;100%, dolomitic 95&ndash;108%. Leave blank to assume 100%. <strong>Gypsum (calcium sulfate) has no CCE</strong> &mdash; it does not raise pH and is not lime. <em>(VCE 452-510)</em></div>
+            </div>
+
             <!-- Plan mode toggle + planner -->
             <div style="margin-top:20px;border-top:2px solid var(--green-pale);padding-top:16px;">
               <div style="font-weight:600;color:var(--green-deep);font-size:0.95rem;margin-bottom:10px;">&#128197; Application Plan</div>
@@ -1588,6 +1615,7 @@
           <h3 class="card-header"><span class="icon" aria-hidden="true">📊</span> Your Application Plan — Cool-Season Lawn</h3>
           <div class="card-body">
             <div id="cool-results-panel" aria-live="polite" aria-atomic="false"></div>
+            <div id="cool-lime-display" style="display:none;" aria-live="polite" aria-atomic="false"></div>
           </div>
         </div>
         <div class="card timing-card" id="cool-timing-card" style="margin-top:20px;display:none;">
@@ -1598,6 +1626,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="no-print" style="display:flex;gap:12px;justify-content:center;margin-top:20px;padding:14px 0;border-top:1px solid var(--border);">
+      <button class="st-unit-btn" onclick="activateTab('soiltest')" style="padding:6px 16px;font-size:0.82rem;">&#8592; Back to Soil Test Report</button>
     </div>
   </div><!-- end tab-cool -->
   <div class="tab-panel" id="tab-warm" role="tabpanel" aria-labelledby="btn-warm">
@@ -1700,6 +1731,33 @@
               </select>
             </div>
 
+            <!-- Lime — calculated directly on this tab now (July 31, 2026), so there's no need
+                 to send lawn users to a separate Lime tab for it. -->
+            <div class="field-group">
+              <div class="field-label"><span class="field-num">6</span><label for="warm-lime-rec" class="field-question">Lime recommendation from your report (lbs per 1,000 sq. ft.)?</label></div>
+              <input type="number" id="warm-lime-rec" min="0" step="0.5" placeholder="e.g. 60" oninput="calcWarm()">
+              <div class="field-hint">Leave blank if no lime was recommended.</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+                <div>
+                  <label for="warm-lime-type" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Lime type</label>
+                  <select id="warm-lime-type" onchange="calcWarm()">
+                    <option value="">- Select -</option>
+                    <option value="Agricultural">Agricultural (calcitic)</option>
+                    <option value="Dolomitic">Dolomitic</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="warm-lime-cce" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Lime's CCE % <span style="color:var(--slate-light);">(optional — from the bag)</span></label>
+                  <input type="number" id="warm-lime-cce" min="0" max="175" placeholder="e.g. 100" oninput="calcWarm()">
+                </div>
+              </div>
+              <div style="max-width:260px;margin-top:10px;">
+                <label for="warm-lime-bag-size" style="font-size:0.78rem;color:var(--slate-mid);display:block;margin-bottom:3px;">Bag size (lbs.) <span style="color:var(--slate-light);">(optional)</span></label>
+                <input type="number" id="warm-lime-bag-size" min="0" placeholder="e.g. 40" oninput="calcWarm()">
+              </div>
+              <div class="field-hint" style="margin-top:6px;">Calcium Carbonate Equivalent (CCE) is listed as a percentage under Guaranteed Analysis on the bag &mdash; pelletized lime is usually near 100%, calcitic 80&ndash;100%, dolomitic 95&ndash;108%. Leave blank to assume 100%. <strong>Gypsum (calcium sulfate) has no CCE</strong> &mdash; it does not raise pH and is not lime. <em>(VCE 452-510)</em></div>
+            </div>
+
             <!-- Plan mode toggle + planner -->
             <div style="margin-top:20px;border-top:2px solid var(--green-pale);padding-top:16px;">
               <div style="font-weight:600;color:var(--green-deep);font-size:0.95rem;margin-bottom:10px;">&#128197; Application Plan</div>
@@ -1744,6 +1802,7 @@
           <h3 class="card-header"><span class="icon" aria-hidden="true">📊</span> Your Application Plan — Warm-Season Lawn</h3>
           <div class="card-body">
             <div id="warm-results-panel" aria-live="polite" aria-atomic="false"></div>
+            <div id="warm-lime-display" style="display:none;" aria-live="polite" aria-atomic="false"></div>
           </div>
         </div>
         <div class="card timing-card" id="warm-timing-card" style="margin-top:0;display:none;">
@@ -1754,6 +1813,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="no-print" style="display:flex;gap:12px;justify-content:center;margin-top:20px;padding:14px 0;border-top:1px solid var(--border);">
+      <button class="st-unit-btn" onclick="activateTab('soiltest')" style="padding:6px 16px;font-size:0.82rem;">&#8592; Back to Soil Test Report</button>
     </div>
   </div><!-- end tab-warm -->
 
@@ -1815,6 +1877,9 @@
         <div id="lime-print-btn-wrap" style="display:none;margin-top:16px;">
           <button class="print-plan-btn no-print" onclick="printPlan('lime')">&#128424; Print Plan</button>
         </div>
+    <div class="no-print" style="display:flex;gap:12px;justify-content:center;margin-top:20px;padding:14px 0;border-top:1px solid var(--border);">
+      <button class="st-unit-btn" onclick="activateTab('soiltest')" style="padding:6px 16px;font-size:0.82rem;">&#8592; Back to Soil Test Report</button>
+    </div>
     </div>
   </div><!-- end tab-lime -->
 
@@ -2548,10 +2613,13 @@
                 <span>&#127807; Cool-Season Lawns</span><span class="toggle-arrow">&#9660;</span>
               </button>
               <div class="fert-chooser-body" id="about-howto-cool-body">
-                <p><strong>1.</strong> Choose your grass species — sets the nitrogen ceiling and per-application limit for that species.</p>
-                <p><strong>2.</strong> Build your application plan: add up to 4 application slots, each with its own N-P-K grade and WIN% (see "Understanding WIN &amp; Nitrogen Programs" below for what WIN% means and why it changes your per-application limit).</p>
-                <p><strong>3.</strong> Check the Season Summary — it tracks your cumulative N, P, and K against the soil test recommendation as you add slots.</p>
-                <p><strong>4.</strong> Mulch-mowing and returning clippings? Reduce your total annual nitrogen by up to a third. <em>(VCE 430-011)</em></p>
+                <p><strong>1.</strong> Enter your lawn size.</p>
+                <p><strong>2.</strong> Choose your grass species — sets the nitrogen ceiling and per-application limit for that species.</p>
+                <p><strong>3&ndash;5.</strong> Enter your N recommendation, P rating, and K rating from your report.</p>
+                <p><strong>6.</strong> Enter your lime recommendation, lime type, CCE %, and bag size &mdash; the calculator tells you how many bags you need and how many applications to split it into. Lime is calculated right here, not on a separate tab.</p>
+                <p><strong>7.</strong> Build your application plan: add up to 4 application slots, each with its own N-P-K grade and WIN% (see "Understanding WIN &amp; Nitrogen Programs" below for what WIN% means and why it changes your per-application limit).</p>
+                <p><strong>8.</strong> Check the Season Summary — it tracks your cumulative N, P, and K against the soil test recommendation as you add slots.</p>
+                <p><strong>9.</strong> Mulch-mowing and returning clippings? Reduce your total annual nitrogen by up to a third. <em>(VCE 430-011)</em></p>
               </div>
             </div>
 
@@ -2561,10 +2629,13 @@
               </button>
               <div class="fert-chooser-body" id="about-howto-warm-body">
                 <p>Works the same way as Cool-Season Lawns above:</p>
-                <p><strong>1.</strong> Choose your warm-season species — bermudagrass and St. Augustine grass tolerate a higher per-application rate than cool-season species do.</p>
-                <p><strong>2.</strong> Add up to 4 application slots with N-P-K grade and WIN%.</p>
-                <p><strong>3.</strong> Check the cumulative Season Summary.</p>
-                <p><strong>4.</strong> Mulch-mowing? Reduce total N by up to a third. <em>(VCE 430-011, 430-522)</em></p>
+                <p><strong>1.</strong> Enter your lawn size.</p>
+                <p><strong>2.</strong> Choose your warm-season species — bermudagrass and St. Augustine grass tolerate a higher per-application rate than cool-season species do.</p>
+                <p><strong>3&ndash;5.</strong> Enter your N recommendation, P rating, and K rating from your report.</p>
+                <p><strong>6.</strong> Enter your lime recommendation, lime type, CCE %, and bag size &mdash; same inline lime math as Cool-Season, right on this tab.</p>
+                <p><strong>7.</strong> Add up to 4 application slots with N-P-K grade and WIN%.</p>
+                <p><strong>8.</strong> Check the cumulative Season Summary.</p>
+                <p><strong>9.</strong> Mulch-mowing? Reduce total N by up to a third. <em>(VCE 430-011, 430-522)</em></p>
               </div>
             </div>
 
@@ -2573,8 +2644,8 @@
                 <span>&#129381; Lime</span><span class="toggle-arrow">&#9660;</span>
               </button>
               <div class="fert-chooser-body" id="about-howto-lime-body">
-                <p><strong>Only appears for Lawn and Shrubs & Trees reports</strong> — Vegetable Garden and Flower Garden calculate lime on their own tab instead (see below), so there's exactly one place per purpose to do it, not two.</p>
-                <p>Enter your lawn size, the lime recommendation from your report (lbs per 1,000 sq. ft.), the lime type (Agricultural or Dolomitic), the Calcium Carbonate Equivalent (CCE) from the bag's Guaranteed Analysis, and the bag size — the calculator tells you how many bags to buy. <strong>Gypsum is not lime</strong> &mdash; it has no CCE and doesn't raise soil pH. <em>(VCE 452-510)</em></p>
+                <p><strong>Only appears for Shrubs & Trees reports</strong> &mdash; Cool-Season Lawns, Warm-Season Lawns, Vegetable Garden, and Flower Garden all calculate lime directly on their own tab (enter CCE and bag size there), so there's exactly one place per purpose to do it, not two.</p>
+                <p>If you have a Shrubs & Trees report with a lime recommendation, enter your bed size, the lime recommendation from your report (lbs per 1,000 sq. ft.), the lime type (Agricultural or Dolomitic), the Calcium Carbonate Equivalent (CCE) from the bag's Guaranteed Analysis, and the bag size. <strong>Gypsum is not lime</strong> &mdash; it has no CCE and doesn't raise soil pH. <em>(VCE 452-510)</em></p>
               </div>
             </div>
 
@@ -3136,6 +3207,22 @@ function fmt(n, dec) {
   dec = dec === undefined ? 1 : dec;
   if (n === null || n === undefined || isNaN(n) || !isFinite(n)) return '-';
   return n.toFixed(dec);
+}
+
+// ===== SHARED LIME MATH (added July 31, 2026) =====
+// Used by Vegetable Garden, Flower Garden, and Cool/Warm-Season Lawns — one formula instead of
+// four near-identical copies. Callers pass everything in a consistent basis for their context:
+// Garden/Flower work in lbs/100 sq. ft. (areaUnits = area/100, maxPerApp = 5 or 10 depending on
+// bed status); Lawns work in lbs/1,000 sq. ft. (areaUnits = lawnSize/1000, maxPerApp = 50, VCE's
+// lawn topdressing limit). The function itself doesn't care which basis — it just needs limeRec,
+// maxPerApp, and areaUnits expressed in the same units as each other.
+function calcLimeForBed(limeRec, cce, areaUnits, maxPerApp, bagSize) {
+  var adjRate = (cce && cce > 0) ? (limeRec * 100) / cce : limeRec;
+  var totalLbs = adjRate * areaUnits;
+  var appsNeeded = Math.max(1, Math.ceil(adjRate / maxPerApp));
+  var lbsPerApp = totalLbs / appsNeeded;
+  var bagsNeeded = (bagSize > 0 && totalLbs > 0) ? Math.ceil(totalLbs / bagSize) : 0;
+  return { adjRate: adjRate, totalLbs: totalLbs, appsNeeded: appsNeeded, lbsPerApp: lbsPerApp, bagsNeeded: bagsNeeded };
 }
 
 // ===== WIN / PROGRAM DETECTION (3-way per 430-011) =====
@@ -3807,10 +3894,58 @@ function calcMulti(prefix) {
 function calcCool() {
   if (planMode['cool'] === 'auto') calcAutoplan('cool');
   else calcMulti('cool');
+  renderLimeForLawn('cool');
 }
 function calcWarm() {
   if (planMode['warm'] === 'auto') calcAutoplan('warm');
   else calcMulti('warm');
+  renderLimeForLawn('warm');
+}
+
+// Lime for Cool/Warm-Season Lawns (added July 31, 2026) — a dedicated section rather than folding
+// into calcAutoplan()/calcMulti(), since lime is independent of which N-P-K plan mode is active
+// and shouldn't require touching either of those functions to add. Uses the same shared
+// calcLimeForBed() as Vegetable Garden and Flower Garden, in the lawn basis (lbs/1,000 sq. ft.,
+// 50 lbs/1,000 sq. ft. per-application cap per VCE 430-011) instead of the garden basis.
+function renderLimeForLawn(prefix) {
+  var displayEl = document.getElementById(prefix + '-lime-display');
+  if (!displayEl) return;
+  var limeRec = parseFloat(document.getElementById(prefix + '-lime-rec').value) || 0;
+  if (limeRec <= 0) { displayEl.innerHTML = ''; displayEl.style.display = 'none'; return; }
+  var lawnSize = parseFloat(document.getElementById(prefix + '-lawn-size').value) || 0;
+  var limeCce = parseFloat(document.getElementById(prefix + '-lime-cce').value) || 100;
+  var limeBagSize = parseFloat(document.getElementById(prefix + '-lime-bag-size').value) || 0;
+  var limeTyp = document.getElementById(prefix + '-lime-type').value;
+  var kSq = lawnSize / 1000;
+  var limeCalc = calcLimeForBed(limeRec, limeCce, kSq, 50, limeBagSize);
+
+  var html = '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-top:16px;">';
+  html += '<div style="font-weight:600;color:#7d5a00;margin-bottom:8px;">&#129704; Lime for Your Lawn</div>';
+  if (limeCce !== 100) {
+    html += '<div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:4px;">CCE-adjusted rate: <strong>' + fmt(limeCalc.adjRate, 1) + ' lbs/1,000 sq. ft.</strong> (report\u2019s ' + fmt(limeRec, 1) + ' lbs/1,000 sq. ft. \u00f7 ' + limeCce + '% CCE).</div>';
+  }
+  if (limeCce > 0 && limeCce < 50) {
+    html += '<div class="warning-badge" style="margin-top:4px;margin-bottom:8px;">&#9888; A CCE this low is unusual for lime. <strong>Gypsum (calcium sulfate) has a CCE of zero</strong> \u2014 check that your product is actually a liming material (calcitic or dolomitic limestone), not gypsum. <em>(VCE 452-510)</em></div>';
+  }
+  var typeNote = limeTyp === 'Dolomitic' ? 'Dolomitic limestone supplies both calcium and magnesium.'
+    : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone. Pelletized lime is practical for lawns.'
+    : '';
+  if (typeNote) html += '<div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:4px;">' + typeNote + '</div>';
+  if (lawnSize > 0) {
+    html += '<div style="font-size:0.875rem;color:var(--slate-mid);">Total: <strong>' + fmt(limeCalc.totalLbs, 1) + ' lbs</strong> in ' + limeCalc.appsNeeded + ' application' + (limeCalc.appsNeeded > 1 ? 's' : '') + ' of up to 50 lbs/1,000 sq. ft. at one time.</div>';
+    if (limeCalc.appsNeeded > 1) {
+      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">' + fmt(limeCalc.lbsPerApp, 1) + ' lbs per application, spaced 1\u20136 months apart.</div>';
+    }
+    if (limeCalc.bagsNeeded > 0) {
+      html += '<div style="font-size:0.82rem;margin-top:6px;color:var(--slate-mid);">Bags needed: <strong>' + limeCalc.bagsNeeded + (limeCalc.bagsNeeded===1?' bag':' bags') + '</strong> (' + fmt(limeBagSize,0) + ' lb bags).</div>';
+    }
+  } else {
+    html += '<div style="font-size:0.82rem;color:var(--slate-light);">Enter your lawn size above for a precise total and bag count.</div>';
+  }
+  html += '<div style="font-size:0.76rem;color:var(--slate-light);margin-top:8px;">Lime should not be applied annually \u2014 this recommendation covers a three-year period. <em>(VCE 452-510, SPES-384)</em></div>';
+  html += '</div>';
+  displayEl.innerHTML = html;
+  displayEl.style.display = '';
 }
 var P_REC = {
   'L-':{ cls:'rec-p',      icon:'&#10003;', msg:'Use a fertilizer with phosphorus (P).' },
@@ -4044,13 +4179,14 @@ function updateTabLocks() {
 
   // Lime unlocks for any report with values, regardless of purpose — same logic as before
   // but now shows/hides instead of dims
-  // Lime unlocks for Lawn and Shrubs & Trees reports only (not Vegetable/Flower Garden — those
-  // tabs now do the complete CCE-adjusted, bag-count lime calculation inline themselves, so
-  // there's no reason to also send that purpose to a separate tab for it).
+  // Lime unlocks for Shrubs & Trees reports only — Vegetable/Flower Garden and Cool/Warm-Season
+  // Lawns all do the complete CCE-adjusted, bag-count lime calculation inline on their own tabs
+  // now (Garden/Flower: July 28; Lawns: July 31). Only Shrubs & Trees still relies on the
+  // standalone Lime tab.
   var limeBtn = document.getElementById('btn-lime');
   if (limeBtn) {
     var limePurpose = soilTestPurpose();
-    var limeApplies = hasValues && (limePurpose === 'lawn' || limePurpose === 'shrub');
+    var limeApplies = hasValues && (limePurpose === 'shrub');
     if (limeApplies) {
       limeBtn.style.display = '';
       limeBtn.removeAttribute('disabled');
@@ -4285,11 +4421,17 @@ function interpretSoilTest() {
   // Lime tab. Moved here (before the pH card) after finding the pH card's own button used a
   // simpler isGarden-only check that, like the Lime Recommendation/Base Saturation/Buffer Index
   // cards before this fix, mislabeled and misrouted Shrub and Flower reports.
+  // Lime is now calculated directly on Cool-Season/Warm-Season Lawns (July 31, 2026) — no
+  // separate Lime tab destination for lawn purposes anymore. The "Open Lime Calculator" /
+  // "Open Cool/Warm-Season Calculator" buttons scattered across individual explanation cards
+  // were removed the same day; the single "Continue to [X] Calculator" carry-over button plus
+  // the new bottom-of-tab navigation links are the intended way to get there instead.
   var limeGoBtn = '';
   if (!isNaN(limeRec) && limeRec > 0) {
     if (crop === 'vegetable') limeGoBtn = goBtn('garden', 'Open Vegetable Garden Calculator');
     else if (crop === 'flower') limeGoBtn = goBtn('flower', 'Open Flower Garden Calculator');
-    else limeGoBtn = goBtn('lime', 'Open Lime Calculator');
+    else if (crop === 'shrub') limeGoBtn = goBtn('lime', 'Open Lime Calculator');
+    // crop === 'cool' or 'warm': no button — lime is calculated directly on that tab.
   }
 
   // ---- pH ----
@@ -4404,8 +4546,8 @@ function interpretSoilTest() {
       cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec + ' lbs / 1,000 sq. ft.',
         'Virginia soils naturally acidify over time. ' + lTypeNote + ' Never apply more than 50 lbs per 1,000 sq. ft. at one time. Your total of ' + limeRec + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + ' (' + schedStr + '), spaced 1-6 months apart.',
         'Lime restores the soil pH that allows all other nutrients to become available to your grass. Lime should not be applied annually — the recommended amount covers a three-year period. <em>(SPES-384)</em>',
-        abox('action-needed', 'Use the Lime Calculator tab to enter your lawn size, CCE, and bag size for precise quantities.'),
-        goBtn('lime','Open Lime Calculator')));
+        abox('action-needed', 'Enter your product\'s CCE and bag size on the Cool-Season or Warm-Season Lawn tab for a precise application schedule and bag count — lime is now calculated there directly.'),
+        ''));
     }
   }
 
@@ -4447,7 +4589,7 @@ function interpretSoilTest() {
     } else {
       pMsg = 'Optimum — your soil has adequate phosphorus for good plant growth.'; pAction = abox('action-good','Maintenance applications only. Choose a fertilizer with low or no phosphorus to avoid buildup. Retest in 3–4 years.');
     }
-    var pCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : (crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '');
+    var pCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : '';
     cards.push(card('&#127807;', 'Phosphorus (P)', 'Medium: 12-35 lb/A (VCE)', '', pDisplay,
       'The amount of phosphorus available to your plants.</p><p><strong>Your result:</strong> ' + pMsg,
       'Phosphorus supports root development and fruit production. It is the least mobile of the major nutrients and is most available in the 6.0–7.0 pH range.', pAction, pCropBtn));
@@ -4468,7 +4610,7 @@ function interpretSoilTest() {
     } else {
       kMsg = 'Optimum — your soil has adequate potassium for good plant growth.'; kAction = abox('action-good','Maintenance applications only. A fertilizer with low or no potassium is appropriate. Retest in 3–4 years.');
     }
-    var kCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : (crop === 'warm' ? goBtn('warm','Open Warm-Season Calculator') : crop === 'cool' ? goBtn('cool','Open Cool-Season Calculator') : '');
+    var kCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : '';
     cards.push(card('&#9889;', 'Potassium (K)', 'Medium: 76-175 lb/A (VCE)', '', kDisplay,
       'The amount of potassium available to your plants.</p><p><strong>Your result:</strong> ' + kMsg,
       'Potassium supports cold hardiness, drought tolerance, and disease resistance. It is especially important for warm-season grasses going into winter.', kAction, kCropBtn));
@@ -4597,7 +4739,7 @@ function interpretSoilTest() {
             : 'Cool-season grasses are primarily fertilized in fall — think September, October, November (SON). Head to the Cool-Season Calculator to choose your annual N rate, select your fertilizer grade, and build your application plan.');
       cards.push(card('&#127807;', 'Grass Type &amp; Lawn Status', '', '', grassLabel + ' &mdash; ' + statusLabel,
         grassNote,
-        '', '', goBtn(crop, 'Go to ' + (crop==='warm'?'Warm':'Cool') + '-Season Calculator')));
+        '', '', ''));
 
       // ---- N recommendation ceiling check (Waypoint reports) ----
       var lawnNVal = parseFloat(document.getElementById('st-lawn-n') ? document.getElementById('st-lawn-n').value : '');
@@ -4623,7 +4765,7 @@ function interpretSoilTest() {
         cards.push(card('&#9889;', 'Nitrogen Recommendation Check', '', '', lawnNVal + ' lbs N/1,000 sq. ft. (annual)',
           'Waypoint soil test reports include an annual nitrogen figure; VCE reports do not.</p><p><strong>Check against the VCE ceiling:</strong> ' + nNote,
           'Applying more nitrogen than the VCE annual ceiling increases leaching, pushes excessive top growth at the expense of roots, and can exceed Virginia nutrient management standards.', nAction,
-          goBtn(crop, 'Go to ' + (crop==='warm'?'Warm':'Cool') + '-Season Calculator')));
+          ''));
       }
     }
   }
@@ -5984,12 +6126,10 @@ function calcGarden() {
   if (limeRec > 0) {
     var limeCce = parseFloat(document.getElementById('gdn-lime-cce').value) || 100;
     var limeBagSize = parseFloat(document.getElementById('gdn-lime-bag-size').value) || 0;
-    var limeAdjRate = limeCce > 0 ? (limeRec * 100) / limeCce : limeRec; // lbs/100 sq. ft., CCE-adjusted
     var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
-    var limeLbsTotal = limeAdjRate * hundredths;
-    var limeAppsNeeded = Math.max(1, Math.ceil(limeAdjRate / limeMaxPer));
-    var limeLbsPerApp  = limeLbsTotal / limeAppsNeeded;
-    var limeBagsTotal = (limeBagSize > 0 && limeLbsTotal > 0) ? Math.ceil(limeLbsTotal / limeBagSize) : 0;
+    var limeCalc = calcLimeForBed(limeRec, limeCce, hundredths, limeMaxPer, limeBagSize);
+    var limeAdjRate = limeCalc.adjRate, limeLbsTotal = limeCalc.totalLbs,
+        limeAppsNeeded = limeCalc.appsNeeded, limeLbsPerApp = limeCalc.lbsPerApp, limeBagsTotal = limeCalc.bagsNeeded;
     html += '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-top:16px;">';
     html += '<div style="font-weight:600;color:#7d5a00;margin-bottom:8px;">&#129704; Lime for Your Bed</div>';
     if (limeCce !== 100) {
@@ -6354,12 +6494,10 @@ function calcFlower() {
   if (limeRec > 0) {
     var limeCce = parseFloat(document.getElementById('flr-lime-cce').value) || 100;
     var limeBagSize = parseFloat(document.getElementById('flr-lime-bag-size').value) || 0;
-    var limeAdjRate = limeCce > 0 ? (limeRec * 100) / limeCce : limeRec; // lbs/100 sq. ft., CCE-adjusted
     var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
-    var limeLbsTotal = limeAdjRate * hundredths;
-    var limeAppsNeeded = Math.max(1, Math.ceil(limeAdjRate / limeMaxPer));
-    var limeLbsPerApp  = limeLbsTotal / limeAppsNeeded;
-    var limeBagsTotal = (limeBagSize > 0 && limeLbsTotal > 0) ? Math.ceil(limeLbsTotal / limeBagSize) : 0;
+    var limeCalc = calcLimeForBed(limeRec, limeCce, hundredths, limeMaxPer, limeBagSize);
+    var limeAdjRate = limeCalc.adjRate, limeLbsTotal = limeCalc.totalLbs,
+        limeAppsNeeded = limeCalc.appsNeeded, limeLbsPerApp = limeCalc.lbsPerApp, limeBagsTotal = limeCalc.bagsNeeded;
     html += '<div style="background:#fff8e1;border:1px solid #e0c87a;border-radius:6px;padding:12px 14px;margin-top:16px;">';
     html += '<div style="font-weight:600;color:#7d5a00;margin-bottom:8px;">&#129704; Lime for Your Bed</div>';
     if (limeCce !== 100) {
