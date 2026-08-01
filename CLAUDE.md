@@ -3192,14 +3192,158 @@ same discipline as reading real code rather than guessing at API shapes.
 | `index.html` | Added Lime tab to the `.timing-card` print override list (v2.2, 2026-08-01) — the sixth tab, missed in every prior pass at this specific fix |
 | `CLAUDE.md` | this entry |
 
+---
 
+## Session Updates — August 1, 2026 (cont. 2) (Test plan continued after v2.2 deploy confirmed — Vegetable Garden, Cool lime math, mobile width: all clean)
 
+### Deploy confirmation via the new version tag — working as intended
+Fetched the live site fresh (no-cache) and confirmed `app-version` reads `2.2 (2026-08-01)` and
+the Lime `.timing-card` fix's exact code comment is present — the version tag did exactly the job
+it was built for, first real use.
 
+### Vegetable Garden — full crop-type cycle and Nutrient Application Plan hand-verification
+Cycled all 24 crop-type options (including the legacy flower entries retained in the dropdown) —
+no `NaN`/`undefined`, every crop returns distinct, sensible guidance-panel content. Then ran a full
+Nutrient Application Plan with P Low / K Very High / Ca Optimum / Mg Low / Mn Low and hand-checked
+every computed number: Bone Meal 20.00 lbs (10 lbs/100 sq ft flat rate × 2 for a 200 sq ft bed),
+Epsom Salts 2.00 lbs (1 lb/100 sq ft × 2), Manganese Sulfate 0.10 lbs (0.05 × 2) — all correct. K
+Very High and Ca Optimum both correctly show "Adequate — no addition needed." Confirmed the
+tomato/pepper N-timing split note ("apply only half now... High/Very High P or K") correctly fires
+given the Very High K rating — this is the exact logic that was carefully preserved during the
+July 30 legacy-code removal, still working correctly under real numbers.
 
+### Cool-Season Lawns lime math — hand-verified correct
+40 lbs/1,000 sq ft report figure, 90% CCE, 8,000 sq ft lawn, 50 lb bags → adjusted rate 44.4
+(40 ÷ 0.90), total 355.6 lbs (44.4 × 8), 1 application (44.4 is under the 50 lb/1,000 sq ft cap),
+8 bags (⌈355.6 ÷ 50⌉). Every step matches `calcLimeForBed()`'s formula exactly.
 
+### Mobile-width check — no overflow found, but width achieved wasn't the one requested
+Resized to 380×800; the actual viewport reported was 500px wide (browser minimum constraint in
+this environment, not something adjustable from here). At the 500px width actually achieved, no
+element's `scrollWidth` exceeded the viewport — no horizontal overflow found. **This does not
+fully substitute for a genuine ~380px check** — flagged as an open item, not silently claimed as
+complete, since the app has its own `@media (max-width: 400px)` reflow rule that this test never
+actually got narrow enough to exercise.
 
+### Net result this round: no new bugs found
+After two consecutive rounds that each found a real bug (the P/K/pH routing fix, then the Lime
+timing-card fix), this round's checks — Vegetable Garden's full crop cycle, its Nutrient
+Application Plan math, and Cool-Season's lime math — came back clean. Recorded as a genuine clean
+result, not a gap in testing effort: each check was a real computation or content generation,
+verified against hand-arithmetic or direct inspection, not a superficial "the page loaded" check.
 
+### Open items remaining in the test plan
+- Flower Garden's own full field-by-field pass (Vegetable Garden's was completed; Flower Garden's
+  crop-type cycle and Complete-mode math not yet hand-verified)
+- A genuine ~380px mobile-width check (this round's attempt topped out at 500px)
+- Print-preview visual confirmation (this project has relied on CSSOM rule inspection throughout,
+  which is more reliable for confirming *what the rules say* but has never been cross-checked
+  against an actual rendered print preview image)
 
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | No changes this round — verification only |
+| `CLAUDE.md` | this entry |
 
+---
 
+## Session Updates — August 1, 2026 (cont. 3) (Flower Garden's full field-by-field pass — clean)
 
+### Flower Garden — all 4 flower types, both fertilizer modes, mode-toggle stability
+- Cycled all 4 flower types (annual/perennial/rose/bulb) in Complete mode with a fertilizer grade
+  entered — no NaN/undefined; N defaults confirmed exact matches to documentation (0.10/0.10/0.20/
+  0.40 lbs/100 sq ft respectively).
+- Hand-verified Spring-Flowering Bulbs' full output: N rate 0.4 ÷ 10% N fertilizer = 4.00 lbs/100
+  sq ft, × 1.5 (150 sq ft bed) = 6.00 lbs — correct.
+- Confirmed Complete mode's P/K suppression message ("Handled by your Complete N-P-K Fertilizer
+  selection") displays correctly, and that Mg (not suppressed by mode, only lime-conditional) still
+  shows a real amendment: 1 lb/100 sq ft × 1.5 = 1.50 lbs Epsom Salts — correct, and correctly
+  un-suppressed by lime since the lime type entered was Agricultural, not Dolomitic.
+- Switched to Individual mode: confirmed Phosphorus correctly un-suppresses and computes 10 lbs/
+  100 sq ft × 1.5 = 15.00 lbs Bone Meal — correct.
+- **Toggled Complete ↔ Individual four times in a row**, ending in each mode, and confirmed no
+  state corruption either direction — P/K correctly re-suppress going back to Complete, correctly
+  show real amendments going back to Individual, every time.
+- Lime math hand-verified: 5.0 lbs/100 sq ft report figure ÷ 80% CCE = 6.25 (shown 6.3), × 1.5 =
+  9.375 total (shown 9.4), ⌈6.25/5⌉ = 2 applications (established-bed limit), ⌈9.375/40⌉ = 1 bag —
+  all correct. Also confirmed the dolomitic-lime recommendation correctly triggers given the
+  Mg-Low rating entered, independent of which lime type was originally selected.
+
+**No new bugs found.** This completes both halves of the Vegetable Garden / Flower Garden
+field-by-field pass from the test plan's Part 2 (Vegetable Garden done in the prior entry, Flower
+Garden here) — both single-nutrient systems, and Flower Garden's additional mode toggle, are
+confirmed working correctly under real hand-checked numbers, not just "no error was thrown."
+
+### Remaining open items in the test plan
+- A genuine ~380px mobile-width check (still blocked by this environment's resize floor)
+- Print-preview visual confirmation (still only verified via CSSOM rule inspection, never an
+  actual rendered image)
+- Cool/Warm Custom-mode (multi-slot) full walkthrough — Auto mode was covered by the duplicate-plan
+  bug fix and its verification; Custom mode's season-summary math hasn't been independently
+  hand-checked the way Auto mode's has
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | No changes this round — verification only |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 1, 2026 (cont. 4) (Real-phone testing found what desktop simulation couldn't; Start Over feature added)
+
+### "Start Over" feature added
+User reported no way to clear the app and switch report purposes (e.g. lawn → flower garden)
+without closing and reopening it entirely. Added a "🔄 Start Over" button to the Soil Test tab's
+sample-report toolbar. Deliberately implemented as a confirm-then-full-reload
+(`window.location.href = window.location.pathname`, stripping any query string) rather than
+manually enumerating and clearing every field and JS state object across six tabs — the user had
+already confirmed a close-and-reopen gives a genuinely clean slate, and a reload reproduces that
+exact result with certainty, without the risk of missing a field or state variable (the same risk
+class this whole test-plan effort keeps finding elsewhere). Verified end-to-end on the live site:
+filled Flower Garden completely, triggered the reset, confirmed landing back on Soil Test Report
+with Flower Garden's data cleared and that tab re-locked.
+
+### Real-phone testing (not desktop simulation) found a genuine mobile layout bug this session's
+### own testing had flagged as a blind spot
+This desktop environment could not get its browser viewport below ~500px width no matter what was
+requested (confirmed twice, down to a 320px request still yielding 500px) — flagged explicitly in
+the prior entry as leaving a real 400–500px gap untested. User switched to an actual phone and
+found it immediately: **the Soil Test tab's own two-column grid (`.st-layout`) has no mobile
+reflow rule at all**, unlike `.calc-layout` (used by every calculator tab), which already collapses
+to single-column under `@media (max-width: 400px)`. In portrait orientation on a real phone, the
+Soil Test tab's interpretation cards render squeezed into the ~42%-width right column and get
+their text clipped mid-word — confirmed via the user's own screenshots. Landscape orientation
+(effectively a wider viewport, closer to what could be tested here) showed no problem, exactly
+matching what this environment's own 500px-floor testing had found.
+
+**Root cause, once identified:** `.st-layout` is a separate, distinctly-named CSS class from
+`.calc-layout` — same two-column grid concept, different tabs (Soil Test vs. every calculator
+tab). The "Reflow fix: single column at very narrow widths (WCAG 1.4.10)" block that fixed
+`.calc-layout` simply never included `.st-layout`, because it was written for the calculator tabs
+specifically and the Soil Test tab's parallel two-column layout wasn't checked against the same
+fix at the time.
+
+**Fix:** added the identical `display: block !important` / `width: 100% !important` treatment for
+`.st-layout` to the same existing `@media (max-width: 400px)` block `.calc-layout` already uses —
+same breakpoint value, since the user's own report confirms that threshold already works
+correctly for `.calc-layout` on this exact device.
+
+**Checked for the same gap elsewhere before considering this closed:** grepped for every other
+two-column/multi-column grid layout in the file. Found `.leftover-grid` is dead CSS (no `class=
+"leftover-grid"` anywhere in the actual markup) and the newer lime-field two-column grids (Lime
+type + CCE%, added this session to Cool/Warm/Garden/Flower) are inline-styled `1fr 1fr` layouts —
+deliberately left untouched, since the user explicitly confirmed Cool/Warm "render well including
+the application plans" on the same real device, meaning those specific grids are not currently
+broken and don't need a proactive fix invented for them.
+
+**This is the clearest demonstration yet of why the test plan calls for real-device testing, not
+just desktop viewport resizing** — this exact gap was flagged as an open item in the prior entry,
+and the fix was found within one round of switching to an actual phone.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added "Start Over" button (confirm + full reload) to the Soil Test tab; fixed `.st-layout`'s missing mobile reflow rule — the Soil Test tab's two-column grid had no `@media (max-width: 400px)` collapse, unlike every calculator tab's `.calc-layout` (v2.4, 2026-08-01) |
+| `CLAUDE.md` | this entry |

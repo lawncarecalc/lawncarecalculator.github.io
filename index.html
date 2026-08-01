@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msvalidate.01" content="36E733185C108B9F566DBA5BD46CF336">
 <meta name="google-site-verification" content="wjBcxb8K4CRzSDumr4gm5edKoNzsgmAKQzmdBQyhGjM">
-<meta name="app-version" content="2.2 (2026-08-01)">
+<meta name="app-version" content="2.4 (2026-08-01)">
 <title>Soil Report Assistant — No more guessing what to feed your lawn or garden</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
 <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
@@ -797,6 +797,12 @@
     .calc-layout > * {
       width: 100% !important;
     }
+    .st-layout {
+      display: block !important;
+    }
+    .st-layout > * {
+      width: 100% !important;
+    }
     .st-field-grid {
       grid-template-columns: 1fr !important;
     }
@@ -815,7 +821,7 @@
       <h1>Soil Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.2 &middot; 2026-08-01</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.4 &middot; 2026-08-01</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -843,11 +849,12 @@
         <div class="card-header" aria-level="2">
           <span><span class="icon" aria-hidden="true">🧪</span> Enter Your Soil Test Report Values</span>
         </div>
-        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;padding:10px 20px;background:var(--green-deep);border-top:1px solid rgba(255,255,255,0.1);" role="toolbar" aria-label="Sample reports">
+        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 20px;background:var(--green-deep);border-top:1px solid rgba(255,255,255,0.1);" role="toolbar" aria-label="Sample reports">
           <button class="st-prefill-btn" onclick="prefillSampleReport('lawn')"><span aria-hidden="true">&#128203;</span> Lawn Sample</button>
           <button class="st-prefill-btn" onclick="prefillSampleReport('garden')" style="background:#7a6518;border-color:#7a6518;"><span aria-hidden="true">&#127799;</span> Flower Garden Sample</button>
           <button class="st-prefill-btn" onclick="prefillSampleReport('veggie')" style="background:#3d5a1a;border-color:#3d5a1a;"><span aria-hidden="true">&#127807;</span> Vegetable Garden Sample (Waypoint)</button>
           <button class="st-prefill-btn" onclick="prefillSampleReport('vce-veggie')" style="background:#2e4a12;border-color:#2e4a12;"><span aria-hidden="true">&#127807;</span> VCE Vegetable Garden Sample</button>
+          <button class="st-prefill-btn" onclick="startNewReport()" style="background:transparent;border:1.5px solid rgba(255,255,255,0.5);margin-left:auto;" title="Clears every entered value on every tab and starts fresh">&#128260; Start Over</button>
         </div>
         <div class="card-body">
           <div id="st-instructions-prompt" class="no-print" style="background:var(--green-mist);border:1px solid var(--green-light);border-radius:6px;padding:10px 14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
@@ -6603,6 +6610,18 @@ function calcFlower() {
 }
 
 // ===== SAMPLE REPORT PRE-FILL =====
+// Clears every field on every tab and starts fresh — added August 1, 2026 after a user reported
+// no way to switch report purposes (e.g. lawn to flower garden) without closing and reopening the
+// app entirely. Rather than manually enumerate and reset every field and JS state object (risking
+// missing one, the exact class of bug this project keeps finding elsewhere), this does a genuine
+// full reload — the same clean-slate result the user already confirmed works, just reachable with
+// one click instead of closing the tab. Confirms first since this clears real entered data.
+function startNewReport() {
+  if (confirm('This will clear every value you\u2019ve entered on every tab and start a new report. Continue?')) {
+    window.location.href = window.location.pathname;
+  }
+}
+
 function prefillSampleReport(type) {
   var fields;
   // Waypoint numeric targets now live in the gdnTargets state object, not DOM fields (they're
