@@ -3144,6 +3144,55 @@ that relied on inspection instead.
 | `Click_Through_Test_Plan.md` | New — comprehensive pattern-based + per-tab click-through test plan |
 | `CLAUDE.md` | this entry |
 
+---
+
+## Session Updates — August 1, 2026 (cont.) (Executing the test plan: Lime tab's Timing card was never included in print, keyboard/Shrub walkthrough clean)
+
+### Print-matrix check (Pattern H) found a real, previously undiscovered bug
+Ran a systematic check — not just re-confirming the five tabs already fixed, but building the full
+cascade table for all six — and found that **Lime was never added to the `.timing-card` print
+override list**, even though it has its own Timing & Application Notes section like every other
+tab. The July 26–27 fix that made this override list exist in the first place covered Cool, Warm,
+Garden, Flower, and Shrub; Lime was missed at that time and stayed missed through every later
+"Timing card doesn't print" investigation this project, because those investigations were all
+triggered by reports about Flower Garden specifically and never widened to check Lime too.
+
+**Fix:** added `body.printing-lime #tab-lime .timing-card` to the existing override rule.
+Verified via the same cascade-table method used to confirm the other five (walking the live
+parsed CSSOM rather than assuming) — all six tabs now correctly include their own Timing card in
+print, confirmed via direct rule inspection rather than visual print-preview.
+
+### Print-matrix and keyboard regression check — everything else confirmed clean
+- Built a full six-tab table confirming each `printing-X` class shows exactly one tab panel with
+  no overlap and no Soil Test Report bleed-through — the July 29 `:not()` exclusion fix holds
+  correctly for all six, not just the two that had been specifically reported broken.
+- Re-ran the July 27 tab-focus-order keyboard check (Tab #2 → "About & Instructions") against the
+  current deployed site including the new header version tag — confirmed no regression; the
+  version tag `<div>` isn't natively focusable and doesn't affect Tab order.
+
+### Shrubs & Trees walkthrough — clean, no new bugs found
+Full walkthrough with an acid-loving shrub (azalea/rhododendron category) and a Soil Test tab
+lime recommendation entered on the same report. Confirmed: the tab correctly shows "No lime —
+lime raises pH and will harm acid-loving plants" despite a general lime figure being present on
+the report (matching the documented July 31 design intent for the Lime Recommendation card's
+shrub branch); the thermometer emoji fix (from the July 30 evaluation pass) displays correctly;
+no redundant P/K nutrient-name repetition. Shrubs & Trees remains the one tab still on the
+pre-restructure P/K-entry pattern (manual selects, not auto-filled from the Soil Test tab) —
+confirmed this is a known, already-flagged gap, not a new one.
+
+**One methodology note worth keeping:** an early attempt to test this same walkthrough used an
+invalid dropdown value (`'azalea'` instead of the real option value `'acid-shrub'`), which silently
+left the field blank rather than erroring — a reminder that a live-simulation test needs to verify
+the *actual* option values from the markup before assuming a plausible-looking value will work,
+same discipline as reading real code rather than guessing at API shapes.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added Lime tab to the `.timing-card` print override list (v2.2, 2026-08-01) — the sixth tab, missed in every prior pass at this specific fix |
+| `CLAUDE.md` | this entry |
+
+
 
 
 
