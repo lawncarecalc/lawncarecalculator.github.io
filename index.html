@@ -1512,10 +1512,10 @@
                     <input type="radio" id="cool-shade-full" name="cool-shade" value="1" checked onchange="calcCool()"><label for="cool-shade-full"> Full sun</label>
                   </label>
                   <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
-                    <input type="radio" id="cool-shade-partial" name="cool-shade" value="0.67" onchange="calcCool()"><label for="cool-shade-partial"> Some shade (&#8532;)</label>
+                    <input type="radio" id="cool-shade-partial" name="cool-shade" value="0.67" onchange="calcCool()"><label for="cool-shade-partial"> Some shade (use &#8532; of full-sun rate)</label>
                   </label>
                   <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
-                    <input type="radio" id="cool-shade-heavy" name="cool-shade" value="0.5" onchange="calcCool()"><label for="cool-shade-heavy"> Heavy shade (&#189;)</label>
+                    <input type="radio" id="cool-shade-heavy" name="cool-shade" value="0.5" onchange="calcCool()"><label for="cool-shade-heavy"> Heavy shade (use &#189; of full-sun rate)</label>
                   </label>
                 </div>
                 <div style="font-size:0.76rem;color:var(--slate-light);line-height:1.4;margin-top:8px;">&#9888;&#65039; If your lawn is part sun and part shade, run the shaded zone as a <strong>separate calculation</strong> using only its square footage — the shade reduction should not be applied to your whole lawn.</div>
@@ -1603,7 +1603,6 @@
                 <div id="cool-app-slots"></div>
                 <button class="st-unit-btn no-print" onclick="addAppSlot('cool')" style="margin-top:10px;padding:6px 14px;font-size:0.82rem;">+ Add Application</button>
                 <div id="cool-custom-summary" style="margin-top:14px;"></div>
-                <button class="print-plan-btn no-print" onclick="printPlan('cool')" style="margin-top:14px;">&#128424; Print Plan</button>
               </div>
             </div>
 
@@ -1624,6 +1623,9 @@
             <div id="cool-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p></div>
             <div class="note-banner">ℹ️ Per VCE 430-011 &amp; Soil Test Note 17. Primary window: mid-August through early November. Recommendations can be repeated for up to three growing seasons.</div>
           </div>
+        </div>
+        <div id="cool-print-btn-wrap" style="display:none;margin-top:16px;">
+          <button class="print-plan-btn no-print" onclick="printPlan('cool')">&#128424; Print Plan</button>
         </div>
       </div>
     </div>
@@ -1699,10 +1701,10 @@
                     <input type="radio" id="warm-shade-full" name="warm-shade" value="1" checked onchange="calcWarm()"><label for="warm-shade-full"> Full sun</label>
                   </label>
                   <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
-                    <input type="radio" id="warm-shade-partial" name="warm-shade" value="0.67" onchange="calcWarm()"><label for="warm-shade-partial"> Some shade (&#8532;)</label>
+                    <input type="radio" id="warm-shade-partial" name="warm-shade" value="0.67" onchange="calcWarm()"><label for="warm-shade-partial"> Some shade (use &#8532; of full-sun rate)</label>
                   </label>
                   <label style="flex:1;min-width:90px;display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;padding:6px 8px;background:white;border:1px solid var(--border);border-radius:4px;">
-                    <input type="radio" id="warm-shade-heavy" name="warm-shade" value="0.5" onchange="calcWarm()"><label for="warm-shade-heavy"> Heavy shade (&#189;)</label>
+                    <input type="radio" id="warm-shade-heavy" name="warm-shade" value="0.5" onchange="calcWarm()"><label for="warm-shade-heavy"> Heavy shade (use &#189; of full-sun rate)</label>
                   </label>
                 </div>
                 <div style="font-size:0.76rem;color:var(--slate-light);line-height:1.4;margin-top:8px;">&#9888;&#65039; If your lawn is part sun and part shade, run the shaded zone as a <strong>separate calculation</strong> using only its square footage — the shade reduction should not be applied to your whole lawn.</div>
@@ -1790,7 +1792,6 @@
                 <div id="warm-app-slots"></div>
                 <button class="st-unit-btn no-print" onclick="addAppSlot('warm')" style="margin-top:10px;padding:6px 14px;font-size:0.82rem;">+ Add Application</button>
                 <div id="warm-custom-summary" style="margin-top:14px;"></div>
-                <button class="print-plan-btn no-print" onclick="printPlan('warm')" style="margin-top:14px;">&#128424; Print Plan</button>
               </div>
             </div>
 
@@ -1811,6 +1812,9 @@
             <div id="warm-timing"><p style="color:var(--slate-light);font-size:0.875rem;">Enter your inputs above to see timing recommendations.</p></div>
             <div class="note-banner">ℹ️ Per VCE 430-011 &amp; Soil Test Note 18. Primary window: April 1 – August 15. Recommendations can be repeated for up to three growing seasons.</div>
           </div>
+        </div>
+        <div id="warm-print-btn-wrap" style="display:none;margin-top:16px;">
+          <button class="print-plan-btn no-print" onclick="printPlan('warm')">&#128424; Print Plan</button>
         </div>
       </div>
     </div>
@@ -3329,12 +3333,11 @@ function setPlanMode(prefix, mode) {
   // Timing card only relevant in custom mode — auto mode includes timing in the plan table
   var timingCard = document.getElementById(prefix + '-timing-card');
   if (timingCard) timingCard.style.display = mode === 'custom' ? '' : 'none';
-  if (mode === 'auto') {
-    calcAutoplan(prefix);
-  } else {
-    prePopulateCustom(prefix);
-    calcMulti(prefix);
-  }
+  if (mode === 'custom') prePopulateCustom(prefix);
+  // calcCool()/calcWarm() check planMode[prefix] internally and call the right one, then also
+  // re-render lime and update the shared Print Plan button's visibility — calling them here
+  // (instead of calcAutoplan/calcMulti directly) keeps all three in sync on every mode switch.
+  if (prefix === 'cool') calcCool(); else if (prefix === 'warm') calcWarm();
 }
 
 function prePopulateCustom(prefix) {
@@ -3895,11 +3898,21 @@ function calcCool() {
   if (planMode['cool'] === 'auto') calcAutoplan('cool');
   else calcMulti('cool');
   renderLimeForLawn('cool');
+  var coolPrintWrap = document.getElementById('cool-print-btn-wrap');
+  if (coolPrintWrap) {
+    var coolPanel = document.getElementById('cool-results-panel');
+    coolPrintWrap.style.display = (coolPanel && coolPanel.innerHTML.trim()) ? '' : 'none';
+  }
 }
 function calcWarm() {
   if (planMode['warm'] === 'auto') calcAutoplan('warm');
   else calcMulti('warm');
   renderLimeForLawn('warm');
+  var warmPrintWrap = document.getElementById('warm-print-btn-wrap');
+  if (warmPrintWrap) {
+    var warmPanel = document.getElementById('warm-results-panel');
+    warmPrintWrap.style.display = (warmPanel && warmPanel.innerHTML.trim()) ? '' : 'none';
+  }
 }
 
 // Lime for Cool/Warm-Season Lawns (added July 31, 2026) — a dedicated section rather than folding
@@ -4781,7 +4794,7 @@ function interpretSoilTest() {
         suffMsg:'Zinc levels are adequate. No corrective action needed.',
         highMsg:'High zinc can interfere with iron and manganese uptake. Avoid applying zinc-containing products.' },
       { id:'st-mn', rid:'st-mn-rating', name:'Manganese (Mn)',
-        phNote:'Availability drops sharply above pH 6.5. Over-liming is the most common cause of Mn deficiency in Virginia.',
+        phNote:'Becomes limiting above roughly pH 6.5, with a sharp drop above pH 7.5. Over-liming is the most common cause of Mn deficiency in Virginia.',
         lowMsg:'Low manganese is almost always a pH problem. Check soil pH first — Mn deficiency rarely occurs in well-limed soils at pH 6.0–6.8. Foliar-applied manganese sulfate is most effective when soil correction is not possible. <em>(426-323)</em>',
         suffMsg:'Manganese levels are adequate. No corrective action needed.',
         highMsg:'High manganese can occur at low pH. Liming to the correct range will reduce availability to safe levels.' },
@@ -4967,6 +4980,10 @@ function carryOverToCalculators() {
     setSelect('cool-p-rating', pRat);
     setSelect('cool-k-rating', kRat);
     if (crop === 'cool' || crop === 'warm') setSelect('cool-species', 'tall');
+    // Lime is calculated directly on this tab now (July 31, 2026) — no separate Lime tab
+    // carry-over for lawn purposes.
+    if (limeRec) setInput('cool-lime-rec', limeRec); else clearInput('cool-lime-rec');
+    setSelect('cool-lime-type', limeTyp);
 
     // Warm-season tab
     if (areaSize) setInput('warm-lawn-size', areaSize); else clearInput('warm-lawn-size');
@@ -4974,6 +4991,8 @@ function carryOverToCalculators() {
     setSelect('warm-k-rating', kRat);
     // Default warm species to bermuda when grass type is warm; leave as-is for cool carry-over
     if (crop === 'warm') setSelect('warm-species', 'bermuda');
+    if (limeRec) setInput('warm-lime-rec', limeRec); else clearInput('warm-lime-rec');
+    setSelect('warm-lime-type', limeTyp);
 
     // Carry the report's annual N recommendation (Waypoint) to the matching tab
     var lawnN = document.getElementById('st-lawn-n') ? document.getElementById('st-lawn-n').value : '';
@@ -4982,16 +5001,12 @@ function carryOverToCalculators() {
       else if (crop === 'warm') setInput('warm-n-rate', lawnN);
     }
 
-    // Lime tab
-    if (areaSize) setInput('lime-lawn-size', areaSize); else clearInput('lime-lawn-size');
-    if (limeRec) setInput('lime-rec', limeRec); else clearInput('lime-rec');
-    setSelect('lime-type', limeTyp);
-
-    // Defer all calcs until after DOM writes settle
+    // Defer all calcs until after DOM writes settle. Route through calcCool()/calcWarm() (not
+    // calcMulti() directly) so lime re-renders and the shared Print Plan button's visibility
+    // stay in sync, same fix as setPlanMode() needed.
     setTimeout(function() {
-      calcMulti('cool');
-      calcMulti('warm');
-      calcLime();
+      calcCool();
+      calcWarm();
     }, 0);
   }
 
