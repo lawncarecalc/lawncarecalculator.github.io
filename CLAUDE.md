@@ -452,6 +452,7 @@ jumps to About & Instructions; "No thanks" dismisses. Either hides it for the se
 30. **(Added July 29)** Any `body:not(.printing-X):not(.printing-Y)...` exclusion list controlling default print visibility must be updated every time a new `printing-*` prefix is added — the list is not self-maintaining. This was missed for `.printing-flower` and `.printing-shrub` when those prefixes were added, causing the Soil Test tab to print simultaneously with whichever of those two was actually requested. More generally: when a specific, confirmed-correct fix doesn't resolve a reported symptom, widen the search to every rule in the same media block rather than re-confirming the same rule again — the actual cause can be adjacent to, not inside, the thing already under suspicion
 31. **(Added July 30)** When a routing/labeling bug tied to purpose (vegetable/flower/shrub/lawn) is found and fixed in one card, `grep` the whole file for the same raw pattern (e.g. `isGarden ? 'garden' : ...`) before considering it resolved — do not assume inspection caught every instance. This exact bug (a card using a simple `isGarden` check instead of the three-way vegetable/flower/shrub split) was fixed for three cards in one session and found again, missed, in a fourth (the pH card) the next session
 32. **(Added July 30)** Live user-simulation testing (actually operating the deployed app via the browser tool, reading every explanation as a first-time user would, not just checking navigation) surfaces bugs that code review does not. This session's most significant find — a legacy P/K flag system still actively contradicting the new single-nutrient system for certain Nitrogen Source choices (Fish Meal, Bat Guano) — was invisible to static review and had gone undetected through several prior sessions' worth of smoke-testing, because every Nitrogen Source tried previously happened to be 0% P/K. When removing code found this way, check immediately whether anything else in the same function depends on variables the removed block declared — a genuine regression (breaking the still-valid tomato/pepper N-timing split) was introduced and caught only because a live-patch test threw a `ReferenceError`, not because of prior inspection
+33. **(Added August 1)** `index.html` carries a version tag — a `<meta name="app-version">` in `<head>` and a small visible `v{X}.{Y} · {date}` tag in the top-right of the site header (marked `no-print`). **Bump both on every single update to `index.html`, no exception, even a one-line fix.** This exists specifically to solve the recurring "is the live site actually running my latest fix" problem that came up repeatedly before this convention existed (the print-CSS saga, the Google/Bing verification confusion) — a live fetch of the deployed page can now check the version tag directly instead of needing to grep for a specific recent change each time. Current: 2.1 (2026-08-01).
 
 ---
 
@@ -3058,6 +3059,90 @@ and the Lime tab — styled consistently, hidden from print output via `no-print
 | `index.html` | Lime CCE-adjusted calculation absorbed into Cool/Warm-Season Lawns via shared `calcLimeForBed()` (refactored Garden/Flower to use the same function); Lime tab gated to Shrub-only; four lawn "Open Calculator" buttons removed from interpretation cards; Lime Recommendation card's lawn branch updated; bottom-of-tab nav links added to Cool/Warm/Lime; About tab instructions updated for all three |
 | `CLAUDE.md` | this entry |
 | `README.md` | Updated tabs table (Cool/Warm now mention inline lime; Lime tab described as Shrub-only); Lime & CCE section updated to reflect Shrub-only scope and shared function |
+
+---
+
+## Session Updates — July 31–August 1, 2026 (Cool/Warm duplicate-plan bug, versioning convention, comprehensive click-through test plan, two more `isGarden`-lumping fixes)
+
+### Cool/Warm-Season Lawns — Auto mode duplicated the entire application plan on screen
+User found this by using the app normally (not a code-review find): the inline area under the
+N-P-K/WIN inputs and the separate "Your Application Plan" card both showed the identical full
+table simultaneously. Root cause: `calcAutoplan()` built one `planHtml` string and wrote it into
+*both* `resultEl` (`{prefix}-auto-result`, left column) and `panelEl`
+(`{prefix}-results-panel`, right column), with a code comment ("Write to right panel (print
+only)") describing an older architecture where the right panel was apparently meant to be
+print-only/hidden on screen — but it had since become a normal, always-visible card, and the
+dual-write was never updated to match. A second, orphaned Print Plan button (embedded in
+`resultEl`'s assignment) existed alongside the one already moved to sit after the Timing card in
+the July 29 fix.
+
+**Fix:** `resultEl` now gets only a brief one-line summary (grade + program badge + warnings);
+the full table exists exactly once, in `panelEl`. Removed the orphaned embedded print button.
+Verified by patching the corrected function into the live deployed page and confirming the inline
+area no longer contains a `<table>` element while the results panel still does. Checked
+`calcMulti()` (Custom mode) for the same pattern — confirmed its inline per-slot results and its
+results-panel rollup are genuinely different content (individual slot numbers vs. a
+season-cumulative table), not a duplicate, so no fix needed there.
+
+### Versioning convention established (see rule 33)
+Added `<meta name="app-version">` to `<head>` and a small visible `v{X}.{Y} · {date}` tag in the
+top-right of the site header (`no-print`). Current: 2.1 (2026-08-01). Exists specifically to let
+a live-fetch check confirm whether a deploy has actually landed, without needing to grep for a
+specific recent change each time — a problem that came up repeatedly this project (the print-CSS
+saga, the Google/Bing verification confusion). **Must be bumped on every future `index.html`
+change, no exception.**
+
+### Comprehensive click-through test plan created
+`Click_Through_Test_Plan.md` — built from the actual bug patterns found across this whole
+project (duplicate content rendering, mode-locked buttons, missing carry-over, incomplete
+`isGarden`-based purpose routing, misused shared CSS/color tokens, cross-context leaked wording,
+incomplete print exclusion lists, generic-vs-specific threshold mismatches), each generalized into
+a checklist of where else in the app the same shape of bug could be hiding, followed by an
+exhaustive per-tab walkthrough and cross-cutting checks. Structured to be worked through
+repeatedly as the app changes, not a one-time checklist.
+
+### Two more `isGarden`-lumping routing bugs found (SUPERSEDES the assumption that the July 30
+### pH-card fix and the three-card fix from July 29 caught every instance)
+Running the test plan's own Pattern D check (`grep -n "isGarden ?"` across the whole file, rather
+than trusting prior inspection) found two more real instances of the same bug class already fixed
+three times this project:
+- **pH card's action text** (not the trailing button, which was already fixed) said "use the
+  Garden Calculator" for *any* `isGarden` report — mislabeling Flower Garden and incorrectly
+  pointing Shrubs & Trees at a tab that has nothing to do with lime for that purpose. This is a
+  different piece of the pH card than the `limeGoBtn` fix from July 30 — that fixed the trailing
+  button, this fixes inline text constructed earlier in the same card's logic.
+- **Phosphorus and Potassium cards' own buttons** (`pCropBtn`/`kCropBtn`) still routed every
+  `isGarden` report to `'garden'` (Vegetable Garden), regardless of whether the actual report was
+  vegetable, flower, or shrub. Fixed with the same three-way `crop`-based split used elsewhere;
+  Shrub now correctly gets "Open Shrubs & Trees Calculator" instead of being silently absorbed
+  into the vegetable-only routing.
+
+Verified via simulation: all four purposes (vegetable/flower/shrub/lawn) now produce the correct
+button label and destination for both cards.
+
+**Lesson already written as rule 31, reconfirmed by this find:** a routing bug fixed "in the
+cards I looked at" is not the same as fixed everywhere it exists. The grep-first approach (Pattern
+D in the new test plan) found these two in under a minute; they had survived two prior fix passes
+that relied on inspection instead.
+
+### Live re-verification of prior fixes (all confirmed still holding)
+- Cycled through **all 17** Vegetable Garden Nitrogen Source options (including the 5 Note-19
+  flat-rate variants) checking for the old contradictory "zero-phosphorus fertilizer" message —
+  none found, July 30 fix holds comprehensively, not just for the two options originally
+  spot-checked.
+- Cycled through all 12 Flower Garden Individual-mode Nitrogen Source options checking for
+  vegetable-specific language (tomato, pepper, cole crop, etc.) — none found.
+- Checked the Nutrient Status panel's amendment notes on Flower Garden for the same leakage —
+  none found.
+- Confirmed Vegetable Garden and Flower Garden have no separate inline-result div architecture
+  (unlike Cool/Warm) — Pattern A structurally cannot occur there, by design, not just by luck.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fixed Cool/Warm Auto-mode duplicate application-plan rendering and an orphaned second Print Plan button; added app-version meta tag and visible header version tag (2.1, 2026-08-01); fixed pH card's action text and P/K cards' own buttons, which still lumped vegetable/flower/shrub together after two prior fix passes |
+| `Click_Through_Test_Plan.md` | New — comprehensive pattern-based + per-tab click-through test plan |
+| `CLAUDE.md` | this entry |
 
 
 

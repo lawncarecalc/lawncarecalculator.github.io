@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msvalidate.01" content="36E733185C108B9F566DBA5BD46CF336">
 <meta name="google-site-verification" content="wjBcxb8K4CRzSDumr4gm5edKoNzsgmAKQzmdBQyhGjM">
+<meta name="app-version" content="2.1 (2026-08-01)">
 <title>Soil Report Assistant — No more guessing what to feed your lawn or garden</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
 <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
@@ -813,6 +814,7 @@
       <h1>Soil Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.1 &middot; 2026-08-01</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -4453,9 +4455,14 @@ function interpretSoilTest() {
   if (!isNaN(ph)) {
     var phClass, phMsg, phAction;
     var phLow = isGarden ? 6.0 : 5.8;
+    // Three-way destination name for pH-card action text — was previously "Garden Calculator"
+    // for any isGarden report, which mislabeled Flower Garden and incorrectly pointed Shrubs &
+    // Trees at a garden tab that has nothing to do with lime for that purpose. Found via a
+    // systematic grep for `isGarden ?` after the same bug class was fixed in three other cards.
+    var phDestName = crop === 'flower' ? 'Flower Garden Calculator' : crop === 'shrub' ? 'Lime Calculator' : isGarden ? 'Vegetable Garden Calculator' : 'Lime Calculator';
     if (ph < 5.0) {
       phClass = 'pill-warn'; phMsg = 'Strongly acidic. At pH below 5.0, aluminum toxicity limits plant growth.';
-      phAction = abox('action-needed', 'Lime application is strongly recommended. Follow your lime recommendation and use the ' + (isGarden ? 'Garden Calculator' : 'Lime Calculator') + '.');
+      phAction = abox('action-needed', 'Lime application is strongly recommended. Follow your lime recommendation and use the ' + phDestName + '.');
     } else if (ph < phLow) {
       phClass = 'pill-warn'; phMsg = 'Acidic. Below the ideal range of ' + phLow + '–6.8 for ' + (isGarden ? 'vegetable and flower gardens' : 'most lawn grasses') + '.';
       phAction = abox('action-needed', 'Apply lime per your soil test recommendation. Virginia soils naturally acidify over time.');
@@ -4604,7 +4611,12 @@ function interpretSoilTest() {
     } else {
       pMsg = 'Optimum — your soil has adequate phosphorus for good plant growth.'; pAction = abox('action-good','Maintenance applications only. Choose a fertilizer with low or no phosphorus to avoid buildup. Retest in 3–4 years.');
     }
-    var pCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : '';
+    // Three-way destination — was previously "Open Garden Calculator" for any isGarden report,
+    // incorrectly routing Flower Garden and Shrubs & Trees reports to the Vegetable Garden tab.
+    var pCropBtn = crop === 'vegetable' ? goBtn('garden','Open Vegetable Garden Calculator')
+      : crop === 'flower' ? goBtn('flower','Open Flower Garden Calculator')
+      : crop === 'shrub' ? goBtn('shrub','Open Shrubs & Trees Calculator')
+      : '';
     cards.push(card('&#127807;', 'Phosphorus (P)', 'Medium: 12-35 lb/A (VCE)', '', pDisplay,
       'The amount of phosphorus available to your plants.</p><p><strong>Your result:</strong> ' + pMsg,
       'Phosphorus supports root development and fruit production. It is the least mobile of the major nutrients and is most available in the 6.0–7.0 pH range.', pAction, pCropBtn));
@@ -4625,7 +4637,11 @@ function interpretSoilTest() {
     } else {
       kMsg = 'Optimum — your soil has adequate potassium for good plant growth.'; kAction = abox('action-good','Maintenance applications only. A fertilizer with low or no potassium is appropriate. Retest in 3–4 years.');
     }
-    var kCropBtn = isGarden ? goBtn('garden','Open Garden Calculator') : '';
+    // Same three-way fix as Phosphorus above.
+    var kCropBtn = crop === 'vegetable' ? goBtn('garden','Open Vegetable Garden Calculator')
+      : crop === 'flower' ? goBtn('flower','Open Flower Garden Calculator')
+      : crop === 'shrub' ? goBtn('shrub','Open Shrubs & Trees Calculator')
+      : '';
     cards.push(card('&#9889;', 'Potassium (K)', 'Medium: 76-175 lb/A (VCE)', '', kDisplay,
       'The amount of potassium available to your plants.</p><p><strong>Your result:</strong> ' + kMsg,
       'Potassium supports cold hardiness, drought tolerance, and disease resistance. It is especially important for warm-season grasses going into winter.', kAction, kCropBtn));
