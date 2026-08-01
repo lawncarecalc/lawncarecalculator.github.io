@@ -3556,9 +3556,14 @@ function calcAutoplan(prefix) {
     + (prog.program === 1 ? ' (quick-release — no WIN listed)' : ' (slow-release — WIN ' + fmt(autoWin > 0 ? (autoWin/autoN*100) : autoWin, 0) + '% of N)')
     + '</div>';
 
-  resultEl.innerHTML = autoHtml;
+  // Inline (screen, left column, under the inputs): brief summary only — grade/program badge
+  // plus any warnings. The full table lives exclusively in the right-column results card
+  // (panelEl) now that that card is a normal, always-visible part of the page layout, not a
+  // hidden print-only duplicate the way it may have been when this was first written. Writing
+  // the full planHtml into both was showing the identical table twice on screen simultaneously.
+  resultEl.innerHTML = autoHtml + clipNote + overFourNote;
 
-  // Build plan HTML — shared between inline (screen) and right panel (print)
+  // Build plan HTML — the full table, shown only in the right panel now
   var planHtml = '<div style="margin-bottom:10px;font-size:0.875rem;">'
     + '<strong>' + lawnSize.toLocaleString() + ' sq. ft.</strong> lawn &nbsp;|&nbsp; '
     + '<strong>' + nRate + ' lbs N</strong> annual target &nbsp;|&nbsp; '
@@ -3576,11 +3581,8 @@ function calcAutoplan(prefix) {
 
   planHtml += pNote + kNote;
 
-  // Write to inline result (screen) — includes print button
-  resultEl.innerHTML = autoHtml + clipNote + overFourNote + planHtml
-    + '<button class="print-plan-btn no-print" onclick="printPlan(\'' + prefix + '\')" style="margin-top:14px;">&#128424; Print Plan</button>';
-
-  // Write to right panel (print only)
+  // Right panel (the only place the full table now shows on screen; print CSS also shows it
+  // during printing-{prefix})
   if (panelEl) panelEl.innerHTML = planHtml;
 }
 
