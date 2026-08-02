@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msvalidate.01" content="36E733185C108B9F566DBA5BD46CF336">
 <meta name="google-site-verification" content="wjBcxb8K4CRzSDumr4gm5edKoNzsgmAKQzmdBQyhGjM">
-<meta name="app-version" content="2.6 (2026-08-01)">
+<meta name="app-version" content="2.7 (2026-08-01)">
 <title>Soil Report Assistant — No more guessing what to feed your lawn or garden</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
 <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
@@ -821,7 +821,7 @@
       <h1>Soil Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.6 &middot; 2026-08-01</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.7 &middot; 2026-08-01</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -2143,9 +2143,11 @@
         <div id="gdn-print-btn-wrap" style="display:none;margin-top:16px;">
           <button class="print-plan-btn no-print" onclick="printPlan('garden')">&#128424; Print Plan</button>
         </div>
-        <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">📐</span> Volume Reference Table</h3>
-          <div class="card-body">
+        <div class="fert-chooser">
+          <button class="fert-chooser-toggle" id="gdn-vol-ref-btn" aria-expanded="false" aria-controls="gdn-vol-ref-body" onclick="toggleCollapsible('gdn-vol-ref')">
+            <span><span class="icon" aria-hidden="true">📐</span> Volume Reference Table</span><span class="toggle-arrow">&#9660;</span>
+          </button>
+          <div class="fert-chooser-body" id="gdn-vol-ref-body">
             <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:12px;">Approximate volumes for common fertilizers. <strong>Weight is always more accurate</strong> — volumes are estimates based on bulk density and vary by brand and moisture content.</p>
             <div class="table-scroll">
             <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
@@ -2177,9 +2179,11 @@
 
         <!-- Nutrient deficiency symptoms — reference material, kept near the other reference
              table below the results instead of interrupting the numbered input flow above. -->
-        <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">&#128269;</span> Nutrient Deficiency Symptoms Reference</h3>
-          <div class="card-body">
+        <div class="fert-chooser" style="margin-top:14px;">
+          <button class="fert-chooser-toggle" id="gdn-deficiency-ref-btn" aria-expanded="false" aria-controls="gdn-deficiency-ref-body" onclick="toggleCollapsible('gdn-deficiency-ref')">
+            <span><span class="icon" aria-hidden="true">&#128269;</span> Nutrient Deficiency Symptoms Reference</span><span class="toggle-arrow">&#9660;</span>
+          </button>
+          <div class="fert-chooser-body" id="gdn-deficiency-ref-body">
             <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Most deficiency symptoms in Virginia gardens are caused by pH outside the 6.0–7.0 range — correcting pH is almost always the right first step before adding trace elements. <em>(VCE 426-323)</em></p>
             <div class="table-scroll">
               <table class="fert-grade-table">
@@ -5348,9 +5352,11 @@ function toggleAboutShrubSources() {
 // toggleGdnVeg() removed — the vegetable crop guidance section is no longer a separate
 // collapsible; it's merged into and always shown alongside step 3's crop selector.
 
-// toggleGdnDefic() removed — the nutrient deficiency reference is now a plain card near the
-// Volume Reference Table, not a collapsible, as part of moving reference material out of the
-// numbered input flow.
+// toggleGdnDefic() removed (this was a dedicated function). The Volume Reference Table and
+// Nutrient Deficiency Symptoms Reference briefly sat as plain, always-open cards after that
+// removal, but were converted back to collapsibles on August 1, 2026 — this time using the
+// shared toggleCollapsible() above (ids 'gdn-vol-ref' and 'gdn-deficiency-ref') instead of two
+// more one-off functions.
 
 // toggleGdnSubst() removed \u2014 the "Can't find the recommended grade?" substitution table was
 // removed from the vegetable garden tab (streamlining pass, July 2026).
