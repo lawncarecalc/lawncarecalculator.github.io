@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msvalidate.01" content="36E733185C108B9F566DBA5BD46CF336">
 <meta name="google-site-verification" content="wjBcxb8K4CRzSDumr4gm5edKoNzsgmAKQzmdBQyhGjM">
-<meta name="app-version" content="2.8 (2026-08-01)">
+<meta name="app-version" content="3.2 (2026-08-02)">
 <title>Soil Report Assistant — No more guessing what to feed your lawn or garden</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
 <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
@@ -821,7 +821,7 @@
       <h1>Soil Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.8 &middot; 2026-08-01</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v3.2 &middot; 2026-08-02</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -1925,7 +1925,7 @@
         <div class="card">
           <h3 class="card-header"><span class="icon" aria-hidden="true">🌱</span> Vegetable Garden Calculator</h3>
           <div class="card-body">
-            <p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:12px;line-height:1.5;">Based on VCE Soil Test Note 19 (SPES-687P). P, K, Ca, Mg, S, and micronutrient ratings carry over automatically from the Soil Test tab — nothing to re-enter.</p>
+            <p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:10px;line-height:1.5;">Vegetable crops have very different nitrogen needs — a heavy feeder like tomatoes or corn requires several times more than a light feeder like beans or carrots. A complete N-P-K fertilizer locks all three nutrients into one fixed ratio, so applying enough to meet a crop's nitrogen need almost always means over- or under-supplying phosphorus and potassium at the same time. This tab sizes nitrogen, phosphorus, potassium, and every other nutrient separately — matched to your crop and your soil test — so each one lands at the right rate instead of riding along with the others.</p>
 
             <!-- Garden type is now encoded in st-report-type on the Soil Test tab ('vce-vegetable'
                  or 'waypoint-vegetable') — no need to ask again here. Mixed beds are folded under
@@ -6147,37 +6147,34 @@ function calcGarden() {
       html += '<div style="font-size:0.78rem;color:var(--slate-mid);background:var(--green-mist);border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Fast-release organic (warm-season crop):</strong> Effective as sidedress in warm soil above 60\u00b0F. Sidedress amounts shown below use the same product at equivalent N rates. <em>(Rutgers FS626, SARE LS16-269)</em></div>';
     }
 
-    // High P/K for tomato/pepper: VCE Note 19 says split preplant N in half rather than over-
-    // fertilizing when soil already has plenty of P/K. This is about nitrogen *timing*, not a
-    // P/K amendment recommendation (that's the Nutrient Application Plan's own section below) —
-    // kept separate from, and unrelated to, the old P/K flag system removed above.
-    var pRatForSplit = WAYPOINT_TO_VCE[(document.getElementById('st-p-rating') || {}).value] || (document.getElementById('st-p-rating') || {}).value || '';
-    var kRatForSplit = WAYPOINT_TO_VCE[(document.getElementById('st-k-rating') || {}).value] || (document.getElementById('st-k-rating') || {}).value || '';
-    var pHigh = ['H-','H','H+','VH'].indexOf(pRatForSplit) >= 0;
-    var kHigh = ['H-','H','H+','VH'].indexOf(kRatForSplit) >= 0;
+
+    // The VCE Note 19 "split preplant in half when P/K test High" rule was removed August 2,
+    // 2026. VCE's rule exists specifically because a *blended* N-P-K fertilizer forces N and P/K
+    // to move together — the only way to avoid over-applying P/K already at High/Very High is to
+    // reduce the whole product, N included. This calculator's single-nutrient architecture
+    // eliminates that problem by design: nitrogen is a separate, N-only product, and P/K are each
+    // sized independently by the Nutrient Application Plan's own section below (skipped entirely
+    // when already Adequate/High). There's no over-application risk tied to how much N is
+    // applied, so VCE's reason for splitting doesn't carry over. Rutgers FS626 — the actual
+    // source for this app's N-only sidedress numbers — has no such exception at all: it simply
+    // calls for the full preplant amount, then supplemental sidedress nitrogen on the schedule in
+    // its Table 2, regardless of P/K level. That's now what every crop does, tomato/pepper
+    // included. (This also retires the display bug fixed earlier the same day, where Step 1's
+    // amount and its accompanying text disagreed about what "half" referred to — moot now that
+    // there's no split to display.)
 
     // Build plan table
     html += '<table class="auto-plan-table"><thead><tr><th>Step</th><th>When</th><th>Amount for your bed</th></tr></thead><tbody>';
 
-    // Step 1 — Preplant (full soil test rec)
-    var ppHighPKNote = ((pHigh || kHigh) && (cropKey === 'tomato' || cropKey === 'pepper'))
-      ? ' <span style="color:#c0392b;font-size:0.78rem;">&#9888; P or K is High/Very High \u2014 apply only half now; see step 2 below.</span>' : '';
+    // Step 1 — Preplant (full amount, always — see note above)
     html += '<tr><td><strong>1 &mdash; Preplant</strong></td>'
-      + '<td>Before planting \u2014 broadcast and incorporate 4\u20136 inches' + ppHighPKNote + '</td>'
+      + '<td>Before planting \u2014 broadcast and incorporate 4\u20136 inches</td>'
       + '<td><strong>' + fmt(lbsTotal, 2) + ' lbs</strong>' + (totalVol ? ' &asymp; <strong>' + totalVol + '</strong>' : '') + '</td></tr>';
 
-    // Sidedress steps from SIDEDRESS_GUIDE
+    // Sidedress steps from SIDEDRESS_GUIDE — always applies now, regardless of P/K level
     var guide = SIDEDRESS_GUIDE[cropKey] || SIDEDRESS_DEFAULT;
 
-    // High P/K override for tomato/pepper: half preplant, half at fruit set (VCE Note 19)
-    if ((pHigh || kHigh) && (cropKey === 'tomato' || cropKey === 'pepper')) {
-      var halfLbs = lbsTotal / 2;
-      var halfVol = cpl ? fmtMeasure(halfLbs, cpl) : null;
-      html += '<tr><td><strong>2 &mdash; At fruit set</strong></td>'
-        + '<td>' + (cropKey === 'tomato' ? 'When first fruit cluster reaches the size of a half dollar' : 'At first fruit set')
-        + ' \u2014 apply remaining half of preplant amount. Soil tests High/Very High P or K: do not add additional sidedress N. <em>(VCE Note 19)</em></td>'
-        + '<td><strong>' + fmt(halfLbs, 2) + ' lbs</strong>' + (halfVol ? ' &asymp; <strong>' + halfVol + '</strong>' : '') + '</td></tr>';
-    } else if (guide.apps.length > 0) {
+    if (guide.apps.length > 0) {
       // Sidedress product selection:
       // - If user selected a zero-P zero-K product (N-only synthetic or fast organic): use their product
       // - If user selected a complete fertilizer (10-10-10 etc.): default to calcium nitrate for sidedress

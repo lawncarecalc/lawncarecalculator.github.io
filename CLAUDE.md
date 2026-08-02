@@ -3424,3 +3424,148 @@ earlier in this same conversation, referring to the report *purpose*) is also th
 | :-- | :-- |
 | `index.html` | Added dismissible Master Gardener survey prompt to all six calculator tabs (after Print Plan, before Back to Soil Test Report); added the missing "Back to Soil Test Report" link to Vegetable Garden, Flower Garden, and Shrubs & Trees (a gap from July 31); found and fixed a real `'garden'`/`'gdn'` and `'flower'`/`'flr'` prefix mismatch that would have made the survey prompt permanently non-functional on exactly those two tabs (v2.6, 2026-08-01) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 2, 2026 (Tomato/pepper "split preplant N in half when P/K test High" rule retired — not a bug fix, an architectural decision, reached after tracing a wording complaint all the way back to source conflict)
+
+### How this started
+User reported the red warning text on Vegetable Garden's tomato/pepper preplant step was confusing.
+Investigation initially found a real, narrower bug: Step 1's "Amount for your bed" column was
+showing the *full* unsplit preplant total while the adjacent text said "apply only half now" — no
+way to tell half of what from that row alone. That narrower fix (documented in the same day's
+earlier entry, now superseded below) halved the displayed Step 1 amount to match the instruction
+and rewrote the text to state the reasoning plainly.
+
+### The question that reopened it
+User then asked a good follow-up: does this imply the *full* amount would be applied at preplant
+if P/K weren't High? Confirmed yes, and directly against the primary source this time (VCE
+452-719 / SPES-687P, fetched and read in full, not assumed):
+
+> "Tomatoes, Green Peppers, Lima Beans – If the garden area has been liberally fertilized in the
+> past and the soil tests high or very high for phosphate and potash, for best results apply
+> one-half the recommended amount of fertilizer before planting and the remaining half after
+> fruit set. Too much fertilizer applied early in the spring for these vegetables will encourage
+> vegetative growth and reduce fruit set."
+
+**Also found while reading the primary source, not yet acted on then:** VCE's own list of crops
+this applies to is "Tomatoes, Green Peppers, **Lima Beans**" — the app's code only ever checked
+`cropKey === 'tomato' || cropKey === 'pepper'`. Lima Beans has never been included. Flagged to the
+user as an open item; complicated by the fact that the app's crop dropdown has only a generic
+"Beans & peas" option, not a specific Lima Beans entry, so a correct fix means adding a new crop
+entry, not just adding a string to an array. **Still open — not resolved by this session's later
+decision, since the split rule this crop list fed into no longer exists (see below).**
+
+### The bigger question: is VCE's rule even the right rule to be citing here at all?
+User then asked whether "fertilizer" in the VCE passage means a blended product (10-10-10) or an
+N-only source like calcium nitrate — a genuinely important distinction given this calculator's
+architecture. Read the full VCE document and confirmed: **it means a blended product.** Signals in
+the text itself: the line immediately above the exception says "broadcast the recommended amount
+of fertilizer" (describing the single blended grade a soil test report recommended in VCE's
+original paradigm); the document points to a "Fertilizer Substitution Table" (only meaningful for
+a specific N-P-K grade, not a pure N source); and the same document's separate "Organic
+Fertilizers" section explicitly treats N, P, K, Ca, and Mg as individually-sized components as an
+*alternative* to "the Fertilizer Recommendation on your Soil Test Report" — a contrast that only
+makes sense if the main recommendation is one blended product.
+
+At this point a citation-accuracy fix was proposed (make the note transparent that this was an
+*adaptation* of VCE's blended-product guidance to a single-nutrient system, not a literal
+restatement) — this fix was **not implemented**, since the next exchange overtook it entirely.
+
+### Sourcing detour: user recalled "UMD says full amount at planting + half at fruit set" —
+### turned out to be Rutgers, not UMD
+User asked to check CLAUDE.md first, suspecting this had come up before — searched thoroughly,
+found related-but-different content (the already-documented Rutgers FS626-sourced normal
+tomato sidedress schedule: 2 lbs/1,000 sq ft preplant + two 1.0 lb sidedress steps) but no prior
+resolution of this exact question. Searched UMD Extension's actual tomato guidance directly and
+found it **did not match** what the user described — UMD's general consumer guide says the
+opposite (avoid heavy pre-plant N, use a starter amount, sidedress after fruit set), and a
+different UMD-affiliated source described a half/half split that would have matched VCE, not "full
+amount at planting." Reported the conflict honestly rather than picking one. User then corrected:
+they'd meant **Rutgers**, not UMD — "we at one point used the Rutgers recommendation."
+
+Fetched Rutgers FS626 (njaes.rutgers.edu/FS626/) in full. Confirmed: Table 2 lists tomatoes as
+"1.0 lbs at first bloom followed 4 weeks later with another 1.0 lbs" — exactly matching what's
+already coded — and Rutgers frames all sidedress N as **supplemental**, additional to whatever the
+soil-test fertilizer recommendation already provided. **Critically: nowhere in the Rutgers
+document does a P/K-based split-preplant exception exist at all.** Rutgers' entire framework is:
+apply the full preplant amount once, then add Table 2's fixed supplemental sidedress — no
+exception for P/K level.
+
+### The actual decision (user's reasoning, not a citation resolution)
+User then made the point that actually resolves this, and it isn't about which source wins:
+
+> "We have structured the vegetable garden calculator around the gardener applying individual
+> N-P-K components as well as micronutrients as needed. The quantity of each component to be
+> applied is calculated separately. The VCE guidance is for complete or blended fertilizers wherein
+> it makes sense to reduce N application to avoid over use of P or K. Applying individual
+> components avoids this problem entirely."
+
+This is correct and decisive: VCE's split-preplant rule exists *specifically* because a blended
+product forces N and P/K to move together — reducing the dose is the only way to avoid
+over-applying P/K that's already High/Very High, and N gets reduced as an unavoidable side effect.
+This calculator's single-nutrient architecture removes that coupling by design: nitrogen is a
+separate, N-only product; P and K are each sized independently by the Nutrient Application Plan's
+own section (skipped entirely when already Adequate/High, per `renderNutrientStatusPanel()`).
+There is no mechanism by which applying more nitrogen causes over-application of phosphorus or
+potassium in this system. VCE's stated reason for the split does not transfer.
+
+**Decision: the P/K-High split-preplant rule is retired for tomato/pepper.** Every crop, tomato and
+pepper included, now always gets the full preplant amount followed by the standard
+`SIDEDRESS_GUIDE`-based supplemental schedule (Rutgers FS626-sourced), regardless of P or K rating.
+This is not "Rutgers overrides VCE" — it's that VCE's rule was never really about nitrogen timing
+in the first place; it was a workaround for a blended-fertilizer constraint that no longer exists
+in this tool.
+
+### Implementation
+Removed `pRatForSplit`/`kRatForSplit`/`pHigh`/`kHigh`/`pkSplitApplies`/`ppHighPKNote` entirely from
+`calcGarden()`. Step 1 (Preplant) unconditionally shows the full `lbsTotal`; the sidedress branch
+(`if (guide.apps.length > 0)`) unconditionally runs the standard schedule with no P/K-based
+branching. Confirmed no other code in `calcGarden()` depended on the removed variables. **Left
+untouched, correctly out of scope:** `fertChooserHTML()` (the Lawn tabs' "help me choose a
+fertilizer" helper) has its own, unrelated `pHigh`/`kHigh` locals — Lawn still recommends one
+blended N-P-K product, so VCE's original reasoning genuinely still applies there; this is not the
+same situation as Vegetable Garden and was correctly left alone.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Retired the VCE Note 19 P/K-High split-preplant rule for tomato/pepper entirely — every crop now always gets the full preplant amount + standard Rutgers-sourced supplemental sidedress, regardless of P/K level. This supersedes the same-day earlier fix that had corrected the display bug in that rule, which is now moot since the rule itself is gone. (v3.0, 2026-08-02) |
+| `CLAUDE.md` | this entry |
+
+### Still open
+- **Lima Beans** are named by VCE alongside tomatoes/peppers but have never been in this app's
+  crop-check logic — moot for *this* rule now that it's retired, but Lima Beans may still warrant
+  its own crop entry (distinct from the generic "Beans & peas") for its own feeding-level/sidedress
+  data independent of this decision. Not addressed this session.
+
+---
+
+## Session Updates — August 2, 2026 (cont.) (Vegetable Garden intro copy — added a single-nutrient lead-in, then removed a stale sourcing sentence)
+
+### Lead-in paragraph added (v3.1)
+User asked for a few lead-in sentences at the top of the Vegetable Garden tab explaining the
+benefit of single-component fertilization — specifically that different vegetable varieties have
+very different nitrogen needs, and a complete N-P-K fertilizer's fixed ratio means matching one
+nutrient's need almost always over- or under-supplies the other two. Proposed two draft lengths;
+user chose the longer one. Added directly above the tab's existing sourcing sentence, so the tab
+now opens with *why single-nutrient fertilization works this way*, then *what it's sourced from*.
+
+### Stale sourcing sentence removed (v3.2)
+User flagged the sentence right after it — "Based on VCE Soil Test Note 19 (SPES-687P). P, K, Ca,
+Mg, S, and micronutrient ratings carry over automatically from the Soil Test tab — nothing to
+re-enter." — as old copy from an earlier version of the calculator, inaccurate now that more
+micronutrients are individually carried over and handled than this vague "and micronutrient
+ratings" catch-all phrase implies. Removed entirely (not reworded) per the request. The tab now
+opens with only the new single-nutrient lead-in paragraph before Step 1 (bed size).
+
+**Note:** Flower Garden has its own, separate sourcing sentence ("Based on VCE Soil Test Note 19
+[...], VCE Publication 426-200 [...], UMD Extension, Rutgers NJAES, and NC State Extension...") —
+correctly left untouched, since the user's request was specific to Vegetable Garden and that
+sentence wasn't flagged as inaccurate.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Vegetable Garden tab intro rewritten: added single-nutrient-fertilization lead-in paragraph, removed a stale/inaccurate sourcing sentence about which values carry over (v3.2, 2026-08-02) |
+| `CLAUDE.md` | this entry |
