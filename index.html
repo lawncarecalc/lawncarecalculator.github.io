@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msvalidate.01" content="36E733185C108B9F566DBA5BD46CF336">
 <meta name="google-site-verification" content="wjBcxb8K4CRzSDumr4gm5edKoNzsgmAKQzmdBQyhGjM">
-<meta name="app-version" content="2.7 (2026-08-01)">
+<meta name="app-version" content="2.8 (2026-08-01)">
 <title>Soil Report Assistant — No more guessing what to feed your lawn or garden</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
 <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
@@ -821,7 +821,7 @@
       <h1>Soil Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.7 &middot; 2026-08-01</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v2.8 &middot; 2026-08-01</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -4696,15 +4696,12 @@ function interpretSoilTest() {
     } else {
       pMsg = 'Optimum — your soil has adequate phosphorus for good plant growth.'; pAction = abox('action-good','Maintenance applications only. Choose a fertilizer with low or no phosphorus to avoid buildup. Retest in 3–4 years.');
     }
-    // Three-way destination — was previously "Open Garden Calculator" for any isGarden report,
-    // incorrectly routing Flower Garden and Shrubs & Trees reports to the Vegetable Garden tab.
-    var pCropBtn = crop === 'vegetable' ? goBtn('garden','Open Vegetable Garden Calculator')
-      : crop === 'flower' ? goBtn('flower','Open Flower Garden Calculator')
-      : crop === 'shrub' ? goBtn('shrub','Open Shrubs & Trees Calculator')
-      : '';
+    // Button removed entirely August 1, 2026 — was routed by purpose (vegetable/flower/shrub),
+    // but that's redundant with the single "Continue to [X] Calculator" carry-over button plus
+    // the bottom-of-tab navigation links, same reasoning already applied to Lawn's P/K cards.
     cards.push(card('&#127807;', 'Phosphorus (P)', 'Medium: 12-35 lb/A (VCE)', '', pDisplay,
       'The amount of phosphorus available to your plants.</p><p><strong>Your result:</strong> ' + pMsg,
-      'Phosphorus supports root development and fruit production. It is the least mobile of the major nutrients and is most available in the 6.0–7.0 pH range.', pAction, pCropBtn));
+      'Phosphorus supports root development and fruit production. It is the least mobile of the major nutrients and is most available in the 6.0–7.0 pH range.', pAction, ''));
   }
 
   // ---- Potassium ----
@@ -4722,14 +4719,10 @@ function interpretSoilTest() {
     } else {
       kMsg = 'Optimum — your soil has adequate potassium for good plant growth.'; kAction = abox('action-good','Maintenance applications only. A fertilizer with low or no potassium is appropriate. Retest in 3–4 years.');
     }
-    // Same three-way fix as Phosphorus above.
-    var kCropBtn = crop === 'vegetable' ? goBtn('garden','Open Vegetable Garden Calculator')
-      : crop === 'flower' ? goBtn('flower','Open Flower Garden Calculator')
-      : crop === 'shrub' ? goBtn('shrub','Open Shrubs & Trees Calculator')
-      : '';
+    // Button removed entirely August 1, 2026 — same reasoning as Phosphorus above.
     cards.push(card('&#9889;', 'Potassium (K)', 'Medium: 76-175 lb/A (VCE)', '', kDisplay,
       'The amount of potassium available to your plants.</p><p><strong>Your result:</strong> ' + kMsg,
-      'Potassium supports cold hardiness, drought tolerance, and disease resistance. It is especially important for warm-season grasses going into winter.', kAction, kCropBtn));
+      'Potassium supports cold hardiness, drought tolerance, and disease resistance. It is especially important for warm-season grasses going into winter.', kAction, ''));
   }
 
   // ---- Calcium & Magnesium ----
