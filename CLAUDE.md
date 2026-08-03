@@ -1,4 +1,4 @@
-# CLAUDE.md — Soil Report Assistant Project Context
+# CLAUDE.md — Soil Test Report Assistant Project Context
 
 Use this file to bring a new Claude session up to speed on the project.
 
@@ -6,7 +6,7 @@ Use this file to bring a new Claude session up to speed on the project.
 
 ## Project Overview
 
-A single-file interactive HTML web calculator (`index.html`) — named **"Soil Report Assistant"**
+A single-file interactive HTML web calculator (`index.html`) — named **"Soil Test Report Assistant"** (renamed again August 2, 2026 — see dated entry below)
 (tagline: *"No more guessing what to feed your lawn or garden"*) — that helps Virginia homeowners
 interpret soil test results and calculate fertilizer and lime applications. Supports **VCE /
 Virginia Tech** and **Waypoint Analytical** reports for **lawn**, **vegetable garden**, **flower
@@ -469,7 +469,7 @@ Virginia Cooperative Extension is a partnership of Virginia Tech, Virginia State
 
 | File | Description |
 | :---- | :---- |
-| `index.html` | Main application — **Soil Report Assistant** (renamed July 26, 2026; was `lawn_garden_calc_v1_5.html` / "VCE Lawn & Garden Care Calculator") |
+| `index.html` | Main application — **Soil Test Report Assistant** (renamed August 2, 2026 from "Soil Report Assistant"; that itself was renamed July 26, 2026 from `lawn_garden_calc_v1_5.html` / "VCE Lawn & Garden Care Calculator") |
 | `CLAUDE.md` | Project context for AI-assisted development |
 | `README.md` | User-facing documentation |
 
@@ -2210,7 +2210,7 @@ Similar target-calc amendments added for S (Elemental Sulfur, Gypsum), B (granul
 (Epsom Salts sized-to-target).
 
 ### App renamed
-"Lawn & Garden Calculator" / "VCE Lawn & Garden Care Calculator" → **"Soil Report Assistant"**,
+"Lawn & Garden Calculator" / "VCE Lawn & Garden Care Calculator" → "Soil Report Assistant" → **"Soil Test Report Assistant"**,
 tagline "No more guessing what to feed your lawn or garden." Updated in `<title>`, header `<h1>`,
 header subtitle, dynamic per-tab `document.title`, and About tab `<h2>` (with a one-line VCE /
 Chesterfield County attribution retained beneath it).
@@ -3569,3 +3569,31 @@ sentence wasn't flagged as inaccurate.
 | :-- | :-- |
 | `index.html` | Vegetable Garden tab intro rewritten: added single-nutrient-fertilization lead-in paragraph, removed a stale/inaccurate sourcing sentence about which values carry over (v3.2, 2026-08-02) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 2, 2026 (cont. 2) (App renamed again — "Soil Report Assistant" → "Soil Test Report Assistant")
+
+### Rename
+User requested changing the name to "Soil Test Report Assistant" (inserting "Test"). Found and
+updated all four instances in `index.html`: the `<title>` tag, the header `<h1>`, the About tab's
+hero `<h2>`, and the JS that constructs each tab's dynamic `document.title`. Confirmed zero
+remaining instances of the old name (case-insensitive check too) and confirmed no other string
+elsewhere in the file referenced it. Tagline ("No more guessing what to feed your lawn or garden")
+unchanged. v3.3.
+
+Then updated `README.md` (1 instance — the top-level title) and this file (4 instances — the
+top-level title, the intro paragraph, the Files table's `index.html` entry, and the rename-history
+line) to match, rather than leave the reference docs out of sync with the app itself — the same
+category of drift this project has repeatedly caught in the other direction (docs describing
+something the app no longer does). Preserved rename history rather than overwriting it: the app
+has now been renamed twice ("VCE Lawn & Garden Care Calculator" → "Soil Report Assistant" on July
+26, 2026 → "Soil Test Report Assistant" on August 2, 2026), and both this file's intro and its
+Files table now say so explicitly instead of only showing the current name.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Renamed "Soil Report Assistant" → "Soil Test Report Assistant" in all four instances (title tag, header, About tab heading, dynamic per-tab title) (v3.3, 2026-08-02) |
+| `README.md` | Title updated to match |
+| `CLAUDE.md` | this entry; title, intro, and Files table updated to match, with rename history preserved |

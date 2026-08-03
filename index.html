@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="msvalidate.01" content="36E733185C108B9F566DBA5BD46CF336">
 <meta name="google-site-verification" content="wjBcxb8K4CRzSDumr4gm5edKoNzsgmAKQzmdBQyhGjM">
-<meta name="app-version" content="3.2 (2026-08-02)">
-<title>Soil Report Assistant — No more guessing what to feed your lawn or garden</title>
+<meta name="app-version" content="3.3 (2026-08-02)">
+<title>Soil Test Report Assistant — No more guessing what to feed your lawn or garden</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
 <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR42mNgGEpAylb+PzF4QCyliWMotZwiRxBjcHeUNhhT3RHEWoyOqeIIUnxOqgMIOoIYA05syvn/4lIPVgySI9sRxCYofA6gyBHUsJxmDvjxYgtRliM7gpBDSLIchIm1nCxHDAkHwAwkFQ+fEBgwBzx79owiTLEDQBgXQJbDpp6QA+COIMcB6HIwNikOICkEsDkInwNIKg2pFQVkhwA5CRFdHpd6ikOBVtmQ6MqIViUh0W0CWoQASa0iajuA5HYhuUGPzQFktYyp5YCh1zEZFF2zQdE5pTUAAMWgUe5NpSP2AAAAAElFTkSuQmCC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -818,10 +818,10 @@
   <div class="header-inner">
     <div class="header-badge" aria-hidden="true">🌿</div>
     <div class="header-text">
-      <h1>Soil Report Assistant</h1>
+      <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v3.2 &middot; 2026-08-02</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v3.3 &middot; 2026-08-02</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -2653,7 +2653,7 @@
       <div class="about-hero">
         <div class="about-hero-icon">🌿</div>
         <div>
-          <h2>Soil Report Assistant</h2>
+          <h2>Soil Test Report Assistant</h2>
           <p style="color:var(--slate-mid);font-size:0.9rem;margin-bottom:0;">No more guessing what to feed your lawn or garden &mdash; a Virginia Cooperative Extension tool for Chesterfield County residents.</p>
           <p class="about-lead">An interactive web tool for homeowners in Virginia to interpret soil test results and calculate fertilizer and lime needs for lawns and gardens — built from official VCE publications and research.</p>
         </div>
@@ -3236,7 +3236,7 @@ function activateTab(tab) {
     lime:'Lime', garden:'Vegetable Garden', flower:'Flower Garden',
     shrub:'Shrubs & Trees', about:'About & Instructions'
   };
-  document.title = (tabNames[tab] || tab) + ' — Soil Report Assistant';
+  document.title = (tabNames[tab] || tab) + ' — Soil Test Report Assistant';
 
   // Run calculator if needed
   if (tab === 'cool') calcCool();

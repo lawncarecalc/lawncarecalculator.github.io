@@ -1,4 +1,4 @@
-# 🌱 Soil Report Assistant
+# 🌱 Soil Test Report Assistant
 
 ![Version](https://img.shields.io/badge/version-2.0-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
 
