@@ -3597,3 +3597,176 @@ Files table now say so explicitly instead of only showing the current name.
 | `index.html` | Renamed "Soil Report Assistant" → "Soil Test Report Assistant" in all four instances (title tag, header, About tab heading, dynamic per-tab title) (v3.3, 2026-08-02) |
 | `README.md` | Title updated to match |
 | `CLAUDE.md` | this entry; title, intro, and Files table updated to match, with rename history preserved |
+
+---
+
+## Session Updates — August 2, 2026 (cont. 3) (Favicon added — a wheelbarrow icon, and a pre-existing conflicting placeholder found and removed)
+
+### Favicon conversion
+User supplied a wheelbarrow graphic (green bucket, black wheel/handle, white background,
+2000×2000 PNG) and asked for it to become the site's favicon. Processed with Pillow: made the
+white background transparent, cropped to the actual artwork's bounding box (the original had a
+lot of empty margin that would have made the icon look tiny at favicon scale), then padded back a
+small deliberate margin before squaring it off.
+
+**Checked legibility at real size before finalizing**, rather than assuming a detailed image would
+downsize cleanly — rendered the 16×16 and 32×32 outputs at actual pixel scale (upscaled with
+nearest-neighbor for inspection, not smoothed) and viewed them directly. The wheel and green
+bucket shape hold up clearly at both sizes; the thin diagonal handle line gets faint at 16×16,
+expected for a thin-line element at that scale, but the icon still reads as itself.
+
+### Embedded as a data URI, not a separate file — and a real conflict found while doing it
+Consistent with this project's single-self-contained-HTML-file design (no external assets), the
+favicon is embedded directly as `data:image/png;base64,...` in two `<link>` tags — 32×32 for
+browser tabs, 180×180 `apple-touch-icon` for iOS home-screen bookmarking (relevant given the
+Master Gardener rollout is mobile-facing).
+
+**While inserting these, found the file already had an older placeholder favicon** — a small green
+leaf icon (likely auto-generated at some earlier point, never previously noticed or documented) —
+sitting via two separate `<link rel="icon">` / `<link rel="shortcut icon">` tags further down in
+`<head>`, after the `<title>` tag. Left in place, this would have meant two competing favicon
+declarations in the same document with unpredictable results depending on which one a given
+browser honored. Removed the old pair entirely so there's exactly one, unambiguous favicon
+declaration now. This predates any documented entry in this file — it's unclear when it was added
+or by whom; noting its removal here for the record since nothing else does.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Wheelbarrow favicon added as embedded data URI (32×32 `icon`, 180×180 `apple-touch-icon`); removed a previously-undocumented placeholder leaf favicon that would have conflicted with it (v3.4, 2026-08-02) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 2–3, 2026 (Catch-up entry: v3.5 through v4.2 — second-tier dead-code check, meta description, app rename, nutrient reorder, nitrogen sourcing, Lime/Plant Type button cleanup, Lime card rewording, Flower Garden lime-type reconciliation, Zn/Cu/B/P/Mg amendments)
+
+This entry covers eight versions' worth of work that landed without an intervening CLAUDE.md
+update — recorded here together, in order, rather than left undocumented.
+
+### v3.5 — Second-tier dead-code check (28 single-reference functions): clean, no changes
+Ran the "count == 2" bucket from the dead-code audit process (functions referenced exactly once
+elsewhere, deliberately not auto-flagged as suspicious the way zero-reference functions were).
+Checked all 27 remaining candidates individually — every one had a genuine call site (an
+`onclick`/`onchange` attribute, or in `watchTarget`'s case, a legitimate nested-helper pattern
+inside `applyGlossaryToStatic`). Verdict: clean, nothing removed. Logged as a real result in its
+own right — confirmation that treating single-reference functions differently from zero-reference
+ones (per the original audit design) was the right call, not just excess caution.
+
+### v3.6 — Meta description added
+Proposed four length-checked candidates (~150–168 chars), user chose the one leading with the
+user's actual action ("Enter your VCE or Waypoint soil test results...") and naming all four
+garden types explicitly rather than collapsing to "gardens." Added to `<head>`.
+
+### v3.7 — Vegetable Garden nutrient list reordered to match Waypoint's report order; Calcium
+### removed entirely
+User request: reorder the Nutrient Application Plan's P/K/Other Nutrients section to N, P, K, Mg,
+S, B, Cu, Mn, Zn, Fe (Waypoint's own sequence) and drop Calcium, since Lime (covered in its own
+section above) already addresses it. `renderNutrientStatusPanel()` is shared between Vegetable
+Garden and Flower Garden — user confirmed applying to both rather than only the tab they'd
+originally named. Reordered the `nutrients` array, removed the Ca entry (confirmed no separate
+amendment-data structure existed for it, so nothing else was orphaned), and rewrote the section's
+intro paragraph to state both the new order and the Ca exclusion explicitly instead of leaving
+stale wording ("All ratings (P, K, Ca, Mg, S...)").
+
+### v3.8 — Nitrogen's "not soil-tested" explanation now leads with VCE's own quoted language
+Following the Note 1 (452-701) research, added *"No soil test is performed for nitrogen because
+this element is too mobile in the soil for laboratory results to be useful"* — VCE's own words,
+verified directly from the primary source, not a paraphrase — to all 7 places the app explains why
+N isn't derived from a soil test: 6 field hints (Vegetable Garden and Flower Garden, VCE and
+Waypoint variants each) plus the Soil Test tab's "Nitrogen Recommendation Check" card, which
+previously stated the VCE-vs-Waypoint difference without explaining why. Existing practical
+elaboration (leaching within a day or two of rain) kept as supporting detail after the sourced
+statement, not replaced.
+
+### v3.9 — Lime Recommendation and Plant Type & Fertilizer Program cards' navigation buttons
+### removed (completing a cleanup started in an earlier session)
+User reported these two buttons "reappeared" on the Soil Test tab; investigation found neither had
+actually regressed — the Lime Recommendation card's button was deliberately kept during the
+pH/Buffer Index cleanup ("the one card with an actionable destination"), and the Plant Type card
+had been explicitly scoped out during the P/K card cleanup ("outside the scope of what you
+flagged"). User confirmed finishing the job: removed both, across all purpose branches (Lime
+Recommendation: vegetable/flower, shrub, lawn already clean; Plant Type: vegetable/flower/shrub).
+Cleaned up three now-orphaned variables left behind (`destTabForLime`, `destTab`, `destBtn`) rather
+than leave dead assignments next to the dead-code audit work from the same week. Confirmed
+`goBtn()`/`limeGoBtn` still legitimately needed by Base Saturation, correctly out of scope.
+
+### v4.0 — "Lime for Your Bed" card reworded; lime type carried over for Vegetable Garden
+User found the card's phrasing confusing: *"Total: 0.4 lbs in 1 application of up to 5 lbs/100 sq.
+ft. (established bed limit)"* — one sentence mixing the actual amount to apply with an unrelated
+per-application safety ceiling, with no clear signal which number meant what. Rewritten as a direct
+instruction ("Apply **0.4 lbs** of lime to your bed") followed by a separate clarifying line
+explaining the cap only when relevant. Applied to both Vegetable Garden and Flower Garden's
+identical cards. Also found and fixed a real content gap while in there: Vegetable Garden's inline
+lime card never read `st-lime-type` at all, unlike the Soil Test tab's own Lime Recommendation
+card — added it.
+
+### v4.1 — Flower Garden's lime-type guidance reconciled with the report's own stated type
+### (not just inferred from Mg)
+Follow-up question: since dolomitic lime was specified on a report, could that be carried over to
+Flower Garden's card too? Flower Garden already had a *smarter* type suggestion than Vegetable
+Garden's (inferring dolomitic specifically when Mg tests Low, rather than just echoing the report)
+— rather than replace that with a naive echo of `st-lime-type`, reconciled the two signals: report
+type is the authoritative source when given, but the two can genuinely disagree (report says
+Agricultural/calcitic while Mg still rates Low), which is surfaced as an explicit warning rather
+than silently resolved either direction. Simulated all six practical combinations (Dolomitic/
+Agricultural/unstated × Mg Low/adequate) to confirm no contradictory message in any case.
+
+### v4.2 — Zinc and Copper amendments added (previously nonexistent); Boron/Phosphorus placement
+### notes added; Magnesium product options expanded
+User forwarded a real Waypoint report (Tina Simons, Chesterfield VA) showing the lab's own report
+notes name specific products and give numeric targets for nutrients the app was not actually using:
+`Zn: []` and `Cu: []` were completely empty in `NUTRIENT_AMENDMENTS` — Low ratings for either
+nutrient fell through to "VCE publishes no specific home-garden product or rate," which is true of
+VCE, but the *Waypoint* report the user was looking at explicitly says "broadcast zinc sulfate" /
+"broadcast copper... using copper sulfate" and gives an exact numeric target right there on the
+page the app already reads P/K/Mg/S/Mn targets from.
+
+Verified elemental percentages directly rather than compute from memory alone:
+- Zinc Sulfate has two common commercial forms with meaningfully different concentrations —
+  monohydrate (35–36% Zn) and heptahydrate (20–22% Zn) — confirmed across multiple independent
+  retail/industrial sources; added both as separate entries since the app can't know which form a
+  user's product label states.
+- Copper Sulfate Pentahydrate is consistently 25% Cu across every source checked — simpler, one
+  entry.
+- Magnesium Oxide: garden-grade product listings consistently show 55–57% Mg (vs. ~60% for
+  chemically pure MgO) — added at 56%.
+- K-Mag / Sul-Po-Mag: confirmed via multiple sources to be a **combined** K+Mg+S product
+  (langbeinite, ~22% K₂O, ~11% Mg, ~22% S), not a Mg-only source as the name might suggest —
+  flagged this explicitly in its own note, recommending it specifically when K and/or S are *also*
+  low, and steering away from it (toward Epsom salts/Mg oxide) when K already rates Adequate/High,
+  so choosing it for Mg alone doesn't silently over-supply potassium.
+
+New entries sourced to **Waypoint Analytical's own report guidance**, not VCE, since VCE genuinely
+publishes no rate for Zn/Cu — kept the citation honest about which lab's guidance is being used
+rather than attributing it to VCE. Added the same "may be applied more efficiently in a band near
+the plant" placement tip (from the same Waypoint report) to all three Phosphorus entries, and an
+explicit "do not concentrate in a band near the plant" warning to both Boron entries — the
+existing Boron notes already recommended dissolve-and-pour methods specifically because of boron's
+narrow toxicity margin, so this makes an already-implied precaution explicit rather than adding a
+new idea.
+
+**Found and fixed a real pre-existing inconsistency while wiring the new Mg entries in:** the
+target-based "Epsom Salts (sized to report target)" option was missing the
+`limeConditional`/`dolomiteOnly` flags its flat-rate sibling correctly has. Since
+`supersededByLime` is evaluated against whichever amendment option is currently *selected* in the
+dropdown (not once per nutrient), switching between the two Epsom Salts variants would have given
+different "your lime already covers this" behavior for the literal same product depending only on
+which sizing method was chosen. Added the missing flags so all four Mg options (flat Epsom salts,
+target Epsom salts, Mg oxide, K-Mag) behave consistently.
+
+Verified the target-calc formula (`lbsProduct = (target * hundredths) / (a.pct / 100)`) produces a
+sane real-world amount using the actual report's own Zn target — came out to roughly a quarter
+ounce for a 100 sq ft bed, consistent with how small the existing Mn/B corrections already are in
+this app, not an outlier.
+
+**Still open:** a second request from the same message — displaying computed application amounts
+in lbs+oz instead of decimal lbs, and confirming volume already mostly uses `fmtMeasure()`'s
+existing tsp/tbsp/fractional-cup logic — is paused pending the user's answer on scope (computed
+amounts only, vs. also the abstract per-100-sq-ft rate labels). Roughly 40–46 call sites identified
+via `fmt(...) + 'lbs'`-pattern search as candidates once scope is confirmed; no changes made yet.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Eight versions of accumulated work (v3.5–v4.2) documented in this single catch-up entry — see above for the full breakdown of each |
+| `CLAUDE.md` | this entry |
