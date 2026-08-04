@@ -3215,7 +3215,16 @@ July 30 legacy-code removal, still working correctly under real numbers.
 ### Cool-Season Lawns lime math — hand-verified correct
 40 lbs/1,000 sq ft report figure, 90% CCE, 8,000 sq ft lawn, 50 lb bags → adjusted rate 44.4
 (40 ÷ 0.90), total 355.6 lbs (44.4 × 8), 1 application (44.4 is under the 50 lb/1,000 sq ft cap),
-8 bags (⌈355.6 ÷ 50⌉). Every step matches `calcLimeForBed()`'s formula exactly.
+9 bags (⌈355.6 ÷ 40⌉). Every step matches `calcLimeForBed()`'s formula exactly.
+
+**Correction, August 4, 2026:** this entry originally said "8 bags (⌈355.6 ÷ 50⌉)" — dividing by
+50 (the per-application lbs cap) instead of 40 (the actual bag size), an arithmetic slip made when
+this was first hand-verified, not a code bug. Re-checked independently during the calculation audit
+prompted by the target-conversion bug (see that entry) and corrected here. The code itself
+(`Math.ceil(totalLbs / bagSize)`) was always correct; only this documented "golden number" was
+wrong. Recorded as its own lesson: even a hand-verification step needs to be checked against the
+right inputs, and a "verified" number in this file should be re-derivable by someone else, not just
+trusted because it's labeled verified.
 
 ### Mobile-width check — no overflow found, but width achieved wasn't the one requested
 Resized to 380×800; the actual viewport reported was 500px wide (browser minimum constraint in
@@ -3808,4 +3817,199 @@ everywhere else in the app rather than introducing new phrasing for an identical
 | Document | Status |
 | :-- | :-- |
 | `index.html` | Removed a stale "P/K before continuing" instruction (the scenario it warned about no longer exists); added "Pre-fill with Example Reports:" caption and renamed all four sample buttons (v4.3); added "Back to Soil Test Report" button to the How to Use This Calculator card, matching the wording already used on every calculator tab (v4.4) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 4, 2026 (CRITICAL FIX — Waypoint numeric target amendments were calculating 10x too much product)
+
+### The bug
+User submitted a screenshot from real use: Waypoint report P₂O₅ target of 4.5 (lbs/1,000 sq. ft.,
+per both the report and the field's own label), an 870 sq. ft. bed, Triple Superphosphate (0-46-0)
+selected — app showed **85.11 lbs**. Verified by hand before responding: the mathematically correct
+amount is **8.51 lbs**. Exactly a factor of 10 off.
+
+**Root cause:** in `renderNutrientStatusPanel()`'s `calc === 'target'` branch, the user-entered
+Waypoint target value was read with `parseFloat(targetRaw)` and used directly, with no unit
+conversion, in a formula (`(target * hundredths) / (a.pct / 100)`) where `hundredths` (`area/100`)
+assumes every other quantity in the function is already in a lbs/100 sq. ft. basis. The target
+field is *always* a Waypoint value (VCE reports use the separate flat-rate path instead, never
+`calc:'target'`), and Waypoint reports state this figure in lbs/1,000 sq. ft. — the same
+lbs/1,000-to-lbs/100 conversion already applied elsewhere in this codebase for other Waypoint
+figures (N recommendation, lime recommendation) was simply never applied here.
+
+**Scope of impact:** every nutrient that can use a Waypoint numeric target — Phosphorus,
+Potassium, Magnesium, Sulfur, Zinc, Copper, Manganese, Boron — on both Vegetable Garden and Flower
+Garden, since `renderNutrientStatusPanel()` is shared between them. This has been live since the
+inline Waypoint-target-entry feature was first built earlier this same session; not something that
+predates this project's more recent work, but real nonetheless, and exactly the kind of dosing
+error this app exists to prevent rather than cause.
+
+### The fix
+One-line change at the point the target is parsed:
+```js
+var target = targetRaw ? ((parseFloat(targetRaw) || 0) / 10) : 0;
+```
+No other call site needed changing, since every downstream calculation already correctly assumes a
+lbs/100 sq. ft. basis — the bug was purely in the unit of the input, not the formula that consumes
+it. Verified: (a) this is the only place this exact target-parsing pattern exists in the file (no
+second copy sharing the same bug), (b) the *other* `target` variable in the codebase
+(`soilTestTargetTab()`, used for tab-routing) is a completely unrelated naming coincidence, not a
+second instance of the same issue, and (c) re-running the exact numbers from the user's screenshot
+through the corrected formula produces exactly 8.51 lbs.
+
+### Process note
+This was found through real use, not a code-review pass — the same pattern as several of this
+project's most consequential bugs (the Cool/Warm duplicate-plan bug, the Lima Beans/Rutgers sourcing
+questions). A user actually entering their own real report's numbers and checking the output
+against hand arithmetic caught something that static review of the formula, in isolation, would
+likely have missed, since the formula itself is correct — the bug was entirely in what unit its
+input was actually in.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | **Fixed a 10x overdose bug** in Waypoint-target-based nutrient amendments (P, K, Mg, S, Zn, Cu, Mn, B) on Vegetable Garden and Flower Garden — the target value was used without converting from the report's lbs/1,000 sq. ft. to the lbs/100 sq. ft. basis the rest of the formula assumes (v4.5, 2026-08-04) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 4, 2026 (cont.) (Executing the Calculation Audit Plan — one real dosing gap fixed, one documentation error corrected, one syntax error caught by validation, one ambiguous label clarified)
+
+### Boron liquid-method: real missing calculation, not just missing wording
+Part 1 of the audit plan led to checking whether the Boron liquid-dilution note ("1 tbsp per
+gallon of water, applied per 100 sq. ft.") was actually being scaled to the user's bed size. It
+wasn't — it used `calc:'none'`, a flat unscaled note, meaning anyone with other than exactly
+100 sq. ft. had to do the scaling themselves. The generic `calc:'none'` wrapper text ("no specific
+rate published") was also factually wrong for this entry specifically, since UMD does publish a
+rate — it just wasn't being applied. Added a new `calc:'liquid'` type that scales tbsp and gallons
+to the user's actual bed size like every other amendment on the tab. Verified: 300 sq ft → 3.0 tbsp
+in 3.0 gallons; 100 sq ft → 1.0 tbsp in 1.0 gallon.
+
+### A documentation error in this file, found and corrected
+Re-verifying the Lime golden test case from an earlier entry (40 lbs/1,000 sq ft, 90% CCE,
+8,000 sq ft, 40 lb bags) produced 9 bags, not the "8 bags" previously recorded here. Traced the
+discrepancy: the original hand-check divided 355.6 by 50 (the per-application lbs cap) instead of
+40 (the actual bag size) — an arithmetic slip in the original verification, not a code bug. The
+formula (`Math.ceil(totalLbs / bagSize)`) was always correct. Corrected the earlier entry in place
+rather than leave a wrong "verified" number standing, and flagged it as its own lesson: a number
+labeled verified in this file should be re-derivable by someone else, not trusted because of the
+label.
+
+### A real syntax error introduced and caught by validation, not shipped
+While clarifying the WIN% field label to specify "the bag's Guaranteed Analysis," the JS-generated
+version of this label (used for Custom-mode application slots) used a literal apostrophe inside a
+single-quoted JS string (`'...bag's Guaranteed Analysis...'`), which prematurely closed the string
+and threw a syntax error that would have broken the entire app. Caught immediately by the
+post-edit `node --check` validation step (not by inspection), fixed with a proper `\u2019`
+character instead of a literal apostrophe. The two *other* occurrences of the same clarified text
+were untouched by this issue, since they're static HTML label text, not JS string content — a good
+reminder that the same-looking text can be safe or unsafe entirely depending on what's holding it.
+
+### WIN% field label clarified — a real risk, not a code bug
+Hand-verified `detectProgram()`'s WIN%/Program classification against realistic fertilizer label
+examples (29-3-4 with a 4.5%-of-product WIN figure → 15.5% of nitrogen → Program 2, matching VCE
+430-011's 15–49% band; straight urea → Program 1). The formula is dimensionally correct, converting
+a bag's raw "WIN % of total product" figure (how real Guaranteed Analysis labels state it) into
+VCE's "WIN % of nitrogen" criterion. But the field label just said "WIN % (if listed on bag)" with
+no indication of *which* of those two numbers to enter — a user who assumed the field wanted an
+already-computed "% of my nitrogen that's slow-release" value, rather than the bag's raw printed
+figure, would get a silently wrong Program classification with no way to notice. Clarified all
+three occurrences to specify "the bag's Guaranteed Analysis... not a percentage you calculate
+yourself."
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Boron liquid method now properly scaled to bed size (new `calc:'liquid'` type, replacing the flat, unscaled `calc:'none'` note); WIN% field label clarified in all three locations (v4.7, 2026-08-04) |
+| `Calculation_Audit_Plan.md` | Part 1 fully checked off with findings recorded; Part 2's Lime and WIN% golden numbers added, including the bag-count correction |
+| `CLAUDE.md` | this entry; corrected an arithmetic error in an earlier entry's "verified" lime bag count (8 → 9) |
+
+---
+
+## Session Updates — August 4, 2026 (cont. 2) (Calculation Audit Plan, continued — Part 2 and Part 3, all clean, including a self-caught false alarm)
+
+Continued executing the audit plan into the remaining Part 2 items and the first Part 3 item. Every
+check this round came back correct — a genuinely clean result, verified independently rather than
+assumed, including one case where the discrepancy turned out to be in the auditor (this session),
+not the app.
+
+- **Cool/Warm auto-plan** (tall fescue, 5,000 sq ft, 3.0 lb N target, 32-0-8, no WIN): 5
+  applications, 46.875 lbs total product — confirmed two independent ways (the app's own formula
+  chain, and a from-scratch total-N-needed-for-the-whole-lawn calculation), both landing on the
+  same number.
+- **Shrub canopy area**: standard circle-area formula, 2× canopy doubling matches VCE Note 20.
+- **Shade + clipping combination**: confirmed shade applies first (multiplicatively), clipping
+  credit is computed from the already-shaded value (not the original), then subtracted — and this
+  reproduced the exact 0.8–1.1 lb range already documented earlier this session for the same
+  example, a successful *re*-verification rather than a first-time check.
+- **`fmtMeasure()` tsp/tbsp/cup transitions**: first hand-check appeared to disagree with the app
+  (1.6 tbsp expected, 1.5 shown). Before flagging it, re-read the actual current function instead
+  of trusting memory — found I'd recalled an *older* version's rounding rule (nearest 0.1 tbsp)
+  that no longer matches the current implementation (nearest 0.5 tbsp, matching real
+  measuring-spoon increments). All four spot-checked values confirmed correct once verified against
+  the actual current code. Recorded deliberately as its own lesson: a hand-calculation that
+  disagrees with the app isn't automatically proof the app is wrong — the assumption doing the
+  verifying needs the same scrutiny as the thing being verified.
+- **Cross-tab consistency for `renderNutrientStatusPanel()`**: verified live on the deployed site,
+  not assumed from shared code — identical inputs on Vegetable Garden and Flower Garden (P Low, K
+  Medium, Mg Low, 200 sq ft, Calcium Nitrate) produced the identical 2.00 lbs Epsom Salts amount on
+  both tabs.
+
+**Still open:** Cool/Warm custom-plan (multi-slot) season totals — the one remaining Part 2 item —
+plus the rest of Part 3 (`calcLimeForBed()` called identically from all four tabs that share it)
+and all of Part 4 (extra scrutiny on this session's newest code: Zn/Cu, Mg oxide/K-Mag, the
+reordering work, lime-in-lawns).
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | No changes this round — verification only |
+| `Calculation_Audit_Plan.md` | Part 2 nearly complete (only custom-plan season totals remain); Part 3's first item verified |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 4, 2026 (cont. 3) (Calculation Audit Plan — completed Parts 2, 3, and 4)
+
+Completed the remaining items in the audit plan. Working environment reset partway through this
+session (the `/home/claude/work` directory was cleared) — recovered cleanly from the persisted
+files in `/mnt/user-data/outputs/`, confirmed the restored `index.html` matched the last exported
+v4.7 exactly before continuing, no work lost.
+
+- **Cool/Warm custom-plan season totals**: verified a 2-slot scenario by hand. **Caught my own
+  arithmetic error mid-check** — expected the wrong K total by conflating N-delivered-per-1,000-sq-ft
+  with product-delivered-per-1,000-sq-ft (two different bases). Redid the derivation correctly and
+  confirmed the app was right the first time. This is the second time this same failure mode (my
+  own hand-verification being wrong, not the app) showed up in this audit — worth treating as a
+  standing risk in this process itself, not a one-off.
+- **`calcLimeForBed()` cross-tab consistency**: the browser tool timed out mid-check, so pivoted to
+  direct simulation instead — arguably the more rigorous method anyway, since it isolates exactly
+  what needed checking (whether each tab's surrounding code derives equivalent arguments from
+  equivalent real-world inputs) without depending on a live page. Verified the same real-world
+  scenario (40 lbs/1,000 sq ft, 100% CCE, 1,000 sq ft, 40 lb bags) produces the same real-world
+  total (40 lbs, 1 bag) whether computed via the Lawn tab's native basis or the Garden tab's —
+  confirming physical agreement across genuinely different unit conventions, which is the
+  meaningful version of "consistency" here, not a naive same-inputs check.
+- **Part 4 (newest-code scrutiny)**: assessed rather than re-derived from scratch — Zn/Cu/Mg
+  additions were already sourced and verified at build time earlier this session; the nutrient
+  reordering was confirmed to be array-order-only (amendments key off nutrient symbol, not
+  position); lime-in-lawns was already hand-verified when built, and the one place that original
+  verification was actually wrong (the bag count) was the same error already caught and fixed
+  earlier in this same audit. Recorded as "substantially covered by build-time verification, now
+  confirmed to have held up" rather than claiming a fresh check that would have just re-derived the
+  same conclusion.
+
+### Overall audit status: complete
+Every item across all four parts of `Calculation_Audit_Plan.md` is now checked. Net result: one
+real, fixed dosing gap (Boron liquid method), one corrected documentation error (lime bag count),
+one clarified ambiguous field label (WIN%), one caught-before-shipping syntax error, and two
+instances of the auditor's own hand-verification being wrong rather than the app — all recorded in
+the plan document itself as the actual outcome, not just "everything passed."
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | No changes this round — verification only |
+| `Calculation_Audit_Plan.md` | All four parts fully checked off with findings recorded |
 | `CLAUDE.md` | this entry |
