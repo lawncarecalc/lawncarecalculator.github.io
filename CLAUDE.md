@@ -3770,3 +3770,42 @@ via `fmt(...) + 'lbs'`-pattern search as candidates once scope is confirmed; no 
 | :-- | :-- |
 | `index.html` | Eight versions of accumulated work (v3.5–v4.2) documented in this single catch-up entry — see above for the full breakdown of each |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 3, 2026 (cont.) (Instructions cleanup — a stale gotcha removed, sample buttons relabeled, a navigation button added to the How to Use card)
+
+### v4.3 — Removed an instruction that described a scenario which can no longer happen
+User flagged a specific line in the universal on-ramp instructions ("Enter at least your P and K
+values before trying to continue... clicking it early just leaves you on this tab") as no longer
+valid. Verified why before removing it, rather than deleting on request alone: this instruction was
+warning about the Plant Type & Fertilizer Program card's premature "Continue" button — a button
+that appeared before P/K was entered and silently did nothing if clicked. That button was removed
+entirely in the v3.9 cleanup (same week). With no premature button left to click, the scenario the
+instruction described can't occur anymore, so the warning itself is now describing a problem that
+doesn't exist. Confirmed no other place in the About tab repeats the same now-stale gotcha before
+removing it.
+
+Also this version: added a "Pre-fill with Example Reports:" caption above the sample-report button
+row (previously the four sample buttons plus Start Over sat directly below the card header's
+divider with no label explaining what they were), and renamed all four sample buttons for
+consistency and clarity about which lab each one represents: "Lawn Sample" → "Lawn-VCE", "Flower
+Garden Sample" → "Flower Garden - Waypoint", "Vegetable Garden Sample (Waypoint)" → "Vegetable
+Garden-Waypoint", "VCE Vegetable Garden Sample" → "Vegetable Garden-VCE". Restructured the
+surrounding markup so the `role="toolbar"` wraps only the buttons themselves, with the new caption
+sitting outside it as a heading rather than inside the toolbar region — slightly better
+accessibility structure than before, not just a visual change.
+
+### v4.4 — "Back to Soil Test Report" button added to the About tab's "How to Use This Calculator"
+### card
+Every calculator tab already has this exact button at the bottom (added earlier this project);
+the About tab's own instructions card didn't. Added the same button, same wording, same
+`activateTab('soiltest')` call — proposed reusing the established phrase rather than the user's
+suggested alternative wording, specifically so this reads as the same action already used
+everywhere else in the app rather than introducing new phrasing for an identical action.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Removed a stale "P/K before continuing" instruction (the scenario it warned about no longer exists); added "Pre-fill with Example Reports:" caption and renamed all four sample buttons (v4.3); added "Back to Soil Test Report" button to the How to Use This Calculator card, matching the wording already used on every calculator tab (v4.4) |
+| `CLAUDE.md` | this entry |
