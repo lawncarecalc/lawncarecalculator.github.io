@@ -386,8 +386,8 @@ New helpers: `soilTestPurpose()`, `soilTestTargetTab()`. See Key Functions table
 | :---- | :---- | :---- | :---- |
 | 📋 Lawn Sample | VCE warm-season | vce-lawn | pH 5.5, K Low, lime 60 lbs |
 | 🌸 Flower Garden Sample | Waypoint annual flowers | waypoint-flower | pH 5.2, P Low, K Optimum, OM 5.6%, lime 87 lbs/1,000 sf, agricultural lime |
-| 🌿 Vegetable Garden Sample (Waypoint) | Waypoint vegetable | waypoint-vegetable | Jim Myracle, Report No. 26-188-0532. P Very High (394 ppm), K Low (100 ppm) — the exact adequate-P/low-K case the Nutrient Status panel was built to handle. Sets `gdnTargets` (K2O 2.0, S 0.13, B 0.04, Mn 0.05) directly, not DOM fields |
-| 🌿 VCE Vegetable Garden Sample | VCE vegetable | vce-vegetable | *(Added July 21)* Jim Myracle, VCE Lab ID 23-15911, Sample "VEGGD" (2023). All nutrients VH/SUFF, N-only fertilizer recommended, lime 3 lbs/100 sq ft. Contains VCE's own cup conversions for 4 N products — demonstrates the report's own math matches CROP_FEEDING_LEVELS defaults exactly |
+| 🌿 Vegetable Garden Sample (Waypoint) | Waypoint vegetable | waypoint-vegetable | P Very High (394 ppm), K Low (100 ppm) — the exact adequate-P/low-K case the Nutrient Status panel was built to handle. Sets `gdnTargets` (K2O 2.0, S 0.13, B 0.04, Mn 0.05) directly, not DOM fields |
+| 🌿 VCE Vegetable Garden Sample | VCE vegetable | vce-vegetable | *(Added July 21)* Sample "VEGGD". All nutrients VH/SUFF, N-only fertilizer recommended, lime 3 lbs/100 sq ft. Contains VCE's own cup conversions for 4 N products — demonstrates the report's own math matches CROP_FEEDING_LEVELS defaults exactly |
 
 Micronutrient prefill values must use `L`, `M`, `SUFF`, `H` — not Waypoint keys (ME, OP, VH).
 
@@ -528,7 +528,7 @@ New result row: "Application rate per sq. ft." showing oz per sq. ft. and tbsp o
 
 #### Sources confirmed by actual soil test reports
 
-Both Rutgers (Lab 2016-55191 tomato, 2016-55189 garlic, 2016-55190 lettuce) and VCE (Lab 23-15911 vegetable garden) confirm:
+Both Rutgers (real tomato, garlic, and lettuce reports) and VCE (a real vegetable garden report) confirm:
 
 - Preplant: 2 lbs N/1,000 sq. ft. (= 0.20 lbs/100 sq. ft.)  
 - Midseason: 1 lb N/1,000 sq. ft. additional (from FS626)  
@@ -1152,7 +1152,7 @@ A full source-conformance and real-report validation pass was run against twelve
 
 ### Correction 2 — Lawn N-rec not captured, so the ceiling check wasn't automatic (fixed)
 
-The garden/flower tabs capture the report's N figure, but the lawn tabs did not — carry-over set P/K/species/size but left `cool-n-rate`/`warm-n-rate` blank. The VCE-ceiling warning only fired after the volunteer manually typed the figure into the lawn tab. This is the exact Fact #11 scenario; the live example is the Irma Arritt Waypoint report (N 4.0 on a Midlothian cool-season lawn, above the 3.5 tall-fescue ceiling).
+The garden/flower tabs capture the report's N figure, but the lawn tabs did not — carry-over set P/K/species/size but left `cool-n-rate`/`warm-n-rate` blank. The VCE-ceiling warning only fired after the volunteer manually typed the figure into the lawn tab. This is the exact Fact #11 scenario; the live example is a real Waypoint report (N 4.0 on a cool-season lawn, above the 3.5 tall-fescue ceiling).
 
 **Fix:** added an optional `st-lawn-n` field on the Soil Test tab (lawn report types only; shown/hidden alongside crop and lawn-status fields). Added a new "Nitrogen Recommendation Check" interpretation card that fires when an N value is entered: cool-season checks against 3.5; warm-season flags that the figure suits bermuda (4.0 ceiling) but exceeds the 1–2 lb zoysia/centipede ceiling, prompting species confirmation. Both branches cite 430-011, DCR 2014, Soil Test Note 18, SPES-669. `carryOverToCalculators()` now passes the N value to `cool-n-rate` or `warm-n-rate` by grass type. The warning now appears at interpretation time. The Arritt report is now a clean end-to-end demonstration of the Fact #11 feature.
 
@@ -2125,8 +2125,7 @@ Consequence: N input is optional for vegetable/flower gardens. Blank → falls b
 step 3, labeled "Have a different N recommendation? (rare — e.g. a private agronomist consult)."
 
 Validated against: VCE Soil Test Note 19 (452-719), VCE 426-323, multiple Waypoint reports (N
-figure identical regardless of soil chemistry), and Jim Myracle's VCE Lab 23-15911 vegetable
-garden report.
+figure identical regardless of soil chemistry), and a real VCE Lab vegetable garden report.
 
 ### NUTRIENT_AMENDMENTS — individual nutrient corrections added
 For vegetable/mixed gardens, a new Nutrient Status panel suggests single-nutrient corrections when
@@ -2149,9 +2148,9 @@ sourcing audit, which found this and similar unnamed bulk-density charts don't m
 standard and replaced them with Ohio State Ohioline / NMSU citations.
 
 ### Validated reports added
-- Jim Myracle, Waypoint Report No. 26-188-0532, Sample "2-Vegetable Beds" (07/09/2026) — P Very
+- A real Waypoint vegetable garden report, Sample "2-Vegetable Beds" — P Very
   High, K Low. The adequate-P/low-K case the Nutrient Status panel was built for.
-- Jim Myracle, VCE Lab ID 23-15911, Sample "VEGGD" (2023) — all nutrients VH/SUFF, N-only
+- A real VCE vegetable garden report, Sample "VEGGD" — all nutrients VH/SUFF, N-only
   recommended. Contains VCE's own cup conversions for 4 N products.
 
 ### Files
@@ -3722,7 +3721,7 @@ Agricultural/unstated × Mg Low/adequate) to confirm no contradictory message in
 
 ### v4.2 — Zinc and Copper amendments added (previously nonexistent); Boron/Phosphorus placement
 ### notes added; Magnesium product options expanded
-User forwarded a real Waypoint report (Tina Simons, Chesterfield VA) showing the lab's own report
+User forwarded a real Waypoint report showing the lab's own report
 notes name specific products and give numeric targets for nutrients the app was not actually using:
 `Zn: []` and `Cu: []` were completely empty in `NUTRIENT_AMENDMENTS` — Low ratings for either
 nutrient fell through to "VCE publishes no specific home-garden product or rate," which is true of
@@ -4098,7 +4097,7 @@ ambiguity directly rather than leave it as a reasoned extension.
 
 ### Nutrient rating dropdown scales corrected for both labs — a real, wide-reaching accuracy bug
 User asked to check all nutrient dropdowns against real report formats, having noticed Waypoint's
-options looked wrong. Confirmed against the real Tina Simons Waypoint report (used earlier this
+options looked wrong. Confirmed against a real Waypoint report (used earlier this
 session): every nutrient row uses the same 5-category scale (Very Low/Low/Medium/Optimum/Very
 High) — but the app only offered this full scale for P/K/Ca/Mg. Sulfur, Boron, Copper, Iron,
 Manganese, and Zinc were collapsed to 4 categories ("Low/DEF" merging Very Low+Low, "High/Very
