@@ -4013,3 +4013,135 @@ the plan document itself as the actual outcome, not just "everything passed."
 | `index.html` | No changes this round — verification only |
 | `Calculation_Audit_Plan.md` | All four parts fully checked off with findings recorded |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 4, 2026 (cont. 3) (Calculation Audit Plan — remaining items closed out; browser tool outage handled by falling back to direct code extraction)
+
+Closed out the plan's remaining open items: Nitrogen preplant amount (tomato, 32-0-8, 200 sq ft →
+1.25 lbs, cross-checked independently), Bone Meal flat-rate multiplication, a second target-based
+amendment number (Copper Sulfate), and `calcLimeForBed()`'s cross-tab consistency — verified that
+the *same real-world scenario* produces the same real-world total whether expressed in the Lawn
+tab's native basis or the Garden tab's, since a naive "same raw inputs" test doesn't apply across
+tabs that use genuinely different native units.
+
+**Tool outage handled without stopping the audit:** the browser tool became unresponsive partway
+through this pass. Rather than treat that as blocking, continued verifying against the actual
+current code via direct function extraction and Node.js execution (same technique used earlier
+this session to catch the duplicate-plan bug), which still tests the real implementation, just
+without live browser interaction. The one place this left a real gap: the sidedress-schedule check
+for corn/cucumber/squash was done via internal-consistency reasoning against the app's own
+feeding-level data rather than re-fetching Rutgers FS626 directly — flagged explicitly in the plan
+document as a weaker verification than the rest, not silently treated as equivalent.
+
+**A genuine observation surfaced, not clearly a bug:** corn (heavy feeder) and cucumber (medium
+feeder) both total exactly 4.0 lbs N/1,000 sq ft across the season — corn front-loads it into one
+larger sidedress application, cucumber splits the same total into two smaller ones. The
+heavy/medium classification doesn't show up as strict total-N ordering in this pairing. Recorded
+as a flagged pattern for a future primary-source re-check, not resolved either way.
+
+**Net status:** every item across all four parts of the Calculation Audit Plan is now checked off.
+Total findings from the full audit: one critical dosing bug (the original 10x target-conversion
+error), one genuine missing calculation (Boron liquid method not scaling to bed size), one
+ambiguous field label with real silent-error potential (WIN%), one documentation error in this
+file's own prior "verified" numbers (lime bag count), one syntax error introduced and caught by
+validation before shipping, and one flagged-but-unresolved pattern worth a future look
+(corn/cucumber N totals). Five of six required an actual fix; all are in `index.html` v4.7 or this
+document.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | No further changes this round |
+| `Calculation_Audit_Plan.md` | All four parts fully checked off; net assessment recorded |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 4, 2026 (cont. 4) (Maintenance Fertilizing & Retesting card added; nutrient rating dropdowns corrected for both labs)
+
+### "Maintenance Fertilizing & Retesting: Years 2–3" card added to the About tab
+Followed up on the earlier years-2/3 research thread (Chesterfield county agent's guidance, VCE
+Soil Test Note 1 / 452-701, VCE Soil Test Note 17 / 452-717's "Lawn Maintenance" section, and DCR's
+Nutrient Management Regulations) by turning the discussion into a new card, positioned above "Soil
+Test Ratings Explained." Deliberately written to distinguish what's directly sourced from what the
+calculator is reasoning through in the absence of specificity, rather than hedge defensively:
+
+- **Nitrogen** — apply every year, no exception, for all three garden types; directly stated
+  (Note 1: no soil test is performed for N at all).
+- **Lawns** — correct P/K/lime once per current test, hold 2–3 years, don't repeat annually;
+  directly stated (Note 17's "Lawn Maintenance" section is the clearest source found on this whole
+  question). The Very-High/no-fertilizer-recommended case gets a 1-year retest instead of the full
+  2–3, and applying P when already High/Very High is a defined regulatory limit, not just advice
+  (DCR Nutrient Management Regulations).
+- **Vegetable and flower gardens** — same pattern applied by inference, explicitly labeled as such:
+  no garden-specific equivalent to Note 17 was found, and the general Note 1 policy ("may be used
+  for two to three years") is itself ambiguous between "reapply annually" and "correct once, hold"
+  — resolved by reasoning that 452-701 is likely describing repeat-use for replanted/harvested
+  crops while Note 17's lawn-specific language addresses turf's different removal pattern. Named
+  the harvest-removal difference explicitly as the one real point of uncertainty, rather than
+  smoothing it over.
+
+**Consistency pass across the app:** found four other places (Base Saturation's card, the P/K
+"Optimum" messages, and the Flower/Garden fertilizer-chooser tool) stating "retest in 3–4 years"
+with no independent source of their own for that number — aligned all four to "2–3 years" to match
+the new card's sourced language. Checked pH cards and the Lime Recommendation card too; both
+already consistent.
+
+Title later revised at user request to **"Maintenance Fertilizing & Retesting: Years 2–3."**
+
+**Still open:** the two Google Docs (Warm/Cool Season Guides) the county agent specifically
+referenced remain inaccessible — both returned "Permission denied" via direct URL and export
+attempts, not a format issue but a sharing-settings issue. The garden section of the new card is
+flagged as inference specifically because these two documents, if accessible, might resolve that
+ambiguity directly rather than leave it as a reasoned extension.
+
+### Nutrient rating dropdown scales corrected for both labs — a real, wide-reaching accuracy bug
+User asked to check all nutrient dropdowns against real report formats, having noticed Waypoint's
+options looked wrong. Confirmed against the real Tina Simons Waypoint report (used earlier this
+session): every nutrient row uses the same 5-category scale (Very Low/Low/Medium/Optimum/Very
+High) — but the app only offered this full scale for P/K/Ca/Mg. Sulfur, Boron, Copper, Iron,
+Manganese, and Zinc were collapsed to 4 categories ("Low/DEF" merging Very Low+Low, "High/Very
+High" merging High+Very High) — meaning a user with that exact real report (which rates both Boron
+and Copper "Very Low" on both samples) had no way to enter what it actually said.
+
+**Checking the VCE side surfaced a second, separate bug in the opposite direction.** Three
+independent sources — VCE's own "Your Soil Test Report Simplified" (SPES-384), Piedmont Master
+Gardeners, and a JCC Extension guide — all confirm VCE actually rates these same six nutrients on
+just **two** categories: Sufficient or Deficient. The app was showing 4 categories on the VCE side
+too. So the fix went both directions: **VCE narrowed to 2 categories (Deficient/Sufficient);
+Waypoint expanded to the full 5** — for Zn, Mn, Cu, Fe, and B. Sulfur got the same 5-category
+Waypoint expansion but no VCE optgroup added, since Sulfur has no VCE input pathway in this app at
+all (confirmed by checking — there's no `st-s-rating-vce` field anywhere).
+
+Replicated the exact working pattern already used for Calcium and Magnesium's canonical fields
+(two `<optgroup>`s: "VCE / Virginia Tech" and "Waypoint Analytical") rather than inventing a new
+structure — Magnesium's canonical field additionally had a third "VCE special" optgroup for
+DEF/SUFF as a rare edge case on an otherwise L-/L/L+-graded nutrient, which clarified that DEF/SUFF
+is the *primary* VCE scheme for the six micronutrients rather than a special case, the way it is
+for Mg.
+
+**Verified architecturally safe, not just visually correct, before calling it done:**
+- Traced how `n.rating` is actually consumed in `renderNutrientStatusPanel()` — only ever through
+  `nutrientRatingStatus()` for a binary low/adequate check, never displayed as raw text anywhere,
+  so no separate display-label mapping was needed for the new codes.
+- Found `nutrientRatingStatus()` was missing `'DEF'` from its low-set entirely — a real gap that
+  would have silently misclassified an actual VCE "Deficient" rating. Fixed, and also removed
+  redundant duplicate entries ('L'/'M'/'H' appeared twice) while confirming P/K/Ca/Mg's and
+  Sodium's existing codes were unaffected by the cleanup.
+- Confirmed `stSync()` (the function that copies a lab-specific dropdown's selection into its
+  canonical counterpart) is fully generic — just copies `.value` with no hardcoded dependency on
+  specific codes — so the new value schemes sync correctly with no special-casing required.
+- Searched the sample-report prefill data and found six stale values still using the old collapsed
+  codes (`'L'`, `'M'`, `'H'`) that no longer exist as valid options on the updated dropdowns —
+  fixed by mapping each to its most faithful new-scheme equivalent (L→LO, M→ME, H→VH2) based on
+  what the old collapsed label represented. This is an inference from the old code's meaning, not a
+  re-check against the original source reports, and is noted as such.
+- Hand-verified all 17 possible rating codes (old and new, across every nutrient) classify
+  correctly via `nutrientRatingStatus()`.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added "Maintenance Fertilizing & Retesting: Years 2–3" card to the About tab; aligned four other "retest in 3–4 years" mentions to "2–3 years" (v4.8–v4.9); corrected the rating scale for Zn/Mn/Cu/Fe/B (VCE: 2 categories; Waypoint: 5 categories) and Sulfur (Waypoint: 5 categories, no VCE path); fixed a missing `'DEF'` classification in `nutrientRatingStatus()`; corrected six stale sample-report codes (v5.0, 2026-08-04) |
+| `CLAUDE.md` | this entry |
