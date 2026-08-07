@@ -4144,3 +4144,95 @@ for Mg.
 | :-- | :-- |
 | `index.html` | Added "Maintenance Fertilizing & Retesting: Years 2–3" card to the About tab; aligned four other "retest in 3–4 years" mentions to "2–3 years" (v4.8–v4.9); corrected the rating scale for Zn/Mn/Cu/Fe/B (VCE: 2 categories; Waypoint: 5 categories) and Sulfur (Waypoint: 5 categories, no VCE path); fixed a missing `'DEF'` classification in `nutrientRatingStatus()`; corrected six stale sample-report codes (v5.0, 2026-08-04) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 4–5, 2026 (Catch-up: v5.1–v5.6 — sample-data SUFF bug, two new Waypoint lawn samples, PII scrub, favicon swap, and a substantially deeper Maintenance & Retesting card)
+
+### v5.1 — Second wave of the same sample-data bug, found by the user post-deployment
+After v5.0 shipped the Waypoint rating-scale fix, user deployed it and reported blank rating
+dropdowns on the Waypoint Vegetable Garden sample (screenshot showed Cu/Fe/Mn rated "-"). Root
+cause: the v5.0 sample-data cleanup had only caught the *obviously* invalid leftover codes ('L',
+'M', 'H' — which don't exist in any current scheme) but missed `'SUFF'`, which is still a real,
+valid code elsewhere (VCE side, canonical field) but is **not** part of the new 5-category Waypoint
+scheme (VL/LO/ME/OP/VH2) — so any `-wp` field still holding `'SUFF'` silently failed to select
+anything. Found 6 more instances this time via exhaustive validation (extracted and checked every
+single Waypoint/VCE rating assignment in the file against its actual valid option list) rather than
+searching for specific known-bad strings again, since that narrower method is exactly what missed
+this the first time. Verified live: reproduced the user's exact blank-dropdown bug on the deployed
+site, then confirmed the dropdown correctly accepts `'OP'` once corrected.
+
+### v5.2 — Two new real Waypoint Lawn sample reports added (Cool and Warm Season)
+User provided two real Waypoint lawn reports from the same property (front yard / back yard,
+tested separately) — one explicitly cool-season (report comments reference bluegrass/fescue/
+ryegrass Fall timing), one explicitly Zoysiagrass (warm-season). Extracted the printed numeric
+values directly; for the bar-chart-based ratings (which can't be read pixel-precisely from a
+scanned image), proposed best-effort inferences from the printed fertilizer recommendation itself
+(a $0 P₂O₅ rec implies Optimum-or-above; a nonzero K₂O rec implies correction needed) and flagged
+the uncertainty explicitly rather than guess silently. **User corrected two of the inferred
+ratings** (Cool: Ca → Medium, not the initially inferred Optimum; Warm: Ca → Optimum, not the
+initially inferred Very High) — both now reflect the user's own read of the actual shaded bars, not
+the inference. New buttons: "Lawn-Waypoint (Cool Season)" / "Lawn-Waypoint (Warm Season)";
+existing "Lawn-VCE" relabeled "Lawn-VCE (Warm Season)" for consistency, since that sample is also
+warm-season. The warm-season sample's report N figure (5.0 lbs/1,000 sq ft) is a genuinely useful
+test case for the existing Nitrogen Recommendation Check card: it exceeds VCE's own 1–2 lb ceiling
+for zoysiagrass specifically, even though it's within the general warm-season range — confirmed the
+card's existing logic (conservative, phrased "if your lawn is zoysiagrass...") correctly fires on
+this exact scenario.
+
+### v5.3 — Resident-identifying information scrubbed from the entire codebase
+User pointed out the two new lawn samples were a real resident's front/back yard and asked that no
+identifying information be left in the code. Search turned up far more than the two new samples —
+**six different sample reports across most of this project's history** had real names, towns, or
+report/client ID numbers embedded in code comments (a flower sample, both vegetable garden
+samples, both new lawn samples, and a Rutgers citation with specific lab reference numbers).
+Scrubbed all of them, in `index.html` and `CLAUDE.md` both — not just names and addresses, but also
+the specific report/lab ID numbers themselves, since those are unique identifiers tied to real
+submissions that could in principle be cross-referenced back to a real person given lab database
+access, even without a name directly attached. Replaced each with a generic description that keeps
+whatever made the sample agronomically useful (the specific ratings, the report type, the lab)
+without any residual thread back to whose soil it was.
+
+### v5.4 — Favicon replaced with a user-supplied, better-packaged .ico
+User uploaded a proper multi-resolution `.ico` (16×16, 32×32, 48×48, all with alpha) — a cleaner
+source than needing to generate one from a flat image again. Extracted each native embedded frame
+individually (not just one image scaled to different sizes) for the 32px favicon; upscaled the 48px
+frame with LANCZOS resampling for the 180px apple-touch-icon, since 48px is the largest size
+available in the source. Flagged the resolution ceiling honestly rather than pretend it's not a
+tradeoff — the design's bold, flat-colored style upscales cleanly, but a higher-resolution source
+would still be preferable for a sharper home-screen icon if one exists.
+
+### v5.5–v5.6 — Maintenance & Retesting card substantially deepened, then reordered
+Extended the years-2/3 research with a comparative read of five real soil reports (VCE and
+Waypoint, lawn and garden) plus both labs' own paper intake forms (Waypoint's Soil Sample
+Information Sheet; VCE's 452-125). This surfaced a distinction sharper than "Waypoint is more
+specific": it's about **where crop-specificity enters the pipeline**. Waypoint's intake form lets a
+submitter select the exact vegetable or turf type by name (individual codes for tomatoes, peppers,
+lima vs. snap beans; Zoysiagrass Lawn vs. Bermudagrass Athletic Field vs. Bermudagrass Fairway), so
+the report itself already reflects what's planted. VCE's intake form distinguishes cool- from
+warm-season for lawns but offers **only one generic code for all vegetable gardens** — no way to
+specify what's actually growing — which is the direct, traceable cause of why VCE's vegetable
+garden report comes back as one general nitrogen-only recommendation rather than a crop-specific
+one. This reframes what this calculator's own per-crop N defaults and sidedress schedules
+(`CROP_FEEDING_LEVELS`, `SIDEDRESS_GUIDE`) actually do: they're not just "more detail than VCE
+gives" — they're specifically filling the exact gap created by VCE's own intake form having no
+crop-specific code to select in the first place.
+
+Added a summary table at the top of the card (Nitrogen / P&K / Lime / sourcing-confidence rows,
+lawns vs. gardens) and rewrote the Nitrogen prose section to carry the intake-form-specificity
+point through in full, rather than leave the table as the only place it appears. Left the P&K and
+Lime prose sections unchanged after checking them against the new research — they're specifically
+about the correct-once-hold retesting pattern, which this round's research didn't touch.
+
+**Card reordered** to sit above "Single-Nutrient Amendment Philosophy" (previously the other way
+round) — swapped as complete HTML blocks via exact string boundaries, verified the swap was lossless
+(pre- and post-swap total file length identical) rather than trusting a visual check alone. Confirmed
+the one internal cross-reference to the Single-Nutrient card from earlier on the page ("see the card
+below") still correctly says "below," since it sits earlier in the page than both swapped cards and
+was unaffected by their reordering relative to each other.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Six stale `'SUFF'`-on-Waypoint sample codes fixed (v5.1); two new real Waypoint Lawn samples added, one existing sample relabeled for consistency (v5.2); all resident-identifying information scrubbed from code comments across six sample reports (v5.3); favicon replaced with a user-supplied multi-resolution `.ico` (v5.4); Maintenance & Retesting card given a summary table and a substantially rewritten Nitrogen section reflecting the intake-form specificity research (v5.5); card reordered above Single-Nutrient Amendment Philosophy (v5.6) |
+| `CLAUDE.md` | this entry; resident-identifying information also scrubbed from this file's own history (six references across five entries) |
