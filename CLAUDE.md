@@ -4236,3 +4236,66 @@ was unaffected by their reordering relative to each other.
 | :-- | :-- |
 | `index.html` | Six stale `'SUFF'`-on-Waypoint sample codes fixed (v5.1); two new real Waypoint Lawn samples added, one existing sample relabeled for consistency (v5.2); all resident-identifying information scrubbed from code comments across six sample reports (v5.3); favicon replaced with a user-supplied multi-resolution `.ico` (v5.4); Maintenance & Retesting card given a summary table and a substantially rewritten Nitrogen section reflecting the intake-form specificity research (v5.5); card reordered above Single-Nutrient Amendment Philosophy (v5.6) |
 | `CLAUDE.md` | this entry; resident-identifying information also scrubbed from this file's own history (six references across five entries) |
+
+---
+
+## Session Updates — August 5–7, 2026 (WIN calculation explained in the About tab; a VCE-report display bug found via user screenshot and fixed for both garden tabs)
+
+### v5.7 — "Understanding WIN & Nitrogen Programs" card now explains the calculation itself, not
+### just the resulting thresholds
+The existing card already stated the three program thresholds (<15%, 15–49%, ≥50% WIN) and their
+per-application caps, but never explained *how* a user gets their own WIN% in the first place —
+which specific number to enter, or what it's measured against. Added two new subsections before
+the program boxes:
+- **What to enter**: the raw Water Insoluble Nitrogen figure exactly as printed on the bag's
+  Guaranteed Analysis (expressed as % of total product, same basis as the main N% figure) — not a
+  pre-computed "% of my nitrogen" value, which is a distinct number a user could easily produce
+  instead. States the actual formula (`WIN% of nitrogen = (label WIN ÷ label Total N) × 100`) with
+  a worked example (29-3-4, 4.5% WIN → 15.5%, landing in Program 2), and what happens if the field
+  is left blank (defaults to Program 1, the conservative choice).
+- **Why the program matters**: connects WIN% to the practical consequence (fewer total
+  applications, not just gentler release) before the program boxes give the exact numbers.
+
+Also added one line to the existing closing note: Soil Test Notes 17/18 (the shorter,
+consumer-facing lawn publications) only describe Programs 1–2 in condensed form — the full
+three-program structure and exact thresholds come from the fuller source, VCE 430-011. Explains why
+Program 3 appears in this calculator even though the more commonly-cited Notes don't spell it out.
+
+### v5.8 — "Waypoint report target" input field was showing on VCE reports, where it can never
+### apply — found via user screenshot, fixed for both Vegetable Garden and Flower Garden at once
+User showed a VCE vegetable garden entry where every nutrient row in the Nutrient Application
+Plan displayed a "Waypoint report target (lbs/1,000 sq. ft.)" input field — nonsensical for a VCE
+report, which doesn't publish this kind of number. Root cause: the field was rendered
+unconditionally, with the code's own comment explicitly acknowledging "VCE reports never populate
+this (leave blank)" — the wrong call; it should never have rendered for VCE users rather than sit
+there permanently empty and irrelevant. Fixed using the existing `isWaypointReport()` helper
+(reads `st-report-type`, already used elsewhere in the app) to hide the field entirely for VCE
+reports. Verified the underlying amendment-selection logic doesn't depend on the field being
+visible — `targetDriven` is computed from the stored value alone, which is correctly empty/zero
+whether the field was hidden (VCE) or just left blank (Waypoint) — so no downstream behavior
+changed, only the confusing, always-inapplicable input.
+
+**User also asked a substantive research question this prompted**: does VCE actually publish
+P/K/micronutrient guidance by rating for vegetable gardens? Checked the actual
+`NUTRIENT_AMENDMENTS` data rather than assume: **yes for P, K, and Mg** — VCE Note 19 gives flat
+rates for each (Bone Meal/Rock Phosphate for P; Granite Dust/Greensand/Wood Ash for K; Epsom Salts
+for Mg), already implemented as `calc:'flat'` entries that fire regardless of whether a Waypoint
+target is entered. **No for S, B, Cu, Mn, Fe, Zn** — VCE's own rating for these is simply
+"sufficient or deficient" with no corrective rate attached (confirmed earlier this session against
+VCE's own SPES-384 and two independent Extension sources); this calculator's amendment options for
+these six are sourced from elsewhere (UMD, NC State, Rutgers, or Waypoint's own report guidance for
+Zn/Cu specifically), not VCE. This means the screenshot's "Adequate" readings for P/K/Mg were very
+likely correct output reflecting genuinely adequate entered ratings, not a symptom of the display
+bug — the two issues (a confusing always-shown field, and what VCE does or doesn't publish) were
+separate findings from the same conversation, not the same bug.
+
+**Confirmed the fix covers Flower Garden too**, not just Vegetable Garden, without a separate
+change: both tabs call the exact same shared `renderNutrientStatusPanel()`, and `isWaypointReport()`
+reads from the single canonical `st-report-type` field both tabs carry over from — there's no
+tab-specific copy of report-type detection that could have gone out of sync.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added a "how to calculate your own WIN%" section (formula, worked example, blank-field default) to the About tab's WIN card, plus a Notes-17/18-vs-430-011 sourcing clarification (v5.7); hid the "Waypoint report target" input field for VCE reports in `renderNutrientStatusPanel()`, fixing both Vegetable Garden and Flower Garden at once since they share the function (v5.8) |
+| `CLAUDE.md` | this entry |
