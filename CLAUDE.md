@@ -4299,3 +4299,38 @@ tab-specific copy of report-type detection that could have gone out of sync.
 | :-- | :-- |
 | `index.html` | Added a "how to calculate your own WIN%" section (formula, worked example, blank-field default) to the About tab's WIN card, plus a Notes-17/18-vs-430-011 sourcing clarification (v5.7); hid the "Waypoint report target" input field for VCE reports in `renderNutrientStatusPanel()`, fixing both Vegetable Garden and Flower Garden at once since they share the function (v5.8) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 7, 2026 (cont.) (Sulfur's "not entered" message was actively wrong for VCE reports — fixed)
+
+### v5.9 — "Fill out the Soil Test tab" implied there was something to fill out; for Sulfur on a
+### VCE report, there isn't
+Following directly from the v5.8 fix, user provided a real VCE lab report showing its actual Lab
+Test Results columns (P, K, Ca, Mg, Zn, Mn, Cu, Fe, B, Soluble Salts) — no Sulfur column at all,
+confirming what the earlier intake-form research already implied (VCE's routine panel, per
+Publication 452-125, lists exactly those nine values plus estimated CEC — no sulfur, and no
+separate sulfur test offered as an add-on anywhere on the form either, unlike Waypoint's explicit
+S2M/S3M sulfate-sulfur tier). The generic "Not entered — fill out the Soil Test tab to see a
+recommendation here" message fires for any nutrient with no rating entered, regardless of report
+type — for Sulfur specifically on a VCE report, this is actively misleading, since it implies the
+data exists somewhere and the user just needs to go enter it, when in fact there's no way to ever
+obtain a sulfur result through VCE's routine service at all.
+
+Added a specific case: when `n.key === 'S'` and the report isn't Waypoint, show "Not tested —
+sulfur isn't part of VCE's routine soil test panel. (VCE Publication 452-125)" instead. Left the
+generic message unchanged for every other case — including Sulfur on a Waypoint report, where
+"fill out" remains accurate, since sulfur is a real, orderable add-on tier there, not something
+structurally unavailable the way it is for VCE.
+
+**Privacy note carried forward correctly**: the real VCE report used to confirm this bug contains
+the same resident's name scrubbed from the codebase earlier this session (v5.3). Checked the new
+code comment before committing it — describes the finding ("a real VCE lab report with no S
+column") without reintroducing the name, consistent with that earlier scrub rather than working
+around it.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Sulfur's "not entered" message on VCE reports replaced with an accurate "not tested by VCE's routine panel" message, cited to VCE 452-125; Waypoint's version of the message left unchanged, since it's still accurate there (v5.9, 2026-08-07) |
+| `CLAUDE.md` | this entry |
