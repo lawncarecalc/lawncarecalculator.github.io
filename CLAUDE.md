@@ -4334,3 +4334,97 @@ around it.
 | :-- | :-- |
 | `index.html` | Sulfur's "not entered" message on VCE reports replaced with an accurate "not tested by VCE's routine panel" message, cited to VCE 452-125; Waypoint's version of the message left unchanged, since it's still accurate there (v5.9, 2026-08-07) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 7–8, 2026 (cont.) (v6.0–v6.5: a second VCE-target-message leak, Sulfur removed entirely for VCE, onboarding text reconciled with the Retesting card, a second rating-dropdown audit round, the actual "lime dropdown" request correctly identified and resolved, and Soluble Salts given a rating dropdown)
+
+### v6.0 — The "enter its Waypoint report target" instruction leaked through a second, separate
+### code path — found via user screenshot showing it on Phosphorus specifically
+The v5.8 fix hid the Waypoint-target *input field* for VCE reports, but a separate piece of code
+generating the *instructional text* telling users what to do still unconditionally said "enter its
+Waypoint report target in this row" — pointing users at an input that no longer existed on the
+page for them. Categorized every nutrient's amendment options by calc type to find every reachable
+instance: Sulfur, Zinc, and Copper were the worst cases (every option for each is target-only, no
+flat-rate fallback), meaning *every* VCE user who ever saw a Low rating on any of those three hit
+this exact dead end, not just occasionally. Fixed the shared branch once
+(`isWaypointReport() ? [original message] : "VCE publishes no specific rate... start at your
+product's label rate"`), verified empirically for S/Zn/Cu specifically (not just P, the one in the
+screenshot), and swept the whole file for a second copy of the same phrase — found none.
+
+### v6.1 — Two more items from the same conversation
+1. **A remaining "Open Vegetable Garden Calculator" button**, on Base Saturation's card
+   (`limeGoBtn`) — missed during the original button-removal cleanup since it wasn't explicitly
+   flagged at the time. Removed, and `goBtn()` itself removed too once confirmed it had no other
+   callers left anywhere in the file.
+2. **Sulfur removed entirely from the Vegetable/Flower Garden nutrient list for VCE reports** —
+   not just given an accurate "not tested" message (v5.9's fix), but not shown as a row at all,
+   per explicit user request. Filtered out of the `nutrients` array itself
+   (`if (!isWaypointReport()) nutrients = nutrients.filter(...)`), which made the v5.9 message
+   branch for this case unreachable — removed that too rather than leave confirmed-dead code
+   sitting next to the change that caused it.
+
+### v6.2 — Onboarding Step 3 reconciled with the Maintenance & Retesting card
+Found to be stating a flat, outdated rule ("all recommendations valid for up to three growing
+seasons") that no longer matched the more precise card built earlier this session — missing the
+1-year-retest exception and lumping nitrogen in with fertilizer/lime as if it followed the same
+multi-year cycle. Rewritten to summarize the actual current rule accurately while staying brief,
+and pointed to the full card rather than duplicate it.
+
+### v6.3 — Second rating-dropdown audit round: found and removed Magnesium's unsourced "VCE
+### special: DEF/SUFF" option
+User asked for a thorough check of the nutrient rating dropdowns (a continuation of the Zn/Mn/Cu/
+Fe/B/S work from earlier). Catalogued and cross-checked all 28 dropdowns (10 nutrients × VCE/
+Waypoint/canonical variants) against confirmed real-report formats. Found one real issue:
+Magnesium's canonical dropdown had a "VCE special: DEF/SUFF" option with no sourcing comment —
+directly contradicted by a real VCE report reviewed earlier this session, which rated Magnesium
+"VH" on the standard macronutrient scale, not DEF/SUFF (that scale is confirmed for the actual
+micronutrients, not for Mg). Also inconsistent with Calcium, which has identical defensive code
+(`caLow` checking for `'DEF'`) but never had the corresponding dropdown option — same unverified
+pattern, only one of the two was ever reachable. Removed the option and the now-fully-unreachable
+`'DEF'` checks in both `mgLow` and `caLow`.
+
+### v6.4 — The actual "lime dropdown" request, correctly identified after an initial misread
+User clarified that "the lime dropdown on the instructions page" reviewed at the start of this
+session referred to a specific collapsible ("🪨 Lime") inside the About tab's "How to Use This
+Calculator" card — one of six per-tab guide toggles (Cool, Warm, Lime, Garden, Flower, Shrub) — not
+the Soil Test tab's rating `<select>` elements the v6.3 audit had covered. Confirmed directly: zero
+`<select>` elements exist anywhere in the About tab. Went through all six collapsibles line by line
+against current app behavior. Found real drift in three places, all the same root cause: Vegetable
+Garden's and Flower Garden's descriptions still listed **Calcium** as part of the nutrients
+"auto-filled" alongside P/K/Mg/S/micronutrients — inaccurate since Ca was deliberately removed from
+that shared panel back in v3.7 (handled by the Lime section instead). Notably, the same outdated
+claim was sitting on the **live Flower Garden tab itself** (the text directly above the Nitrogen
+Source dropdown in Individual mode), not just the About page — actively telling users something
+untrue about what they were about to see. Fixed all instances found (live tab text, its code
+comment, both About-page descriptions, and one more stale code comment describing the panel's
+contents found via a follow-up grep) rather than stopping at the first match.
+
+### v6.5 — Soluble Salts given a VCE rating dropdown, matching every other value on the page
+User noted Soluble Salts was the one field with no rating dropdown at all (numeric ppm/dS-m input
+only), and that VCE 452-701 does describe a rating scale for it. Re-fetched the primary source
+directly to confirm rather than assume: the document's own abbreviation list states **"EH =
+Excessively High (soluble salt test only)"** — confirming salts use the standard L/M/H/VH scale
+plus one category unique to this measurement. Matches a real VCE report reviewed earlier this
+session, which printed a rating ("L") in that exact column alongside every other nutrient. The
+source gives no precise numeric boundaries for L/M/H/VH/EH (unlike its P/K/Ca/Mg medium-range
+figures) — only the 844 ppm injury threshold already used in the app's own interpretation logic —
+so the dropdown is for data entry (let the user enter exactly what their report says, same pattern
+as every other field), not a new independent scoring system.
+
+Added: a VCE-side rating dropdown (L/M/H/VH/EH); a canonical field shown only for VCE reports
+(toggled via the existing `setSaltUnit()` function, extended rather than duplicated — no confirmed
+Waypoint equivalent, so left numeric-only there); the entered rating now displays as a pill on the
+interpretation card. **Found and fixed while wiring this in**: the shared `pill()` styling
+function had no case for `'EH'` at all — would have silently rendered with the same neutral styling
+as "Medium," understating exactly the result that most needs a visible warning. Added `'EH'` as its
+own case using the existing `pill-warn` class (confirmed it exists before relying on it) with the
+full "Excessively High" label. Added plausible ratings to two existing VCE sample datasets based on
+where their printed ppm values fall relative to the confirmed 844 ppm threshold — flagged as
+inference in the code, not a re-confirmed literal value from those original reports.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fixed a second Waypoint-target-message leak affecting P/K/Mg/S/Zn/Mn/Cu/B (v6.0); removed Base Saturation's last "go to calculator" button and the now-callerless `goBtn()`; removed Sulfur entirely from the VCE-side garden nutrient list (v6.1); reconciled onboarding Step 3 with the Retesting card (v6.2); removed Magnesium's unsourced DEF/SUFF dropdown option (v6.3); fixed a real Calcium-list inaccuracy on the live Flower Garden tab and both Garden/Flower About-page guides (v6.4); added a VCE Soluble Salts rating dropdown, sourced to 452-701, plus an `'EH'` case for the shared rating-pill styling (v6.5) |
+| `CLAUDE.md` | this entry |
