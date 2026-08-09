@@ -4512,3 +4512,37 @@ non-issues on inspection. Left for a future pass if requested rather than acted 
 | :-- | :-- |
 | `index.html` | Fixed WAVE's one flagged Error: empty table header + missing row headers on the Retesting card's comparison table, with a matching CSS fix so the new `<th scope="row">` cells don't inherit the dark-green thead styling (v6.7) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 8, 2026 (v6.8: two user-reported bugs on Waypoint Flower Garden — both fixed)
+
+User reported two issues via screenshots, both on the Flower Garden tab with a Waypoint report:
+
+### Bug 1 — Soil Test tab lime label wrong for Waypoint gardens
+The lime recommendation label/placeholder logic (in the report-type change handler) branched only
+on `isGarden`, always showing "lbs / 100 sq. ft." for any garden report. That's correct for VCE
+gardens, but Waypoint garden reports print lime on the same 1,000 sq. ft. basis as lawns — the
+`isWaypoint` flag needed for this was already computed one line below and simply wasn't being used.
+Fixed: label/step/placeholder now key off `isGarden && !isWaypoint`.
+
+### Bug 2 — Boron/Manganese (and in fact every nutrient) "locked" on Flower Garden tab
+Root cause: `gdnSetNutrientChoice()`, `gdnSetTarget()`, and `gdnSetDensity()` — the three functions
+that handle changing a nutrient's amendment dropdown, entering a Waypoint numeric target, or
+entering a custom bulk density inside the shared Nutrient Status panel — all unconditionally called
+`calcGarden()` (the **Vegetable Garden** tab's recalc function), regardless of which tab the control
+actually lived on. State updated correctly either way (the state objects are keyed by
+`'prefix:nutrient'`, e.g. `flr:Mn`), but on the Flower Garden tab this re-rendered the hidden
+Vegetable Garden panel instead of the visible Flower Garden one — so any change looked like it had
+no effect. Fixed all three functions to split the prefix off the state key and dispatch to
+`calcFlower()` when `prefix === 'flr'`, `calcGarden()` otherwise. Confirmed the only two prefixes
+that ever call `renderNutrientStatusPanel()` are `gdn` and `flr`, so no other tab is affected.
+`onCropTypeChange()`, `setGardenSizeMode()`, and `calcGardenDimensions()` were left alone — they
+operate on `gdn`-only elements with no Flower Garden equivalent, so always calling `calcGarden()`
+there is correct.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fixed Waypoint-garden lime label basis (100 vs. 1,000 sq. ft.); fixed `gdnSetNutrientChoice`/`gdnSetTarget`/`gdnSetDensity` re-rendering the wrong tab's panel on Flower Garden (v6.8) |
+| `CLAUDE.md` | this entry |
