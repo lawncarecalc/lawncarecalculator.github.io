@@ -22,6 +22,14 @@ report for?" (lab + purpose combined) — and the one matching calculator tab ap
 reflects a deliberate philosophy: a user should not be able to apply fertilizer without a soil
 test telling them their starting point. See "Session Updates — July 26–27, 2026" for full detail.
 
+**Versioning convention (added August 9, 2026):** the version badge in the header (bottom-right of
+the title bar, `v#.# · date`) uses a rolling single-digit minor number: 0 through 9, then the whole
+number increments and the minor digit resets — `n.9` is followed by `n+1.0`, never `n.10`. This
+matters because `n.10`/`n.11` sorts and reads inconsistently next to single-digit values. **Bump
+this on every `index.html` change, in every session, no exceptions** — this convention was broken
+for two versions (v6.10, v6.11) before being caught and corrected to v7.2 in this session; those two
+numbers should never be reused or referenced as if they were valid.
+
 ---
 
 ## Source Documents
@@ -4635,4 +4643,64 @@ correctly.
 | Document | Status |
 | :-- | :-- |
 | `index.html` | Made Phosphorus/Potassium Soil Test tab cards garden-aware (no more fertilizer-grade advice for garden reports); removed the "Plant Type & Fertilizer Program" card entirely (all garden crop types); Sodium "Very Low" report investigated but not reproduced (v6.10) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 9, 2026 (v6.11: resolved the Sodium "Very Low" confusion — report UX gap, not an app bug)
+
+User clarified the actual source of confusion: their real Waypoint report shows a plain gray bar
+for Sodium sitting near the "Very Low" end of the shared color-bar chart (the same chart width used
+for every nutrient row), so a user naturally goes looking for a "Very Low" option in the app's Na
+Rating dropdown — and can't find one, since Waypoint doesn't actually grade sodium on that 5-level
+scale (only Normal/Low vs. High/Very High, per the dropdown's two real options). This reads as "the
+app is missing a choice" when the real issue is that Waypoint's own report visually implies a
+rating that was never actually assigned.
+
+Added a hint directly under the Na Rating dropdown (Waypoint block only — VCE reports don't test
+sodium at all, confirmed no VCE-side Na field exists) explaining that the gray bar's left-side
+position is a chart-width artifact, not a real "Very Low" rating, and to pick based on the bar's
+color/general position or leave it blank if unsure. Checked whether the canonical `st-na-rating`
+field (inside the hidden `#st-canonical-fields` mirror) also needed this — confirmed it's
+`display:none`/`aria-hidden`/`inert`, purely an internal sync target never seen by a user, so no
+duplicate hint needed there.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added an explanatory hint under the Waypoint Na Rating dropdown clarifying that the report's gray bar position isn't a real rating (v6.11) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 9, 2026 (v7.2: corrected versioning convention break)
+
+User flagged that v6.10 and v6.11 broke the project's established versioning pattern — the minor
+number has always rolled 0–9 then incremented the whole number (e.g. v5.9 → v6.0), never gone to
+double digits. Corrected: v6.11 → **v7.2** (v6.9 → 7.0, 7.1, 7.2 covers the three version bumps that
+happened this session — P/K card + Plant Type card removal, the Sodium hint, and this fix itself).
+Added an explicit standing rule to this file's Project Overview section (see "Versioning
+convention" above) and to the version badge's own `title` tooltip in `index.html`, so this doesn't
+drift again. v6.10 and v6.11 are retired — they should never be referenced as valid versions.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Version badge corrected to v7.2; tooltip now states the versioning convention explicitly (v7.2) |
+| `CLAUDE.md` | Added standing versioning-convention rule to Project Overview; this entry |
+
+---
+
+## Session Update — August 9, 2026 (v7.3: shortened Sodium hint per user request)
+
+User asked to remove one sentence from the Na Rating field hint added in v6.11 — specifically the
+"Sodium's bar on your report is usually plain gray... not an actual rating" framing. Removed;
+the hint now reads: "Waypoint doesn't grade sodium on that 5-level scale, only Normal/Low vs.
+High/Very High — pick whichever matches your bar's color and general position, or leave this blank
+if you're unsure."
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Shortened the Na Rating field hint (v7.3) |
 | `CLAUDE.md` | this entry |
