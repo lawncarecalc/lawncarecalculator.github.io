@@ -785,7 +785,7 @@
       <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v6.8 &middot; 2026-08-08</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed.">v6.10 &middot; 2026-08-09</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -916,7 +916,7 @@
           </div><!-- end area size grid -->
 
           <div class="st-section-label">Lab Test Results</div>
-          <p class="about-section-intro" style="margin-top:-4px;margin-bottom:12px;font-size:0.82rem;">Fields below are ordered to match the layout of each lab's report.</p>
+          <p class="about-section-intro" style="margin-top:-4px;margin-bottom:12px;font-size:0.82rem;">Fields below are ordered to match the layout of each lab's report. Leave fields blank where values don't appear on your report.</p>
           <div class="st-field-grid" id="st-block-vce" style="display:none;" inert>
             <fieldset class="st-fieldset"><legend>Phosphorus</legend>
             <div class="st-field">
@@ -1074,6 +1074,16 @@
             <div class="st-field">
               <label for="st-basesat-wp">Base Saturation (%) <span class="st-label-sub">optional</span></label>
               <input type="number" id="st-basesat-wp" data-canon="st-basesat" step="0.1" min="0" max="100" placeholder="e.g. 91" oninput="stSync(this)">
+              <div style="font-size:0.75rem;color:#5f6b6b;margin-top:5px;">Waypoint reports rarely print this by name &mdash; if yours does, enter it above and ignore the box below.</div>
+              <div style="margin-top:6px;padding:8px 10px;background:var(--green-mist);border-radius:6px;">
+                <label for="st-basesat-h-helper" style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:3px;">No Base Saturation on your report? Calculate it from %H instead</label>
+                <div id="st-basesat-h-desc" style="font-size:0.74rem;color:#5f6b6b;margin-bottom:5px;">Look for %H (Hydrogen Saturation) in your report's %Saturation table &mdash; usually top right of page 1, listed alongside %K, %Ca, %Mg, and %Na.</div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <input type="number" id="st-basesat-h-helper" step="0.1" min="0" max="100" placeholder="e.g. 0.0" style="width:90px;" aria-describedby="st-basesat-h-desc st-basesat-h-result" oninput="calcBaseSatFromH(this)">
+                  <span style="font-size:0.78rem;color:#5f6b6b;">% H</span>
+                </div>
+                <div id="st-basesat-h-result" aria-live="polite" style="font-size:0.78rem;color:var(--green-deep);font-weight:600;margin-top:5px;min-height:1.2em;"></div>
+              </div>
             </div>
             <fieldset class="st-fieldset"><legend>Phosphorus</legend>
             <div class="st-field">
@@ -4450,6 +4460,31 @@ function stSync(el) {
   if (el.tagName === 'SELECT') interpretSoilTest(); else interpretSoilTestDebounced();
 }
 
+// Mini calculator for Base Saturation on the Waypoint block, added August 8, 2026 after a user
+// noted that Waypoint reports typically don't print "Base Saturation" by name — they print %H
+// (Hydrogen Saturation) in the %Saturation table instead, and a user has no way to know Base
+// Saturation = 100 - %H without being told. Rather than just adding a hint asking the user to do
+// that math themselves, this computes it directly from a %H entry and fills the real field —
+// setting st-basesat-wp.value and calling stSync() on it so the canonical field and downstream
+// calculation both update exactly as if the user had typed the result in directly.
+// Accessibility: the %H input's accessible name comes from its own <label for>; aria-describedby
+// links it to both the instructional text and the live result region below. The result region uses
+// aria-live="polite" specifically because setting another field's .value via JS does NOT fire a
+// native change/input event and is never announced by a screen reader on its own — the live region
+// is the only way a non-sighted user finds out the calculation happened and what it produced.
+function calcBaseSatFromH(el) {
+  var out = document.getElementById('st-basesat-wp');
+  var live = document.getElementById('st-basesat-h-result');
+  var h = parseFloat(el.value);
+  if (el.value === '' || isNaN(h) || h < 0 || h > 100) {
+    if (live) live.textContent = '';
+    return;
+  }
+  var bs = Math.round((100 - h) * 10) / 10;
+  if (out) { out.value = bs; stSync(out); }
+  if (live) live.textContent = 'Calculated Base Saturation: ' + bs + '%';
+}
+
 // Pushes every field inside a given block (by id) into its canonical counterpart.
 // Used right after switching report type or after prefillSampleReport() sets a
 // visible block's values programmatically (which doesn't fire input/change events).
@@ -4816,15 +4851,15 @@ function interpretSoilTest() {
     var pDisplay = (!isNaN(pVal) ? pVal + ' lb/A ' : '') + pill(WAYPOINT_TO_VCE[pRatRaw] ? pRatRaw : pRat);
     var pMsg, pAction;
     if (pRatRaw === 'OP') {
-      pMsg = 'Optimum — your soil phosphorus is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional phosphorus.'; pAction = abox('action-good','At target — maintain. No additional phosphorus is needed. Choose a low- or no-phosphorus fertilizer and retest in 2–3 years.');
+      pMsg = 'Optimum — your soil phosphorus is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional phosphorus.'; pAction = abox('action-good', isGarden ? 'At target — no additional phosphorus needed. The Vegetable Garden or Flower Garden tab already reflects this and won\u2019t suggest a phosphorus amendment.' : 'At target — maintain. No additional phosphorus is needed. Choose a low- or no-phosphorus fertilizer and retest in 2–3 years.');
     } else if (['L-','L','L+'].indexOf(pRat) >= 0) {
-      pMsg = 'Low phosphorus. Plants almost always respond to phosphorus fertilizer at this level.'; pAction = abox('action-needed','Use a complete fertilizer containing phosphorus (e.g. 10-10-10, 12-4-8).');
+      pMsg = 'Low phosphorus. Plants almost always respond to phosphorus fertilizer at this level.'; pAction = abox('action-needed', isGarden ? 'The exact phosphorus amendment for your bed \u2014 organic or synthetic, sized to your bed size \u2014 is calculated on the Vegetable Garden or Flower Garden tab.' : 'Use a complete fertilizer containing phosphorus (e.g. 10-10-10, 12-4-8).');
     } else if (['M-','M','M+'].indexOf(pRat) >= 0) {
-      pMsg = 'Medium phosphorus. Plants sometimes respond; a moderate amount is recommended to maintain soil fertility.'; pAction = abox('action-monitor','A fertilizer with phosphorus may be used. Retest in 3–4 years.');
+      pMsg = 'Medium phosphorus. Plants sometimes respond; a moderate amount is recommended to maintain soil fertility.'; pAction = abox('action-monitor', isGarden ? 'A modest phosphorus amendment may help \u2014 sized automatically on the Vegetable Garden or Flower Garden tab. Retest in 3–4 years.' : 'A fertilizer with phosphorus may be used. Retest in 3–4 years.');
     } else if (['H-','H','H+','VH'].indexOf(pRat) >= 0) {
-      pMsg = 'High to very high phosphorus. Plants usually do not respond, and excess phosphorus can wash into waterways during rain.'; pAction = abox('action-good','Use a zero-phosphorus (maintenance) fertilizer to prevent further buildup and runoff.');
+      pMsg = 'High to very high phosphorus. Plants usually do not respond, and excess phosphorus can wash into waterways during rain.'; pAction = abox('action-good', isGarden ? 'No phosphorus amendment needed \u2014 the Vegetable Garden or Flower Garden tab skips phosphorus automatically to avoid buildup and runoff.' : 'Use a zero-phosphorus (maintenance) fertilizer to prevent further buildup and runoff.');
     } else {
-      pMsg = 'Optimum — your soil has adequate phosphorus for good plant growth.'; pAction = abox('action-good','Maintenance applications only. Choose a fertilizer with low or no phosphorus to avoid buildup. Retest in 3–4 years.');
+      pMsg = 'Optimum — your soil has adequate phosphorus for good plant growth.'; pAction = abox('action-good', isGarden ? 'At target \u2014 no additional phosphorus needed. The Vegetable Garden or Flower Garden tab already reflects this.' : 'Maintenance applications only. Choose a fertilizer with low or no phosphorus to avoid buildup. Retest in 3–4 years.');
     }
     // Button removed entirely August 1, 2026 — was routed by purpose (vegetable/flower/shrub),
     // but that's redundant with the single "Continue to [X] Calculator" carry-over button plus
@@ -4839,15 +4874,15 @@ function interpretSoilTest() {
     var kDisplay = (!isNaN(kVal) ? kVal + ' lb/A ' : '') + pill(WAYPOINT_TO_VCE[kRatRaw] ? kRatRaw : kRat);
     var kMsg, kAction;
     if (kRatRaw === 'OP') {
-      kMsg = 'Optimum — your soil potassium is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional potassium.'; kAction = abox('action-good','At target — maintain. No additional potassium is needed. A low- or no-potassium fertilizer is appropriate; retest in 2–3 years.');
+      kMsg = 'Optimum — your soil potassium is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional potassium.'; kAction = abox('action-good', isGarden ? 'At target — no additional potassium needed. The Vegetable Garden or Flower Garden tab already reflects this and won\u2019t suggest a potassium amendment.' : 'At target — maintain. No additional potassium is needed. A low- or no-potassium fertilizer is appropriate; retest in 2–3 years.');
     } else if (['L-','L','L+'].indexOf(kRat) >= 0) {
-      kMsg = 'Low potassium. Plants almost always respond to potassium fertilizer at this level.'; kAction = abox('action-needed','Use a fertilizer containing potassium (K2O).');
+      kMsg = 'Low potassium. Plants almost always respond to potassium fertilizer at this level.'; kAction = abox('action-needed', isGarden ? 'The exact potassium amendment for your bed \u2014 organic or synthetic, sized to your bed size \u2014 is calculated on the Vegetable Garden or Flower Garden tab.' : 'Use a fertilizer containing potassium (K2O).');
     } else if (['M-','M','M+'].indexOf(kRat) >= 0) {
-      kMsg = 'Medium potassium. Plants sometimes respond; a moderate amount is recommended to maintain fertility.'; kAction = abox('action-monitor','A fertilizer with potassium may be used. Retest in 3–4 years.');
+      kMsg = 'Medium potassium. Plants sometimes respond; a moderate amount is recommended to maintain fertility.'; kAction = abox('action-monitor', isGarden ? 'A modest potassium amendment may help \u2014 sized automatically on the Vegetable Garden or Flower Garden tab. Retest in 3–4 years.' : 'A fertilizer with potassium may be used. Retest in 3–4 years.');
     } else if (['H-','H','H+','VH'].indexOf(kRat) >= 0) {
-      kMsg = 'High to very high potassium. Plants usually do not respond to additional applications.'; kAction = abox('action-good','Use a zero-potassium fertilizer or one primarily supplying nitrogen.');
+      kMsg = 'High to very high potassium. Plants usually do not respond to additional applications.'; kAction = abox('action-good', isGarden ? 'No potassium amendment needed \u2014 the Vegetable Garden or Flower Garden tab skips potassium automatically to avoid unnecessary buildup.' : 'Use a zero-potassium fertilizer or one primarily supplying nitrogen.');
     } else {
-      kMsg = 'Optimum — your soil has adequate potassium for good plant growth.'; kAction = abox('action-good','Maintenance applications only. A fertilizer with low or no potassium is appropriate. Retest in 3–4 years.');
+      kMsg = 'Optimum — your soil has adequate potassium for good plant growth.'; kAction = abox('action-good', isGarden ? 'At target \u2014 no additional potassium needed. The Vegetable Garden or Flower Garden tab already reflects this.' : 'Maintenance applications only. A fertilizer with low or no potassium is appropriate. Retest in 3–4 years.');
     }
     // Button removed entirely August 1, 2026 — same reasoning as Phosphorus above.
     cards.push(card('&#9889;', 'Potassium (K)', 'Medium: 76-175 lb/A (VCE)', '', kDisplay,
@@ -4951,22 +4986,13 @@ function interpretSoilTest() {
   }
 
   // ---- Grass / Garden Type ----
-  if (crop) {
-    if (isGarden) {
-      var gdnLabels = {
-        vegetable:'Vegetable Garden', flower:'Flower Garden', shrub:'Shrubs &amp; Trees'
-      };
-      var gdnLabel = gdnLabels[crop] || crop;
-      var isFlowerType = (crop === 'flower');
-      var isShrubType  = (crop === 'shrub');
-      var destNote = isShrubType
-        ? 'Fertilization is only recommended when the plant shows signs of deficiency. Plants adjacent to a fertilized lawn generally need no supplement. Use the Shrubs &amp; Trees tab to calculate quantities for your plant\'s canopy size.'
-        : (isFlowerType
-            ? 'Use the Flower Garden tab to calculate precise fertilizer and lime quantities for your bed size. Research-based defaults are available if you prefer not to enter your soil test N recommendation directly.'
-            : 'Per VCE Soil Test Note 19, use the Vegetable Garden tab to calculate precise fertilizer and lime quantities for your bed size.');
-      cards.push(card('&#127807;', 'Plant Type &amp; Fertilizer Program', '', '', gdnLabel,
-        destNote, '', '', ''));
-    } else {
+  // Garden branch ("Plant Type & Fertilizer Program" card) removed entirely August 9, 2026 — user
+  // feedback: it's a leftover from an earlier version of the app and adds nothing the carry-over
+  // bar / "Continue to [X] Calculator" button and bottom-of-tab navigation don't already say more
+  // usefully. The lawn side (Grass Type & Lawn Status, below) is kept — it carries real, distinct
+  // information (new-lawn establishment guidance, seasonal timing, starter fertilizer note) that
+  // the garden version never had.
+  if (crop && !isGarden) {
       var grassLabel = crop === 'warm'
         ? 'Warm-Season (bermudagrass, zoysiagrass, centipedegrass, St. Augustinegrass)'
         : 'Cool-Season (tall fescue, Kentucky bluegrass, fine fescue, perennial ryegrass)';
@@ -5010,7 +5036,6 @@ function interpretSoilTest() {
           'Applying more nitrogen than the VCE annual ceiling increases leaching, pushes excessive top growth at the expense of roots, and can exceed Virginia nutrient management standards.', nAction,
           ''));
       }
-    }
   }
 
   // ---- Micronutrients (IIFE) ----
@@ -6906,6 +6931,12 @@ function prefillSampleReport(type) {
   // rendered dynamically inside the Nutrient Status panel) — reset for every sample load, then
   // populate below for samples that have them.
   gdnTargets = { p2o5:'', k2o:'', mg:'', s:'', b:'', cu:'', mn:'', zn:'', fe:'' };
+  // Reset the Base Saturation %H helper (added Aug 8, 2026) so a stale value from a previously
+  // loaded sample doesn't linger after switching to one that doesn't use it.
+  var basesatHelperReset = document.getElementById('st-basesat-h-helper');
+  if (basesatHelperReset) basesatHelperReset.value = '';
+  var basesatResultReset = document.getElementById('st-basesat-h-result');
+  if (basesatResultReset) basesatResultReset.textContent = '';
   if (type === 'garden') {
     // Based on a real Waypoint flower report (full S3M panel) — Annual Flowers / Perennials
     fields = {
@@ -6934,7 +6965,15 @@ function prefillSampleReport(type) {
     fields = {
       'st-report-type':'waypoint-vegetable',
       'st-ph-wp':'7.0',
-      'st-cec-wp':'23.0','st-basesat-wp':'100',
+      'st-cec-wp':'23.0',
+      // Base Saturation itself isn't printed on this report — only %H (Hydrogen Saturation) is,
+      // in the %Saturation table (H: 0.0%). Previously this hardcoded 'st-basesat-wp':'100' with
+      // no comment showing where 100 came from (100 - 0.0 = 100, done by hand, off-report).
+      // Fixed Aug 8, 2026 to instead populate the new %H helper field with the report's own
+      // printed number and let calcBaseSatFromH() (called below, after the main field loop) do
+      // the computation the same way a real user now would — traceable to what's actually on the
+      // report, and exercises the same calculator a user relies on.
+      'st-basesat-h-helper':'0.0',
       'st-p-val-wp':'394','st-p-rating-wp':'VH2',
       'st-k-val-wp':'100','st-k-rating-wp':'LO',
       'st-ca-val-wp':'3723','st-ca-rating-wp':'OP',
@@ -7039,6 +7078,10 @@ function prefillSampleReport(type) {
       el.value = val;
     }
   }
+  // If this sample populated the %H helper above, run the same calculation a real user's keystroke
+  // would trigger (setting el.value directly in the loop above doesn't fire oninput on its own).
+  var basesatHelperFilled = document.getElementById('st-basesat-h-helper');
+  if (basesatHelperFilled && basesatHelperFilled.value !== '') calcBaseSatFromH(basesatHelperFilled);
   onReportTypeChange();
   // Always clear the area field — user must enter their own
   var areaEl = document.getElementById('st-lawn-size');

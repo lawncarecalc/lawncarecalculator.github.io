@@ -4546,3 +4546,93 @@ there is correct.
 | :-- | :-- |
 | `index.html` | Fixed Waypoint-garden lime label basis (100 vs. 1,000 sq. ft.); fixed `gdnSetNutrientChoice`/`gdnSetTarget`/`gdnSetDensity` re-rendering the wrong tab's panel on Flower Garden (v6.8) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 8, 2026 (v6.9: Base Saturation %H mini-calculator, Option B)
+
+Following up on the Base Saturation discussion: a real user filling out the Waypoint block has no
+way to find "Base Saturation" on their report, since Waypoint reports print %H (Hydrogen
+Saturation) in the %Saturation table instead — Base Saturation = 100 − %H, but nothing told the
+user that, and no field existed to do the arithmetic for them.
+
+**Built Option B (mini in-field calculator) rather than just a hint.** Added a %H input beneath
+Waypoint's Base Saturation field: enter %H as printed on the report, and `calcBaseSatFromH()`
+computes and fills the real Base Saturation field automatically, then syncs it to the canonical
+field via the existing `stSync()` path exactly as if the user had typed the result in directly.
+
+**Accessibility, since this needed to stay ADA-compliant:** the %H input has its own `<label for>`
+(not just a visual caption); `aria-describedby` links it to both the instructional text above and
+the result region below; the result region uses `aria-live="polite"` specifically because setting
+another field's `.value` via JS never fires a native change event and would otherwise be silently
+invisible to a screen reader — the live region is the only way a non-sighted user learns the
+calculation ran and what it produced. Kept plain semantic inputs throughout (no custom widgets),
+so keyboard operation needs nothing extra.
+
+**Prefill traceability fix, same root issue as the earlier conversation:** the 'veggie' sample
+previously hardcoded `'st-basesat-wp':'100'` with no comment showing where 100 came from — it was
+computed by hand off-report (100 − the report's own H% of 0.0), same math a real user would now do
+through the new calculator, just never documented. Replaced with `'st-basesat-h-helper':'0.0'`
+(the number actually printed on the report) plus a call to `calcBaseSatFromH()` after the field
+loop, so the prefill now demonstrates the same calculator a real user relies on instead of
+silently pre-computing the answer.
+
+**Also expanded the Soil Test tab's intro line** ("Fields below are ordered to match the layout of
+each lab's report.") to add "Leave fields blank where values don't appear on your report." —
+directly addresses the fact that several fields (Buffer pH/Index, Base Saturation, etc.) are
+correctly blank on many real reports and aren't all mandatory just because they're in the grid.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added %H-to-Base-Saturation mini-calculator (Waypoint block only) with full label/aria-describedby/aria-live wiring; fixed the 'veggie' prefill's undocumented Base Saturation value to route through the new calculator instead; expanded the Lab Test Results intro line to mention leaving fields blank (v6.9) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 9, 2026 (v6.10: garden-aware P/K card wording; removed legacy "Plant Type & Fertilizer Program" card; investigated Sodium report)
+
+### Investigated — Sodium showing "Very Low"
+User reported the Sodium rating showing "Very Low" on the Waypoint vegetable prefill, despite the
+Na dropdown only ever offering two options (Normal/Low, High/Very High — no "Very Low" choice
+exists). Simulated the exact prefill against the live code in a headless DOM (jsdom) rather than
+guessing from static reads, and it correctly renders "54 ppm — Optimum" — did not reproduce.
+No code path exists that could reach "Very Low" for Na given its rating can only ever be '', 'SUFF',
+or 'H'. The user's own attached report shows a plain gray, uncolored bar for the Sodium row (unlike
+every other nutrient's colored 5-zone bar) — Waypoint's own convention for "informational value, no
+graded scale applies," consistent with the app's 2-option design. Could not reach Waypoint's
+published documentation directly to confirm further (Chrome extension not connecting this
+session). Left open — asked user to confirm they're on the latest version and, if it still
+reproduces, to send a screenshot.
+
+### Fixed — Phosphorus/Potassium cards prescribed lawn-style advice for garden reports
+The Soil Test tab's Phosphorus and Potassium interpretation cards gave identical advice regardless
+of report type — e.g. "Use a complete fertilizer containing phosphorus (e.g. 10-10-10, 12-4-8)" —
+even though the Vegetable Garden tab has no blended-fertilizer picker at all (removed in an earlier
+session; it only offers individual single-nutrient amendments), and Flower Garden's default mode is
+also individual-nutrient. Fixed both cards' Low/Medium/High/Optimum branches to check `isGarden`:
+garden reports now point to "the Vegetable Garden or Flower Garden tab" for the actual calculated
+amount instead of naming a fertilizer grade; lawn reports keep the original advice unchanged (still
+correct there, since Cool/Warm-Season lawn calculators do use a fertilizer-grade picker). Checked
+for the same issue elsewhere — the Ca/Mg card was already fine (gypsum-based advice, not
+fertilizer-grade). Verified both branches via jsdom simulation: garden P (Very High) → "No
+[amendment] needed... skips phosphorus automatically"; garden K (Low) → "calculated on the
+Vegetable Garden or Flower Garden tab"; lawn P (Optimum) → unchanged original wording.
+
+### Removed — "Plant Type & Fertilizer Program" card
+User feedback: leftover from an earlier version of the app, adds nothing the carry-over bar /
+"Continue to [X] Calculator" button and bottom-of-tab navigation don't already say more usefully.
+Removed the entire `isGarden` branch of the "Grass / Garden Type" card block (covered vegetable,
+flower, and shrub crop types alike, all built from the same code path). Kept the lawn-side "Grass
+Type & Lawn Status" card as-is — genuinely distinct content (new-lawn establishment guidance,
+seasonal fertilizing windows, starter-fertilizer note) the garden version never had. Required
+collapsing `if (crop) { if (isGarden) {...} else {...} }` into `if (crop && !isGarden) {...}` and
+removing one now-orphaned closing brace. Verified via simulation: garden reports no longer contain
+"Plant Type" anywhere in the results panel; lawn reports still show "Grass Type & Lawn Status"
+correctly.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Made Phosphorus/Potassium Soil Test tab cards garden-aware (no more fertilizer-grade advice for garden reports); removed the "Plant Type & Fertilizer Program" card entirely (all garden crop types); Sodium "Very Low" report investigated but not reproduced (v6.10) |
+| `CLAUDE.md` | this entry |
