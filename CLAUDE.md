@@ -4428,3 +4428,56 @@ inference in the code, not a re-confirmed literal value from those original repo
 | :-- | :-- |
 | `index.html` | Fixed a second Waypoint-target-message leak affecting P/K/Mg/S/Zn/Mn/Cu/B (v6.0); removed Base Saturation's last "go to calculator" button and the now-callerless `goBtn()`; removed Sulfur entirely from the VCE-side garden nutrient list (v6.1); reconciled onboarding Step 3 with the Retesting card (v6.2); removed Magnesium's unsourced DEF/SUFF dropdown option (v6.3); fixed a real Calcium-list inaccuracy on the live Flower Garden tab and both Garden/Flower About-page guides (v6.4); added a VCE Soluble Salts rating dropdown, sourced to 452-701, plus an `'EH'` case for the shared rating-pill styling (v6.5) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Updates — August 8, 2026 (v6.6: new VCE master recommendation guidebook found — cross-checked against the app, five edits made)
+
+### v6.6 — User found VCE's "Soil Test Recommendations for Virginia" (Maguire & Heckendorn, July
+### 2026) — the actual master document behind every crop-code recommendation on a real VCE report
+Read the full 110-page PDF (pdftotext + targeted section review: Home Lawns/Gardens/Shrubs
+crop-code tables, Secondary Nutrients, Micronutrients, Raising Soil pH with Lime). Cross-checked
+against current app content rather than assuming anything changed.
+
+**Confirmed, no change needed:**
+- Sulfur is genuinely absent from VCE's recommendation list ("more research is needed before this
+  element can be put on the recommendation list") — backs the v5.9/v6.1 decision directly.
+- Cool/warm-season per-application N caps (0.7 lb / 0.9 lb) match the source's own Note 17/18
+  table column headers exactly.
+- Zn/Mn deficiencies are VCE-documented only for field crops (corn/small grains/sorghum;
+  soybeans/peanuts) — not home lawn/garden — matching this calculator's own earlier conclusion
+  that its Zn/Mn amendments are sourced elsewhere, not from VCE.
+
+**New information found, not previously in the app — five edits made:**
+1. **Lime trigger threshold + previous-lime credit** — VCE only recommends lime once pH is 0.2
+   units or more below target (0.1 for new turf establishment; 0.50 T/A minimum), and credits
+   75%/50%/25%/0% of lime applied 1–6/7–12/13–18/18+ months ago. Added as a new paragraph in the
+   "Maintenance Fertilizing & Retesting" About-tab card, with a one-line pointer added to the
+   shorter "🪨 Lime" collapsible so both entry points connect.
+2. **Molybdenum** — VCE does recommend it (alfalfa/soybeans/some vegetables, triggered below pH
+   5.8) but publishes no home-garden rate; added a short explainer to the "Single-Nutrient
+   Amendment Philosophy" card on why this tab has no separate Mo amendment (the lime already
+   recommended elsewhere removes the low-pH trigger condition in practice).
+3. **Copper (Soil Test tab interpretation card)** — tightened `st-cu`'s `lowMsg` from "rare in
+   Virginia gardens" to the source's actual, stronger statement: "not recommended for any Virginia
+   crop."
+4. **Copper (Garden/Flower amendment note)** — this is the one place the app actually computes and
+   offers a copper application (Waypoint-only; VCE reports never reach this branch since VCE gives
+   no Cu rate). Added an explicit note that this option follows Waypoint's methodology, not VCE's,
+   since the two labs genuinely disagree here — VCE's position isn't just "no published rate," it's
+   a stated non-recommendation.
+5. **New source entry** — added the guidebook itself to the About tab's Source Documents list,
+   in a new "📘 VCE General & Lime Publications" section placed near the top (alongside SPES-40A)
+   since, like that document, it isn't specific to any one tab.
+
+**Not fully resolved:** the official garden N-P-K crop-code table (*221–*225) gives synthetic
+complete-fertilizer combinations that weren't cross-checked gram-for-gram against this app's
+organic single-nutrient amendments (bone meal, granite dust, etc.), since those are sourced from a
+different publication (Note 19) not reprinted in this master document. Left as a flagged gap rather
+than guessed at.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added new VCE general/lime source entry to About tab (Source Documents list); added lime-trigger-threshold + previous-lime-credit paragraph to the Retesting card, with a cross-reference from the Lime collapsible; added a molybdenum explainer to the Single-Nutrient Amendment Philosophy card; tightened Copper's Soil Test tab interpretation message; added a VCE-vs-Waypoint divergence note to the Copper garden amendment (v6.6) |
+| `CLAUDE.md` | this entry |
