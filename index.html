@@ -558,10 +558,14 @@
   .fert-rec-box.needs-p  { background:#fff8e1; border-left:3px solid #e0c87a; }
   .fert-rec-box.needs-none { background:#f0f7f1; border-left:3px solid var(--green-mid); }
   .fert-grade-table { width:100%; border-collapse:collapse; font-size:0.78rem; margin-top:10px; }
-  .fert-grade-table th { background:var(--green-deep); color:white; padding:6px 8px; text-align:left; font-weight:500; }
+  .fert-grade-table thead th { background:var(--green-deep); color:white; padding:6px 8px; text-align:left; font-weight:500; }
   .fert-grade-table td { padding:6px 8px; border-bottom:1px solid var(--green-mist); }
-  .fert-grade-table tr:last-child td { border-bottom:none; }
-  .fert-grade-table tr:nth-child(even) td { background:var(--green-mist); }
+  .fert-grade-table tr:last-child td, .fert-grade-table tr:last-child th { border-bottom:none; }
+  .fert-grade-table tr:nth-child(even) td, .fert-grade-table tr:nth-child(even) th { background:var(--green-mist); }
+  /* Row headers (<th scope="row">) inside tbody are a row label, not a column header — style them
+     like the bolded <td> they replaced (Aug 8, 2026, WAVE "Empty table header" fix) rather than
+     inheriting the dark-green thead look from the bare .fert-grade-table th rule above. */
+  .fert-grade-table tbody th { background:transparent; color:inherit; padding:6px 8px; text-align:left; font-weight:700; border-bottom:1px solid var(--green-mist); }
 
   /* ===== AUTO PLAN MODE ===== */
   .plan-mode-toggle { display:flex; gap:0; margin-bottom:16px; border:1px solid var(--border); border-radius:6px; overflow:hidden; width:100%; }
@@ -2858,25 +2862,25 @@
 
             <div class="table-scroll" style="margin-bottom:16px;">
               <table class="fert-grade-table">
-                <thead><tr><th></th><th>Lawns</th><th>Vegetable &amp; Flower Gardens</th></tr></thead>
+                <thead><tr><th scope="col"><span class="sr-only">Category</span></th><th scope="col">Lawns</th><th scope="col">Vegetable &amp; Flower Gardens</th></tr></thead>
                 <tbody>
                   <tr>
-                    <td><strong>Nitrogen</strong></td>
+                    <th scope="row">Nitrogen</th>
                     <td>Apply every year. Not soil-tested, but a rate is always suggested &mdash; Waypoint prints it directly, already tailored to the specific grass selected at intake (e.g. Zoysiagrass Lawn); VCE's intake only distinguishes cool- vs. warm-season, then points to its own Soil Test Notes for the rest. This calculator uses your Waypoint figure directly when entered, or its own Note-sourced defaults by species when a VCE report doesn't print one.</td>
                     <td>Same delivery split, but the gap is wider on VCE's side: its intake form has no crop-specific code at all &mdash; only generic &ldquo;Vegetable Garden&rdquo; &mdash; so the report itself stays general regardless of what's actually planted. Waypoint's intake lets you select the specific vegetable, so its report can already be crop-tailored at the source. This calculator's own per-crop N defaults and sidedress schedules exist specifically to fill the gap VCE's generic intake leaves open.</td>
                   </tr>
                   <tr>
-                    <td><strong>Phosphorus &amp; Potassium</strong></td>
+                    <th scope="row">Phosphorus &amp; Potassium</th>
                     <td>Correct once per current test, hold 2&ndash;3 years, don't reapply annually. If already High/Very High, apply none &mdash; a regulatory limit (DCR), not just a recommendation. If Very High with nothing currently recommended, retest after <strong>1 year</strong> instead of the full 2&ndash;3.</td>
                     <td>Same pattern, applied by extension &mdash; no garden-specific source states this directly.</td>
                   </tr>
                   <tr>
-                    <td><strong>Lime</strong></td>
+                    <th scope="row">Lime</th>
                     <td>One application expected to last 2&ndash;3 years. Don't reapply annually.</td>
                     <td>Same, applied by extension.</td>
                   </tr>
                   <tr>
-                    <td><strong>How well-sourced is this?</strong></td>
+                    <th scope="row">How well-sourced is this?</th>
                     <td>Directly stated &mdash; VCE Soil Test Note 17 (452-717).</td>
                     <td>This calculator's extension of the lawn pattern &mdash; flagged as inference, not a direct citation.</td>
                   </tr>

@@ -4481,3 +4481,34 @@ than guessed at.
 | :-- | :-- |
 | `index.html` | Added new VCE general/lime source entry to About tab (Source Documents list); added lime-trigger-threshold + previous-lime-credit paragraph to the Retesting card, with a cross-reference from the Lime collapsible; added a molybdenum explainer to the Single-Nutrient Amendment Philosophy card; tightened Copper's Soil Test tab interpretation message; added a VCE-vs-Waypoint divergence note to the Copper garden amendment (v6.6) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 8, 2026 (v6.7: WAVE accessibility scan — fixed the one real error)
+
+User ran the WAVE browser extension against the live page (after enabling "Allow access to file
+URLs," since WAVE can't inspect a file:// page without that permission). Result: 199 Features, 80
+Structure, 138 ARIA, 9.3/10 AIM Score, **1 Error, 0 Contrast Errors, 76 Alerts**.
+
+**The 1 Error — "Empty table header" — was real and is now fixed.** The "Maintenance Fertilizing
+& Retesting: Years 2–3" card's comparison table (Lawns vs. Vegetable & Flower Gardens) had an empty
+`<th></th>` corner cell, and its row labels (Nitrogen / Phosphorus & Potassium / Lime / How
+well-sourced is this?) were plain `<td><strong>` rather than proper row headers — meaningless to a
+screen reader announcing that column. Fixed: corner cell now carries a visually-hidden "Category"
+label (`<th scope="col"><span class="sr-only">`), the three column headers got explicit
+`scope="col"`, and the four row labels became `<th scope="row">`. That reuses the `.fert-grade-table
+th` selector, which was styled for dark-green thead headers — added a scoped
+`.fert-grade-table tbody th` rule so row headers keep the original bolded/plain-background look
+instead of turning dark green, and extended the existing `thead`/`nth-child(even)` selectors to
+cover `th` alongside `td` so striping and border rules still apply consistently.
+
+The 76 Alerts weren't reviewed in this pass — WAVE alerts are "check this, it might be fine"
+flags, not confirmed errors, and the ones visible in the user's screenshot (redundant link text,
+link-to-PDF, JavaScript jump menu, possible list) are common on content-heavy sites and often
+non-issues on inspection. Left for a future pass if requested rather than acted on here.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fixed WAVE's one flagged Error: empty table header + missing row headers on the Retesting card's comparison table, with a matching CSS fix so the new `<th scope="row">` cells don't inherit the dark-green thead styling (v6.7) |
+| `CLAUDE.md` | this entry |
