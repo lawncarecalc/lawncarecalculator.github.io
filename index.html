@@ -785,7 +785,7 @@
       <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v7.9 &middot; 2026-08-10</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v8.0 &middot; 2026-08-10</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -4777,7 +4777,6 @@ function interpretSoilTest() {
       // themselves (July 28) — route there, not to the standalone Lime tab.
       var isWaypointGdn = isWaypointReport();
       var limeRec100 = isWaypointGdn ? (limeRec / 10) : limeRec;
-      var limeConvNote = isWaypointGdn ? ' (your report lists ' + limeRec + ' lbs/1,000 sq. ft., which is ' + limeRec100 + ' lbs/100 sq. ft.)' : '';
       var bedStatus = document.getElementById('st-bed-status') ? document.getElementById('st-bed-status').value : 'established';
       var limeMaxPer = bedStatus === 'preplant' ? 10 : 5;
       var lApps = Math.max(1, Math.ceil(limeRec100 / limeMaxPer));
@@ -4785,8 +4784,21 @@ function interpretSoilTest() {
         : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone is recommended.'
         : 'No specific lime type listed.';
       var destLabelForLime = crop === 'flower' ? 'Flower Garden' : 'Vegetable Garden';
-      cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec100 + ' lbs / 100 sq. ft.' + limeConvNote,
-        'Virginia soils naturally acidify. ' + lTypeNote + ' Per Note 19: never apply more than ' + limeMaxPer + ' lbs per 100 sq. ft. at one time (' + (bedStatus==='preplant'?'preplant':'established bed') + '). Your total of ' + limeRec100 + ' lbs requires ' + lApps + ' application' + (lApps>1?'s':'') + '.',
+      // Redesigned Aug 10, 2026 — previously led with the converted 100-sq.-ft. figure and buried
+      // the report's own printed number in a confusing parenthetical ("0.3 lbs/100 sq. ft. (your
+      // report lists 3 lbs/1,000 sq. ft., which is 0.3 lbs/100 sq. ft.)"). Now the header always
+      // shows the number exactly as printed on the report (Waypoint: lbs/1,000 sq. ft.; VCE:
+      // lbs/100 sq. ft. — already native, no conversion needed there), and for Waypoint the Note
+      // 19 threshold is re-expressed in that same 1,000 sq. ft. basis (5 lbs/100 sq. ft. = 50
+      // lbs/1,000 sq. ft.; 10 lbs/100 sq. ft. preplant = 100 lbs/1,000 sq. ft.) so the whole card
+      // stays in one consistent unit instead of switching mid-card. The underlying math (100-sq.-
+      // ft.-basis limeRec100/limeMaxPer) is unchanged — only the displayed wording differs.
+      var limeHeaderVal = isWaypointGdn ? (limeRec + ' lbs / 1,000 sq. ft.') : (limeRec100 + ' lbs / 100 sq. ft.');
+      var limeMaxPerDisplay = isWaypointGdn ? (limeMaxPer * 10) : limeMaxPer;
+      var limeMaxUnitDisplay = isWaypointGdn ? '1,000' : '100';
+      var limeTotalDisplay = isWaypointGdn ? (limeRec + ' lbs') : (limeRec100 + ' lbs');
+      cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeHeaderVal,
+        'Virginia soils naturally acidify. ' + lTypeNote + ' Per Note 19: never apply more than ' + limeMaxPerDisplay + ' lbs per ' + limeMaxUnitDisplay + ' sq. ft. at one time (' + (bedStatus==='preplant'?'preplant':'established bed') + '). Your total of ' + limeTotalDisplay + ' requires ' + lApps + ' application' + (lApps>1?'s':'') + '.',
         'Lime restores the pH needed for nutrients to be available to garden plants. Lime should not be applied annually — the recommended amount covers a three-year period. <em>(SPES-384)</em>',
         abox('action-needed', 'Use the ' + destLabelForLime + ' tab to calculate the quantity of lime required for your specific bed size adjusted for CCE and bag size.'),
         ''));
@@ -4795,11 +4807,12 @@ function interpretSoilTest() {
       // that still routes to the standalone Lime tab, same as Lawn.
       var isWaypointShrub = isWaypointReport();
       var limeRec100s = isWaypointShrub ? (limeRec / 10) : limeRec;
-      var limeConvNoteS = isWaypointShrub ? ' (your report lists ' + limeRec + ' lbs/1,000 sq. ft., which is ' + limeRec100s + ' lbs/100 sq. ft.)' : '';
       var lTypeNoteS = limeTyp === 'Dolomitic' ? 'Dolomitic limestone is recommended — it supplies both calcium and magnesium.'
         : limeTyp === 'Agricultural' ? 'Agricultural (calcitic) limestone is recommended.'
         : 'No specific lime type listed.';
-      cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeRec100s + ' lbs / 100 sq. ft.' + limeConvNoteS,
+      // Same single-unit redesign as the Vegetable/Flower branch above.
+      var limeHeaderValS = isWaypointShrub ? (limeRec + ' lbs / 1,000 sq. ft.') : (limeRec100s + ' lbs / 100 sq. ft.');
+      cards.push(card('&#129704;', 'Lime Recommendation', '', '', limeHeaderValS,
         'Virginia soils naturally acidify. ' + lTypeNoteS + ' Many acid-loving shrubs and trees (azaleas, rhododendrons, blueberries) should NOT be limed at all even if a general lime figure is printed — confirm your specific plant actually needs it before applying.',
         'Lime restores the pH needed for nutrients to be available to most landscape plants, but acid-loving species are the exception. <em>(SPES-384)</em>',
         abox('action-needed', 'Use the Lime Calculator tab to calculate the quantity of lime required for your bed size adjusted for CCE and bag size.'),
@@ -5066,7 +5079,12 @@ function interpretSoilTest() {
         suffMsg:'Manganese levels are adequate. No corrective action needed.',
         highMsg:'High manganese can occur at low pH. Liming to the correct range will reduce availability to safe levels.' },
       { id:'st-cu', rid:'st-cu-rating', name:'Copper (Cu)',
-        phNote:'Deficiency most likely on sandy, low-organic or highly organic soils.',
+        // Revised Aug 10, 2026 — the old phNote ("Deficiency most likely on sandy, low-organic or
+        // highly organic soils") always displayed regardless of the user's actual reading or rating,
+        // reading as an active warning even for someone whose copper level is clearly adequate/high.
+        // Reframed to lead with VCE's actual stance (rarity, no routine recommendation) so the risk
+        // factors read as background context rather than a live concern.
+        phNote:'Copper deficiency is uncommon in Virginia and has mainly been documented on sandy, low-organic, or highly organic soils — VCE does not publish a routine copper recommendation for any crop.',
         lowMsg:'VCE does not recommend copper for any Virginia crop — deficiencies "have not normally been found" in the state. Over-application can be toxic to plants and soil organisms, and the correction is difficult to reverse. If you suspect a genuine deficiency, consult your local VCE office rather than applying copper on your own. <em>(Soil Test Recommendations for Virginia, July 2026, Section VIII; 426-323)</em>',
         suffMsg:'Copper levels are adequate. No corrective action needed.',
         highMsg:'Very high copper can be toxic to plants and soil organisms. Do not apply additional copper-containing products.' },

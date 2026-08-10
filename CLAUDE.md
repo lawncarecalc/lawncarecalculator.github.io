@@ -4951,3 +4951,40 @@ Agricultural-lime branch of the Ca/Mg card to confirm both explanatory paths ren
 | :-- | :-- |
 | `index.html` | Removed Action boxes from CEC, Organic Matter, and Soluble Salts (all buckets); rewrote the Calcium & Magnesium card to explain agricultural/dolomitic lime with a CCE shopping tip instead of prescriptive action language, moved out of the Action-box styling entirely (v7.9) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v8.0: Copper description reframed; Lime card redesigned to a single consistent unit)
+
+### 1. Copper (Cu) description — was alarming regardless of actual reading
+The Cu row's italic note ("Deficiency most likely on sandy, low-organic or highly organic soils")
+always displayed regardless of the user's actual ppm value or rating — so someone with a genuinely
+high/adequate copper reading (per user's real report) still saw what read as an active deficiency
+warning. Reframed to lead with VCE's actual stance (uncommon, no routine recommendation for any
+crop) so the same risk-factor information now reads as background context rather than a live
+concern tied to their specific number.
+
+### 2. Lime Recommendation card (Vegetable/Flower Garden and Shrub & Trees, Waypoint only) — redesigned to one consistent unit
+Previously led with the converted 100-sq.-ft. figure and buried the report's own printed number in
+a parenthetical: "0.3 lbs/100 sq. ft. (your report lists 3 lbs/1,000 sq. ft., which is 0.3
+lbs/100 sq. ft.)" — then the body text switched back to the 100-sq.-ft.-basis VCE Note 19 quote
+("never apply more than 5 lbs per 100 sq. ft."), so the card used two different units in two
+different places. User proposed showing the report's own printed number as the single header
+figure, and re-expressing the Note 19 threshold in that same unit rather than switching mid-card.
+Implemented, with one correction: 5 lbs/100 sq. ft. converts to **50 lbs/1,000 sq. ft.** (×10), not
+0.5 as initially suggested — flagged and corrected before implementing rather than reproducing the
+arithmetic error. VCE reports (which already give lime in the 100-sq.-ft. basis, matching Note 19
+natively) were untouched — no conversion was ever needed there. The underlying application-count
+math (`limeRec100`/`limeMaxPer`) is unchanged; only the displayed wording was redirected to stay in
+one unit.
+
+**Verification:** jsdom simulation matching the exact screenshot scenario (Waypoint vegetable,
+lime rec 3 lbs/1,000 sq. ft., Cu 4.1 ppm) — Lime card now reads "3 lbs / 1,000 sq. ft." in the
+header and "never apply more than 50 lbs per 1,000 sq. ft." in the body, both in the report's
+native unit; Copper card shows the revised neutral framing.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Reframed Copper's always-visible description to lead with VCE's rarity/no-recommendation stance instead of an unconditional deficiency warning; redesigned the Waypoint Vegetable/Flower Garden and Shrub & Trees Lime Recommendation cards to display in one consistent unit (the report's own printed basis) instead of switching between 100- and 1,000-sq.-ft. mid-card (v8.0) |
+| `CLAUDE.md` | this entry |
