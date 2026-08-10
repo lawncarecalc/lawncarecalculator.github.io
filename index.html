@@ -785,7 +785,7 @@
       <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v7.4 &middot; 2026-08-09</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v7.6 &middot; 2026-08-09</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -4716,22 +4716,22 @@ function interpretSoilTest() {
       phClass = 'pill-warn'; phMsg = 'Strongly acidic. At pH below 5.0, aluminum toxicity limits plant growth.';
       phAction = abox('action-needed', 'Lime application is strongly recommended. Follow your lime recommendation and use the ' + phDestName + '.');
     } else if (ph < phLow) {
-      phClass = 'pill-warn'; phMsg = 'Acidic. Below the ideal range of ' + phLow + '–6.8 for ' + (isGarden ? 'vegetable and flower gardens' : 'most lawn grasses') + '.';
+      phClass = 'pill-warn'; phMsg = 'Acidic. Below the ideal range of ' + phLow + '–6.8 for ' + (crop === 'shrub' ? 'most shrubs and trees (though acid-loving species may prefer this)' : (isGarden ? 'vegetable and flower gardens' : 'most lawn grasses')) + '.';
       phAction = abox('action-needed', 'Apply lime per your soil test recommendation. Virginia soils naturally acidify over time.');
     } else if (ph <= 6.8) {
       phClass = 'pill-suff'; phMsg = 'Slightly acidic to neutral — the ideal range (' + phLow + '–6.8) where most nutrients are available.';
       phAction = abox('action-good', 'No lime action needed based on pH alone \u2014 if your report includes a Buffer Index or Buffer pH, check that too, since it\u2019s what actually determines lime need even when current pH looks fine.');
     } else if (ph <= 7.0) {
-      phClass = 'pill-med'; phMsg = 'Near neutral. Acceptable for most ' + (isGarden ? 'garden plants' : 'lawn grasses') + '.';
+      phClass = 'pill-med'; phMsg = 'Near neutral. Acceptable for most ' + (crop === 'shrub' ? 'shrubs and trees, though acid-loving species may prefer lower pH' : (isGarden ? 'garden plants' : 'lawn grasses')) + '.';
       phAction = abox('action-monitor', 'Do not apply additional lime. Monitor micronutrient availability \u2014 if your report includes a Buffer Index or Buffer pH, check that too, since it\u2019s what actually determines lime need even when current pH looks fine.');
     } else {
       phClass = 'pill-warn'; phMsg = 'Alkaline. Above pH 7.0, micronutrients become less available.';
       phAction = abox('action-needed', 'Do not apply lime. Sulfur may be recommended for certain crops to lower pH — check your soil test report or consult your local VCE office.');
     }
-    cards.push(card('&#9879;&#65039;', 'Soil pH', 'Virginia soils: 4.5-7.5', isGarden ? 'Gardens: 6.0-6.8' : 'Lawns: 5.8-6.8',
+    cards.push(card('&#9879;&#65039;', 'Soil pH', 'Virginia soils: 4.5-7.5', crop === 'shrub' ? 'Varies by species' : (isGarden ? 'Gardens: 6.0-6.8' : 'Lawns: 5.8-6.8'),
       '<span class="st-rating-pill ' + phClass + '">' + ph.toFixed(1) + '</span>',
       'pH measures soil acidity or alkalinity on a 0-14 scale (7 = neutral). Virginia soils naturally acidify over time.</p><p><strong>Your result:</strong> ' + phMsg,
-      isGarden ? 'Soil pH controls nutrient availability to your plants. The target for vegetable and flower gardens (6.0-6.8) is slightly higher than for lawns.' : 'Soil pH controls how available nutrients are to your grass. When pH is outside the target range, even well-fertilized soil may not feed your lawn effectively.',
+      crop === 'shrub' ? 'Soil pH controls nutrient availability to your plants. Shrubs and trees vary widely in pH preference \u2014 most established woody ornamentals tolerate a broad range, but acid-loving species like azaleas and rhododendrons need notably lower pH (roughly 4.5\u20135.5). Check your specific plant\u2019s requirements rather than assuming a general garden target applies.' : (isGarden ? 'Soil pH controls nutrient availability to your plants. The target for vegetable and flower gardens (6.0-6.8) is slightly higher than for lawns.' : 'Soil pH controls how available nutrients are to your grass. When pH is outside the target range, even well-fertilized soil may not feed your lawn effectively.'),
       phAction, ''));
   }
 
@@ -4763,7 +4763,7 @@ function interpretSoilTest() {
     } else if (acPct > 20) {
       bsAction = abox('action-monitor', 'If lime is recommended on your report, follow it. Monitor pH with periodic retesting every 2–3 years.');
     } else {
-      bsAction = abox('action-good', 'No corrective action needed based on this reading. Continue monitoring with periodic soil tests.');
+      bsAction = abox('action-good', 'No corrective action needed based on this reading \u2014 if your report includes a Buffer Index or Buffer pH, check that too, since it\u2019s what actually determines lime need even when this reading looks fine.');
     }
     // Route to wherever lime is actually calculated for this purpose (limeGoBtn computed above,
     // shared with the Buffer Index card).
@@ -4851,16 +4851,24 @@ function interpretSoilTest() {
   if (!isNaN(pVal) || pRatRaw) {
     var pDisplay = (!isNaN(pVal) ? pVal + ' lb/A ' : '') + pill(WAYPOINT_TO_VCE[pRatRaw] ? pRatRaw : pRat);
     var pMsg, pAction;
+    // isGarden alone is true for vegetable, flower, AND shrub reports (isGardenReport() covers
+    // all three) — text that says "calculated on the Vegetable Garden or Flower Garden tab" is
+    // wrong for a Shrub & Trees report, which routes to a different tab that doesn't do
+    // soil-test-based P/K correction the same way (fertilization there is symptom-triggered, not
+    // rating-triggered). Fixed Aug 9, 2026 — same isGarden-mislabels-Shrub bug class already
+    // called out for the pH/Lime destination logic above; missed here in the original P/K fix.
+    var isVegFlowerGarden = (crop === 'vegetable' || crop === 'flower');
+    var isShrubReport = (crop === 'shrub');
     if (pRatRaw === 'OP') {
-      pMsg = 'Optimum — your soil phosphorus is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional phosphorus.'; pAction = abox('action-good', isGarden ? 'At target — no additional phosphorus needed. The Vegetable Garden or Flower Garden tab already reflects this and won\u2019t suggest a phosphorus amendment.' : 'At target — maintain. No additional phosphorus is needed. Choose a low- or no-phosphorus fertilizer and retest in 2–3 years.');
+      pMsg = 'Optimum — your soil phosphorus is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional phosphorus.'; pAction = abox('action-good', isVegFlowerGarden ? 'At target — no additional phosphorus needed. The Vegetable Garden or Flower Garden tab already reflects this and won\u2019t suggest a phosphorus amendment.' : (isShrubReport ? 'At target — no additional phosphorus needed. Shrub and tree fertilization is only recommended when a plant shows signs of deficiency, regardless of this reading.' : 'At target — maintain. No additional phosphorus is needed. Choose a low- or no-phosphorus fertilizer and retest in 2–3 years.'));
     } else if (['L-','L','L+'].indexOf(pRat) >= 0) {
-      pMsg = 'Low phosphorus. Plants almost always respond to phosphorus fertilizer at this level.'; pAction = abox('action-needed', isGarden ? 'The exact phosphorus amendment for your bed \u2014 organic or synthetic, sized to your bed size \u2014 is calculated on the Vegetable Garden or Flower Garden tab.' : 'Use a complete fertilizer containing phosphorus (e.g. 10-10-10, 12-4-8).');
+      pMsg = 'Low phosphorus. Plants almost always respond to phosphorus fertilizer at this level.'; pAction = abox('action-needed', isVegFlowerGarden ? 'The exact phosphorus amendment for your bed \u2014 organic or synthetic, sized to your bed size \u2014 is calculated on the Vegetable Garden or Flower Garden tab.' : (isShrubReport ? 'Established shrubs and trees rarely need direct correction for this alone \u2014 fertilize only if the plant itself shows signs of deficiency. See the Shrubs & Trees tab.' : 'Use a complete fertilizer containing phosphorus (e.g. 10-10-10, 12-4-8).'));
     } else if (['M-','M','M+'].indexOf(pRat) >= 0) {
-      pMsg = 'Medium phosphorus. Plants sometimes respond; a moderate amount is recommended to maintain soil fertility.'; pAction = abox('action-monitor', isGarden ? 'A modest phosphorus amendment may help \u2014 sized automatically on the Vegetable Garden or Flower Garden tab. Retest in 3–4 years.' : 'A fertilizer with phosphorus may be used. Retest in 3–4 years.');
+      pMsg = 'Medium phosphorus. Plants sometimes respond; a moderate amount is recommended to maintain soil fertility.'; pAction = abox('action-monitor', isVegFlowerGarden ? 'A modest phosphorus amendment may help \u2014 sized automatically on the Vegetable Garden or Flower Garden tab. Retest in 3–4 years.' : (isShrubReport ? 'Established shrubs and trees rarely need direct correction for this alone \u2014 fertilize only if the plant itself shows signs of deficiency. See the Shrubs & Trees tab.' : 'A fertilizer with phosphorus may be used. Retest in 3–4 years.'));
     } else if (['H-','H','H+','VH'].indexOf(pRat) >= 0) {
-      pMsg = 'High to very high phosphorus. Plants usually do not respond, and excess phosphorus can wash into waterways during rain.'; pAction = abox('action-good', isGarden ? 'No phosphorus amendment needed \u2014 the Vegetable Garden or Flower Garden tab skips phosphorus automatically to avoid buildup and runoff.' : 'Use a zero-phosphorus (maintenance) fertilizer to prevent further buildup and runoff.');
+      pMsg = 'High to very high phosphorus. Plants usually do not respond, and excess phosphorus can wash into waterways during rain.'; pAction = abox('action-good', isVegFlowerGarden ? 'No phosphorus amendment needed \u2014 the Vegetable Garden or Flower Garden tab skips phosphorus automatically to avoid buildup and runoff.' : (isShrubReport ? 'No phosphorus amendment needed. Continued high phosphorus can contribute to runoff \u2014 avoid phosphorus-containing fertilizers here.' : 'Use a zero-phosphorus (maintenance) fertilizer to prevent further buildup and runoff.'));
     } else {
-      pMsg = 'Optimum — your soil has adequate phosphorus for good plant growth.'; pAction = abox('action-good', isGarden ? 'At target \u2014 no additional phosphorus needed. The Vegetable Garden or Flower Garden tab already reflects this.' : 'Maintenance applications only. Choose a fertilizer with low or no phosphorus to avoid buildup. Retest in 3–4 years.');
+      pMsg = 'Optimum — your soil has adequate phosphorus for good plant growth.'; pAction = abox('action-good', isVegFlowerGarden ? 'At target \u2014 no additional phosphorus needed. The Vegetable Garden or Flower Garden tab already reflects this.' : (isShrubReport ? 'At target — no additional phosphorus needed. Shrub and tree fertilization is only recommended when a plant shows signs of deficiency, regardless of this reading.' : 'Maintenance applications only. Choose a fertilizer with low or no phosphorus to avoid buildup. Retest in 3–4 years.'));
     }
     // Button removed entirely August 1, 2026 — was routed by purpose (vegetable/flower/shrub),
     // but that's redundant with the single "Continue to [X] Calculator" carry-over button plus
@@ -4875,15 +4883,15 @@ function interpretSoilTest() {
     var kDisplay = (!isNaN(kVal) ? kVal + ' lb/A ' : '') + pill(WAYPOINT_TO_VCE[kRatRaw] ? kRatRaw : kRat);
     var kMsg, kAction;
     if (kRatRaw === 'OP') {
-      kMsg = 'Optimum — your soil potassium is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional potassium.'; kAction = abox('action-good', isGarden ? 'At target — no additional potassium needed. The Vegetable Garden or Flower Garden tab already reflects this and won\u2019t suggest a potassium amendment.' : 'At target — maintain. No additional potassium is needed. A low- or no-potassium fertilizer is appropriate; retest in 2–3 years.');
+      kMsg = 'Optimum — your soil potassium is at the target level. Waypoint rates Optimum as adequate, with little expected response to additional potassium.'; kAction = abox('action-good', isVegFlowerGarden ? 'At target — no additional potassium needed. The Vegetable Garden or Flower Garden tab already reflects this and won\u2019t suggest a potassium amendment.' : (isShrubReport ? 'At target — no additional potassium needed. Shrub and tree fertilization is only recommended when a plant shows signs of deficiency, regardless of this reading.' : 'At target — maintain. No additional potassium is needed. A low- or no-potassium fertilizer is appropriate; retest in 2–3 years.'));
     } else if (['L-','L','L+'].indexOf(kRat) >= 0) {
-      kMsg = 'Low potassium. Plants almost always respond to potassium fertilizer at this level.'; kAction = abox('action-needed', isGarden ? 'The exact potassium amendment for your bed \u2014 organic or synthetic, sized to your bed size \u2014 is calculated on the Vegetable Garden or Flower Garden tab.' : 'Use a fertilizer containing potassium (K2O).');
+      kMsg = 'Low potassium. Plants almost always respond to potassium fertilizer at this level.'; kAction = abox('action-needed', isVegFlowerGarden ? 'The exact potassium amendment for your bed \u2014 organic or synthetic, sized to your bed size \u2014 is calculated on the Vegetable Garden or Flower Garden tab.' : (isShrubReport ? 'Established shrubs and trees rarely need direct correction for this alone \u2014 fertilize only if the plant itself shows signs of deficiency. See the Shrubs & Trees tab.' : 'Use a fertilizer containing potassium (K2O).'));
     } else if (['M-','M','M+'].indexOf(kRat) >= 0) {
-      kMsg = 'Medium potassium. Plants sometimes respond; a moderate amount is recommended to maintain fertility.'; kAction = abox('action-monitor', isGarden ? 'A modest potassium amendment may help \u2014 sized automatically on the Vegetable Garden or Flower Garden tab. Retest in 3–4 years.' : 'A fertilizer with potassium may be used. Retest in 3–4 years.');
+      kMsg = 'Medium potassium. Plants sometimes respond; a moderate amount is recommended to maintain fertility.'; kAction = abox('action-monitor', isVegFlowerGarden ? 'A modest potassium amendment may help \u2014 sized automatically on the Vegetable Garden or Flower Garden tab. Retest in 3–4 years.' : (isShrubReport ? 'Established shrubs and trees rarely need direct correction for this alone \u2014 fertilize only if the plant itself shows signs of deficiency. See the Shrubs & Trees tab.' : 'A fertilizer with potassium may be used. Retest in 3–4 years.'));
     } else if (['H-','H','H+','VH'].indexOf(kRat) >= 0) {
-      kMsg = 'High to very high potassium. Plants usually do not respond to additional applications.'; kAction = abox('action-good', isGarden ? 'No potassium amendment needed \u2014 the Vegetable Garden or Flower Garden tab skips potassium automatically to avoid unnecessary buildup.' : 'Use a zero-potassium fertilizer or one primarily supplying nitrogen.');
+      kMsg = 'High to very high potassium. Plants usually do not respond to additional applications.'; kAction = abox('action-good', isVegFlowerGarden ? 'No potassium amendment needed \u2014 the Vegetable Garden or Flower Garden tab skips potassium automatically to avoid unnecessary buildup.' : (isShrubReport ? 'No potassium amendment needed. Avoid potassium-containing fertilizers here to prevent unnecessary buildup.' : 'Use a zero-potassium fertilizer or one primarily supplying nitrogen.'));
     } else {
-      kMsg = 'Optimum — your soil has adequate potassium for good plant growth.'; kAction = abox('action-good', isGarden ? 'At target \u2014 no additional potassium needed. The Vegetable Garden or Flower Garden tab already reflects this.' : 'Maintenance applications only. A fertilizer with low or no potassium is appropriate. Retest in 3–4 years.');
+      kMsg = 'Optimum — your soil has adequate potassium for good plant growth.'; kAction = abox('action-good', isVegFlowerGarden ? 'At target \u2014 no additional potassium needed. The Vegetable Garden or Flower Garden tab already reflects this.' : (isShrubReport ? 'At target — no additional potassium needed. Shrub and tree fertilization is only recommended when a plant shows signs of deficiency, regardless of this reading.' : 'Maintenance applications only. A fertilizer with low or no potassium is appropriate. Retest in 3–4 years.'));
     }
     // Button removed entirely August 1, 2026 — same reasoning as Phosphorus above.
     cards.push(card('&#9889;', 'Potassium (K)', 'Medium: 76-175 lb/A (VCE)', '', kDisplay,
@@ -5093,7 +5101,7 @@ function interpretSoilTest() {
     });
     if (!hasMicro) return;
 
-    var body = '<p style="font-size:0.875rem;line-height:1.6;margin-bottom:14px;color:var(--slate-mid);">' + (isGarden ? 'For vegetable and flower gardens, micronutrient deficiencies are uncommon when soil pH is in the 6.0–6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies persist.' : 'For established turfgrass, micronutrient deficiencies are uncommon when soil pH is in the 5.8-6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies are suspected.') + '</p>';
+    var body = '<p style="font-size:0.875rem;line-height:1.6;margin-bottom:14px;color:var(--slate-mid);">' + (crop === 'shrub' ? 'For established shrubs and trees, micronutrient deficiencies are uncommon and fertilization generally isn\u2019t recommended unless the plant itself shows visible signs of deficiency. Correcting pH through liming is usually the right first step if a deficiency is suspected. Consult your local VCE office for guidance specific to your plant species.' : (isGarden ? 'For vegetable and flower gardens, micronutrient deficiencies are uncommon when soil pH is in the 6.0–6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies persist.' : 'For established turfgrass, micronutrient deficiencies are uncommon when soil pH is in the 5.8-6.8 range. Correcting pH through liming is almost always the right first step. Consult your local VCE office if deficiencies are suspected.')) + '</p>';
     var ratLabels = {'L':'Low/DEF','M':'Medium','SUFF':'Optimum','H':'High'};
 
     nutrients.forEach(function(m) {
@@ -5118,7 +5126,7 @@ function interpretSoilTest() {
         + '</div>';
     });
 
-    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only - no calculation</div></div><div class="st-interp-ranges"><span class="st-range-label">Target:</span> Optimum at correct soil pH (' + (isGarden ? '6.0-6.8' : '5.8-6.8') + ')</div><div class="st-interp-body">' + body + '</div></div>');
+    cards.push('<div class="st-interp-card"><div class="st-interp-header"><div class="st-interp-title">&#128300; Micronutrients</div><div class="st-interp-value" style="font-size:0.8rem;opacity:0.7;">display only - no calculation</div></div><div class="st-interp-ranges"><span class="st-range-label">Target:</span> ' + (crop === 'shrub' ? 'Optimum pH varies by species \u2014 check your specific plant\u2019s requirements' : 'Optimum at correct soil pH (' + (isGarden ? '6.0-6.8' : '5.8-6.8') + ')') + '</div><div class="st-interp-body">' + body + '</div></div>');
   })();
 
   // ---- Tab locking + carry-over / continue bar ----

@@ -4726,3 +4726,84 @@ specific citation — just the app's own synthesized text.
 | :-- | :-- |
 | `index.html` | pH card's "ideal range" and "near neutral" Action text now cross-reference Buffer Index/Buffer pH instead of a generic "keep retesting" line (v7.4) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 9, 2026 (v7.5: same pH/Buffer-Index cross-reference fix, extended to Base Saturation & Acidity)
+
+User caught the identical contradiction one card down: Base Saturation & Acidity's "good" bucket
+(Acidity ≤ 20%) said "No corrective action needed... Continue monitoring with periodic soil
+tests," while the Buffer Index card directly above it can independently say "Moderate lime
+requirement" for the same report — same root cause as the v7.4 pH card fix (a good current reading
+doesn't mean no lime is needed; Buffer Index/pH measures the acid reserve that actually determines
+that). Applied the identical fix and wording: now points to Buffer Index/Buffer pH, hedged the same
+way since it's an optional field. The middle bucket (20–40% Acidity) already referenced "if lime is
+recommended on your report," so didn't need the change. Grepped for any other remaining instances
+of the old "Continue monitoring with periodic soil tests" phrasing — none found; this was the last
+one.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Base Saturation & Acidity card's "good" Action text now cross-references Buffer Index/Buffer pH, same as the pH card (v7.5) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 9, 2026 (v7.6: audit for the same isGarden-mislabels-Shrub bug class — found and fixed 4 more instances)
+
+User asked whether more issues like the pH/Buffer-Index contradiction existed. Systematically grepped
+every `isGarden ?` branch and every `abox('action-good'...)` call. Found the pH/Buffer-Index/Base
+Saturation issue was a symptom-level fix (v7.4/v7.5) of a broader, pre-existing bug class the code's
+own comments already named: **`isGarden` is true for vegetable, flower, AND shrub reports**
+(`isGardenReport()` returns true for all three), so any text branching only on `isGarden` — without
+also checking `crop === 'shrub'` — silently mislabels Shrub & Trees reports with vegetable/flower-
+specific language. This exact bug class had already been fixed once for the pH card's destination
+button (July-something session, per the comment at the top of the pH card block) but was reintroduced
+by this session's own earlier P/K card fix, and was never applied to two more cards.
+
+**Found and fixed 4 instances**, all newly discovered or reintroduced this session:
+
+1. **Phosphorus/Potassium cards (self-introduced bug)** — my own fix two turns ago said "calculated
+   on the Vegetable Garden or Flower Garden tab" for ALL garden reports including Shrub & Trees,
+   which routes to a different tab that doesn't do soil-test-rating-triggered P/K correction at all
+   (shrub fertilization is symptom-triggered only). Added `isVegFlowerGarden` / `isShrubReport`
+   split (mirroring the existing `phDestName` 3-way pattern) across all four rating buckets for both
+   nutrients, with shrub-specific language pointing to symptom-based fertilization on the Shrubs &
+   Trees tab instead.
+2. **Micronutrients summary card intro paragraph** — said "For vegetable and flower gardens..." for
+   Shrub reports too. Added a `crop === 'shrub'` branch with shrub-appropriate framing (deficiencies
+   uncommon, fertilization only on visible symptoms, consult VCE for species-specific guidance).
+3. **Micronutrients card's "Target: Optimum at correct soil pH (6.0-6.8)" line** — same issue,
+   falsely implied a single numeric pH target applies to all shrub species. Changed to "Optimum pH
+   varies by species — check your specific plant's requirements" for shrub, since no sourced
+   shrub-general pH target exists anywhere in the codebase to substitute (species vary too widely —
+   azaleas ~4.5–5.5 vs. most other woody ornamentals). Did not touch the underlying `phLow` bucket
+   threshold logic (still 6.0, same as garden) since changing functional thresholds needs a real
+   source, not just a text fix.
+4. **The main Soil pH card itself** — TARGET label ("Gardens: 6.0-6.8"), "why it matters" paragraph,
+   and both the "acidic" and "near neutral" bucket messages all said "vegetable and flower gardens"
+   or "garden plants" for Shrub reports. Fixed all four spots: TARGET label now shows "Varies by
+   species" for shrub; why-it-matters paragraph now explains species vary widely and specifically
+   flags acid-loving plants (azaleas/rhododendrons, ~4.5–5.5) as needing to check their own
+   requirements rather than assume a general target.
+
+**Checked but left alone:** the Soluble Salts card's `isGarden ?` branch (adds seedling/
+transplanting caution text) — for shrub reports this adds mildly imprecise wording (new shrub
+plantings aren't quite "seedlings"), but doesn't misroute anywhere or state anything factually
+wrong, so it's a much lower-severity style issue than the four fixed above. Left as a minor open
+item rather than fixed speculatively.
+
+**Verification:** simulated a Waypoint Shrub & Trees report (jsdom, real functions, not guessing)
+with pH 5.5 / P Low / K Optimum. Confirmed: P card action correctly says "Established shrubs and
+trees rarely need direct correction... See the Shrubs & Trees tab" (not the garden-tab text);
+pH card TARGET line shows "Varies by species"; pH why-it-matters includes the azalea/acid-loving
+note; zero remaining instances of "vegetable and flower gardens" or "garden plants" language
+outside the static, intentionally-generic pH glossary tooltip (which correctly stays general since
+it's not report-specific).
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fixed 4 instances of the isGarden-mislabels-Shrub bug class: P/K cards, Micronutrients summary intro + target-pH line, and the main Soil pH card (TARGET label, why-it-matters text, acidic/near-neutral bucket messages) (v7.6) |
+| `CLAUDE.md` | this entry |
