@@ -4704,3 +4704,25 @@ if you're unsure."
 | :-- | :-- |
 | `index.html` | Shortened the Na Rating field hint (v7.3) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 9, 2026 (v7.4: pH card now cross-references Buffer Index)
+
+User spotted an apparent self-contradiction: the pH card's "ideal range" Action said "No lime action
+needed," while the Buffer Index card directly below it (same report) said "Moderate lime
+requirement." Not actually a bug — pH is the current reading, Buffer Index measures the acid
+reserve that determines real lime need even when current pH looks fine — but shown back-to-back
+with no cross-reference, it read as the app contradicting itself.
+
+Changed the pH card's Action text for both the "ideal range" (6.0/5.8–6.8, action-good) and "near
+neutral" (6.8–7.0, action-monitor) buckets to point the user at the Buffer Index/Buffer pH card,
+hedged as "if your report includes" one since it's an optional field and isn't always entered/shown.
+Replaced the previous "Continue monitoring with periodic soil tests" line, which wasn't tied to any
+specific citation — just the app's own synthesized text.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | pH card's "ideal range" and "near neutral" Action text now cross-reference Buffer Index/Buffer pH instead of a generic "keep retesting" line (v7.4) |
+| `CLAUDE.md` | this entry |
