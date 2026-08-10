@@ -4807,3 +4807,147 @@ it's not report-specific).
 | :-- | :-- |
 | `index.html` | Fixed 4 instances of the isGarden-mislabels-Shrub bug class: P/K cards, Micronutrients summary intro + target-pH line, and the main Soil pH card (TARGET label, why-it-matters text, acidic/near-neutral bucket messages) (v7.6) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 9, 2026 (v7.7: lime action wording standardized; Action box removed from genuinely non-actionable buckets)
+
+### 1. Lime Recommendation card wording, all three variants
+Changed "Use the [X] tab to calculate lime for your specific bed size, including CCE and bag size"
+to "...calculate the quantity of lime required for your specific bed size adjusted for CCE and bag
+size" per user request. Applied with appropriate wording to all three Lime card variants:
+Vegetable/Flower Garden (routes to that tab), Shrub & Trees (routes to the standalone Lime
+Calculator, unchanged since shrub has no lime section of its own), and Lawn (routes to
+Cool-Season/Warm-Season Lawn tab, replacing the older, more verbose "Enter your product's CCE and
+bag size..." phrasing with the same standardized wording).
+
+### 2. Removed Action box from genuinely non-actionable buckets: Soil pH, Base Saturation & Acidity, Buffer Index
+User asked to remove the Action element entirely from these three card types where no action can
+be taken as a result of the test. Interpreted narrowly (confirmed with user before implementing):
+this means the specific "good" bucket within each card, not the whole card type, since all three
+do drive real action in their other buckets (acidic pH, high acidity, low buffer index all still
+call for lime).
+- **Soil pH** — removed the Action box for the "ideal range" bucket (pH 6.0/5.8–6.8). The Buffer
+  Index cross-reference added in v7.4 is preserved but moved into the "why it matters" prose
+  instead of a styled Action box, appearing only when pH is actually in that ideal range.
+- **Base Saturation & Acidity** — same treatment for the Acidity ≤20% bucket; same v7.5
+  cross-reference moved into prose, conditional on `acPct <= 20`.
+- **Buffer Index** — removed the Action box for the ≥6.5 bucket ("Relatively low total acidity").
+  This one's previous text ("Apply per your recommendation") was circular anyway — the actual
+  action lives on the separate Lime Recommendation card. Replaced with a plain-prose note in "why
+  it matters" pointing there instead, conditional on `bi >= 6.5`.
+- Confirmed via `card()`'s own logic that passing an empty string for `action` correctly omits the
+  entire Action wrapper `<div>` rather than rendering an empty styled box.
+- Left the action-monitor and action-needed buckets on all three cards untouched — those give real,
+  specific guidance (do this / don't do that / monitor this) and aren't "no action" cases.
+
+**Verification:** ran a full jsdom simulation (VCE Lawn, pH 6.3 / Buffer Index 6.62 / Base Sat
+96.9%) confirming zero `st-action-box` elements render on any of the three cards at those values,
+while the Buffer Index cross-reference text still appears in the pH card's body. Separately
+verified all three Lime card variants (Vegetable, Shrub, Lawn) render the new wording correctly.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Standardized Lime Recommendation Action wording across Vegetable/Flower, Shrub, and Lawn variants; removed the Action box from the non-actionable bucket of Soil pH, Base Saturation & Acidity, and Buffer Index cards, folding the retained cross-reference content into prose (v7.7) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v7.8: removed the Action box entirely from Soil pH, Base Saturation & Acidity, and Buffer Index — all buckets)
+
+User followed up on v7.7 with screenshots showing several buckets still had an Action box (pH's
+acidic and near-neutral buckets, Buffer Index's moderate bucket) and asked to go further: remove
+the Action box from **every** bucket of these three cards, since the only real actionable output
+(exact amount, bag count, CCE-adjusted schedule) lives on the separate Lime Recommendation card —
+having pH, Base Saturation, and Buffer Index each repeat their own "apply lime" instruction is
+redundant with that card and risks looking contradictory if wording ever drifts between them.
+
+Agreed with the reasoning and implemented, with one exception: the pH card's alkaline bucket
+mentions sulfur as an option to *lower* pH, which isn't covered anywhere on the Lime Recommendation
+card (that card only ever handles raising pH) — preserved that as prose in the result text rather
+than dropping it, just unstyled as a plain sentence instead of a colored Action box.
+
+**pH card** — removed `phAction` entirely (all 5 buckets: strongly acidic, acidic, ideal, near
+neutral, alkaline). Folded the substantive content that used to live in each Action box into the
+"Your result" (`phMsg`) sentence instead: acidic/strongly-acidic buckets now end with "see the Lime
+Recommendation card for your exact amount and schedule"; alkaline bucket keeps the sulfur mention
+inline. Removed the now-unused `phDestName` variable (was only referenced by the deleted action
+text).
+
+**Base Saturation & Acidity** — removed `bsAction` entirely (all 3 buckets). Replaced with a `bsExtra`
+string appended to the why-it-matters paragraph: >40% and 20–40% buckets point to the Lime
+Recommendation card; ≤20% keeps the existing Buffer Index cross-reference from v7.5.
+
+**Buffer Index** — removed `biAction` entirely (all 3 buckets, low bucket already done in v7.7).
+Moderate and high buckets now fold their content into `biMsg` ("see the Lime Recommendation card
+for your exact amount...").
+
+**Verification:** ran jsdom simulations matching all four scenarios shown in the user's screenshots
+(pH 6.3/BI 6.23 lawn; pH 5.5/BI 6.23 lawn; pH 6.3/BI 6.32/BaseSat 96.9% VCE vegetable; pH 7.0/
+BaseSat 100% Waypoint vegetable) — zero `st-action-box` elements in all four. Also tested a
+high-acidity scenario (pH 4.8, BI 5.8, BaseSat 55%) to confirm the "needed" content survived as
+prose rather than being silently lost — confirmed present in each card's result text.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Removed the Action box entirely from all buckets of Soil pH, Base Saturation & Acidity, and Buffer Index; substantive content preserved as plain prose, redirecting to the Lime Recommendation card for the actual actionable numbers (v7.8) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v7.9: removed Action boxes from CEC/Organic Matter/Soluble Salts; redesigned Calcium & Magnesium card)
+
+### Principle established this session
+User articulated the underlying rule behind the last several rounds of card edits: **an "Action:"
+box should only exist where it transcribes or directly derives from an action a lab actually
+produced** — Waypoint's own nutrient-addition table plus its explanatory comments, or VCE's text
+recommendation tied to a measured rating — not wherever the app has independently synthesized
+"here's what I'd do" from a raw measurement using its own thresholds. Audited every remaining
+`abox()` call against this test (full breakdown given to user in prior turn) before touching
+anything.
+
+### Removed — CEC, Organic Matter, Soluble Salts (failed the test)
+None of these three cards' Action content is transcribed from either lab's own printed
+recommendation — checked the actual attached Waypoint report's Comments section directly and
+confirmed it says nothing about OM or salts specifically. All three "Action:" boxes removed
+(all buckets, both lawn and garden variants where applicable):
+- **CEC** — dropped the "consider slow-release Program 2 fertilizer" prescription (unsourced,
+  app-invented); left the moderate/high buckets' plain-prose "CEC is an estimation" note untouched
+  since it was never styled as an Action box in the first place.
+- **Organic Matter** — dropped all compost/topdressing prescriptions; kept the SPES-384/Note 19
+  citations, moved into the why-it-matters paragraph as plain sourced fact rather than an
+  instruction.
+- **Soluble Salts** — kept the 844/640 ppm thresholds themselves (these genuinely are VCE-sourced,
+  per Soil Test Note 1 / 452-701, already cited elsewhere in the app) but dropped the specific
+  remediation instructions ("water thoroughly to leach," "delay transplanting," etc.) since those
+  aren't transcribed from Note 1's own text — added the citation directly to the card body instead
+  of only in a separate field hint.
+
+### Redesigned — Calcium & Magnesium
+User's specific ask: the card should *explain* what agricultural vs. dolomitic lime actually are
+when the report recommends one (since that lime-type field is printed directly on the report —
+VCE's "Lime Type Recommended," Waypoint's comments — so explaining it passes the sourcing test),
+and should tell the user to check the CCE and lime type carefully when shopping, since products
+vary. Rewrote all four branches (Mg low, Dolomitic recommended, Agricultural recommended, Ca low
+with no lime) with real definitions instead of jumping straight to prescriptive language, added a
+shared shopping-tip paragraph (check the label for type + CCE, since a lower-CCE bag needs more
+material), and moved everything out of `abox()` into plain why-it-matters prose — consistent with
+the same treatment given to the other six cards, since the real actionable quantity still belongs
+to the separate Lime Recommendation card. Dropped the specific "gypsum, 10 lbs per 100 sq. ft."
+figure from the Ca-low-no-lime branch (flagged last turn as borderline) since that number isn't
+tied to either report's own printed recommendation — kept the qualitative fact (gypsum supplies
+calcium without changing pH, cited VCE 426-323) without inventing a report-unsourced rate.
+
+**Verification:** jsdom simulation with pH 6.3, CEC 2 (low), OM 1.0% (low), Salts 900ppm
+(elevated), Ca 400/Low, Mg 50/Low, Dolomitic lime, lime rec 50 lbs — confirmed exactly **one**
+remaining `st-action-box` on the page (the Lime Recommendation card, which correctly still passes
+the test), down from what would have been 5+ under the old logic. Separately tested the
+Agricultural-lime branch of the Ca/Mg card to confirm both explanatory paths render correctly.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Removed Action boxes from CEC, Organic Matter, and Soluble Salts (all buckets); rewrote the Calcium & Magnesium card to explain agricultural/dolomitic lime with a CCE shopping tip instead of prescriptive action language, moved out of the Action-box styling entirely (v7.9) |
+| `CLAUDE.md` | this entry |
