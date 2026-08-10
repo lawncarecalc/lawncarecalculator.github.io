@@ -1,6 +1,6 @@
 # 🌱 Soil Test Report Assistant
 
-![Version](https://img.shields.io/badge/version-2.0-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
+![Version](https://img.shields.io/badge/version-2.1-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
 
 > **No more guessing what to feed your lawn or garden.**
 
@@ -28,7 +28,7 @@ Tab bar order: **Soil Test Report, About & Instructions** (always visible), then
 
 | | Tab | What it does |
 | :-- | :-- | :-- |
-| 🩺 | **Soil Test Report** | Interprets every value — pH, Buffer Index, P, K, Ca, Mg, organic matter, salts, CEC, base saturation, lime, micronutrients — each with a plain-English card, rating pill, and action. One combined question ("what is this report for?") determines lab, units, and which calculator tab appears. **Continue to [X] Calculator** pre-fills that tab. |
+| 🩺 | **Soil Test Report** | Interprets every value — pH, Buffer Index, P, K, Ca, Mg, organic matter, salts, CEC, base saturation, lime, micronutrients — each with a plain-English card and rating pill. An "Action" box only appears where a lab actually issued a recommendation tied to that value (P, K, Lime, the N-vs-ceiling check) — pH, Buffer Index, Base Saturation, CEC, Organic Matter, and Soluble Salts are diagnostic/educational only, since neither VCE nor Waypoint ties an action to those readings directly; their substance (e.g. "see the Lime Recommendation card") lives in plain prose instead of a styled box. One combined question ("what is this report for?") determines lab, units, and which calculator tab appears. Waypoint's Base Saturation field can be calculated in-place from a %H (Hydrogen Saturation) entry when your report doesn't print Base Saturation by name. **Continue to [X] Calculator** pre-fills that tab. |
 | 📖 | **About & Instructions** | Universal on-ramp (how the gating works), a per-tab mini-guide for each calculator, a dedicated explainer for the Vegetable Garden tab's single-nutrient philosophy, source documentation, and the WIN/program guide. |
 | ❄️ | **Cool-Season Lawns** | Tall fescue, bluegrass, ryegrass, fine fescue. Up to 4 custom application slots, each with its own N-P-K and WIN%. Includes clipping-return and shade adjustments. Full CCE-adjusted lime math built in. |
 | ☀️ | **Warm-Season Lawns** | Bermuda, St. Augustine, zoysia, centipede — distinct N ceilings per species. Clipping and shade controls; no nitrogen after August 15. Full CCE-adjusted lime math built in. |
@@ -258,6 +258,7 @@ Based on **VCE Soil Test Note 20 (SPES-336P)** and **VCE 430-018 (HORT-120P)**.
 | 426-200 / SPES-802P | Annual Flowers: Culture and Maintenance |
 | SPES-384NP | Your Soil Test Report Simplified |
 | DCR 2014 | Virginia Nutrient Management Standards and Criteria |
+| — | **Soil Test Recommendations for Virginia** — Master Recommendation Guidebook (Maguire & Heckendorn, VT Soil Testing Lab, July 2026) `added v2.1` — the full reference behind every crop-code recommendation VCE's lab computer generates; used to confirm lawn N per-application caps, that sulfur/copper aren't on VCE's recommendation list for any crop, and to source the lime pH-trigger threshold and previous-lime-credit schedule |
 
 Plus the per-crop 426-series vegetable guides (tomatoes, potatoes, sweet corn, brassicas, leafy greens, cucurbits, root crops, beans, alliums).
 
@@ -327,7 +328,7 @@ The calculator targets **WCAG 2.1 AA** conformance, the standard required by Vir
 
 Automated (July 6–7, 2026, predates the restructure — see warning above): **axe-core 4.x** via Puppeteer — 0 violations, 42 rules passing. **Lighthouse** — 100 Accessibility. See [`Accessibility_Testing_Checklist.md`](Accessibility_Testing_Checklist.md) for the full manual testing plan.
 
-**WAVE re-scan (July 2026, current build):** 0 errors, 0 contrast errors, AIM Score 9.3/10. 60 alerts, all in two accepted, deliberate categories — "JavaScript jump menu" (every `onchange`-triggered select recalculates instantly rather than waiting for a submit button, by design, for the instant-feedback UX this tool depends on; mitigated via `aria-live` regions rather than adding confirm buttons to ~55 dropdowns) and "Link to PDF document" (external VCE publication links, which already carry a visible "(PDF)" indicator).
+**WAVE re-scan (August 10, 2026, v8.0 build):** 0 errors, 0 contrast errors. 200 Features, 85 Structure, 140 ARIA. 76 alerts, in the same two accepted, deliberate categories as the July 2026 scan this replaces — "JavaScript jump menu" (every `onchange`-triggered select recalculates instantly rather than waiting for a submit button, by design, for the instant-feedback UX this tool depends on; mitigated via `aria-live` regions rather than adding confirm buttons to ~55 dropdowns) and "Link to PDF document" (external VCE publication links, which already carry a visible "(PDF)" indicator). Alert count rose from 60 (July 2026 scan) to 76 as new content was added — expected given several new interpretation-card rewrites and a new source document added since; not indicative of a new problem class. (AIM Score not visible in this scan's screenshot — not restated here rather than guessed.)
 
 ---
 

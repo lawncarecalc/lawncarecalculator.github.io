@@ -4988,3 +4988,43 @@ native unit; Copper card shows the revised neutral framing.
 | :-- | :-- |
 | `index.html` | Reframed Copper's always-visible description to lead with VCE's rarity/no-recommendation stance instead of an unconditional deficiency warning; redesigned the Waypoint Vegetable/Flower Garden and Shrub & Trees Lime Recommendation cards to display in one consistent unit (the report's own printed basis) instead of switching between 100- and 1,000-sq.-ft. mid-card (v8.0) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (README.md sync — 5 stale/missing items updated)
+
+User asked for a full assessment of `README.md` against the current app state. Found four items
+gone stale (mostly from this session's own changes) plus one missing feature mention; all five
+fixed after confirming scope with the user.
+
+1. **Soil Test Report tab description overstated what's there** — said "each with a plain-English
+   card, rating pill, and **action**," no longer true after this session's work establishing that
+   an Action box only belongs where a lab itself issued the recommendation (pH, Buffer Index, Base
+   Saturation, CEC, Organic Matter, and Soluble Salts lost theirs). Rewrote to state the actual
+   principle and which cards still carry one (P, K, Lime, N-vs-ceiling check).
+2. **WAVE scan numbers were stale** — the July 2026 figures (60 alerts, AIM 9.3/10) predated this
+   session's substantial content changes. User ran a fresh WAVE scan (screenshot) against the
+   current v8.0 build: 0 errors, 0 contrast errors, 200 Features/85 Structure/140 ARIA, 76 alerts —
+   same two accepted categories as before (JS jump menu, link-to-PDF), rise from 60→76 attributed
+   to new content volume, not a new problem. AIM Score wasn't visible in the screenshot, so it was
+   deliberately left unstated rather than carried over or guessed.
+3. **Missing source** — added the VCE master recommendation guidebook (*Soil Test Recommendations
+   for Virginia*, Maguire & Heckendorn, July 2026), added to the app itself back in v6.6 but never
+   added to the README's Primary Sources table.
+4. **Version badge bumped** 2.0 → 2.1 to reflect this batch of documentation updates, since the
+   badge hadn't moved since the last dated changelog annotations (`v1.7`).
+5. **Base Saturation %H mini-calculator** (built earlier this session, previously undocumented in
+   the README) — added a sentence to the Soil Test Report tab description.
+
+**Process note:** discovered mid-turn that `/home/claude`'s working copies of `CLAUDE.md` and
+`index.html` had silently reverted to a stale August-7-ish state (only through v6.5) — a filesystem
+reset partway through this long session, not a content-loss bug. The actual delivered files in
+`/mnt/user-data/outputs/` were unaffected and current at v8.0 throughout; re-synced the working
+directory from there before making this entry, rather than working from — or appending on top of —
+the stale copy.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `README.md` | Rewrote the Soil Test Report tab description to state the Action-box principle accurately; refreshed WAVE scan numbers to the current v8.0 build; added the VCE master guidebook to Primary Sources; bumped version badge to 2.1; added the Base Saturation %H calculator mention |
+| `CLAUDE.md` | this entry |
