@@ -5028,3 +5028,200 @@ the stale copy.
 | :-- | :-- |
 | `README.md` | Rewrote the Soil Test Report tab description to state the Action-box principle accurately; refreshed WAVE scan numbers to the current v8.0 build; added the VCE master guidebook to Primary Sources; bumped version badge to 2.1; added the Base Saturation %H calculator mention |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v8.1: Buffer pH card overclaimed "no lime" on a real report that recommended 25 lbs)
+
+User tested a real Waypoint report (Garlic Beds, pH 6.1, Buffer pH 6.69, Lime Rec 25 lbs/1,000
+sq. ft.) and found the Buffer pH card's "no separate action" wording read as a direct contradiction
+against the Lime Recommendation card's 25 lbs figure.
+
+**Not actually a chemistry conflict** — a buffer reading of 6.69 (relatively low acidity) correctly
+predicts a *smaller* lime requirement, and 25 lbs is genuinely modest compared to what the
+moderate/high-acidity buckets would call for. But unlike the pH and Base Saturation cards (which
+already correctly say lime need "actually" gets determined by Buffer Index, never claiming zero),
+the Buffer Index card itself — the one card that IS the real determinant — was the one claiming "no
+separate action" when its own favorable reading still permits a real, nonzero recommendation.
+Reworded the `bi >= 6.5` bucket to say a high reading "typically means a smaller lime requirement,
+if any — it does not necessarily mean no lime at all," pointing to the Lime Recommendation card
+for the actual figure instead of implying one doesn't exist.
+
+**Also fixed while in this card:** the displayed "Scale: 6.00-6.60" range didn't accommodate real
+reports above 6.60 (this report printed 6.69, exceeding the card's own stated ceiling) — changed to
+"Scale: 6.00-6.60+".
+
+**Verification:** jsdom simulation with the user's exact report values (pH 6.1, Buffer pH 6.69,
+Lime Rec 25) confirms the card now reads "Relatively low total acidity. A reading this high
+typically means a smaller lime requirement, if any..." instead of the old "no separate action"
+phrasing, alongside the Lime Recommendation card's 25 lbs figure with no apparent contradiction.
+Also confirmed the pH card's own Buffer Index cross-reference (added v7.4/v7.8) was already
+correctly hedged and needed no change.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Reworded the Buffer Index/Buffer pH card's high-reading (≥6.5) message to avoid implying zero lime need; widened the displayed scale to accommodate real reports above 6.60 (v8.1) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v8.2: Soil Test tab entry labels now spell out full nutrient names alongside their abbreviations)
+
+User asked for every nutrient field label on the Soil Test tab to spell out the full name alongside
+its chemical abbreviation (e.g. "P (lb/A)" → "Phosphorus (P) (lb/A)"), matching what the hidden
+canonical mirror fields for Zn/Mn/Cu/Fe/B/S already did ("Zinc (Zn) ppm" etc.) but the visible
+VCE and Waypoint blocks, and the canonical P/K/Ca/Mg fields, did not.
+
+Updated 55 labels total via a scripted, id-anchored substitution (each `for="unique-id"` targeted
+individually rather than a blind find-replace, since abbreviated label text repeats verbatim
+across the VCE block, Waypoint block, and hidden canonical mirrors) — covers both the value input
+and the Rating dropdown for every nutrient (P, K, Ca, Mg, Zn, Mn, Cu, Fe, B, S, Na) across all
+three locations. Two labels (`st-ca`, `st-mg` in the hidden canonical block) were missed by the
+scripted pass and fixed individually afterward. Trailing spans (the P/K Rating labels' scale-hint
+span, Base Saturation's "Acidity % = 100 minus this" sub-label) were preserved intact — only the
+abbreviation prefix was replaced, not the whole label.
+
+The hidden canonical mirror fields (`#st-canonical-fields`, `display:none`/`aria-hidden`/`inert`)
+were included for consistency even though they're never seen by a user, rather than leaving a
+visible/hidden mismatch.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | All Soil Test tab nutrient field labels (VCE block, Waypoint block, hidden canonical mirrors) now spell out the full nutrient name alongside its chemical abbreviation (v8.2) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v8.3: hydrated and pelletized lime added to the About page, sourced directly from VCE 452-510)
+
+Follow-up to the hydrated-lime question two turns ago — user supplied the actual VCE 452-510
+(SPES-158P, "Sources of Lime for Acid Soils in Virginia") PDF, which the app already cites for
+gypsum/CCE content but had never actually been read in full. Extracted and read the complete
+document rather than relying on the earlier general-knowledge answer.
+
+**Added to the About tab's "🪨 Lime" collapsible** (new paragraphs, right after the existing
+"Gypsum is not lime" line):
+- **Hydrated (slaked) lime** — confirmed as a legitimate substitute, not a special case: CCE
+  120–135% (VA minimum 110% to be sold under that name), same CCE-conversion math already used
+  everywhere else in the app applies directly. Faster-acting (3–6 months to max effect vs. 1–3
+  years for ground limestone) and costs more per ton but needs less material. Flagged the handling
+  caution (caustic, avoid skin/dust contact) even though the source's own hydrated-lime paragraph
+  doesn't repeat it as explicitly as its burnt-lime paragraph does — noted this gap rather than
+  silently smoothing over it.
+- **Pelletized lime** — good at *maintaining* pH in an already-acceptable range, explicitly *not*
+  as effective at *correcting* strongly acidic soil, since pellets react in a localized area around
+  themselves rather than dispersing through the soil. Source's own guidance: use it as part of a
+  regular program that doesn't let pH drop below 6.0, not as the primary fix for a low starting pH.
+
+**Also strengthened the runtime pelletized-lime note** (in the shared `calcLimeForBed()` function,
+shown on every lime-calculating tab) with this same "less effective on strongly acidic soil"
+caveat — it previously only covered slaking/timing, not this real limitation from the same already-
+cited source.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added hydrated and pelletized lime sections to the About page's Lime collapsible, sourced from VCE 452-510; added the "less effective on strongly acidic soil" caveat to the existing runtime pelletized-lime note (v8.3) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v8.4: "Want help with lime selection?" inline widget added to all 5 lime-calculating tabs; hydrated/pelletized content moved off the About page)
+
+Follow-up to the v8.3 hydrated/pelletized lime work. User pointed out that content only living on
+the About page meant a user configuring lime on, say, Cool-Season Lawns had no way to find it
+without leaving the tab. Proposed an inline collapsible ("Want help with lime selection?") right
+next to the CCE field on every lime-calculating tab instead, modeled on the existing "Not sure of
+your lawn or garden size? How to measure ▼" pattern. User confirmed: full explanation (not a
+condensed pointer) covering all four lime types (agricultural, dolomitic, hydrated, pelletized),
+and asked for the hydrated/pelletized content to be removed from the About page since it now lives
+at the point of use instead.
+
+User also supplied a real-world photo (converted from HEIC via `convert`) of a bag of dolomitic
+hydrated lime's Guaranteed Analysis label — **CCE 131.70%**, landing right in VCE 452-510's stated
+120–135% range for hydrated lime, with the bag's own "1,526 lbs to equal 2,000 lbs of standard
+liming material" statement being the same 100÷CCE math already built into every lime calculator,
+just expressed in the other direction. Used this as a concrete worked example inside the new
+widget rather than leaving the CCE range abstract.
+
+**Implementation:** built one shared widget content block (agricultural/dolomitic/hydrated/
+pelletized explanations + the real bag example + a gypsum caution) and inserted it via unique
+`toggleCollapsible()`-compatible ids at all five CCE-field locations: `cool-lime-help`,
+`warm-lime-help`, `gdn-lime-help`, `flr-lime-help` (all sharing one visual/markup pattern), and
+`std-lime-help` (the standalone Lime tab, which uses a different field-group/field-num layout —
+inserted to match that tab's own style rather than forcing the other tabs' pattern onto it).
+Content was placed into the file via a Python placeholder-substitution pass (write the widget once,
+insert an anchor token at all 5 str_replace sites, then substitute the token for the real content)
+to avoid retyping/desyncing five copies of the same long block.
+
+**About page change:** removed the hydrated/pelletized paragraphs from the "🪨 Lime" collapsible
+(added in v8.3, one turn ago), replaced with a one-line pointer to the new per-tab widgets. Kept
+the "Gypsum is not lime" line and the workflow instructions ("what to enter, in order") in place,
+since those aren't lime-*type*-selection content and still belong there.
+
+**Also discussed, not yet implemented:** user asked whether the About page's six major top-level
+sections (How to Use, WIN & Nitrogen Programs, Maintenance & Retesting, Single-Nutrient Philosophy,
+Soil Test Ratings Explained, Source Documents — ~600 lines, currently all displayed at once) would
+work better as a top-level accordion, matching the collapsible pattern already used for the "How to
+Use" sub-items. Agreed this would be an improvement, but flagged it as its own separate task rather
+than bundling it into this turn's work — deferred pending confirmation to proceed.
+
+**Verification:** jsdom simulation confirmed all 5 buttons/bodies exist, each body contains the
+"Hydrated (slaked) lime" text, and `toggleCollapsible()` correctly opens each one (aria-expanded
+and the `open` class both flip as expected).
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added "Want help with lime selection?" collapsible (agricultural/dolomitic/hydrated/pelletized, with a real product example) to all 5 lime-calculating tabs; removed the now-redundant hydrated/pelletized paragraphs from the About page's Lime section, replaced with a pointer (v8.4) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v8.5: About page's 6 top-level sections converted to an accordion)
+
+Follow-up on the deferred item from v8.4 — user confirmed "proceed." Converted the About tab's six
+major top-level cards (How to Use This Calculator, Understanding WIN & Nitrogen Programs,
+Maintenance Fertilizing & Retesting, Single-Nutrient Amendment Philosophy, Soil Test Ratings
+Explained, Source Documents & Attribution — previously ~600 lines all displayed simultaneously)
+into a top-level accordion, matching the collapsible pattern already used for the "How to Use"
+section's own sub-items.
+
+**Checked for fragile dependencies first:** searched for any deep-linking into specific About
+sections (e.g. a "jump to WIN explanation" link) before touching structure. Found only one relevant
+control — the Soil Test tab's "Yes, show me" onboarding button — and it just calls
+`activateTab('about')` generically, landing at the top of the tab with no section-specific
+targeting. No fragile behavior to preserve.
+
+**Implementation:** each `<h3 class="card-header">TITLE</h3>` became `<h3><button class="card-header
+about-acc-toggle" aria-expanded aria-controls onclick="toggleCollapsible(...)">...<span class=
+"toggle-arrow">▼</span></button></h3>` (button wrapped in `<h3>` per the WAI-ARIA accordion pattern,
+preserving heading semantics for screen-reader navigation while making it interactive), and each
+following `<div class="card-body">` gained an `about-acc-body` class + unique id. Reused the
+existing generic `toggleCollapsible(baseId)` function unchanged — it only requires elements at
+`baseId-btn`/`baseId-body`, regardless of CSS class, so no new JS was needed.
+
+New CSS added rather than modifying the base `.card-header`/`.card-body` classes directly, since
+those are used unmodified throughout the rest of the app (every calculator tab's cards) — adding
+`display:none` to base `.card-body` would have broken all of them. New `.about-acc-toggle`/
+`.about-acc-body` classes handle the toggle behavior in an additive way (`class="card-body
+about-acc-body"`), keeping the original classes' visual styling intact.
+
+**Default state:** "How to Use This Calculator" opens by default (most likely to be wanted by a
+first-time visitor); the other five start collapsed.
+
+**Verification:** jsdom simulation confirmed all 6 sections exist with correct default open/closed
+states, toggling works and updates `aria-expanded` correctly, content survived the restructuring
+intact (spot-checked WIN and How-To body text), and the "How to Use" section's own nested
+sub-toggles (e.g. `about-howto-cool`) still function independently with no id collisions. Also
+confirmed a pre-existing div-count mismatch in the About tab (216 opens / 217 closes) was present
+in the baseline before these edits — not something introduced this turn, left as-is rather than
+risk an unrelated fix while mid-edit.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | About page's 6 top-level sections converted to a collapsible accordion (How to Use open by default, others collapsed); new `.about-acc-toggle`/`.about-acc-body` CSS classes added additively, reusing the existing `toggleCollapsible()` function (v8.5) |
+| `CLAUDE.md` | this entry |

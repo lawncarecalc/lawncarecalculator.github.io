@@ -554,6 +554,17 @@
   .fert-chooser-toggle.open .toggle-arrow { transform:rotate(180deg); }
   .fert-chooser-body { display:none; padding:14px 16px; background:white; }
   .fert-chooser-body.open { display:block; }
+  /* Top-level About-page accordion (Aug 10, 2026) — reuses the existing toggleCollapsible() JS
+     function (it only needs elements at id `baseId-btn` / `baseId-body`, regardless of CSS class),
+     but needs its own classes since .card-header/.card-body are used everywhere else in the app as
+     plain, non-toggleable containers — adding display:none to the base .card-body class directly
+     would have broken every calculator tab's cards. */
+  .about-acc-toggle { width:100%; border:none; cursor:pointer; text-align:left; font:inherit; }
+  .about-acc-toggle:hover { background:var(--green-mid); }
+  .about-acc-toggle .toggle-arrow { margin-left:auto; font-size:0.8rem; transition:transform 0.2s; flex-shrink:0; }
+  .about-acc-toggle.open .toggle-arrow { transform:rotate(180deg); }
+  .about-acc-body { display:none; }
+  .about-acc-body.open { display:block; }
   .fert-rec-box { border-radius:6px; padding:10px 14px; margin-bottom:12px; font-size:0.82rem; line-height:1.6; }
   .fert-rec-box.needs-p  { background:#fff8e1; border-left:3px solid #e0c87a; }
   .fert-rec-box.needs-none { background:#f0f7f1; border-left:3px solid var(--green-mid); }
@@ -785,7 +796,7 @@
       <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v8.0 &middot; 2026-08-10</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v8.5 &middot; 2026-08-10</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -920,11 +931,11 @@
           <div class="st-field-grid" id="st-block-vce" style="display:none;" inert>
             <fieldset class="st-fieldset"><legend>Phosphorus</legend>
             <div class="st-field">
-              <label for="st-p-val-vce">P (lb/A)</label>
+              <label for="st-p-val-vce">Phosphorus (P) (lb/A)</label>
               <input type="number" id="st-p-val-vce" data-canon="st-p-val" min="0" placeholder="e.g. 12" oninput="stSync(this)">
             </div>
             <div class="st-field">
-              <label for="st-p-rating-vce">P Rating</label>
+              <label for="st-p-rating-vce">Phosphorus (P) Rating</label>
               <select id="st-p-rating-vce" data-canon="st-p-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -936,11 +947,11 @@
             </fieldset>
             <fieldset class="st-fieldset"><legend>Potassium</legend>
             <div class="st-field">
-              <label for="st-k-val-vce">K (lb/A)</label>
+              <label for="st-k-val-vce">Potassium (K) (lb/A)</label>
               <input type="number" id="st-k-val-vce" data-canon="st-k-val" min="0" placeholder="e.g. 48" oninput="stSync(this)">
             </div>
             <div class="st-field">
-              <label for="st-k-rating-vce">K Rating</label>
+              <label for="st-k-rating-vce">Potassium (K) Rating</label>
               <select id="st-k-rating-vce" data-canon="st-k-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -952,11 +963,11 @@
             </fieldset>
             <fieldset class="st-fieldset"><legend>Calcium</legend>
             <div class="st-field">
-              <label for="st-ca-val-vce">Ca (lb/A)</label>
+              <label for="st-ca-val-vce">Calcium (Ca) (lb/A)</label>
               <input type="number" id="st-ca-val-vce" data-canon="st-ca" min="0" placeholder="e.g. 1000" oninput="stSync(this)">
             </div>
             <div class="st-field">
-              <label for="st-ca-rating-vce">Ca Rating</label>
+              <label for="st-ca-rating-vce">Calcium (Ca) Rating</label>
               <select id="st-ca-rating-vce" data-canon="st-ca-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -968,11 +979,11 @@
             </fieldset>
             <fieldset class="st-fieldset"><legend>Magnesium</legend>
             <div class="st-field">
-              <label for="st-mg-val-vce">Mg (lb/A)</label>
+              <label for="st-mg-val-vce">Magnesium (Mg) (lb/A)</label>
               <input type="number" id="st-mg-val-vce" data-canon="st-mg" min="0" placeholder="e.g. 140" oninput="stSync(this)">
             </div>
             <div class="st-field">
-              <label for="st-mg-rating-vce">Mg Rating</label>
+              <label for="st-mg-rating-vce">Magnesium (Mg) Rating</label>
               <select id="st-mg-rating-vce" data-canon="st-mg-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="L-">L-</option><option value="L">L</option><option value="L+">L+</option>
@@ -983,40 +994,40 @@
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Zinc</legend>
-            <div class="st-field"><label for="st-zn-val-vce">Zn (ppm)</label><input type="number" id="st-zn-val-vce" data-canon="st-zn" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-zn-rating-vce">Zn Rating</label>
+            <div class="st-field"><label for="st-zn-val-vce">Zinc (Zn) (ppm)</label><input type="number" id="st-zn-val-vce" data-canon="st-zn" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-zn-rating-vce">Zinc (Zn) Rating</label>
               <select id="st-zn-rating-vce" data-canon="st-zn-rating" onchange="stSync(this)">
                 <option value="">-</option><option value="DEF">Deficient</option><option value="SUFF">Sufficient</option>
               </select>
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Manganese</legend>
-            <div class="st-field"><label for="st-mn-val-vce">Mn (ppm)</label><input type="number" id="st-mn-val-vce" data-canon="st-mn" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-mn-rating-vce">Mn Rating</label>
+            <div class="st-field"><label for="st-mn-val-vce">Manganese (Mn) (ppm)</label><input type="number" id="st-mn-val-vce" data-canon="st-mn" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-mn-rating-vce">Manganese (Mn) Rating</label>
               <select id="st-mn-rating-vce" data-canon="st-mn-rating" onchange="stSync(this)">
                 <option value="">-</option><option value="DEF">Deficient</option><option value="SUFF">Sufficient</option>
               </select>
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Copper</legend>
-            <div class="st-field"><label for="st-cu-val-vce">Cu (ppm)</label><input type="number" id="st-cu-val-vce" data-canon="st-cu" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-cu-rating-vce">Cu Rating</label>
+            <div class="st-field"><label for="st-cu-val-vce">Copper (Cu) (ppm)</label><input type="number" id="st-cu-val-vce" data-canon="st-cu" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-cu-rating-vce">Copper (Cu) Rating</label>
               <select id="st-cu-rating-vce" data-canon="st-cu-rating" onchange="stSync(this)">
                 <option value="">-</option><option value="DEF">Deficient</option><option value="SUFF">Sufficient</option>
               </select>
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Iron</legend>
-            <div class="st-field"><label for="st-fe-val-vce">Fe (ppm)</label><input type="number" id="st-fe-val-vce" data-canon="st-fe" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-fe-rating-vce">Fe Rating</label>
+            <div class="st-field"><label for="st-fe-val-vce">Iron (Fe) (ppm)</label><input type="number" id="st-fe-val-vce" data-canon="st-fe" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-fe-rating-vce">Iron (Fe) Rating</label>
               <select id="st-fe-rating-vce" data-canon="st-fe-rating" onchange="stSync(this)">
                 <option value="">-</option><option value="DEF">Deficient</option><option value="SUFF">Sufficient</option>
               </select>
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Boron</legend>
-            <div class="st-field"><label for="st-b-val-vce">B (ppm)</label><input type="number" id="st-b-val-vce" data-canon="st-b" min="0" step="0.01" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-b-rating-vce">B Rating</label>
+            <div class="st-field"><label for="st-b-val-vce">Boron (B) (ppm)</label><input type="number" id="st-b-val-vce" data-canon="st-b" min="0" step="0.01" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-b-rating-vce">Boron (B) Rating</label>
               <select id="st-b-rating-vce" data-canon="st-b-rating" onchange="stSync(this)">
                 <option value="">-</option><option value="DEF">Deficient</option><option value="SUFF">Sufficient</option>
               </select>
@@ -1087,11 +1098,11 @@
             </div>
             <fieldset class="st-fieldset"><legend>Phosphorus</legend>
             <div class="st-field">
-              <label for="st-p-val-wp">P (ppm)</label>
+              <label for="st-p-val-wp">Phosphorus (P) (ppm)</label>
               <input type="number" id="st-p-val-wp" data-canon="st-p-val" min="0" placeholder="e.g. 12" oninput="stSync(this)">
             </div>
             <div class="st-field">
-              <label for="st-p-rating-wp">P Rating</label>
+              <label for="st-p-rating-wp">Phosphorus (P) Rating</label>
               <select id="st-p-rating-wp" data-canon="st-p-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1102,11 +1113,11 @@
             </fieldset>
             <fieldset class="st-fieldset"><legend>Potassium</legend>
             <div class="st-field">
-              <label for="st-k-val-wp">K (ppm)</label>
+              <label for="st-k-val-wp">Potassium (K) (ppm)</label>
               <input type="number" id="st-k-val-wp" data-canon="st-k-val" min="0" placeholder="e.g. 48" oninput="stSync(this)">
             </div>
             <div class="st-field">
-              <label for="st-k-rating-wp">K Rating</label>
+              <label for="st-k-rating-wp">Potassium (K) Rating</label>
               <select id="st-k-rating-wp" data-canon="st-k-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1117,11 +1128,11 @@
             </fieldset>
             <fieldset class="st-fieldset"><legend>Calcium</legend>
             <div class="st-field">
-              <label for="st-ca-val-wp">Ca (ppm)</label>
+              <label for="st-ca-val-wp">Calcium (Ca) (ppm)</label>
               <input type="number" id="st-ca-val-wp" data-canon="st-ca" min="0" placeholder="e.g. 1000" oninput="stSync(this)">
             </div>
             <div class="st-field">
-              <label for="st-ca-rating-wp">Ca Rating</label>
+              <label for="st-ca-rating-wp">Calcium (Ca) Rating</label>
               <select id="st-ca-rating-wp" data-canon="st-ca-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1132,11 +1143,11 @@
             </fieldset>
             <fieldset class="st-fieldset"><legend>Magnesium</legend>
             <div class="st-field">
-              <label for="st-mg-val-wp">Mg (ppm)</label>
+              <label for="st-mg-val-wp">Magnesium (Mg) (ppm)</label>
               <input type="number" id="st-mg-val-wp" data-canon="st-mg" min="0" placeholder="e.g. 140" oninput="stSync(this)">
             </div>
             <div class="st-field">
-              <label for="st-mg-rating-wp">Mg Rating</label>
+              <label for="st-mg-rating-wp">Magnesium (Mg) Rating</label>
               <select id="st-mg-rating-wp" data-canon="st-mg-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1146,8 +1157,8 @@
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Sulfur</legend>
-            <div class="st-field"><label for="st-s-val-wp">S (ppm)</label><input type="number" id="st-s-val-wp" data-canon="st-s" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-s-rating-wp">S Rating</label>
+            <div class="st-field"><label for="st-s-val-wp">Sulfur (S) (ppm)</label><input type="number" id="st-s-val-wp" data-canon="st-s" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-s-rating-wp">Sulfur (S) Rating</label>
               <select id="st-s-rating-wp" data-canon="st-s-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1157,8 +1168,8 @@
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Boron</legend>
-            <div class="st-field"><label for="st-b-val-wp">B (ppm)</label><input type="number" id="st-b-val-wp" data-canon="st-b" min="0" step="0.01" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-b-rating-wp">B Rating</label>
+            <div class="st-field"><label for="st-b-val-wp">Boron (B) (ppm)</label><input type="number" id="st-b-val-wp" data-canon="st-b" min="0" step="0.01" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-b-rating-wp">Boron (B) Rating</label>
               <select id="st-b-rating-wp" data-canon="st-b-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1168,8 +1179,8 @@
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Copper</legend>
-            <div class="st-field"><label for="st-cu-val-wp">Cu (ppm)</label><input type="number" id="st-cu-val-wp" data-canon="st-cu" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-cu-rating-wp">Cu Rating</label>
+            <div class="st-field"><label for="st-cu-val-wp">Copper (Cu) (ppm)</label><input type="number" id="st-cu-val-wp" data-canon="st-cu" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-cu-rating-wp">Copper (Cu) Rating</label>
               <select id="st-cu-rating-wp" data-canon="st-cu-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1179,8 +1190,8 @@
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Iron</legend>
-            <div class="st-field"><label for="st-fe-val-wp">Fe (ppm)</label><input type="number" id="st-fe-val-wp" data-canon="st-fe" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-fe-rating-wp">Fe Rating</label>
+            <div class="st-field"><label for="st-fe-val-wp">Iron (Fe) (ppm)</label><input type="number" id="st-fe-val-wp" data-canon="st-fe" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-fe-rating-wp">Iron (Fe) Rating</label>
               <select id="st-fe-rating-wp" data-canon="st-fe-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1190,8 +1201,8 @@
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Manganese</legend>
-            <div class="st-field"><label for="st-mn-val-wp">Mn (ppm)</label><input type="number" id="st-mn-val-wp" data-canon="st-mn" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-mn-rating-wp">Mn Rating</label>
+            <div class="st-field"><label for="st-mn-val-wp">Manganese (Mn) (ppm)</label><input type="number" id="st-mn-val-wp" data-canon="st-mn" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-mn-rating-wp">Manganese (Mn) Rating</label>
               <select id="st-mn-rating-wp" data-canon="st-mn-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1201,8 +1212,8 @@
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Zinc</legend>
-            <div class="st-field"><label for="st-zn-val-wp">Zn (ppm)</label><input type="number" id="st-zn-val-wp" data-canon="st-zn" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-zn-rating-wp">Zn Rating</label>
+            <div class="st-field"><label for="st-zn-val-wp">Zinc (Zn) (ppm)</label><input type="number" id="st-zn-val-wp" data-canon="st-zn" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-zn-rating-wp">Zinc (Zn) Rating</label>
               <select id="st-zn-rating-wp" data-canon="st-zn-rating" onchange="stSync(this)">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1212,8 +1223,8 @@
             </div>
             </fieldset>
             <fieldset class="st-fieldset"><legend>Sodium</legend>
-            <div class="st-field"><label for="st-na-val-wp">Na (ppm)</label><input type="number" id="st-na-val-wp" data-canon="st-na" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
-            <div class="st-field"><label for="st-na-rating-wp">Na Rating</label>
+            <div class="st-field"><label for="st-na-val-wp">Sodium (Na) (ppm)</label><input type="number" id="st-na-val-wp" data-canon="st-na" min="0" step="0.1" placeholder="ppm" oninput="stSync(this)"></div>
+            <div class="st-field"><label for="st-na-rating-wp">Sodium (Na) Rating</label>
               <select id="st-na-rating-wp" data-canon="st-na-rating" onchange="stSync(this)">
                 <option value="">-</option><option value="SUFF">Normal / Low</option><option value="H">High / Very High</option>
               </select>
@@ -1252,11 +1263,11 @@
             </div>
             <fieldset class="st-fieldset"><legend>Phosphorus</legend>
             <div class="st-field">
-              <label for="st-p-val">P (lb/A)</label>
+              <label for="st-p-val">Phosphorus (P) (lb/A)</label>
               <input type="number" id="st-p-val" min="0" placeholder="e.g. 12" oninput="interpretSoilTestDebounced()">
             </div>
             <div class="st-field">
-              <label for="st-p-rating">P Rating <span id="p-rating-scale-hint" class="st-label-sub"></span></label>
+              <label for="st-p-rating">Phosphorus (P) Rating <span id="p-rating-scale-hint" class="st-label-sub"></span></label>
               <select id="st-p-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1275,11 +1286,11 @@
             </fieldset>
             <fieldset class="st-fieldset"><legend>Potassium</legend>
             <div class="st-field">
-              <label for="st-k-val">K (lb/A)</label>
+              <label for="st-k-val">Potassium (K) (lb/A)</label>
               <input type="number" id="st-k-val" min="0" placeholder="e.g. 48" oninput="interpretSoilTestDebounced()">
             </div>
             <div class="st-field">
-              <label for="st-k-rating">K Rating <span id="k-rating-scale-hint" class="st-label-sub"></span></label>
+              <label for="st-k-rating">Potassium (K) Rating <span id="k-rating-scale-hint" class="st-label-sub"></span></label>
               <select id="st-k-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1298,11 +1309,11 @@
             </fieldset>
             <fieldset class="st-fieldset"><legend>Calcium</legend>
             <div class="st-field">
-              <label for="st-ca">Ca (lb/A)</label>
+              <label for="st-ca">Calcium (Ca) (lb/A)</label>
               <input type="number" id="st-ca" min="0" placeholder="e.g. 1000" oninput="interpretSoilTestDebounced()">
             </div>
             <div class="st-field">
-              <label for="st-ca-rating">Ca Rating</label>
+              <label for="st-ca-rating">Calcium (Ca) Rating</label>
               <select id="st-ca-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1321,11 +1332,11 @@
             </fieldset>
             <fieldset class="st-fieldset"><legend>Magnesium</legend>
             <div class="st-field">
-              <label for="st-mg">Mg (lb/A)</label>
+              <label for="st-mg">Magnesium (Mg) (lb/A)</label>
               <input type="number" id="st-mg" min="0" placeholder="e.g. 140" oninput="interpretSoilTestDebounced()">
             </div>
             <div class="st-field">
-              <label for="st-mg-rating">Mg Rating</label>
+              <label for="st-mg-rating">Magnesium (Mg) Rating</label>
               <select id="st-mg-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1366,7 +1377,7 @@
           <legend>Micronutrients <span style="font-weight:400;font-size:0.78rem;color:#5f6b6b;">enter ppm values and ratings if shown on your report</span></legend>
           <div class="st-field-grid">
             <div class="st-field"><label for="st-zn">Zinc (Zn) ppm</label><input type="number" id="st-zn" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTestDebounced()"></div>
-            <div class="st-field"><label for="st-zn-rating">Zn Rating</label>
+            <div class="st-field"><label for="st-zn-rating">Zinc (Zn) Rating</label>
               <select id="st-zn-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1380,7 +1391,7 @@
               </select>
             </div>
             <div class="st-field"><label for="st-mn">Manganese (Mn) ppm</label><input type="number" id="st-mn" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTestDebounced()"></div>
-            <div class="st-field"><label for="st-mn-rating">Mn Rating</label>
+            <div class="st-field"><label for="st-mn-rating">Manganese (Mn) Rating</label>
               <select id="st-mn-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1394,7 +1405,7 @@
               </select>
             </div>
             <div class="st-field"><label for="st-cu">Copper (Cu) ppm</label><input type="number" id="st-cu" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTestDebounced()"></div>
-            <div class="st-field"><label for="st-cu-rating">Cu Rating</label>
+            <div class="st-field"><label for="st-cu-rating">Copper (Cu) Rating</label>
               <select id="st-cu-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1408,7 +1419,7 @@
               </select>
             </div>
             <div class="st-field"><label for="st-fe">Iron (Fe) ppm</label><input type="number" id="st-fe" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTestDebounced()"></div>
-            <div class="st-field"><label for="st-fe-rating">Fe Rating</label>
+            <div class="st-field"><label for="st-fe-rating">Iron (Fe) Rating</label>
               <select id="st-fe-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1422,7 +1433,7 @@
               </select>
             </div>
             <div class="st-field"><label for="st-b">Boron (B) ppm</label><input type="number" id="st-b" min="0" step="0.01" placeholder="ppm" oninput="interpretSoilTestDebounced()"></div>
-            <div class="st-field"><label for="st-b-rating">B Rating</label>
+            <div class="st-field"><label for="st-b-rating">Boron (B) Rating</label>
               <select id="st-b-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <optgroup label="VCE / Virginia Tech">
@@ -1436,7 +1447,7 @@
               </select>
             </div>
             <div class="st-field"><label for="st-s">Sulfur (S) ppm</label><input type="number" id="st-s" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTestDebounced()"></div>
-            <div class="st-field"><label for="st-s-rating">S Rating</label>
+            <div class="st-field"><label for="st-s-rating">Sulfur (S) Rating</label>
               <select id="st-s-rating" onchange="interpretSoilTest()">
                 <option value="">-</option>
                 <option value="VL">Very Low</option><option value="LO">Low</option>
@@ -1445,7 +1456,7 @@
               </select>
             </div>
             <div class="st-field"><label for="st-na">Sodium (Na) ppm</label><input type="number" id="st-na" min="0" step="0.1" placeholder="ppm" oninput="interpretSoilTestDebounced()"></div>
-            <div class="st-field"><label for="st-na-rating">Na Rating</label>
+            <div class="st-field"><label for="st-na-rating">Sodium (Na) Rating</label>
               <select id="st-na-rating" onchange="interpretSoilTest()">
                 <option value="">-</option><option value="SUFF">Normal / Low</option><option value="H">High / Very High</option>
               </select>
@@ -1636,6 +1647,32 @@
                 <input type="number" id="cool-lime-bag-size" min="0" placeholder="e.g. 40" oninput="calcCool()">
               </div>
               <div class="field-hint" style="margin-top:6px;">Calcium Carbonate Equivalent (CCE) is listed as a percentage under Guaranteed Analysis on the bag &mdash; pelletized lime is usually near 100%, calcitic 80&ndash;100%, dolomitic 95&ndash;108%. Leave blank to assume 100%. <strong>Gypsum (calcium sulfate) has no CCE</strong> &mdash; it does not raise pH and is not lime. <em>(VCE 452-510)</em></div>
+              <div style="margin-top:8px;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                <button class="fert-chooser-toggle no-print" id="cool-lime-help-btn" aria-expanded="false" aria-controls="cool-lime-help-body" onclick="toggleCollapsible('cool-lime-help')" style="font-size:0.78rem;padding:8px 12px;">
+                  <span>&#129381; Want help with lime selection?</span><span class="toggle-arrow">&#9660;</span>
+                </button>
+                <div class="fert-chooser-body" id="cool-lime-help-body">
+                  <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Four common lime products, all valid choices &mdash; enter the CCE from whichever one you're using. <em>(VCE 452-510)</em></p>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Agricultural (calcitic) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Ground limestone that's primarily calcium carbonate. Supplies calcium; contains little to no magnesium. CCE typically <strong>80&ndash;100%</strong>. The standard, least expensive option.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Dolomitic lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Contains both calcium carbonate and magnesium carbonate &mdash; supplies both nutrients as it raises pH. CCE typically <strong>95&ndash;108%</strong>. Use this if your soil test shows magnesium is low.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Hydrated (slaked) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0 0 6px;">Calcium hydroxide, sometimes labeled "builders' lime" &mdash; made by reacting burnt lime with water. Not a different category, just a faster-acting, higher-CCE product: enter its CCE here the same as any other lime. CCE typically <strong>120&ndash;135%</strong> (Virginia requires a minimum of 110% for anything sold under this name). Reaches maximum effect in 3&ndash;6 months, versus 1&ndash;3 years for ground limestone, but costs more per ton, is more caustic, and is unpleasant to handle &mdash; avoid breathing the dust or getting it on skin or green plant tissue.</p>
+                    <p style="font-size:0.78rem;color:var(--slate-light);margin:0;">Real example: a bag of dolomitic hydrated lime lists <strong>CCE 131.70%</strong> on its Guaranteed Analysis label, right in the expected range &mdash; that number is exactly what goes in the CCE field above.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Pelletized lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Finely ground limestone formed into small pellets, popular for homeowner use since it spreads without dust. CCE usually near <strong>100%</strong>. Good at <em>maintaining</em> pH once it's already in an acceptable range, but less effective than ground limestone at <em>correcting</em> strongly acidic soil, since each pellet reacts only in the small area immediately around itself rather than dispersing through the soil. Best used as part of a regular maintenance program that doesn't let pH drop too low in the first place.</p>
+                  </div>
+                  <p style="font-size:0.78rem;color:var(--slate-light);margin-top:8px;"><strong>Gypsum (calcium sulfate) is not lime</strong> &mdash; it has no CCE and does not raise soil pH, regardless of what the bag implies.</p>
+                </div>
+              </div>
             </div>
 
             <!-- Plan mode toggle + planner -->
@@ -1832,6 +1869,32 @@
                 <input type="number" id="warm-lime-bag-size" min="0" placeholder="e.g. 40" oninput="calcWarm()">
               </div>
               <div class="field-hint" style="margin-top:6px;">Calcium Carbonate Equivalent (CCE) is listed as a percentage under Guaranteed Analysis on the bag &mdash; pelletized lime is usually near 100%, calcitic 80&ndash;100%, dolomitic 95&ndash;108%. Leave blank to assume 100%. <strong>Gypsum (calcium sulfate) has no CCE</strong> &mdash; it does not raise pH and is not lime. <em>(VCE 452-510)</em></div>
+              <div style="margin-top:8px;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                <button class="fert-chooser-toggle no-print" id="warm-lime-help-btn" aria-expanded="false" aria-controls="warm-lime-help-body" onclick="toggleCollapsible('warm-lime-help')" style="font-size:0.78rem;padding:8px 12px;">
+                  <span>&#129381; Want help with lime selection?</span><span class="toggle-arrow">&#9660;</span>
+                </button>
+                <div class="fert-chooser-body" id="warm-lime-help-body">
+                  <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Four common lime products, all valid choices &mdash; enter the CCE from whichever one you're using. <em>(VCE 452-510)</em></p>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Agricultural (calcitic) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Ground limestone that's primarily calcium carbonate. Supplies calcium; contains little to no magnesium. CCE typically <strong>80&ndash;100%</strong>. The standard, least expensive option.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Dolomitic lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Contains both calcium carbonate and magnesium carbonate &mdash; supplies both nutrients as it raises pH. CCE typically <strong>95&ndash;108%</strong>. Use this if your soil test shows magnesium is low.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Hydrated (slaked) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0 0 6px;">Calcium hydroxide, sometimes labeled "builders' lime" &mdash; made by reacting burnt lime with water. Not a different category, just a faster-acting, higher-CCE product: enter its CCE here the same as any other lime. CCE typically <strong>120&ndash;135%</strong> (Virginia requires a minimum of 110% for anything sold under this name). Reaches maximum effect in 3&ndash;6 months, versus 1&ndash;3 years for ground limestone, but costs more per ton, is more caustic, and is unpleasant to handle &mdash; avoid breathing the dust or getting it on skin or green plant tissue.</p>
+                    <p style="font-size:0.78rem;color:var(--slate-light);margin:0;">Real example: a bag of dolomitic hydrated lime lists <strong>CCE 131.70%</strong> on its Guaranteed Analysis label, right in the expected range &mdash; that number is exactly what goes in the CCE field above.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Pelletized lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Finely ground limestone formed into small pellets, popular for homeowner use since it spreads without dust. CCE usually near <strong>100%</strong>. Good at <em>maintaining</em> pH once it's already in an acceptable range, but less effective than ground limestone at <em>correcting</em> strongly acidic soil, since each pellet reacts only in the small area immediately around itself rather than dispersing through the soil. Best used as part of a regular maintenance program that doesn't let pH drop too low in the first place.</p>
+                  </div>
+                  <p style="font-size:0.78rem;color:var(--slate-light);margin-top:8px;"><strong>Gypsum (calcium sulfate) is not lime</strong> &mdash; it has no CCE and does not raise soil pH, regardless of what the bag implies.</p>
+                </div>
+              </div>
             </div>
 
             <!-- Plan mode toggle + planner -->
@@ -1936,6 +1999,32 @@
               <div class="field-label"><span class="field-num">4</span><label class="field-question" for="lime-cce">What is the Calcium Carbonate Equivalent (CCE) listed on the bag of lime?</label></div>
               <input type="number" id="lime-cce" min="50" max="175" placeholder="e.g. 100 (most pelletized lime)" oninput="calcLime()">
               <div class="field-hint">Listed as a percentage under Guaranteed Analysis on the bag. Pelletized lime is usually near 100%; calcitic 80&ndash;100%, dolomitic 95&ndash;108%. <strong>Gypsum (calcium sulfate) has no CCE &mdash; it does not raise pH and is not lime.</strong> <em>(VCE 452-510)</em></div>
+              <div style="margin-top:8px;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                <button class="fert-chooser-toggle no-print" id="std-lime-help-btn" aria-expanded="false" aria-controls="std-lime-help-body" onclick="toggleCollapsible('std-lime-help')" style="font-size:0.78rem;padding:8px 12px;">
+                  <span>&#129381; Want help with lime selection?</span><span class="toggle-arrow">&#9660;</span>
+                </button>
+                <div class="fert-chooser-body" id="std-lime-help-body">
+                  <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Four common lime products, all valid choices &mdash; enter the CCE from whichever one you're using. <em>(VCE 452-510)</em></p>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Agricultural (calcitic) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Ground limestone that's primarily calcium carbonate. Supplies calcium; contains little to no magnesium. CCE typically <strong>80&ndash;100%</strong>. The standard, least expensive option.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Dolomitic lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Contains both calcium carbonate and magnesium carbonate &mdash; supplies both nutrients as it raises pH. CCE typically <strong>95&ndash;108%</strong>. Use this if your soil test shows magnesium is low.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Hydrated (slaked) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0 0 6px;">Calcium hydroxide, sometimes labeled "builders' lime" &mdash; made by reacting burnt lime with water. Not a different category, just a faster-acting, higher-CCE product: enter its CCE here the same as any other lime. CCE typically <strong>120&ndash;135%</strong> (Virginia requires a minimum of 110% for anything sold under this name). Reaches maximum effect in 3&ndash;6 months, versus 1&ndash;3 years for ground limestone, but costs more per ton, is more caustic, and is unpleasant to handle &mdash; avoid breathing the dust or getting it on skin or green plant tissue.</p>
+                    <p style="font-size:0.78rem;color:var(--slate-light);margin:0;">Real example: a bag of dolomitic hydrated lime lists <strong>CCE 131.70%</strong> on its Guaranteed Analysis label, right in the expected range &mdash; that number is exactly what goes in the CCE field above.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Pelletized lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Finely ground limestone formed into small pellets, popular for homeowner use since it spreads without dust. CCE usually near <strong>100%</strong>. Good at <em>maintaining</em> pH once it's already in an acceptable range, but less effective than ground limestone at <em>correcting</em> strongly acidic soil, since each pellet reacts only in the small area immediately around itself rather than dispersing through the soil. Best used as part of a regular maintenance program that doesn't let pH drop too low in the first place.</p>
+                  </div>
+                  <p style="font-size:0.78rem;color:var(--slate-light);margin-top:8px;"><strong>Gypsum (calcium sulfate) is not lime</strong> &mdash; it has no CCE and does not raise soil pH, regardless of what the bag implies.</p>
+                </div>
+              </div>
             </div>
             <div class="field-group">
               <div class="field-label"><span class="field-num">5</span><label class="field-question" for="lime-bag-size">What is the size of the bag of lime (lbs.)?</label></div>
@@ -2029,6 +2118,32 @@
                 </div>
               </div>
               <div class="field-hint" style="margin-top:6px;">Calcium Carbonate Equivalent (CCE) is listed as a percentage under Guaranteed Analysis on the bag &mdash; pelletized lime is usually near 100%, calcitic 80&ndash;100%, dolomitic 95&ndash;108%. Leave blank to assume 100%. <strong>Gypsum (calcium sulfate) has no CCE</strong> &mdash; it does not raise pH and is not lime. <em>(VCE 452-510)</em></div>
+              <div style="margin-top:8px;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                <button class="fert-chooser-toggle no-print" id="gdn-lime-help-btn" aria-expanded="false" aria-controls="gdn-lime-help-body" onclick="toggleCollapsible('gdn-lime-help')" style="font-size:0.78rem;padding:8px 12px;">
+                  <span>&#129381; Want help with lime selection?</span><span class="toggle-arrow">&#9660;</span>
+                </button>
+                <div class="fert-chooser-body" id="gdn-lime-help-body">
+                  <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Four common lime products, all valid choices &mdash; enter the CCE from whichever one you're using. <em>(VCE 452-510)</em></p>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Agricultural (calcitic) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Ground limestone that's primarily calcium carbonate. Supplies calcium; contains little to no magnesium. CCE typically <strong>80&ndash;100%</strong>. The standard, least expensive option.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Dolomitic lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Contains both calcium carbonate and magnesium carbonate &mdash; supplies both nutrients as it raises pH. CCE typically <strong>95&ndash;108%</strong>. Use this if your soil test shows magnesium is low.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Hydrated (slaked) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0 0 6px;">Calcium hydroxide, sometimes labeled "builders' lime" &mdash; made by reacting burnt lime with water. Not a different category, just a faster-acting, higher-CCE product: enter its CCE here the same as any other lime. CCE typically <strong>120&ndash;135%</strong> (Virginia requires a minimum of 110% for anything sold under this name). Reaches maximum effect in 3&ndash;6 months, versus 1&ndash;3 years for ground limestone, but costs more per ton, is more caustic, and is unpleasant to handle &mdash; avoid breathing the dust or getting it on skin or green plant tissue.</p>
+                    <p style="font-size:0.78rem;color:var(--slate-light);margin:0;">Real example: a bag of dolomitic hydrated lime lists <strong>CCE 131.70%</strong> on its Guaranteed Analysis label, right in the expected range &mdash; that number is exactly what goes in the CCE field above.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Pelletized lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Finely ground limestone formed into small pellets, popular for homeowner use since it spreads without dust. CCE usually near <strong>100%</strong>. Good at <em>maintaining</em> pH once it's already in an acceptable range, but less effective than ground limestone at <em>correcting</em> strongly acidic soil, since each pellet reacts only in the small area immediately around itself rather than dispersing through the soil. Best used as part of a regular maintenance program that doesn't let pH drop too low in the first place.</p>
+                  </div>
+                  <p style="font-size:0.78rem;color:var(--slate-light);margin-top:8px;"><strong>Gypsum (calcium sulfate) is not lime</strong> &mdash; it has no CCE and does not raise soil pH, regardless of what the bag implies.</p>
+                </div>
+              </div>
             </div>
 
             <!-- Crop type selector with N rate guidance -->
@@ -2440,6 +2555,32 @@
                 </div>
               </div>
               <div class="field-hint" style="margin-top:6px;">Calcium Carbonate Equivalent (CCE) is listed as a percentage under Guaranteed Analysis on the bag &mdash; pelletized lime is usually near 100%, calcitic 80&ndash;100%, dolomitic 95&ndash;108%. Leave blank to assume 100%. <strong>Gypsum (calcium sulfate) has no CCE</strong> &mdash; it does not raise pH and is not lime. <em>(VCE 452-510)</em></div>
+              <div style="margin-top:8px;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                <button class="fert-chooser-toggle no-print" id="flr-lime-help-btn" aria-expanded="false" aria-controls="flr-lime-help-body" onclick="toggleCollapsible('flr-lime-help')" style="font-size:0.78rem;padding:8px 12px;">
+                  <span>&#129381; Want help with lime selection?</span><span class="toggle-arrow">&#9660;</span>
+                </button>
+                <div class="fert-chooser-body" id="flr-lime-help-body">
+                  <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Four common lime products, all valid choices &mdash; enter the CCE from whichever one you're using. <em>(VCE 452-510)</em></p>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Agricultural (calcitic) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Ground limestone that's primarily calcium carbonate. Supplies calcium; contains little to no magnesium. CCE typically <strong>80&ndash;100%</strong>. The standard, least expensive option.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Dolomitic lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Contains both calcium carbonate and magnesium carbonate &mdash; supplies both nutrients as it raises pH. CCE typically <strong>95&ndash;108%</strong>. Use this if your soil test shows magnesium is low.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Hydrated (slaked) lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0 0 6px;">Calcium hydroxide, sometimes labeled "builders' lime" &mdash; made by reacting burnt lime with water. Not a different category, just a faster-acting, higher-CCE product: enter its CCE here the same as any other lime. CCE typically <strong>120&ndash;135%</strong> (Virginia requires a minimum of 110% for anything sold under this name). Reaches maximum effect in 3&ndash;6 months, versus 1&ndash;3 years for ground limestone, but costs more per ton, is more caustic, and is unpleasant to handle &mdash; avoid breathing the dust or getting it on skin or green plant tissue.</p>
+                    <p style="font-size:0.78rem;color:var(--slate-light);margin:0;">Real example: a bag of dolomitic hydrated lime lists <strong>CCE 131.70%</strong> on its Guaranteed Analysis label, right in the expected range &mdash; that number is exactly what goes in the CCE field above.</p>
+                  </div>
+                  <div style="background:var(--green-mist);border-radius:6px;padding:10px 14px;">
+                    <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.85rem;">Pelletized lime</div>
+                    <p style="font-size:0.82rem;color:var(--slate-mid);margin:0;">Finely ground limestone formed into small pellets, popular for homeowner use since it spreads without dust. CCE usually near <strong>100%</strong>. Good at <em>maintaining</em> pH once it's already in an acceptable range, but less effective than ground limestone at <em>correcting</em> strongly acidic soil, since each pellet reacts only in the small area immediately around itself rather than dispersing through the soil. Best used as part of a regular maintenance program that doesn't let pH drop too low in the first place.</p>
+                  </div>
+                  <p style="font-size:0.78rem;color:var(--slate-light);margin-top:8px;"><strong>Gypsum (calcium sulfate) is not lime</strong> &mdash; it has no CCE and does not raise soil pH, regardless of what the bag implies.</p>
+                </div>
+              </div>
             </div>
 
             <!-- Excess-N caution — always visible on flower tab -->
@@ -2718,8 +2859,10 @@
       </div>
       <div class="about-grid">
         <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">📖</span> How to Use This Calculator</h3>
-          <div class="card-body">
+          <h3 style="margin:0;padding:0;">
+            <button type="button" class="card-header about-acc-toggle open" id="about-acc-howto-btn" aria-expanded="true" aria-controls="about-acc-howto-body" onclick="toggleCollapsible('about-acc-howto')"><span class="icon" aria-hidden="true">📖</span> How to Use This Calculator<span class="toggle-arrow" aria-hidden="true">&#9660;</span></button>
+          </h3>
+          <div class="card-body about-acc-body open" id="about-acc-howto-body">
             <p class="about-section-intro">This tool accepts soil test reports from Virginia Cooperative Extension (VCE) / Virginia Tech and Waypoint Analytical. Every calculator starts the same way, on the <strong>Soil Test Report</strong> tab:</p>
             <div class="about-step"><div class="about-step-num">1</div><div><strong>Enter your report.</strong>
               <ul style="margin:8px 0 0 20px;padding:0;">
@@ -2780,6 +2923,7 @@
                   <li>The bag size.</li>
                 </ol>
                 <p><strong>Gypsum is not lime</strong> &mdash; it has no CCE and doesn't raise soil pH. <em>(VCE 452-510)</em></p>
+                <p style="font-size:0.82rem;color:var(--slate-light);">Deciding between agricultural, dolomitic, hydrated, or pelletized lime? Each lime-calculating tab now has its own &ldquo;Want help with lime selection?&rdquo; section right next to the CCE field, covering all four types with real product examples.</p>
                 <p style="font-size:0.82rem;color:var(--slate-light);">Curious why your report recommends lime in the first place (or doesn't), or what a lime application from a year or two ago is still worth? See the &ldquo;Maintenance Fertilizing &amp; Retesting&rdquo; card further down this page.</p>
               </div>
             </div>
@@ -2827,8 +2971,10 @@
           </div>
         </div>
         <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">🧬</span> Understanding WIN &amp; Nitrogen Programs <span style="font-weight:400;font-size:0.72rem;color:var(--green-pale);">(Lawn tabs only)</span></h3>
-          <div class="card-body">
+          <h3 style="margin:0;padding:0;">
+            <button type="button" class="card-header about-acc-toggle" id="about-acc-win-btn" aria-expanded="false" aria-controls="about-acc-win-body" onclick="toggleCollapsible('about-acc-win')"><span class="icon" aria-hidden="true">🧬</span> Understanding WIN &amp; Nitrogen Programs <span style="font-weight:400;font-size:0.72rem;color:var(--green-pale);">(Lawn tabs only)</span><span class="toggle-arrow" aria-hidden="true">&#9660;</span></button>
+          </h3>
+          <div class="card-body about-acc-body" id="about-acc-win-body">
             <p class="about-section-intro">This section applies to the <strong>Cool-Season</strong> and <strong>Warm-Season Lawn</strong> tabs only — it doesn't apply to Vegetable Garden, Flower Garden, or Shrubs &amp; Trees. The nitrogen source in your fertilizer affects how it should be applied. This calculator uses the three-program system defined in VCE Publication 430-011 and Soil Test Notes 17 and 18.</p>
 
             <p style="font-weight:600;color:var(--green-deep);font-size:0.85rem;margin-bottom:6px;">What to enter, and how the calculator uses it</p>
@@ -2867,8 +3013,10 @@
           </div>
         </div>
         <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">🔄</span> Maintenance Fertilizing &amp; Retesting: Years 2–3</h3>
-          <div class="card-body">
+          <h3 style="margin:0;padding:0;">
+            <button type="button" class="card-header about-acc-toggle" id="about-acc-maint-btn" aria-expanded="false" aria-controls="about-acc-maint-body" onclick="toggleCollapsible('about-acc-maint')"><span class="icon" aria-hidden="true">🔄</span> Maintenance Fertilizing &amp; Retesting: Years 2&ndash;3<span class="toggle-arrow" aria-hidden="true">&#9660;</span></button>
+          </h3>
+          <div class="card-body about-acc-body" id="about-acc-maint-body">
             <p class="about-section-intro">Every soil test recommendation has a shelf life, and it's different for nitrogen than for everything else. Here's what the published guidance actually says, where it stays quiet, and how this calculator fills that gap.</p>
 
             <div class="table-scroll" style="margin-bottom:16px;">
@@ -2916,8 +3064,10 @@
           </div>
         </div>
         <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">&#129514;</span> Single-Nutrient Amendment Philosophy <span style="font-weight:400;font-size:0.72rem;color:var(--green-pale);">(Vegetable Garden tab)</span></h3>
-          <div class="card-body">
+          <h3 style="margin:0;padding:0;">
+            <button type="button" class="card-header about-acc-toggle" id="about-acc-nutrient-btn" aria-expanded="false" aria-controls="about-acc-nutrient-body" onclick="toggleCollapsible('about-acc-nutrient')"><span class="icon" aria-hidden="true">&#129514;</span> Single-Nutrient Amendment Philosophy <span style="font-weight:400;font-size:0.72rem;color:var(--green-pale);">(Vegetable Garden tab)</span><span class="toggle-arrow" aria-hidden="true">&#9660;</span></button>
+          </h3>
+          <div class="card-body about-acc-body" id="about-acc-nutrient-body">
             <p class="about-section-intro">The Vegetable Garden tab doesn't recommend one blended N-P-K fertilizer for the whole bed. Instead, it looks at each nutrient individually and only suggests adding what's actually low — the reasoning behind that, and how a few related pieces of the tab work, is explained here.</p>
 
             <p style="font-weight:600;color:var(--green-deep);font-size:0.85rem;margin-bottom:6px;">Why single-nutrient instead of blended</p>
@@ -2940,8 +3090,10 @@
           </div>
         </div>
         <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">🔬</span> Soil Test Ratings Explained</h3>
-          <div class="card-body">
+          <h3 style="margin:0;padding:0;">
+            <button type="button" class="card-header about-acc-toggle" id="about-acc-ratings-btn" aria-expanded="false" aria-controls="about-acc-ratings-body" onclick="toggleCollapsible('about-acc-ratings')"><span class="icon" aria-hidden="true">🔬</span> Soil Test Ratings Explained<span class="toggle-arrow" aria-hidden="true">&#9660;</span></button>
+          </h3>
+          <div class="card-body about-acc-body" id="about-acc-ratings-body">
             <p class="about-section-intro">Ratings reflect the relative availability of nutrients in your soil. VCE / Virginia Tech and Waypoint Analytical use different scales, but they are directly comparable — this calculator maps them automatically when you select your report type.</p>
 
             <p style="font-size:0.82rem;font-weight:600;color:var(--green-deep);margin-bottom:6px;">VCE / Virginia Tech scale <span style="font-weight:400;color:var(--slate-light);">(Soil Test Note 1, VCE 452-701)</span></p>
@@ -2971,8 +3123,10 @@
           </div>
         </div>
         <div class="card">
-          <h3 class="card-header"><span class="icon" aria-hidden="true">&#128196;</span> Source Documents &amp; Attribution</h3>
-          <div class="card-body">
+          <h3 style="margin:0;padding:0;">
+            <button type="button" class="card-header about-acc-toggle" id="about-acc-sources-btn" aria-expanded="false" aria-controls="about-acc-sources-body" onclick="toggleCollapsible('about-acc-sources')"><span class="icon" aria-hidden="true">&#128196;</span> Source Documents &amp; Attribution<span class="toggle-arrow" aria-hidden="true">&#9660;</span></button>
+          </h3>
+          <div class="card-body about-acc-body" id="about-acc-sources-body">
 
             <!-- SPES-40A — top, with thanks -->
             <div class="about-source" style="border-color:var(--gold);background:#fff8e1;">
@@ -4319,7 +4473,7 @@ function calcLime() {
       html += '</tbody></table></div>';
     }
 
-    html += '<div style="margin-top:14px;font-size:0.78rem;background:#eef4ff;border:1px solid #b8cce8;border-radius:4px;padding:8px 11px;color:var(--slate-mid);line-height:1.5;">&#128167; <strong>If you are using pelletized lime:</strong> the pellet must absorb moisture and slake (break back down into its fine powder) before it can react with the soil &mdash; so pH change is actually <em>slower</em> to start than the marketing suggests, and it stalls in dry soil. Apply when soil moisture is reliable (fall or early spring, or just before expected rain), not into a dry summer lawn. For garden beds, working it into the top few inches speeds the reaction. Pelletized lime also reacts and then runs out sooner than coarse aglime, which is why the recommended amount is split into the applications above rather than applied all at once. <em>(NC State Extension; VCE 452-510)</em></div>';
+    html += '<div style="margin-top:14px;font-size:0.78rem;background:#eef4ff;border:1px solid #b8cce8;border-radius:4px;padding:8px 11px;color:var(--slate-mid);line-height:1.5;">&#128167; <strong>If you are using pelletized lime:</strong> the pellet must absorb moisture and slake (break back down into its fine powder) before it can react with the soil &mdash; so pH change is actually <em>slower</em> to start than the marketing suggests, and it stalls in dry soil. Apply when soil moisture is reliable (fall or early spring, or just before expected rain), not into a dry summer lawn. For garden beds, working it into the top few inches speeds the reaction. Pelletized lime also reacts and then runs out sooner than coarse aglime, which is why the recommended amount is split into the applications above rather than applied all at once. It is also less effective than ground agricultural limestone at correcting a <em>strongly</em> acidic soil, since each pellet reacts only in the small area immediately around itself rather than dispersing through the soil &mdash; it works best as part of a regular maintenance program that keeps pH from dropping too low in the first place, rather than as the primary fix for a low starting pH. <em>(NC State Extension; VCE 452-510)</em></div>';
 
     panelEl.innerHTML = html;
   }
@@ -4741,8 +4895,14 @@ function interpretSoilTest() {
       biMsg = 'High reserve acidity. This soil needs significantly more lime \u2014 see the Lime Recommendation card for your exact amount and application schedule.'; biAction = '';
     }
     var biTitle = isWaypoint ? 'Buffer pH' : 'Buffer Index';
-    var biWhatMeans = 'Think of this as your soil\'s resistance to change. A lower number means more built-up acidity that needs neutralizing, so it takes more lime to raise the pH.</p><p><strong>Your result:</strong> ' + biMsg + (bi >= 6.5 ? ' This reading alone calls for no separate action \u2014 any lime need is already reflected in the lbs/1,000 sq. ft. figure on your report, shown on the Lime Recommendation card if one applies.' : '');
-    cards.push(card('&#128208;', biTitle, 'Scale: 6.00-6.60', 'Higher = less lime needed', bi.toFixed(2),
+    // Reworded Aug 10, 2026 — a real user report at 6.69 (relatively low acidity) still carried a
+    // 25 lbs/1,000 sq. ft. lime recommendation, and "this reading alone calls for no separate
+    // action" read as "no lime needed," which looked like a direct contradiction against the Lime
+    // Recommendation card. Not actually a logical conflict — a favorable buffer reading correctly
+    // predicts a *smaller* lime need, not necessarily zero — but the old wording overclaimed.
+    // Reworded to say "smaller requirement, if any" and drop "no separate action" entirely.
+    var biWhatMeans = 'Think of this as your soil\'s resistance to change. A lower number means more built-up acidity that needs neutralizing, so it takes more lime to raise the pH.</p><p><strong>Your result:</strong> ' + biMsg + (bi >= 6.5 ? ' A reading this high typically means a smaller lime requirement, if any \u2014 it does not necessarily mean no lime at all. The Lime Recommendation card, if one applies to your report, has your specific figure.' : '');
+    cards.push(card('&#128208;', biTitle, 'Scale: 6.00-6.60+', 'Higher = less lime needed', bi.toFixed(2),
       biWhatMeans,
       'It determines how much lime your soil needs to reach the correct pH.',
       biAction, ''));
