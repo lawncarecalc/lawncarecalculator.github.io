@@ -5260,3 +5260,71 @@ the About tab showed the same pre-existing off-by-one mismatch as the v8.5 basel
 | :-- | :-- |
 | `index.html` | Moved the VCE nondiscrimination statement, commercial-products disclaimer, AI-assistance declaration, and "for more information" line out of the collapsible Source Documents accordion card into an always-visible footer below all six About-page sections (v8.6) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v8.7: Waypoint-to-VCE rating conversion explanation expanded, verified against actual code before writing)
+
+User asked whether the About page's one-line summary ("This calculator maps Waypoint ratings to
+VCE equivalents automatically when you select your report type") was landing-page-only. Traced
+every actual use of `WAYPOINT_TO_VCE` in the code rather than answering from the existing text,
+which surfaced three distinct, previously undocumented mechanisms:
+
+1. **Cool-Season, Warm-Season, Shrubs & Trees** — these three tabs only ever rate P and K, and
+   their fertilizer-type lookup (`P_REC`) is keyed exclusively to VCE's codes; their own rating
+   dropdowns don't even offer Waypoint-style options. So `WAYPOINT_TO_VCE` converts the rating on
+   carry-over, and that conversion is functional, not cosmetic — it determines which category of
+   fertilizer (P-containing vs. zero-P) actually gets recommended, confirmed by reading `P_REC`
+   directly.
+2. **Vegetable Garden and Flower Garden don't use this conversion at all** (confirmed: no
+   Ca/Mg/S/micronutrient rating fields exist on Lawn/Shrub tabs, vs. ~10 nutrients on Garden/
+   Flower). Removed July 28 per an existing code comment — instead they use a single shared
+   classifier (`nutrientRatingStatus()`) that recognizes both labs' rating codes natively in one
+   unified low/high set, avoiding the need to build or convert into per-nutrient VCE-only lookup
+   tables the way P_REC was built.
+3. **Lime type** is a third, separate mechanism — the report's own stated type (if entered) is
+   always used as-is; the Mg-rating check (via the same `WAYPOINT_TO_VCE` map) only cross-references
+   it — confirming agreement, flagging a disagreement, or filling in a recommendation when no type
+   was given — never silently overriding the report's own stated type. Confirmed by reading the
+   actual `flrLimeTypeMsg` branching logic in `calcFlower()`.
+
+User then proposed the real causal explanation in plain terms: Lawn/Shrub need the conversion
+specifically *because* they're P/K-only (2 nutrients, simple enough for a small VCE-keyed lookup
+table); Garden/Flower avoid it because covering ~10 nutrients through one shared panel made a
+unified dual-vocabulary classifier the more sensible design. Verified this against the code (no
+Ca/Mg/S/micronutrient fields exist on Lawn/Shrub) before agreeing and drafting the replacement text.
+
+Replaced the single line with three short paragraphs in the "Soil Test Ratings Explained" accordion
+section: (1) why Lawn/Shrub need the conversion and what it actually decides, (2) why Garden/Flower
+don't need it, (3) how lime type reconciliation works. Written in plain language per explicit
+request ("more accessible to the average user") rather than the denser draft from the prior turn.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Replaced the one-line Waypoint-to-VCE rating conversion summary with three plain-language paragraphs explaining which tabs need it, why, what it actually determines (fertilizer type, not just display text), and how lime-type reconciliation works separately (v8.7) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v8.8: fixed duplicate/contradicting Waypoint-VCE conversion claims in the same accordion card)
+
+User caught this after viewing v8.7 live: the "Soil Test Ratings Explained" card's very first line
+(`about-section-intro`) still said "this calculator maps them automatically when you select your
+report type" — the exact oversimplified claim the three new paragraphs (added one turn earlier)
+were written to correct. Both statements sat in the same card, so a reader hit the old blanket claim
+first, then the more accurate "only 3 tabs, only P/K" explanation a few paragraphs later —
+contradicting rather than complementing each other.
+
+Fixed: moved the three new paragraphs up to immediately follow the intro line (trimmed the intro to
+drop its own "-- maps them automatically" tail, keeping the accurate lead sentence), and removed the
+now-duplicate copies from their original lower position (after the two rating tables). Also caught
+and removed a second, easy-to-miss duplicate of the "For lime type..." paragraph that the first
+cleanup pass left behind. Verified via grep that all three new paragraphs and the old removed claim
+each now appear exactly the expected number of times (1, 1, 1, 0) with no stray copies.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Consolidated the Waypoint-to-VCE rating conversion explanation into one place at the top of the "Soil Test Ratings Explained" card, removing the now-redundant/contradicting old intro claim and duplicate paragraph copies (v8.8) |
+| `CLAUDE.md` | this entry |
