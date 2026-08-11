@@ -5225,3 +5225,38 @@ risk an unrelated fix while mid-edit.
 | :-- | :-- |
 | `index.html` | About page's 6 top-level sections converted to a collapsible accordion (How to Use open by default, others collapsed); new `.about-acc-toggle`/`.about-acc-body` CSS classes added additively, reusing the existing `toggleCollapsible()` function (v8.5) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 10, 2026 (v8.6: compliance notices moved out of the collapsed-by-default Source Documents accordion into an always-visible footer)
+
+Direct follow-up to the v8.5 accordion conversion — user spotted a side effect: the four
+institutional/legal notices at the tail of the "Source Documents & Attribution" card (VCE
+nondiscrimination statement, commercial-products disclaimer, AI-assistance declaration, and the
+"for more information" line) got swept into that card's collapsed-by-default body along with
+everything else, making them invisible unless a visitor happened to expand that specific section.
+
+This class of content — required institutional disclosures — is standard practice to keep in a
+persistent, always-visible footer specifically so it can't be hidden by user interaction (accordion
+collapse, tab switching, etc.) and so anyone scanning the page (including automated compliance
+review or a full screen-reader read-through) reliably encounters it. It was never really "source
+material" a reader opts into finding; it just happened to live at the bottom of that card's markup.
+
+Moved all four `.about-note` blocks out of `about-acc-sources-body` entirely, into a new
+`.about-footer-notices` container placed as a sibling to `.about-grid` (the accordion's parent),
+inside `.about-layout` — below all six collapsible cards, always rendered regardless of any
+section's open/closed state. No new CSS needed beyond a `margin-top` on the wrapper; the existing
+`.about-note` styling was untouched.
+
+**Verification:** jsdom simulation confirmed the footer renders outside any `.about-acc-body`
+ancestor (so never hidden by a collapsed section), contains all four notices with no duplication
+(exactly one occurrence of each), and the Source Documents card's actual reference content (spot-
+checked the NC State bulb-fertilization citation) survived the move intact. Div-balance check on
+the About tab showed the same pre-existing off-by-one mismatch as the v8.5 baseline (216/217 →
+217/218 — exactly one new, correctly-paired div added on top) — confirms nothing new was broken.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Moved the VCE nondiscrimination statement, commercial-products disclaimer, AI-assistance declaration, and "for more information" line out of the collapsible Source Documents accordion card into an always-visible footer below all six About-page sections (v8.6) |
+| `CLAUDE.md` | this entry |
