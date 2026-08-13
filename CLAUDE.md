@@ -5391,3 +5391,51 @@ the broadened "(Vegetable & Flower Garden tabs)" label landed correctly.
 | :-- | :-- |
 | `index.html` | Added two Penn State Extension sources to Supplementary Regional Sources; wrote the full OM-nitrogen-credit / Waypoint-ENR-cap explanation into the Single-Nutrient Amendment Philosophy card (broadened to cover Flower Garden); referenced the finding in all 5 in-app locations that show or define the OM nitrogen credit (v8.9) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 12, 2026 (README v2.2: ENR/organic-matter-nitrogen-credit finding added)
+
+Follow-up to the v8.9 `index.html` work — user asked whether `README.md` needed a matching update.
+Checked: zero mentions of ENR or the organic matter nitrogen credit topic existed anywhere in the
+README, despite the Vegetable Garden section already documenting comparable-weight features
+("Volume estimates and bulk density") in similar depth. Confirmed as a real gap and fixed.
+
+1. Added Penn State Extension to the Vegetable Garden section's sourcing byline.
+2. Added a new "Organic matter nitrogen credit" subsection (same section, right after "Volume
+   estimates and bulk density") summarizing the UMD formula, its Penn State/NC State sourcing, and
+   the Waypoint ENR cap finding (18–19 lbs/acre per 1% OM below 5.6% OM, flat 150 lbs/acre at or
+   above) — same honest framing as the in-app version: presented as the app's own analysis of 22
+   real reports, with "no published explanation was found" for the cap rather than a stated theory.
+3. Added a Penn State Extension bullet to the "Supplementary regional sources" list, describing
+   both cited articles.
+4. Bumped the README's own version badge 2.1 → 2.2, tagging the new source-list entry
+   `added v2.2` per the existing changelog-annotation convention.
+
+Did not touch the Flower Garden section directly — it has no dedicated sourcing byline the way
+Vegetable Garden does, and the new subsection already states it covers both tabs.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `README.md` | Added Penn State Extension to sourcing; new "Organic matter nitrogen credit" subsection describing the UMD formula and Waypoint ENR cap finding; new Primary Sources bullet; version badge bumped to 2.2 |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 12, 2026 (v9.0: removed leftover Waypoint-numeric-target note on Vegetable Garden tab)
+
+User spotted a stale paragraph on the Vegetable Garden tab, right after the Nitrogen source
+dropdown: "Have a Waypoint report? Its 'SOIL FERTILITY GUIDELINES' numeric targets... are entered
+directly next to each nutrient in the Nutrient Application Plan below... not in a separate list
+here." This referred to an older UI layout (a separate numeric-target entry list that no longer
+exists — Waypoint targets are now entered inline per-nutrient in the Nutrient Status panel itself,
+per the July 28 redesign already documented elsewhere in this file). Confirmed as dead/leftover
+text and removed outright rather than updated, since the panel it describes no longer exists in a
+form this note would meaningfully clarify.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Removed the leftover "Have a Waypoint report?" numeric-target note from the Vegetable Garden tab's Nitrogen section (v9.0) |
+| `CLAUDE.md` | this entry |
