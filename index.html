@@ -796,7 +796,7 @@
       <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v8.8 &middot; 2026-08-10</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v8.9 &middot; 2026-08-12</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -3065,7 +3065,7 @@
         </div>
         <div class="card">
           <h3 style="margin:0;padding:0;">
-            <button type="button" class="card-header about-acc-toggle" id="about-acc-nutrient-btn" aria-expanded="false" aria-controls="about-acc-nutrient-body" onclick="toggleCollapsible('about-acc-nutrient')"><span class="icon" aria-hidden="true">&#129514;</span> Single-Nutrient Amendment Philosophy <span style="font-weight:400;font-size:0.72rem;color:var(--green-pale);">(Vegetable Garden tab)</span><span class="toggle-arrow" aria-hidden="true">&#9660;</span></button>
+            <button type="button" class="card-header about-acc-toggle" id="about-acc-nutrient-btn" aria-expanded="false" aria-controls="about-acc-nutrient-body" onclick="toggleCollapsible('about-acc-nutrient')"><span class="icon" aria-hidden="true">&#129514;</span> Single-Nutrient Amendment Philosophy <span style="font-weight:400;font-size:0.72rem;color:var(--green-pale);">(Vegetable &amp; Flower Garden tabs)</span><span class="toggle-arrow" aria-hidden="true">&#9660;</span></button>
           </h3>
           <div class="card-body about-acc-body" id="about-acc-nutrient-body">
             <p class="about-section-intro">The Vegetable Garden tab doesn't recommend one blended N-P-K fertilizer for the whole bed. Instead, it looks at each nutrient individually and only suggests adding what's actually low — the reasoning behind that, and how a few related pieces of the tab work, is explained here.</p>
@@ -3084,6 +3084,11 @@
 
             <p style="font-weight:600;color:var(--green-deep);font-size:0.85rem;margin-bottom:6px;">What about molybdenum?</p>
             <p style="margin-bottom:14px;">VCE does recommend molybdenum, but for a short list of crops (alfalfa, soybeans, some commercial vegetables) and only when soil pH is below 5.8 — no home-garden soil test or rate is published for it otherwise. In practice, correcting your soil's pH with the lime already recommended elsewhere on your report removes the low-pH trigger condition that would call for molybdenum in the first place, which is why this tab doesn't include a separate molybdenum amendment. <em>(Soil Test Recommendations for Virginia, July 2026, Section VIII)</em></p>
+
+            <p style="font-weight:600;color:var(--green-deep);font-size:0.85rem;margin-bottom:6px;">Where does the organic matter nitrogen credit come from?</p>
+            <p style="margin-bottom:14px;">This calculator credits nitrogen from organic matter using a formula from University of Maryland Extension: 0.4 lbs N per 1% organic matter per 1,000 sq. ft. per season. That number rests on two pieces of soil science, both independently confirmed by multiple universities. First, soil organic matter is a nitrogen reservoir &mdash; Penn State Extension and NC State Extension separately state that every 1 percentage point of organic matter holds roughly 1,000 lbs of nitrogen per acre. Second, only a fraction of that stored nitrogen becomes plant-available each season, through microbial decomposition. Penn State Extension puts the typical annual release for ordinary agricultural soils at around 60&ndash;80 lbs N per acre per year. <em>(Penn State Extension, &ldquo;Nutrient Management to Improve Nitrogen Efficiency and Reduce Environmental Loss,&rdquo; D. Beegle; &ldquo;Managing Soil Health: Concepts and Practices,&rdquo; C. White; NC State Extension, &ldquo;Crop Rotation on Organic Farms&rdquo;)</em></p>
+            <p style="font-weight:600;color:var(--green-deep);font-size:0.85rem;margin-bottom:6px;">If your report is from Waypoint, you may notice a different number: &ldquo;Estimated N Release&rdquo;</p>
+            <p style="margin-bottom:14px;">Waypoint prints its own nitrogen-release estimate (ENR) directly on the report. We looked at how that figure behaves across a set of real Waypoint reports, comparing organic matter percentage against ENR. Below about 5.6% organic matter, Waypoint's ENR scales at roughly 18&ndash;19 lbs of nitrogen per acre for each 1% of organic matter &mdash; close to what the university-sourced formula above would predict for the same soil. But at 5.6% organic matter and above, Waypoint's ENR consistently reads 150 lbs/acre, regardless of how much higher the organic matter actually is &mdash; soils at 6.5% and 13.4% organic matter showed the identical number. We don't have a published explanation for why Waypoint's figure levels off there. This calculator uses the UMD Extension formula for every report, VCE or Waypoint, so the nitrogen credit keeps scaling with your soil's actual organic matter rather than flattening out &mdash; which matters most for gardeners with rich, high-organic-matter beds, exactly where the credit is most worth getting right.</p>
 
             <p style="font-weight:600;color:var(--green-deep);font-size:0.85rem;margin-bottom:6px;">Why this level of detail</p>
             <p>The goal throughout is to never show a number that isn't traceable to a real source — VCE, another university Extension, a government agency, or a named peer-reviewed publication — and to say clearly whenever something is an estimate rather than a verified fact, rather than presenting every number with the same false confidence.</p>
@@ -3340,6 +3345,23 @@
                   <div class="about-source-title"><a href="https://extension.umd.edu/resource/fertilizing-vegetables" target="_blank" rel="noopener" style="color:var(--green-mid);">University of Maryland Extension — Fertilizing Vegetables<span class="sr-only"> (opens in new tab)</span></a></div>
                   <div class="about-source-meta">University of Maryland Extension</div>
                   <p>Source for: N rates by feeding level (heavy/medium/light feeders in lbs/100 sq. ft.), liquid Borax method for boron deficiency (1 tbsp per gallon per 100 sq. ft.), organic matter N credit (0.4 lbs N per 1% OM per 1,000 sq. ft.), and fish emulsion as a fast-acting option in cool spring soils.</p>
+                </div>
+                <!-- Added Aug 12, 2026 — two Penn State Extension articles that independently confirm both halves
+                     of the UMD organic-matter N-credit formula above: the total N stored per 1% OM, and the
+                     fraction of it that mineralizes (becomes plant-available) in a season. Found while exhausting
+                     Chesterfield's preferred-university search order (VCE, NC State, Clemson, UMD, Rutgers, Penn
+                     State) looking for why Waypoint's own "Estimated N Release" figure caps at 150 lbs/acre —
+                     see the Understanding WIN & Nitrogen Programs section for the full writeup. NC State's own
+                     corroborating figure is already cited above under NC State entries; not duplicated here. -->
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://extension.psu.edu/managing-soil-health-concepts-and-practices" target="_blank" rel="noopener" style="color:var(--green-mid);">Penn State Extension — Managing Soil Health: Concepts and Practices<span class="sr-only"> (opens in new tab)</span></a></div>
+                  <div class="about-source-meta">Charles White &amp; Mary Barbercheck &mdash; Pennsylvania State University</div>
+                  <p>Independently confirms the total-nitrogen half of the UMD organic-matter formula: "every 1 percentage point of organic matter in the top 6 inches of soil contains about 1,000 pounds of nitrogen... per acre" &mdash; matches NC State's own figure (2,000&ndash;4,000 lbs N/acre at 3% OM) almost exactly.</p>
+                </div>
+                <div class="about-source">
+                  <div class="about-source-title"><a href="https://extension.psu.edu/nutrient-management-to-improve-nitrogen-efficiency-and-reduce-environmental-loss" target="_blank" rel="noopener" style="color:var(--green-mid);">Penn State Extension — Nutrient Management to Improve Nitrogen Efficiency and Reduce Environmental Loss<span class="sr-only"> (opens in new tab)</span></a></div>
+                  <div class="about-source-meta">Douglas Beegle, Ph.D. &mdash; Pennsylvania State University</div>
+                  <p>Source for the annual-mineralization half of the formula: "nitrogen naturally becomes available in soil as organic matter is mineralized, which results in around 60&ndash;80 pounds of nitrogen per acre per year for crop uptake" for ordinary agricultural soils &mdash; the figure this calculator's UMD-based N credit is checked against.</p>
                 </div>
                 <div class="about-source">
                   <div class="about-source-title"><a href="https://hgic.clemson.edu/factsheet/fertilizing-vegetables/" target="_blank" rel="noopener" style="color:var(--green-mid);">Clemson HGIC — Fertilizing Vegetables<span class="sr-only"> (opens in new tab)</span></a></div>
@@ -6476,11 +6498,11 @@ function calcGarden() {
       // Extreme OM (heavily amended / muck-like beds). The linear 0.4-per-1% formula is validated
       // for ordinary garden OM ranges and overstates release at this level, so give a qualitative
       // advisory rather than a precise figure.
-      omNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Very high organic matter (' + omVal.toFixed(1) + '%):</strong> Soil this rich in organic matter releases more nitrogen through the season than most vegetables require. Sidedressing is very unlikely to be necessary. Monitor plant color and only add nitrogen if plants are pale or growth is weak. The standard release estimate (0.4 lbs N per 1% OM) is calibrated for ordinary garden soils and overstates release at this level, so no precise figure is shown. <em>(UMD Extension; Rutgers FS626)</em></div>';
+      omNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>Very high organic matter (' + omVal.toFixed(1) + '%):</strong> Soil this rich in organic matter releases more nitrogen through the season than most vegetables require. Sidedressing is very unlikely to be necessary. Monitor plant color and only add nitrogen if plants are pale or growth is weak. The standard release estimate (0.4 lbs N per 1% OM) is calibrated for ordinary garden soils and overstates release at this level, so no precise figure is shown. <em>(UMD Extension; Rutgers FS626 &mdash; full sourcing in About &gt; Single-Nutrient Amendment Philosophy)</em></div>';
     } else if (omVal >= 5) {
       var omNPer100 = omNCredit / 10; // lbs N per 100 sq. ft.
       var omNForBed = omNPer100 * hundredths; // lbs N for user's actual bed
-      omNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>High organic matter (' + omVal.toFixed(1) + '%):</strong> Your soil is releasing approximately <strong>' + fmt(omNPer100, 2) + ' lbs of N per 100 sq. ft.</strong> (' + fmt(omNForBed, 2) + ' lbs for your ' + area + ' sq. ft. bed) naturally this season. You may need little or no sidedress \u2014 monitor plant color before applying. <em>(UMD Extension: 0.4 lbs N per 1% OM per 1,000 sq. ft.; Rutgers FS626)</em></div>';
+      omNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:8px;">&#127807; <strong>High organic matter (' + omVal.toFixed(1) + '%):</strong> Your soil is releasing approximately <strong>' + fmt(omNPer100, 2) + ' lbs of N per 100 sq. ft.</strong> (' + fmt(omNForBed, 2) + ' lbs for your ' + area + ' sq. ft. bed) naturally this season. You may need little or no sidedress \u2014 monitor plant color before applying. <em>(UMD Extension: 0.4 lbs N per 1% OM per 1,000 sq. ft.; Rutgers FS626 &mdash; full sourcing, including Penn State &amp; NC State confirmation, in About &gt; Single-Nutrient Amendment Philosophy)</em></div>';
     }
 
     // Flat-rate notice — Note 19 organic options bypass the % calculation entirely
@@ -6929,13 +6951,13 @@ function calcFlower() {
   var flrOmVal = parseFloat(document.getElementById('st-om') ? document.getElementById('st-om').value : '') || 0;
   var flrOmNote = '';
   if (flrOmVal >= 20) {
-    flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>Extreme organic matter (' + flrOmVal.toFixed(1) + '%):</strong> This bed is essentially compost-rich and very unlikely to need any fertilizer or amendment. Very high organic matter can also tie up some micronutrients. The standard 0.4 lbs N per 1% OM release estimate overstates release at this level, so no figure is shown. Skip supplemental nutrients and watch plant performance. <em>(UMD Extension; VCE Note 19)</em></div>';
+    flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>Extreme organic matter (' + flrOmVal.toFixed(1) + '%):</strong> This bed is essentially compost-rich and very unlikely to need any fertilizer or amendment. Very high organic matter can also tie up some micronutrients. The standard 0.4 lbs N per 1% OM release estimate overstates release at this level, so no figure is shown. Skip supplemental nutrients and watch plant performance. <em>(UMD Extension; VCE Note 19 &mdash; full sourcing in About &gt; Single-Nutrient Amendment Philosophy)</em></div>';
   } else if (flrOmVal >= 15) {
-    flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>Very high organic matter (' + flrOmVal.toFixed(1) + '%):</strong> Soil this rich releases ample nitrogen on its own. For flowers, excess nitrogen drives leafy growth at the expense of blooms, so additional nitrogen is very likely unnecessary &mdash; and could reduce flowering. Skip supplemental N and watch plant color. <em>(UMD Extension; VCE Note 19)</em></div>';
+    flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>Very high organic matter (' + flrOmVal.toFixed(1) + '%):</strong> Soil this rich releases ample nitrogen on its own. For flowers, excess nitrogen drives leafy growth at the expense of blooms, so additional nitrogen is very likely unnecessary &mdash; and could reduce flowering. Skip supplemental N and watch plant color. <em>(UMD Extension; VCE Note 19 &mdash; full sourcing in About &gt; Single-Nutrient Amendment Philosophy)</em></div>';
   } else if (flrOmVal >= 5) {
     var flrOmNPer100 = (flrOmVal * 0.4) / 10;
     var flrOmForBed = flrOmNPer100 * hundredths;
-    flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>High organic matter (' + flrOmVal.toFixed(1) + '%):</strong> Your soil is releasing about <strong>' + fmt(flrOmNPer100, 2) + ' lbs N per 100 sq. ft.</strong> (' + fmt(flrOmForBed, 2) + ' lbs for your ' + area + ' sq. ft. bed) naturally this season. Because excess nitrogen suppresses flowering, lean toward the low end of any nitrogen recommendation &mdash; or skip it &mdash; and watch plant color. <em>(UMD Extension: 0.4 lbs N per 1% OM per 1,000 sq. ft.; VCE Note 19)</em></div>';
+    flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>High organic matter (' + flrOmVal.toFixed(1) + '%):</strong> Your soil is releasing about <strong>' + fmt(flrOmNPer100, 2) + ' lbs N per 100 sq. ft.</strong> (' + fmt(flrOmForBed, 2) + ' lbs for your ' + area + ' sq. ft. bed) naturally this season. Because excess nitrogen suppresses flowering, lean toward the low end of any nitrogen recommendation &mdash; or skip it &mdash; and watch plant color. <em>(UMD Extension: 0.4 lbs N per 1% OM per 1,000 sq. ft.; VCE Note 19 &mdash; full sourcing, including Penn State &amp; NC State confirmation, in About &gt; Single-Nutrient Amendment Philosophy)</em></div>';
   }
   html += flrOmNote;
 
@@ -7712,7 +7734,7 @@ var GLOSSARY_ENTRIES = [
   },
   {
     terms: ['organic matter'],
-    def: 'Decomposed plant and animal material in the soil. Improves water retention, soil structure, and nutrient availability. In garden beds, high organic matter (≥5%) releases nitrogen naturally — about 0.4 lbs N per 1% OM per 1,000 sq. ft. per season. (UMD Extension)'
+    def: 'Decomposed plant and animal material in the soil. Improves water retention, soil structure, and nutrient availability. In garden beds, high organic matter (≥5%) releases nitrogen naturally — about 0.4 lbs N per 1% OM per 1,000 sq. ft. per season. (UMD Extension; confirmed by Penn State &amp; NC State Extension)'
   },
   {
     terms: ['preplant'],

@@ -5328,3 +5328,66 @@ each now appear exactly the expected number of times (1, 1, 1, 0) with no stray 
 | :-- | :-- |
 | `index.html` | Consolidated the Waypoint-to-VCE rating conversion explanation into one place at the top of the "Soil Test Ratings Explained" card, removing the now-redundant/contradicting old intro claim and duplicate paragraph copies (v8.8) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 12, 2026 (v8.9: Waypoint ENR investigation resolved — Penn State/NC State sources added, findings documented and referenced throughout the app)
+
+### Background — multi-turn investigation across two sessions
+User noticed the app's organic-matter nitrogen credit (UMD Extension formula, 0.4 lbs N per 1%
+OM per 1,000 sq. ft.) didn't match Waypoint's own printed "Estimated N Release" (ENR) figure on
+two of their real reports — both showed identical ENR (150 lbs/acre) despite very different OM%
+(6.5% vs. 12.6%, later corrected from an initial wrong-report upload). Investigated in stages:
+
+1. **Read Waypoint's own documentation** (Agronomy Facts 8, "Soil Test Interpretation: Terms and
+   Definitions") — confirms ENR is influenced by OM plus "seasonal variation in weather conditions"
+   and "soil physical conditions," not OM alone, but gives no formula.
+2. **User supplied a 22-point dataset** (OM% vs. ENR across their own reports). Regression
+   confirmed a real, non-arbitrary pattern: below ~5.6% OM, ENR scales at ~18.6 lbs/acre per 1% OM
+   (r²=0.74); at or above 5.6% OM, ENR reads a flat 150 lbs/acre regardless of how much higher OM
+   climbs. Visualized with a scatter chart (trend line + cap line).
+3. **Searched for why** — found A&L Great Lakes (a commercial competitor testing lab's blog) and a
+   farm blog with relevant formulas, but user flagged that Anthropic Chesterfield's actual sourcing
+   rule document (`NonEdu_Full_Rule-6-16-26.md`) disqualifies both: neither is .edu, government,
+   peer-reviewed, a botanical garden, or a university research program.
+4. **Exhausted the rule document's full preferred-university search order** (VCE, NC State,
+   Clemson, UMD, Rutgers, Penn State) looking for a compliant replacement. Found: VCE covers a
+   related but different topic (C:N ratio of added amendments, not %OM-to-annual-release); NC State
+   confirms the total-N-content half only (2,000–4,000 lbs N/acre at 3% OM); Clemson, UMD, Rutgers —
+   nothing on point; **Penn State Extension has both halves**, from two separate credentialed-author
+   articles: "Managing Soil Health: Concepts and Practices" (C. White — ~1,000 lbs N per 1% OM) and
+   "Nutrient Management to Improve Nitrogen Efficiency and Reduce Environmental Loss" (D. Beegle —
+   ~60–80 lbs N/acre/year typical annual mineralization). Fully rule-compliant, and independently
+   converges with NC State's number.
+
+### What was implemented this turn
+1. **Added both Penn State articles + confirmed the NC State corroboration is already cited** to
+   the About page's "Supplementary Regional Sources" collapsible, positioned right after the UMD
+   entry since they support the same formula.
+2. **Wrote the full explanation** into the "Single-Nutrient Amendment Philosophy" card (About
+   page), which required broadening that card's scope label from "(Vegetable Garden tab)" to
+   "(Vegetable & Flower Garden tabs)" since the OM content applies to both — not placed in
+   "Understanding WIN & Nitrogen Programs" as first considered, since that section is explicitly
+   scoped "Lawn tabs only" in its own intro line and this content doesn't belong there. Two new
+   paragraphs: (a) where the UMD formula's two halves come from, sourced to Penn State/NC State;
+   (b) the Waypoint ENR cap finding, framed honestly as the app's own analysis of real reports
+   ("we looked at..."), not attributed to any external source, with an explicit "we don't have a
+   published explanation for why" rather than presenting a theory as fact.
+3. **Referenced throughout the app**, not just the About page, per explicit request — updated all
+   five in-app locations that show or define the OM nitrogen credit: Vegetable Garden's "Very high"
+   and "High" organic matter notes, Flower Garden's "Extreme," "Very high," and "High" organic
+   matter notes (the last of these is the exact note from the screenshot that started this whole
+   investigation), and the Organic Matter glossary tooltip definition. Added a short "full sourcing
+   in About > Single-Nutrient Amendment Philosophy" pointer to the two primary calculated-number
+   notes (Vegetable and Flower "High organic matter") rather than repeating the full citation list
+   inline everywhere, keeping the compact UI notes readable.
+
+**Verification:** syntax-checked; confirmed both Penn State citations present exactly once each at
+their respective locations (About-page source entry and About-page explanation paragraph); confirmed
+the broadened "(Vegetable & Flower Garden tabs)" label landed correctly.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added two Penn State Extension sources to Supplementary Regional Sources; wrote the full OM-nitrogen-credit / Waypoint-ENR-cap explanation into the Single-Nutrient Amendment Philosophy card (broadened to cover Flower Garden); referenced the finding in all 5 in-app locations that show or define the OM nitrogen credit (v8.9) |
+| `CLAUDE.md` | this entry |
