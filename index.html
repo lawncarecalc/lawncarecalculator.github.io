@@ -796,7 +796,7 @@
       <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v9.0 &middot; 2026-08-12</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v9.3 &middot; 2026-08-14</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -2148,7 +2148,20 @@
 
             <!-- Crop type selector with N rate guidance -->
             <div class="field-group">
-              <div class="field-label"><span class="field-num">2</span><label class="field-question" for="gdn-crop-type">What are you growing? <span style="font-weight:400;color:var(--slate-light);font-size:0.82rem;">(optional — helps calculate N rate)</span></label></div>
+              <div class="field-label"><span class="field-num">2</span><label class="field-question" for="gdn-crop-type">Enter a Nitrogen (N) rate</label></div>
+              <!-- Restructured Aug 13, 2026 — was "What are you growing? (optional — helps
+                   calculate N rate)", which framed crop selection as the primary ask and buried
+                   manual N entry inside a collapsible labeled "(rare)". In practice, entering your
+                   soil report's own printed N figure is the MOST common thing someone with a real
+                   report in hand wants to do, not an edge case — and the field for it lived inside
+                   gdn-veg-guidance-section, which stayed display:none until a crop was selected, so
+                   it was literally unreachable without doing Option A first. Both problems fixed:
+                   header now names what's actually being collected: an N rate. Option A (crop list)
+                   and Option B (your own rate) are both visible by default as equal, parallel paths
+                   — Option B is no longer nested inside the crop-dependent guidance section. -->
+              <p style="font-size:0.82rem;color:var(--slate-mid);margin:0 0 14px;">Two ways to set this — pick a crop below for a research-based rate, enter your own, or both (your own rate always takes priority when entered).</p>
+
+              <div style="font-weight:600;color:var(--green-deep);font-size:0.85rem;margin-bottom:6px;">Option A &mdash; Select your crop for a research-based rate</div>
               <select id="gdn-crop-type" onchange="onCropTypeChange()" style="margin-bottom:6px;">
                 <option value="">— Select a crop (optional) —</option>
                 <optgroup label="Heavy feeders (tomatoes, corn, broccoli…)">
@@ -2187,33 +2200,25 @@
                 </optgroup>
               </select>
 
-              <!-- Crop guidance — merged single panel (feeding level, target pH, sidedress timing,
-                   caution, and the research-based N default all in one place, not split across
-                   two near-identical boxes). Updates automatically when a crop is chosen above. -->
+              <!-- Crop guidance — feeding level, target pH, sidedress timing, caution, and the
+                   research-based N default. Still genuinely crop-dependent, so still hidden until
+                   a crop is chosen above — only the N-rate override (formerly nested in here) and
+                   the two general tips below it were moved out, since those apply regardless of
+                   whether a crop is selected. -->
               <div class="no-print" id="gdn-veg-guidance-section" style="margin-top:10px;display:none;">
                 <div id="gdn-crop-info-panel" style="margin-bottom:10px;"></div>
+              </div>
 
-                <!-- N override — kept as a stable element (not rebuilt when the crop changes, so a
-                     manually-entered value from e.g. a private agronomist consult survives a crop
-                     switch), but now sits directly under the number it overrides instead of ten
-                     lines away. -->
-                <div class="fert-chooser no-print" style="margin-bottom:10px;">
-                  <button class="fert-chooser-toggle" id="gdn-n-override-btn" aria-expanded="false" aria-controls="gdn-n-override-body" onclick="toggleGdnNOverride()" style="font-size:0.78rem;padding:6px 10px;">
-                    <span>Use a different N amount instead <span style="font-weight:400;color:var(--slate-light);">(rare — e.g. a private agronomist consult, or your own soil test's separate suggestion)</span></span><span class="toggle-arrow">&#9660;</span>
-                  </button>
-                  <div class="fert-chooser-body" id="gdn-n-override-body">
-                    <label class="field-question" id="gdn-n-rec-label" for="gdn-n-rec" style="font-size:0.85rem;display:block;margin-bottom:6px;">Nitrogen recommendation (lbs per 100 sq. ft.)</label>
-                    <input type="number" id="gdn-n-rec" min="0" step="0.1" placeholder="leave blank to use the research-based default above" oninput="calcGarden()">
-                    <div class="field-hint" id="gdn-n-rec-hint">No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) — nitrate-N can leach out within a day or two of rain, so a snapshot measurement wouldn't stay accurate anyway. The "N" figure on a standard VCE or Waypoint report is a generic crop-based recommendation, not a lab result. If your submission form didn't specify a crop, VCE's own recommendation is often a <em>range</em> rather than one number \u2014 if so, enter your best estimate within that range here. Leave blank to use the VCE research-based default shown above. This becomes your preplant amount; sidedress steps are calculated separately from crop research. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
-                  </div>
-                </div>
+              <div style="font-weight:600;color:var(--green-deep);font-size:0.85rem;margin:16px 0 6px;border-top:1px solid var(--border);padding-top:14px;">Option B &mdash; Enter your own rate, from your soil report or a reliable source</div>
+              <label class="field-question" id="gdn-n-rec-label" for="gdn-n-rec" style="font-size:0.85rem;display:block;margin-bottom:6px;">Nitrogen recommendation (lbs per 100 sq. ft.)</label>
+              <input type="number" id="gdn-n-rec" min="0" step="0.1" placeholder="leave blank only if a crop is selected in Option A" oninput="calcGarden()">
+              <div class="field-hint" id="gdn-n-rec-hint">Your soil report may already print a nitrogen rate for a general vegetable garden — enter that number directly here. Growing something not on the list above? If you have a rate from a reliable source (a state Extension publication for that specific crop, or a professional agronomist), enter it here too. No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) — nitrate-N can leach out within a day or two of rain, so a snapshot measurement wouldn't stay accurate anyway. If your submission form didn't specify a crop, VCE's own recommendation is often a <em>range</em> rather than one number \u2014 if so, enter your best estimate within that range here. Leave blank to use the research-based default from Option A, if selected. This becomes your preplant amount; sidedress steps are calculated separately from crop research. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
 
-                <div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;border-top:1px solid var(--border);padding-top:10px;">
-                  <strong style="color:var(--green-deep);">&#9201; The three-to-four-week timing rule:</strong> A nitrogen application has its greatest effect three to four weeks after it is applied. Sidedressing too early pushes vegetative growth at the expense of flowering and fruiting. <em>(VCE 426-323)</em>
-                </div>
-                <div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:4px;">
-                  <strong style="color:var(--green-deep);">&#128204; Banding for transplants:</strong> Apply fertilizer in a furrow 3 inches deep and 3 inches to the side of the row &#8212; half the recommended rate per side. Concentrating phosphorus near roots at planting makes it available even when soil broadcast P is locked up. <em>(VCE 426-323)</em>
-                </div>
+              <div style="font-size:0.82rem;color:var(--slate-mid);margin:14px 0 10px;border-top:1px solid var(--border);padding-top:10px;">
+                <strong style="color:var(--green-deep);">&#9201; The three-to-four-week timing rule:</strong> A nitrogen application has its greatest effect three to four weeks after it is applied. Sidedressing too early pushes vegetative growth at the expense of flowering and fruiting. <em>(VCE 426-323)</em>
+              </div>
+              <div style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:4px;">
+                <strong style="color:var(--green-deep);">&#128204; Banding for transplants:</strong> Apply fertilizer in a furrow 3 inches deep and 3 inches to the side of the row &#8212; half the recommended rate per side. Concentrating phosphorus near roots at planting makes it available even when soil broadcast P is locked up. <em>(VCE 426-323)</em>
               </div>
             </div>
 
@@ -2231,7 +2236,7 @@
                  Plan and Nutrient Status cards below. -->
             <div class="field-group" id="gdn-step4-group">
               <div class="field-label"><span class="field-num">3</span><span class="field-question">Calculate your Nutrient Application Rates</span></div>
-              <p style="font-size:0.82rem;color:var(--slate-mid);margin:0 0 10px;">Report type is already known from the Soil Test tab. Enter your bed status, a nitrogen source, and (if you have a Waypoint report) the numeric targets from its "SOIL FERTILITY GUIDELINES" table for a precise amount — otherwise the panel below still gives a rating-based recommendation using VCE Soil Test Note 19's flat rates.</p>
+              <p style="font-size:0.82rem;color:var(--slate-mid);margin:0 0 10px;">Report type is already known from the Soil Test tab. Enter your bed status and a nitrogen source below. Each nutrient's amendment is then calculated automatically from your Soil Test tab ratings, further down — if you have a Waypoint report, enter that nutrient's own numeric target directly in its row there for a precise amount; otherwise it falls back to a rating-based recommendation using VCE Soil Test Note 19's flat rates.</p>
 
               <div style="margin-bottom:12px;">
                 <label class="field-question" for="gdn-bed-status" style="font-size:0.85rem;display:block;margin-bottom:4px;">Is this a new (preplant) or established bed?</label>
@@ -2397,7 +2402,7 @@
         <div class="card">
           <h3 class="card-header"><span class="icon" aria-hidden="true">🌸</span> Flower Garden Calculator</h3>
           <div class="card-body">
-            <p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:16px;line-height:1.5;">For annual beds, perennial borders, rose gardens, and spring-flowering bulbs. Based on VCE Soil Test Note 19 (SPES-687P), VCE Publication 426-200 (SPES-802P), UMD Extension, Rutgers NJAES, and NC State Extension. Enter your bed size and soil test values — or leave the nitrogen field blank to use research-based defaults for your flower type.</p>
+            <p style="font-size:0.85rem;color:var(--slate-mid);margin-bottom:16px;line-height:1.5;">For annual beds, perennial borders, rose gardens, and spring-flowering bulbs. Based on VCE Soil Test Note 19 (SPES-687P), VCE Publication 426-200 (SPES-802P), UMD Extension, Rutgers NJAES, and NC State Extension. Enter your bed size and soil test values — the nitrogen field below only falls back to a research-based default if you also select a flower type; if you leave both blank, no fertilizer amount can be calculated.</p>
 
             <!-- Flower type -->
             <div class="field-group">
@@ -2441,7 +2446,7 @@
             <div class="field-group">
               <div class="field-label"><span class="field-num">3</span><label class="field-question" id="flr-n-rec-label" for="flr-n-rec">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="flr-n-rec" min="0" step="0.1" placeholder="e.g. 0.1" oninput="calcFlower()">
-              <div class="field-hint" id="flr-n-rec-hint">No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) — nitrate-N can leach out within a day or two of rain. Enter the N figure from your VCE or Waypoint report if you have one, or leave blank to use the research-based default for your flower type. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
+              <div class="field-hint" id="flr-n-rec-hint">No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) — nitrate-N can leach out within a day or two of rain. Enter the N figure from your VCE or Waypoint report if you have one, or a reliable rate for a flower type not listed above. Leave this blank only if you also selected a flower type above — that type's research-based default is used instead. If neither is provided, no fertilizer amount can be calculated. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
             </div>
 
             <!-- P and K ratings removed (July 28) — now auto-filled from the Soil Test tab's
@@ -3678,16 +3683,6 @@ function toggleMeasure() {
 function toggleCollapsible(baseId) {
   var btn  = document.getElementById(baseId + '-btn');
   var body = document.getElementById(baseId + '-body');
-  if (!btn || !body) return;
-  var isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  btn.classList.toggle('open', !isOpen);
-  btn.setAttribute('aria-expanded', String(!isOpen));
-}
-
-function toggleGdnNOverride() {
-  var btn  = document.getElementById('gdn-n-override-btn');
-  var body = document.getElementById('gdn-n-override-body');
   if (!btn || !body) return;
   var isOpen = body.classList.contains('open');
   body.classList.toggle('open', !isOpen);
@@ -6359,17 +6354,17 @@ function calcGarden() {
   if (isWaypointGarden) {
     if (nLabel) nLabel.textContent = 'Nitrogen recommendation (lbs per 1,000 sq. ft.)';
     if (lLabel) lLabel.textContent = 'Lime recommendation from your report (lbs per 1,000 sq. ft.)?';
-    if (nHint)  nHint.textContent  = 'No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) \u2014 nitrate-N can leach out within a day or two of rain. The \u201cN\u201d figure on a standard Waypoint report is a generic crop-based recommendation, not a lab result \u2014 this override is for a different source (e.g. a private agronomist), not something to look up on a standard report. Leave blank to use the VCE research-based default for your crop, shown above. Enter in lbs/1,000 sq. ft. \u2014 the calculator converts automatically.';
+    if (nHint)  nHint.textContent  = 'No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) \u2014 nitrate-N can leach out within a day or two of rain. Enter your soil report\u2019s own general vegetable N figure here, or a reliable rate for a crop not listed in Option A. Leave this blank only if you also selected a crop in Option A above \u2014 that crop\u2019s research-based default is used instead. If neither is provided, no fertilizer amount can be calculated. Enter in lbs/1,000 sq. ft. \u2014 the calculator converts automatically.';
     if (lHint)  lHint.textContent  = 'Enter directly from your Waypoint report. Waypoint garden reports lime in lbs/1,000 sq. ft. \u2014 the calculator converts automatically.';
     var nInput = document.getElementById('gdn-n-rec');
-    if (nInput) nInput.placeholder = 'leave blank to use research-based default';
+    if (nInput) nInput.placeholder = 'leave blank only if a crop is selected in Option A';
   } else {
     if (nLabel) nLabel.textContent = 'Nitrogen recommendation (lbs per 100 sq. ft.)';
     if (lLabel) lLabel.textContent = 'Lime recommendation from your report (lbs per 100 sq. ft.)?';
-    if (nHint)  nHint.textContent  = 'No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) \u2014 nitrate-N can leach out within a day or two of rain. The \u201cN\u201d figure on a standard VCE report is a generic crop-based recommendation, not a lab result \u2014 this override is for a different source (e.g. a private agronomist), not something to look up on a standard report. Leave blank to use the VCE research-based default for your crop, shown above.';
+    if (nHint)  nHint.textContent  = 'No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) \u2014 nitrate-N can leach out within a day or two of rain. Enter your soil report\u2019s own general vegetable N figure here, or a reliable rate for a crop not listed in Option A. Leave this blank only if you also selected a crop in Option A above \u2014 that crop\u2019s research-based default is used instead. If neither is provided, no fertilizer amount can be calculated.';
     if (lHint)  lHint.textContent  = 'Leave blank if no lime was recommended. VCE reports garden lime in lbs/100 sq. ft.';
     var nInput = document.getElementById('gdn-n-rec');
-    if (nInput) nInput.placeholder = 'leave blank to use research-based default';
+    if (nInput) nInput.placeholder = 'leave blank only if a crop is selected in Option A';
   }
 
   // N rec: report figure if entered, otherwise fall back to the VCE research-based default for
@@ -6850,12 +6845,12 @@ function calcFlower() {
   if (isWaypointGarden) {
     if (nLabel) nLabel.textContent = 'Nitrogen recommendation from your report (lbs per 1,000 sq. ft.)?';
     if (lLabel) lLabel.textContent = 'Lime recommendation from your report (lbs per 1,000 sq. ft.)?';
-    if (nHint)  nHint.textContent  = 'No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) \u2014 nitrate-N can leach out within a day or two of rain. Enter the N figure from your Waypoint report if you have one (lbs/1,000 sq. ft. \u2014 converted automatically), or leave blank to use the research-based default.';
+    if (nHint)  nHint.textContent  = 'No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) \u2014 nitrate-N can leach out within a day or two of rain. Enter the N figure from your Waypoint report if you have one (lbs/1,000 sq. ft. \u2014 converted automatically), or a reliable rate for a flower type not listed above. Leave this blank only if you also selected a flower type above \u2014 that type\u2019s research-based default is used instead. If neither is provided, no fertilizer amount can be calculated.';
     if (lHint)  lHint.textContent  = 'Enter directly from your Waypoint report. Waypoint reports lime in lbs/1,000 sq. ft. \u2014 converted automatically.';
   } else {
     if (nLabel) nLabel.textContent = 'Nitrogen recommendation from your report (lbs per 100 sq. ft.)?';
     if (lLabel) lLabel.textContent = 'Lime recommendation from your report (lbs per 100 sq. ft.)?';
-    if (nHint)  nHint.textContent  = 'No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) \u2014 nitrate-N can leach out within a day or two of rain. Enter the N figure from your VCE report if you have one (lbs/100 sq. ft.), or leave blank to use the research-based default for your flower type.';
+    if (nHint)  nHint.textContent  = 'No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) \u2014 nitrate-N can leach out within a day or two of rain. Enter the N figure from your VCE report if you have one (lbs/100 sq. ft.), or a reliable rate for a flower type not listed above. Leave this blank only if you also selected a flower type above \u2014 that type\u2019s research-based default is used instead. If neither is provided, no fertilizer amount can be calculated.';
     if (lHint)  lHint.textContent  = 'Leave blank if no lime was recommended. VCE reports garden lime in lbs/100 sq. ft.';
   }
 

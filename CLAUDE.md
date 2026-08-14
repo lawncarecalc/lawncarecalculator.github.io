@@ -5439,3 +5439,113 @@ form this note would meaningfully clarify.
 | :-- | :-- |
 | `index.html` | Removed the leftover "Have a Waypoint report?" numeric-target note from the Vegetable Garden tab's Nitrogen section (v9.0) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 13, 2026 (v9.1: Step 3 intro text on Vegetable Garden tab updated — same stale-workflow issue as v9.0)
+
+Same root cause as the v9.0 fix, in a second spot: Step 3's intro paragraph ("Calculate your
+Nutrient Application Rates") described entering "the numeric targets from its 'SOIL FERTILITY
+GUIDELINES' table" as part of the same step where you set bed status and nitrogen source — but per
+the July 28 redesign, Waypoint numeric targets are entered per-nutrient, inline, within each
+nutrient's own row in the Nutrient Status panel further down the tab, not as a unified action at
+this step. Reworded to correctly describe the two-part flow: set bed status/nitrogen source here,
+then each nutrient's amendment (including the Waypoint-target-driven precise amount, when
+applicable) is calculated further down, per nutrient.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Corrected Step 3's intro text on the Vegetable Garden tab to accurately describe where Waypoint numeric targets are actually entered (v9.1) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 13, 2026 (v9.2: Vegetable Garden Step 2 restructured — three N-rate scenarios made explicit, and a real accessibility bug fixed along the way)
+
+User wanted Step 2 to explicitly account for three N-rate scenarios: (1) the soil report itself
+prints a general vegetable garden N rate, (2) the app's own researched crop list, (3) a reliable
+rate for a crop not on that list. Discussed the redesign over several turns before implementing.
+
+**What was found while investigating:** the existing "Use a different N amount instead" override
+field already accepted a manually-typed rate and its hint text already mentioned using the report's
+own printed figure — the real problems were (a) framing ("rare — e.g. a private agronomist
+consult") undersold what's actually the most common use case, and (b) a genuine structural bug: the
+override field lived inside `gdn-veg-guidance-section`, which stays `display:none` until a crop is
+selected — so manually entering your own N rate was literally impossible without first picking a
+crop from the list, even though the two are supposed to be independent, alternative paths.
+
+**Implemented:**
+- Renamed Step 2's header from "What are you growing? (optional — helps calculate N rate)" to
+  "Enter a Nitrogen (N) rate" — names what's actually being collected.
+- Restructured into two visible, parallel options rather than one primary control + one collapsed
+  afterthought: **Option A** (crop list, unchanged dropdown) and **Option B** (manual rate entry,
+  reframed hint text leading with the soil-report-figure and unlisted-crop-reliable-source cases
+  rather than burying them after "rare").
+- **Moved the N-rate override field out of the crop-gated section entirely**, fixing the structural
+  bug — it's now always reachable regardless of whether a crop is selected. The crop *guidance*
+  panel (feeding level, pH target, sidedress timing) correctly remains crop-gated, since that
+  content is genuinely crop-specific; only the N-rate input and the two general tips (three-to-
+  four-week timing rule, banding for transplants) moved out, since those apply regardless of crop
+  selection.
+- Removed the now-dead `toggleGdnNOverride()` function and its collapsible wrapper, since the field
+  is no longer collapsed.
+
+**Verification:** jsdom simulation confirmed the N-rate field is no longer a descendant of the
+crop-gated section, the crop guidance panel still correctly starts hidden, and `calcGarden()` runs
+cleanly with a manually-entered N rate and no crop selected — the exact scenario that was
+previously broken.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Restructured Vegetable Garden Step 2: renamed header, split into visible Option A/Option B, fixed a structural bug where manual N-rate entry was unreachable without first selecting a crop (v9.2) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 14, 2026 (v9.3: "leave blank to use research-based default" fixed to be honest about the Option A dependency — Vegetable and Flower Garden)
+
+User tested the exact scenario the v9.2 restructure didn't account for: no crop selected (Option A
+blank) and Option B's N-rate field also left blank per its own placeholder text ("leave blank to
+use research-based default"). Result: "Enter N rec. & fertilizer grade above" — no plan at all.
+
+**Root cause, confirmed by reading the calculation logic directly:**
+```js
+var nRec = usingDefaultN
+  ? (cropDefaults ? cropDefaults.nPer100 : 0)   // no crop selected -> nRec = 0, no default exists
+  : (nRecRaw / ...);
+```
+The "research-based default" only exists when `cropDefaults` is non-null, which requires a crop
+selected in Option A. With neither Option A nor B filled in, the calculation correctly can't
+produce a number — but the placeholder/hint text promised a default that doesn't exist without
+Option A. Explicitly decided against adding a generic crop-agnostic fallback rate (no defensible
+source for one) — this is a wording fix only, not a behavior change.
+
+Checked `calcFlower()` for the same pattern and found it identically structured
+(`defaults = flowerType ? FLOWER_DEFAULTS[flowerType] : null`) — same bug, same fix needed, applied
+to both tabs for consistency even though the user's report was Vegetable-Garden-specific.
+
+**Fixed 6 locations** (3 per tab: intro paragraph, static HTML hint/placeholder, and both
+Waypoint/VCE JS-branch hint+placeholder in `calcGarden()`/`calcFlower()`): all now say "leave this
+blank only if you also selected a crop/flower type above — that [crop/type]'s research-based
+default is used instead. If neither is provided, no fertilizer amount can be calculated." Flower
+Garden doesn't use "Option A" terminology (that's Vegetable-Garden-specific from the v9.2
+restructure), so its wording references "the flower type selected above" instead.
+
+**Confirmed units remain correctly handled** per report type — this was a specific concern raised
+before implementing. `calcGarden()`/`calcFlower()` already compute `isWaypointGarden` before this
+logic runs and branch the hint/label/placeholder text separately per lab (VCE: lbs/100 sq. ft.,
+no conversion note needed; Waypoint: lbs/1,000 sq. ft., explicit "the calculator converts
+automatically" note retained) — the wording fix only touched the misleading part of each branch,
+not the unit-handling, which was already correct.
+
+**Verification:** jsdom simulation confirmed correct placeholder/hint text and correct units in
+both the VCE and Waypoint branches for both tabs after switching report type and re-running the
+calc function.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fixed misleading "leave blank to use research-based default" text (Vegetable Garden Option B and Flower Garden's N field) to honestly state the default only exists when a crop/flower type is also selected; no generic fallback rate added (v9.3) |
+| `CLAUDE.md` | this entry |
