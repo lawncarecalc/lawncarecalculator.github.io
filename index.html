@@ -796,7 +796,7 @@
       <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v9.7 &middot; 2026-08-14</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v9.9 &middot; 2026-08-14</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -4809,6 +4809,7 @@ function interpretSoilTest() {
   var mgVal   = parseFloat(document.getElementById('st-mg').value);
   var mgRat   = document.getElementById('st-mg-rating').value;
   var om      = parseFloat(document.getElementById('st-om').value);
+  var enr     = parseFloat(document.getElementById('st-enr') ? document.getElementById('st-enr').value : '');
   var saltRaw = parseFloat(document.getElementById('st-salts').value);
   var saltRat = (document.getElementById('st-salts-rating') || {}).value || '';
   var limeRec = parseFloat(document.getElementById('st-lime-rec').value);
@@ -5198,6 +5199,20 @@ function interpretSoilTest() {
         'Organic matter improves your soil\'s ability to hold water and nutrients, supports beneficial soil organisms, and contributes to overall plant health. <em>(SPES-384)</em>',
         omAction, ''));
     }
+  }
+
+  // ---- Estimated Nitrogen Release (ENR) — Waypoint only, VCE never prints this field ----
+  if (isWaypoint && !isNaN(enr) && enr > 0) {
+    var enrPer100Card = enr / 435.6; // lbs/acre -> lbs/100 sq. ft., same conversion used in buildEnrCompareNote()
+    var enrWhyMatters = 'This is nitrogen your soil is already supplying for free — it can reduce or eliminate the need for additional fertilizer nitrogen.';
+    if (isGarden && (soilTestPurpose() === 'vegetable' || soilTestPurpose() === 'flower')) {
+      enrWhyMatters += ' This calculator uses a separate, published formula for the same purpose on the Vegetable Garden and Flower Garden tabs (University of Maryland Extension, confirmed by Penn State and NC State Extension) — this value carries over automatically so you can see both figures compared side by side there.';
+    }
+    enrWhyMatters += '</p><p style="font-size:0.82rem;color:var(--slate-light);margin-top:8px;">A note on this specific figure: a review of real Waypoint reports found it appears to level off at a fixed 150 lbs/acre once organic matter reaches roughly 5.6% \u2014 a documented but unexplained characteristic of Waypoint\u2019s own model, not something VCE publishes guidance on either way. See About &gt; Single-Nutrient Amendment Philosophy for the full analysis. <em>(App analysis of 22 Waypoint reports)</em>';
+    cards.push(card('&#127793;', 'Estimated Nitrogen Release', 'Waypoint-only figure &mdash; not printed on VCE reports', 'Higher = more nitrogen your soil supplies on its own', enr + ' lbs/acre',
+      'Waypoint\u2019s own estimate of how much nitrogen your soil\u2019s organic matter will release and become plant-available over the growing season, through microbial decomposition. Waypoint\u2019s own documentation states this is influenced by more than organic matter alone \u2014 seasonal weather and soil physical conditions play a role too. <em>(Waypoint Agronomy Facts 8)</em></p><p><strong>Your result:</strong> ' + enr + ' lbs/acre (' + enrPer100Card.toFixed(2) + ' lbs/100 sq. ft.).',
+      enrWhyMatters,
+      '', ''));
   }
 
   // ---- Soluble Salts ----
@@ -6387,9 +6402,11 @@ function buildEnrCompareNote(omVal, omNCreditPer1000, inputElId, noteElId) {
   var enrRaw = parseFloat(inputEl.value);
   if (isNaN(enrRaw) || enrRaw <= 0) { noteEl.innerHTML = ''; return; }
   var appPerAcre = omNCreditPer1000 * 43.56; // lbs/1,000 sq. ft. -> lbs/acre (1 acre = 43.56 x 1,000 sq. ft.)
+  var enrPer100 = enrRaw / 435.6;     // lbs/acre -> lbs/100 sq. ft. (1 acre = 435.6 x 100 sq. ft.) — added so the
+  var appPer100 = appPerAcre / 435.6; // reader has a figure sized to an actual garden bed, not just an abstract acre.
   var nearKnownPattern = (omVal >= 5.4 && enrRaw >= 145 && enrRaw <= 155);
   var html = '<div style="font-size:0.78rem;background:#eef4ff;border:1px solid #b8cce8;border-radius:4px;padding:8px 10px;margin-top:8px;color:var(--slate-mid);line-height:1.5;">';
-  html += '&#128202; <strong>Comparing to your report:</strong> Waypoint\u2019s own Estimated N Release is <strong>' + Math.round(enrRaw) + ' lbs/acre</strong>; this calculator\u2019s organic-matter-based estimate is <strong>' + Math.round(appPerAcre) + ' lbs/acre</strong>.';
+  html += '&#128202; <strong>Comparing to your report:</strong> Waypoint\u2019s own Estimated N Release is <strong>' + Math.round(enrRaw) + ' lbs/acre</strong> (' + enrPer100.toFixed(2) + ' lbs/100 sq. ft.); this calculator\u2019s organic-matter-based estimate is <strong>' + Math.round(appPerAcre) + ' lbs/acre</strong> (' + appPer100.toFixed(2) + ' lbs/100 sq. ft.).';
   if (nearKnownPattern) {
     html += ' Waypoint\u2019s own figure has a documented but unexplained ceiling around 150 lbs/acre once organic matter reaches roughly 5.6% \u2014 not an error on Waypoint\u2019s part, just an undocumented characteristic of their model, and VCE does not publish guidance on this specific topic either way. This calculator\u2019s own estimate keeps scaling with your soil\u2019s actual organic matter instead of leveling off. See About &gt; Single-Nutrient Amendment Philosophy for the full comparison this finding is based on.';
   } else {

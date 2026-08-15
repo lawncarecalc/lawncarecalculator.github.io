@@ -5707,3 +5707,72 @@ traceable to real reports on file, with matching ENR values, closing the gap fla
 | :-- | :-- |
 | `index.html` | Replaced the `garden` (flower) prefill sample with the real "Perennial Beds" report (Lab No. 17547) — full field rebuild, including Base Saturation via the %H-helper method and crop-specific `gdnTargets` from the report's own "Perennials" row (v9.7) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 14, 2026 (v9.8: Estimated Nitrogen Release interpretation card added to the Soil Test tab)
+
+User asked for an ENR interpretation card on the landing page for Waypoint reports, since the
+field (added v9.5) had an entry point but no explanatory card the way pH/CEC/Organic Matter/
+Soluble Salts do. Confirmed the card reads the value from the existing `st-enr`/`st-enr-wp` field
+already on the page — no new entry mechanism, consistent with how the ENR field was intentionally
+moved to the Soil Test tab in v9.5.
+
+**Implementation:**
+- Added `var enr = parseFloat(...)` alongside the existing `om` variable near the top of
+  `interpretSoilTest()`.
+- New card, Waypoint-only (`isWaypoint && !isNaN(enr) && enr > 0` — VCE never prints this field, so
+  never shown for VCE reports), no Action box (consistent with the CEC/Organic Matter/Soluble
+  Salts standard — no lab ties an actionable recommendation to this figure directly).
+- The "why it matters" paragraph is conditional: only mentions the Vegetable/Flower Garden
+  comparison feature when the report's purpose is actually vegetable or flower
+  (`soilTestPurpose() === 'vegetable' || 'flower'`) — Lawn and Shrub reports also have this field
+  and card, but don't have the Garden-tab comparison feature, so that sentence is correctly
+  omitted for them.
+- The "150 lbs/acre cap" note is folded into the whyMatters paragraph as a second `<p>` (not
+  appended after the card's closing `</div>`, which would have rendered as a stray, unstyled
+  paragraph between cards — caught and fixed before shipping) and explicitly labeled "App analysis
+  of 22 Waypoint reports," not attributed to Waypoint or VCE.
+
+**Debugging note:** an initial full-panel test showed the card missing; isolated with a temporary
+debug `console.log` injected into a scratch copy of the file, which revealed the underlying logic
+was actually correct on the final (post-both-fields-set) `interpretSoilTest()` call — the first
+test's apparent failure was a timing/stale-run artifact, not a real bug. Re-ran the clean test
+after removing the debug copy and confirmed it passes normally.
+
+**Verification:** jsdom simulation confirmed (1) Waypoint Vegetable report — card present, Garden-
+tab comparison sentence present, 150-cap note present; (2) Waypoint Lawn report — card present,
+but Garden-tab comparison sentence correctly absent; (3) VCE report — card correctly never renders
+at all.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added Estimated Nitrogen Release interpretation card to the Soil Test tab (Waypoint reports only), reading the existing `st-enr` field, conditional Garden-tab comparison mention, no Action box (v9.8) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 14, 2026 (v9.9: ENR figures now shown in lbs/100 sq. ft. too, not just the abstract lbs/acre)
+
+User noted lbs/acre is an awkward unit for someone thinking about an actual garden bed — asked for
+both ENR figures to also show the lbs/100 sq. ft. equivalent, matching the units used everywhere
+else in the app.
+
+Added the conversion (÷435.6, since 1 acre = 43,560 sq. ft. = 435.6 × 100 sq. ft.) to both places
+that display these figures:
+- `buildEnrCompareNote()` (the Garden-tab comparison note) — both Waypoint's figure and the app's
+  own estimate now show as "X lbs/acre (Y.YY lbs/100 sq. ft.)".
+- The new Estimated Nitrogen Release interpretation card (Soil Test tab, added v9.8) — same
+  conversion added to its "Your result" line.
+
+**Verification:** jsdom simulation reproducing the exact scenario from the user's screenshot
+(150 lbs/acre Waypoint figure vs. this calculator's 233 lbs/acre estimate, OM 13.4%) confirmed both
+now display correctly with their lbs/100 sq. ft. equivalents (0.34 and 0.54 respectively) in both
+the comparison note and the interpretation card.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added lbs/100 sq. ft. conversion alongside lbs/acre in both the ENR comparison note and the ENR interpretation card (v9.9) |
+| `CLAUDE.md` | this entry |
