@@ -5776,3 +5776,91 @@ the comparison note and the interpretation card.
 | :-- | :-- |
 | `index.html` | Added lbs/100 sq. ft. conversion alongside lbs/acre in both the ENR comparison note and the ENR interpretation card (v9.9) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 15, 2026 (v10.0: corrected "VCE reports do not give a nitrogen figure" — they do, just in a different form)
+
+User supplied a real VCE lawn report (Lab ID 23-15910, 3401 Hemmingstone Ct) showing Note 201:
+*"Using the rate listed in the '0.7' LB. nitrogen column in Table 2 in the note on lawn
+fertilization"* — direct evidence that VCE reports do give nitrogen guidance, contradicting two
+places in the app that stated otherwise.
+
+**The nuance, confirmed before writing the fix:** VCE's guidance is real but takes a different
+shape than Waypoint's — a **per-application rate** referenced by table column (matching the same
+"0.7 lb"/"0.9 lb" column headers already confirmed elsewhere in this codebase as VCE Note 17/18's
+own figures, already built into the Cool/Warm-Season tabs as their defaults), not a single
+**annual total** the way Waypoint prints directly. The `st-lawn-n` field specifically asks for an
+annual total, so it genuinely isn't usefully fillable from a VCE report's own wording (entering
+"0.7" there, thinking it's the report's own number, would be wrongly interpreted as an annual
+total and compared against VCE's 3.5 lb *annual* ceiling — a unit mismatch). So the field's
+practical Waypoint-only usefulness was correct; the *wording explaining why* was not — it claimed
+VCE gives no guidance at all rather than "VCE gives it in a different, already-built-in form."
+
+**Fixed two spots:**
+- The field's placeholder, from "(Waypoint reports only)" to "(annual total, as Waypoint prints
+  it)," with a new hint explaining VCE's per-application/table-column approach and that the
+  calculator's own defaults already reflect it.
+- The "Nitrogen Recommendation Check" card's explanatory text, from "VCE reports do not [include
+  an annual nitrogen figure]" to the same corrected framing — while restoring a genuinely useful
+  fact I nearly dropped mid-edit (no lab measures N directly; VCE 452-701) rather than losing it
+  in the rewrite.
+
+Confirmed via `!isGarden` visibility check that this field/card was already showing for VCE lawn
+reports too, not gated to Waypoint — the bug was purely in the wording, not the underlying logic.
+
+**Verification:** jsdom simulation with a VCE lawn report and `st-lawn-n` filled in confirmed the
+card renders the corrected explanation text and the ceiling-check logic still works correctly.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Corrected the "VCE reports do not give a nitrogen figure" claim in two places (field hint + Nitrogen Recommendation Check card) to accurately describe VCE's per-application/table-column approach instead (v10.0) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 15, 2026 (v10.1: "Annual N Recommendation" field hidden for VCE reports; the VCE-alignment explanation moved to the calculator tabs instead)
+
+Direct follow-up to v10.0. User asked whether the `st-lawn-n` field (and the VCE-explanation hint
+just added to it) could simply be hidden for VCE reports entirely, since VCE users can't usefully
+fill it in anyway (their report's guidance is a per-application rate via table-column reference,
+not an annual total) and the explanation was judged more confusing than helpful sitting on the
+data-entry page. Assessed risk/effort first: both downstream read locations
+(`carryOverToCalculators()` and the "Nitrogen Recommendation Check" card) already gate on the value
+being non-blank/numeric, so hiding+clearing for VCE required no other logic changes — confirmed
+low risk, low effort before implementing.
+
+**Implemented:**
+1. Visibility condition changed from `!isGarden` to `!isGarden && isWaypoint` — the field (and its
+   surrounding `st-lawn-n-field` wrapper) now only shows for Waypoint lawn reports. Confirmed via
+   simulation that Shrub reports were already excluded either way (`isGardenReport()` covers
+   vegetable/flower/shrub, not just vegetable/flower) — no behavior change there, just confirmed
+   pre-existing.
+2. Field value explicitly cleared (`lawnNClear.value = ''`) whenever a non-Waypoint report type is
+   selected, so no stale Waypoint-entered value lingers if a user switches report types back and
+   forth in one session.
+3. Reverted the v10.0 hint text back to something simple and Waypoint-only ("Only shown for
+   Waypoint reports, which print this as a single annual total directly on the report"), since the
+   VCE explanation no longer needs to live here at all — VCE users will never see this field again.
+4. **Per explicit instruction, moved the actual VCE-alignment content to the calculator pages
+   instead** — added a new callout to both Cool-Season and Warm-Season Lawn tabs' existing
+   "Choosing your annual N rate" box, right before the per-application-rate table. Explains that a
+   VCE report's own numbered fertilizer note (the user's example: "the 0.7 lb nitrogen column in
+   Table 2") points to the exact same number already shown in that table's "Max per application"
+   column, and that VCE may also recommend a specific fertilizer ratio (e.g. a 1-2-1 ratio like
+   5-10-5) for new lawns needing extra phosphorus — directly matching the real VCE report supplied
+   (Note 201: "Apply a 1-2-1 ratio fertilizer... Using the rate listed in the '0.7' LB. nitrogen
+   column in Table 2"). Written separately for each tab since the specific numbers differ (Cool-
+   Season: one uniform 0.7/0.9/1.5 P1/P2/P3 set; Warm-Season: varies by grass type — worded to
+   point at "the column matching your grass type" rather than hardcoding one number).
+
+**Verification:** jsdom simulation confirmed the field is visible for Waypoint lawn, hidden and
+cleared when switching to VCE lawn, and visible again when switching back to Waypoint — all
+without needing any changes to the two downstream read locations.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | `st-lawn-n` field now hidden (and cleared) for VCE reports, shown only for Waypoint lawn reports; simplified its hint text accordingly; added a VCE-alignment callout (matching real report Note 201 language) to both Cool-Season and Warm-Season Lawn tabs' N-rate guidance box instead (v10.1) |
+| `CLAUDE.md` | this entry |

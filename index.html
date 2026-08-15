@@ -796,7 +796,7 @@
       <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v9.9 &middot; 2026-08-14</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v10.1 &middot; 2026-08-15</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -1506,7 +1506,8 @@
             </div>
             <div class="st-field st-field-wide" id="st-lawn-n-field" style="display:none;" inert>
               <label for="st-lawn-n">Annual N Recommendation from report (lbs/1,000 sq. ft.) <span class="st-label-sub">— optional</span></label>
-              <input type="number" id="st-lawn-n" min="0" step="0.1" placeholder="e.g. 4.0 (Waypoint reports only)" oninput="interpretSoilTestDebounced()">
+              <input type="number" id="st-lawn-n" min="0" step="0.1" placeholder="e.g. 4.0 (annual total, as Waypoint prints it)" oninput="interpretSoilTestDebounced()">
+              <div style="font-size:0.75rem;color:#5f6b6b;margin-top:3px;">Only shown for Waypoint reports, which print this as a single annual total directly on the report.</div>
             </div>
           </div>
 
@@ -1563,6 +1564,7 @@
               <div style="background:var(--green-mist);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
                 <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.9rem;">&#127807; Choosing your annual N rate</div>
                 <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Your soil test report may include a nitrogen recommendation — use it as a starting point, but verify it against Virginia guidelines. <strong>Waypoint reports sometimes recommend up to 4.0 lbs, which exceeds the VCE limit for cool-season grasses.</strong><br><br>The maximum you can apply in a single application depends on how quickly your fertilizer releases nitrogen. Quick-release fertilizers — like urea or ammonium sulfate (Program 1: no "Water Insoluble Nitrogen" or WIN listed on the bag) — have a lower per-application limit. Slow-release fertilizers — look for "Water Insoluble Nitrogen (WIN)" on the bag label (Program 2: 15–49% WIN; Program 3: 50% or more WIN) — allow a higher per-application rate and fewer applications per season. If your annual target is 2.5 lbs and you are using a quick-release product (Program 1, max 0.7 lbs per application for cool-season), you will need at least 4 separate applications to stay within Virginia's limits.</p>
+                <p style="font-size:0.82rem;color:var(--slate-mid);background:white;border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:10px;">&#128203; <strong>If your report is from VCE:</strong> it won't print a single N number the way Waypoint does — instead, a numbered fertilizer note on your report will point you to a specific column in "Table 2" of VCE's lawn fertilization guidance (e.g., "the 0.7 lb nitrogen column"). That's the same number as the "Max per application" column in the table below — Program 1 for cool-season lawns. Your report's note may also recommend a specific fertilizer ratio (such as a 1-2-1 ratio, e.g. 5-10-5) rather than an N-only product, typically for new lawns that need extra phosphorus at establishment — match that ratio when choosing a product on this tab.</p>
                 <table style="width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:10px;">
                   <thead><tr style="background:var(--green-deep);color:white;">
                     <th style="padding:6px 8px;text-align:left;font-weight:500;">Lawn situation</th>
@@ -1784,6 +1786,7 @@
               <div style="background:var(--green-mist);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;">
                 <div style="font-weight:600;color:var(--green-deep);margin-bottom:4px;font-size:0.9rem;">&#9728;&#65039; Choosing your annual N rate</div>
                 <p style="font-size:0.82rem;color:var(--slate-mid);margin-bottom:10px;">Your soil test report may include a nitrogen recommendation — use it as a starting point, but verify it against Virginia guidelines. <strong>Waypoint rates can reach the upper end of the Virginia range — appropriate for bermudagrass but potentially too high for zoysiagrass and centipedegrass. Waypoint's centipedegrass guidance calls for 0.75 to 1 lb N per 1,000 sq. ft. every six weeks through late summer, a derived annual total that can reach approximately 3 lbs — well above the 1 to 2 lb annual ceiling in VCE Soil Test Note 18 (452-718).</strong><br><br>The maximum you can apply in a single application depends on how quickly your fertilizer releases nitrogen. Quick-release fertilizers — like urea or ammonium sulfate (Program 1: no "Water Insoluble Nitrogen" or WIN listed on the bag) — have a lower per-application limit. Slow-release fertilizers — look for "Water Insoluble Nitrogen (WIN)" on the bag label (Program 2: 15–49% WIN; Program 3: 50% or more WIN) — allow a higher per-application rate and fewer applications per season. If your annual target is 3.0 lbs and you are using a quick-release product (Program 1, max 0.9 lbs per application for warm-season), you will need at least 4 separate applications to stay within Virginia's limits.</p>
+                <p style="font-size:0.82rem;color:var(--slate-mid);background:white;border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:10px;">&#128203; <strong>If your report is from VCE:</strong> it won't print a single N number the way Waypoint does — instead, a numbered fertilizer note on your report will point you to a specific column in "Table 2" of VCE's lawn fertilization guidance (e.g., "the 0.9 lb nitrogen column" for most warm-season grasses). That's the same number as the "Max per application" column for your specific grass type in the table below. Your report's note may also recommend a specific fertilizer ratio rather than an N-only product for new lawns needing extra phosphorus at establishment — match that ratio when choosing a product on this tab.</p>
                 <table style="width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:10px;">
                   <thead><tr style="background:var(--green-deep);color:white;">
                     <th style="padding:6px 8px;text-align:left;font-weight:500;">Lawn situation</th>
@@ -4727,7 +4730,17 @@ function onReportTypeChange() {
   // Show lawn-specific fields only for lawn reports; hide for all garden reports
   setVisible(document.getElementById('st-crop-field'), !isGarden);
   setVisible(document.getElementById('st-lawn-status-field'), !isGarden);
-  setVisible(document.getElementById('st-lawn-n-field'), !isGarden);
+  setVisible(document.getElementById('st-lawn-n-field'), !isGarden && isWaypoint);
+  // Hide (and clear) for VCE reports — added Aug 15, 2026 after user feedback that showing this
+  // field for VCE reports, with an explanation of why VCE's guidance takes a different form, was
+  // more confusing on the data-entry page than helpful. VCE users don't need it: the connection
+  // between their report's own numbered fertilizer note and this calculator's "Max per
+  // application" table now lives on the Cool/Warm-Season calculator tabs instead, right next to
+  // that same table, where the VCE report's own N figure is genuinely relevant to a nearby number.
+  if (!isWaypoint) {
+    var lawnNClear = document.getElementById('st-lawn-n');
+    if (lawnNClear) lawnNClear.value = '';
+  }
   // st-garden-type-field removed — purpose is now encoded in st-report-type itself
 
   // Update lime label and placeholder
@@ -5290,7 +5303,7 @@ function interpretSoilTest() {
           }
         }
         cards.push(card('&#9889;', 'Nitrogen Recommendation Check', '', '', lawnNVal + ' lbs N/1,000 sq. ft. (annual)',
-          'Waypoint soil test reports include an annual nitrogen figure; VCE reports do not \u2014 no soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701).</p><p><strong>Check against the VCE ceiling:</strong> ' + nNote,
+          'No soil test measures nitrogen directly — it\u2019s too mobile in the soil for a lab result to stay accurate (VCE 452-701). Waypoint prints a calculated annual total anyway; VCE gives the same kind of guidance as a per-application rate referenced by table column (e.g. "the 0.7 lb nitrogen column in Table 2") rather than a single annual number \u2014 this calculator\u2019s Cool/Warm-Season tabs already use those same VCE rates as their built-in defaults.</p><p><strong>Check against the VCE ceiling:</strong> ' + nNote,
           'Applying more nitrogen than the VCE annual ceiling increases leaching, pushes excessive top growth at the expense of roots, and can exceed Virginia nutrient management standards.', nAction,
           ''));
       }
