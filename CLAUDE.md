@@ -5549,3 +5549,161 @@ calc function.
 | :-- | :-- |
 | `index.html` | Fixed misleading "leave blank to use research-based default" text (Vegetable Garden Option B and Flower Garden's N field) to honestly state the default only exists when a crop/flower type is also selected; no generic fallback rate added (v9.3) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 14, 2026 (v9.4: Waypoint ENR comparison field implemented — Vegetable & Flower Garden)
+
+Follow-up to a discussion that started several turns earlier (originally raised when correcting an
+overstated "top 10 features" bullet that implied the app runs a live comparison against Waypoint's
+own "Estimated N Release" figure — it didn't; the ENR-vs-organic-matter finding was static,
+documented text from a one-time review of 22 real reports). User asked for a point of view on
+actually building the live comparison field discussed but never implemented. Recommended building
+it, since the sourcing gap that made it awkward before (Penn State/NC State backing, added in
+v8.9) has since been closed. User approved, with one explicit framing correction: never imply
+Waypoint's number is "wrong" — it's a documented but unexplained characteristic of their model,
+and VCE is silent on the topic either way.
+
+**Mid-implementation, tool access (bash/view) went down entirely for several turns** — a genuine
+environment outage, not a user-facing issue. Kept retrying each turn rather than guessing at file
+state blind; tools recovered and `/home/claude` was confirmed intact and byte-identical to the last
+known-good `/mnt/user-data/outputs/` copy (v9.3) before resuming.
+
+**Implementation:**
+- Added an optional field — *"Have a Waypoint report? Compare against its 'Estimated N Release'"*
+  — to both Vegetable Garden (placed right after Option B, the N-rate entry) and Flower Garden
+  (after the N-rec field). Explicitly non-authoritative: the field's own hint states it "does not
+  change any calculation on this page."
+- Built a single shared function, `buildEnrCompareNote(omVal, omNCreditPer1000, inputElId,
+  noteElId)`, called from both `calcGarden()` and `calcFlower()` rather than duplicating logic.
+  Converts the app's own lbs/1,000-sq.-ft. organic-matter credit to lbs/acre (×43.56) for a fair
+  side-by-side comparison against Waypoint's report figure.
+- The "unexplained ceiling" framing only appears when actually relevant (organic matter ≥5.4% AND
+  entered ENR in the 145–155 range) — otherwise the note just states both figures as independent
+  estimates, with no cap-related claim. Wording carefully avoids "wrong"/"error" language per the
+  explicit correction, and notes VCE publishes no guidance on this topic either way.
+- **Real bug found and worked around, not introduced:** the comparison note's call site sits
+  inside the same `if (useNote19Flat || (nRec > 0 && fertN > 0))` block that gates `omNote` itself
+  — meaning both only render once bed size, N rate, and a nitrogen source are all filled in. This
+  is pre-existing, consistent behavior (matches how `omNote` has always worked), not something new
+  — confirmed via a first test that returned nothing until the full input set was provided.
+
+**Verification:** jsdom simulation covering both tabs and both framing branches — (1) Vegetable,
+OM 6.5%/ENR 150 → ceiling explanation shown; (2) Vegetable, OM 3%/ENR 110 → plain comparison, no
+ceiling language; (3) blank ENR → note area empty; (4) Flower, OM 6.5%/ENR 150 → same ceiling
+explanation. All four passed exactly as designed.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added optional Waypoint ENR comparison field to Vegetable Garden and Flower Garden tabs, purely informational, with a shared `buildEnrCompareNote()` function; framing avoids implying Waypoint's figure is wrong (v9.4) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 14, 2026 (v9.5: Waypoint ENR field now carries over from the Soil Test tab, matching every other report value)
+
+User caught an inconsistency in the v9.4 ENR comparison feature: it required typing the same
+report-printed number twice — once (hypothetically) and then again directly on the Garden tab —
+breaking the "enter once on the Soil Test tab, it carries over everywhere" pattern every other
+Waypoint value (P, K, Ca, Mg, organic matter, lime rec) already follows.
+
+**Fixed by adding it to the established Soil Test tab -> canonical field -> carry-over pipeline:**
+- Added `st-enr-wp` (Waypoint block, right after Organic Matter — matches the real report's own
+  layout, where Estimated N Release prints directly below Organic Matter) with `data-canon="st-enr"`.
+- Added the matching hidden canonical field `st-enr`.
+- Added `enrVal` to `carryOverToCalculators()` and wired it into both the vegetable and flower
+  branches (`setInput('gdn-enr-actual', enrVal)` / `setInput('flr-enr-actual', enrVal)`, with
+  `clearInput()` when blank — same pattern as `limeRec`/`areaSize`).
+- Updated both Garden-tab fields' hint text to say "Pre-filled automatically if you entered this
+  on the Soil Test tab," so the still-editable manual field doesn't look disconnected from the
+  Soil Test tab entry.
+
+The Garden-tab fields remain independently editable after carry-over (same as `gdn-lime-rec`/
+`gdn-n-rec` already work) — carry-over sets a default, it doesn't lock the field.
+
+**Verification:** jsdom simulation of the full real-world flow — entered ENR on the Soil Test tab,
+pushed to canonical, called `carryOverToCalculators()`, confirmed it landed in `gdn-enr-actual`
+and separately `flr-enr-actual`, then ran `calcGarden()` with the carried-over value and confirmed
+the comparison note rendered correctly from it (not from a second manual entry).
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Waypoint ENR field added to the Soil Test tab (Waypoint block + canonical field) and wired into `carryOverToCalculators()` for both Vegetable and Flower Garden — no longer requires re-entering the same number twice (v9.5) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 14, 2026 (v9.6: ENR retroactively added to the one matching real-report prefill; explicitly blanked on the others to prevent stale carryover)
+
+User asked directly whether the new `st-enr-wp` field (v9.5) had been backfilled into the existing
+sample prefills. Checked — it hadn't. Investigated which prefills are actually traceable to real
+reports on file before adding anything, rather than guessing:
+
+- **`'veggie'`** (pH 7.0, CEC 23.0, OM 13.4%) — confirmed exact match to the real Waypoint
+  "2-Vegetable Beds" report already used to build this sample. That report's own printed ENR was
+  150 lbs/acre (same report analyzed as part of the original 22-report ENR-cap dataset). Added
+  `'st-enr-wp':'150'`.
+- **`'garden'`** (flower sample, pH 6.4, OM 11.9%) — also built from a real report, but a
+  *different* one than the "Perennial Beds" PDF uploaded this session (OM doesn't match: 11.9% vs.
+  6.5%). No known ENR value for this specific report — did not invent one. Explicitly set
+  `'st-enr-wp':''` instead, both to be transparent about not having the data and to prevent a
+  stale `150` value carrying over if a user loads `veggie` then switches to `garden`.
+- **`'lawn-cool-wp'`, `'lawn-warm-wp'`** — same explicit-blank treatment, for the same
+  stale-carryover reason, even though Lawn tabs don't use the ENR comparison feature at all (the
+  field lives in the shared Waypoint block on the Soil Test tab, so a stale value could still sit
+  there unused rather than cleanly reset).
+
+**Verification:** jsdom simulation loading `veggie` then `garden` in sequence confirmed the field
+correctly shows `150` after the first load and correctly resets to blank after the second — no
+stale value leaking between samples.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Added the real, confirmed ENR value (150) to the `veggie` prefill; explicitly blanked the field on `garden`/`lawn-cool-wp`/`lawn-warm-wp` rather than leaving it unset, to prevent stale carryover between samples (v9.6) |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 14, 2026 (v9.7: 'garden' flower prefill replaced with the real "Perennial Beds" report, closing the ENR gap identified last turn)
+
+User supplied the real Waypoint flower report (Lab No. 17547, Sample "3-Perennial Beds," same
+submission batch/address as the `veggie` sample) to close the one confirmed gap from the previous
+turn — the old `garden` prefill was built from a *different*, untraceable real report (pH 6.4, OM
+11.9%), so it had no sourced ENR value to add.
+
+**Replaced the entire `garden` fields object** with values read directly from this report, matching
+the same rigor used for `veggie`:
+- pH 6.6, CEC 15.2, OM 6.5%, ENR 150 (all printed directly).
+- **Base Saturation** — not printed directly on this report either (only %H, 5.9%, in the
+  %Saturation table) — used the same traceable `st-basesat-h-helper` approach established for
+  `veggie` in v6.9 (populate the report's own %H figure, let `calcBaseSatFromH()` compute
+  100−5.9=94.1, rather than hardcoding a hand-calculated number).
+- **Ratings for Ca/Mg/K cross-checked two ways**: against the report's own bar colors, and against
+  the printed %Saturation values compared to Waypoint's idealized ranges (Agronomy Facts 8: Ca
+  65–80%, Mg 10–20%, K 2–7%). Ca 79.0% and Mg 12.7% both fall inside their idealized bands → OP;
+  K 1.7% falls below → LO — both methods agreed. P/S/B have no %sat metric (not base cations), so
+  read directly from the report's own bar color (all yellow → Medium). Cu/Fe/Mn/Zn all dark green
+  (Very High) on the report.
+- Lime: report shows 0 lbs for both crop rows (Garden-Home and Perennials) → `st-lime-rec:'0'`,
+  no type given.
+- **`gdnTargets`** sourced from the report's "Perennials" row specifically (not the generic
+  "Garden-Home" row), since the sample itself represents a perennial bed and the report happens to
+  print a crop-specific second row for it — more accurate than defaulting to the generic row the
+  way `veggie` had to (its report only had one crop row).
+
+**Verification:** jsdom simulation confirmed every field loads correctly (including the computed
+94.1% Base Saturation), then ran the full real-world flow — prefill → `carryOverToCalculators()` →
+`calcFlower()` — confirming the ENR value carries through end-to-end and the comparison note
+renders exactly as it does for `veggie`.
+
+**Net effect:** both Vegetable Garden and Flower Garden's Waypoint prefill samples are now
+traceable to real reports on file, with matching ENR values, closing the gap flagged last turn.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Replaced the `garden` (flower) prefill sample with the real "Perennial Beds" report (Lab No. 17547) — full field rebuild, including Base Saturation via the %H-helper method and crop-specific `gdnTargets` from the report's own "Perennials" row (v9.7) |
+| `CLAUDE.md` | this entry |

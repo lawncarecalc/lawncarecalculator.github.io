@@ -796,7 +796,7 @@
       <h1>Soil Test Report Assistant</h1>
       <div class="subtitle"><em>No more guessing what to feed your lawn or garden</em></div>
     </div>
-    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v9.3 &middot; 2026-08-14</div>
+    <div class="no-print" style="margin-left:auto;font-size:0.7rem;color:var(--green-pale);opacity:0.85;white-space:nowrap;" title="Bump this every time index.html is updated, so a live-site check can confirm the deploy actually landed. Versioning convention: minor number goes 0-9, then rolls to the next whole number (n.9 -> (n+1).0) -- never n.10, n.11, etc.">v9.7 &middot; 2026-08-14</div>
   </div>
   <nav class="tab-nav" aria-label="Calculator sections">
     <div class="tab-nav-inner" role="tablist">
@@ -1240,6 +1240,11 @@
               <label for="st-om-wp">Organic Matter (%)</label>
               <input type="number" id="st-om-wp" data-canon="st-om" step="0.1" min="0" placeholder="e.g. 8.1" oninput="stSync(this)">
             </div>
+            <div class="st-field">
+              <label for="st-enr-wp">Estimated N Release (lbs/acre) <span class="st-label-sub">optional</span></label>
+              <input type="number" id="st-enr-wp" data-canon="st-enr" step="1" min="0" placeholder="e.g. 150" oninput="stSync(this)">
+              <div style="font-size:0.75rem;color:#5f6b6b;margin-top:3px;">Printed on Waypoint reports, right below Organic Matter. Purely informational here and on the Vegetable/Flower Garden tabs — never used in any calculation, only shown as a side-by-side comparison against this calculator's own organic-matter-based nitrogen credit.</div>
+            </div>
           </div><!-- end st-block-waypoint -->
 
           <!-- Hidden canonical fields: source of truth read by interpretSoilTest() / carryOverToCalculators() / prefillSampleReport(). Kept in sync from the visible VCE/Waypoint blocks above via stSync(). Not shown to users. -->
@@ -1356,6 +1361,10 @@
             <div class="st-field">
               <label for="st-om">Organic Matter (%)</label>
               <input type="number" id="st-om" step="0.1" min="0" placeholder="e.g. 2.0" oninput="interpretSoilTestDebounced()">
+            </div>
+            <div class="st-field">
+              <label for="st-enr">Estimated N Release (lbs/acre)</label>
+              <input type="number" id="st-enr" step="1" min="0" placeholder="e.g. 150" oninput="interpretSoilTestDebounced()">
             </div>
             <div class="st-field">
               <label for="st-salts">Soluble Salts <span id="st-salts-unit-label" class="st-label-sub">(ppm — VCE)</span></label>
@@ -2214,6 +2223,20 @@
               <input type="number" id="gdn-n-rec" min="0" step="0.1" placeholder="leave blank only if a crop is selected in Option A" oninput="calcGarden()">
               <div class="field-hint" id="gdn-n-rec-hint">Your soil report may already print a nitrogen rate for a general vegetable garden — enter that number directly here. Growing something not on the list above? If you have a rate from a reliable source (a state Extension publication for that specific crop, or a professional agronomist), enter it here too. No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) — nitrate-N can leach out within a day or two of rain, so a snapshot measurement wouldn't stay accurate anyway. If your submission form didn't specify a crop, VCE's own recommendation is often a <em>range</em> rather than one number \u2014 if so, enter your best estimate within that range here. Leave blank to use the research-based default from Option A, if selected. This becomes your preplant amount; sidedress steps are calculated separately from crop research. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
 
+              <!-- Waypoint ENR comparison — added Aug 14, 2026. Purely informational, never an
+                   input to any calculation: the actual organic-matter N credit always uses only
+                   the UMD Extension formula (see omNote below). This field exists so a Waypoint
+                   user can see, side by side, why their report's own "Estimated N Release" figure
+                   may not match this calculator's number — without implying Waypoint is wrong.
+                   See CLAUDE.md and About > Single-Nutrient Amendment Philosophy for the sourcing
+                   behind the ~5.6% organic matter / 150 lbs-per-acre pattern this compares against. -->
+              <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+                <label class="field-question" for="gdn-enr-actual" style="font-size:0.85rem;display:block;margin-bottom:6px;">Have a Waypoint report? Compare against its "Estimated N Release" <span style="font-weight:400;color:var(--slate-light);">(optional)</span></label>
+                <input type="number" id="gdn-enr-actual" min="0" step="1" placeholder="e.g. 150 (lbs/acre, printed on your report)" oninput="calcGarden()" style="max-width:320px;">
+                <div class="field-hint">Pre-filled automatically if you entered this on the Soil Test tab. This does not change any calculation on this page — it only shows a side-by-side comparison below, in the Nitrogen section of your Nutrient Application Plan.</div>
+                <div id="gdn-enr-compare-note"></div>
+              </div>
+
               <div style="font-size:0.82rem;color:var(--slate-mid);margin:14px 0 10px;border-top:1px solid var(--border);padding-top:10px;">
                 <strong style="color:var(--green-deep);">&#9201; The three-to-four-week timing rule:</strong> A nitrogen application has its greatest effect three to four weeks after it is applied. Sidedressing too early pushes vegetative growth at the expense of flowering and fruiting. <em>(VCE 426-323)</em>
               </div>
@@ -2447,6 +2470,15 @@
               <div class="field-label"><span class="field-num">3</span><label class="field-question" id="flr-n-rec-label" for="flr-n-rec">Nitrogen recommendation from your soil test report (lbs per 100 sq. ft.)?</label></div>
               <input type="number" id="flr-n-rec" min="0" step="0.1" placeholder="e.g. 0.1" oninput="calcFlower()">
               <div class="field-hint" id="flr-n-rec-hint">No soil test is performed for nitrogen because this element is too mobile in the soil for laboratory results to be useful (VCE 452-701) — nitrate-N can leach out within a day or two of rain. Enter the N figure from your VCE or Waypoint report if you have one, or a reliable rate for a flower type not listed above. Leave this blank only if you also selected a flower type above — that type's research-based default is used instead. If neither is provided, no fertilizer amount can be calculated. VCE reports: lbs/100 sq. ft. &nbsp;|&nbsp; Waypoint reports: lbs/1,000 sq. ft. (converted automatically).</div>
+
+              <!-- Waypoint ENR comparison — same feature and rationale as the Vegetable Garden tab;
+                   see the comment there for full context. Purely informational. -->
+              <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+                <label class="field-question" for="flr-enr-actual" style="font-size:0.85rem;display:block;margin-bottom:6px;">Have a Waypoint report? Compare against its "Estimated N Release" <span style="font-weight:400;color:var(--slate-light);">(optional)</span></label>
+                <input type="number" id="flr-enr-actual" min="0" step="1" placeholder="e.g. 150 (lbs/acre, printed on your report)" oninput="calcFlower()" style="max-width:320px;">
+                <div class="field-hint">Pre-filled automatically if you entered this on the Soil Test tab. This does not change any calculation on this page — it only shows a side-by-side comparison below, in the Nitrogen section of your Nutrient Application Plan.</div>
+                <div id="flr-enr-compare-note"></div>
+              </div>
             </div>
 
             <!-- P and K ratings removed (July 28) — now auto-filled from the Soil Test tab's
@@ -5393,6 +5425,7 @@ function carryOverToCalculators() {
   var limeRec  = document.getElementById('st-lime-rec').value;
   var limeTyp  = document.getElementById('st-lime-type').value;
   var areaSize = document.getElementById('st-lawn-size').value;
+  var enrVal   = document.getElementById('st-enr') ? document.getElementById('st-enr').value : '';
   var crop     = isGarden
     ? soilTestPurpose()
     : (document.getElementById('st-crop') ? document.getElementById('st-crop').value : '');
@@ -5436,11 +5469,13 @@ function carryOverToCalculators() {
       // Soil Test tab, same as Ca/Mg/etc.
       if (limeRec) setInput('flr-lime-rec', limeRec); else clearInput('flr-lime-rec');
       if (areaSize) { setInput('flr-area-direct', areaSize); setFlowerSizeMode('area'); } else clearInput('flr-area-direct');
+      if (enrVal) setInput('flr-enr-actual', enrVal); else clearInput('flr-enr-actual');
       setTimeout(function() { calcFlower(); }, 0);
     } else {
       // crop === 'vegetable' (or unrecognised — route to garden tab as safe default)
       if (limeRec) setInput('gdn-lime-rec', limeRec); else clearInput('gdn-lime-rec');
       if (areaSize) { setInput('gdn-area-direct', areaSize); setGardenSizeMode('area'); } else clearInput('gdn-area-direct');
+      if (enrVal) setInput('gdn-enr-actual', enrVal); else clearInput('gdn-enr-actual');
       setTimeout(function() { calcGarden(); }, 0);
     }
   } else {
@@ -6335,6 +6370,35 @@ function renderNutrientStatusPanel(prefix, area, suppressPK) {
   panel.innerHTML = html;
 }
 
+// Waypoint ENR comparison — added Aug 14, 2026, shared by Vegetable and Flower Garden. Purely
+// informational: reads the optional "Estimated N Release" field the user may have typed in from
+// their Waypoint report, and if present, shows it alongside this calculator's own organic-matter
+// N credit (converted to the same lbs/acre basis) with a plain-language note. Never feeds back
+// into any calculation — the actual N credit always comes from the UMD Extension formula alone.
+// Framing deliberately avoids implying Waypoint's number is wrong: the ~5.6% OM / 150 lbs-per-acre
+// pattern is a documented but UNEXPLAINED characteristic of Waypoint's own model (confirmed across
+// 22 real reports, all using the "Garden-Home" crop code — not a claim about Waypoint's model
+// generally), and VCE publishes no guidance on this topic at all either way. See CLAUDE.md and
+// About > Single-Nutrient Amendment Philosophy for the full sourcing.
+function buildEnrCompareNote(omVal, omNCreditPer1000, inputElId, noteElId) {
+  var inputEl = document.getElementById(inputElId);
+  var noteEl  = document.getElementById(noteElId);
+  if (!inputEl || !noteEl) return;
+  var enrRaw = parseFloat(inputEl.value);
+  if (isNaN(enrRaw) || enrRaw <= 0) { noteEl.innerHTML = ''; return; }
+  var appPerAcre = omNCreditPer1000 * 43.56; // lbs/1,000 sq. ft. -> lbs/acre (1 acre = 43.56 x 1,000 sq. ft.)
+  var nearKnownPattern = (omVal >= 5.4 && enrRaw >= 145 && enrRaw <= 155);
+  var html = '<div style="font-size:0.78rem;background:#eef4ff;border:1px solid #b8cce8;border-radius:4px;padding:8px 10px;margin-top:8px;color:var(--slate-mid);line-height:1.5;">';
+  html += '&#128202; <strong>Comparing to your report:</strong> Waypoint\u2019s own Estimated N Release is <strong>' + Math.round(enrRaw) + ' lbs/acre</strong>; this calculator\u2019s organic-matter-based estimate is <strong>' + Math.round(appPerAcre) + ' lbs/acre</strong>.';
+  if (nearKnownPattern) {
+    html += ' Waypoint\u2019s own figure has a documented but unexplained ceiling around 150 lbs/acre once organic matter reaches roughly 5.6% \u2014 not an error on Waypoint\u2019s part, just an undocumented characteristic of their model, and VCE does not publish guidance on this specific topic either way. This calculator\u2019s own estimate keeps scaling with your soil\u2019s actual organic matter instead of leveling off. See About &gt; Single-Nutrient Amendment Philosophy for the full comparison this finding is based on.';
+  } else {
+    html += ' These are two independently-calculated estimates and won\u2019t always match exactly \u2014 see About &gt; Single-Nutrient Amendment Philosophy for how each is calculated.';
+  }
+  html += '</div>';
+  noteEl.innerHTML = html;
+}
+
 function calcGarden() {
   // Garden type is always 'vegetable' on this tab (mixed beds fold under vegetable).
   // The actual purpose is encoded in st-report-type ('vce-vegetable' / 'waypoint-vegetable').
@@ -6486,6 +6550,7 @@ function calcGarden() {
     // OM credit calculation
     var omVal = parseFloat(document.getElementById('st-om') ? document.getElementById('st-om').value : '') || 0;
     var omNCredit = omVal * 0.4; // lbs N released per 1,000 sq. ft. per year (UMD Extension)
+    buildEnrCompareNote(omVal, omNCredit, 'gdn-enr-actual', 'gdn-enr-compare-note');
     var omNote = '';
     if (omVal >= 15) {
       // Extreme OM (heavily amended / muck-like beds). The linear 0.4-per-1% formula is validated
@@ -6942,6 +7007,8 @@ function calcFlower() {
 
   // Organic-matter nitrogen advisory (flower framing: excess N suppresses bloom, so high OM = reduce/skip N)
   var flrOmVal = parseFloat(document.getElementById('st-om') ? document.getElementById('st-om').value : '') || 0;
+  var flrOmNCredit = flrOmVal * 0.4; // lbs N released per 1,000 sq. ft. per year (UMD Extension) — same basis as Vegetable Garden's omNCredit
+  buildEnrCompareNote(flrOmVal, flrOmNCredit, 'flr-enr-actual', 'flr-enr-compare-note');
   var flrOmNote = '';
   if (flrOmVal >= 20) {
     flrOmNote = '<div style="font-size:0.78rem;background:#fff8e1;border:1px solid #e0c87a;border-radius:4px;padding:6px 10px;margin-bottom:10px;">&#127807; <strong>Extreme organic matter (' + flrOmVal.toFixed(1) + '%):</strong> This bed is essentially compost-rich and very unlikely to need any fertilizer or amendment. Very high organic matter can also tie up some micronutrients. The standard 0.4 lbs N per 1% OM release estimate overstates release at this level, so no figure is shown. Skip supplemental nutrients and watch plant performance. <em>(UMD Extension; VCE Note 19 &mdash; full sourcing in About &gt; Single-Nutrient Amendment Philosophy)</em></div>';
@@ -7154,25 +7221,44 @@ function prefillSampleReport(type) {
   var basesatResultReset = document.getElementById('st-basesat-h-result');
   if (basesatResultReset) basesatResultReset.textContent = '';
   if (type === 'garden') {
-    // Based on a real Waypoint flower report (full S3M panel) — Annual Flowers / Perennials
+    // Real Waypoint flower report, Sample "3-Perennial Beds" (Lab No. 17547, same submission
+    // batch as 'veggie' — 3401 Hemmingstone Ct). Replaced the previous, unrelated flower sample
+    // (pH 6.4 / OM 11.9%) on Aug 14, 2026 so this sample and 'veggie' are both traceable to real
+    // reports we actually have on file, rather than one sourced and one not.
+    // Ratings: Ca/Mg/K cross-checked against the report's own printed %Saturation against
+    // Waypoint's "idealized" ranges (Agronomy Facts 8: Ca 65-80%, Mg 10-20%, K 2-7%) — Ca 79.0%
+    // and Mg 12.7% both fall inside their idealized bands (-> OP), K 1.7% falls below (-> LO),
+    // matching the report's own bar colors (olive/orange respectively). P/S/B have no %sat
+    // metric (not base cations) so read directly from the report's own bar color (all yellow ->
+    // Medium). Cu/Fe/Mn/Zn all dark green (Very High) on the report.
     fields = {
       'st-report-type':'waypoint-flower',
-      'st-ph-wp':'6.4',
-      'st-cec-wp':'13.6','st-basesat-wp':'91',
-      'st-p-val-wp':'12','st-p-rating-wp':'ME',
-      'st-k-val-wp':'112','st-k-rating-wp':'OP',
-      'st-ca-val-wp':'2165','st-ca-rating-wp':'OP',
-      'st-mg-val-wp':'139','st-mg-rating-wp':'OP',
-      'st-s-val-wp':'9','st-s-rating-wp':'LO',
+      'st-ph-wp':'6.6',
+      'st-cec-wp':'15.2',
+      // Base Saturation not printed directly — only %H (5.9%) is, in the %Saturation table.
+      // Same traceable approach as 'veggie': populate the %H helper and let
+      // calcBaseSatFromH() compute it, rather than hardcoding 100-5.9=94.1 by hand.
+      'st-basesat-h-helper':'5.9',
+      'st-p-val-wp':'38','st-p-rating-wp':'ME',
+      'st-k-val-wp':'101','st-k-rating-wp':'LO',
+      'st-ca-val-wp':'2402','st-ca-rating-wp':'OP',
+      'st-mg-val-wp':'232','st-mg-rating-wp':'OP',
+      'st-s-val-wp':'23','st-s-rating-wp':'ME',
       'st-b-val-wp':'0.7','st-b-rating-wp':'ME',
-      'st-cu-val-wp':'2.6','st-cu-rating-wp':'OP',
-      'st-fe-val-wp':'260','st-fe-rating-wp':'OP',
-      'st-mn-val-wp':'34','st-mn-rating-wp':'OP',
-      'st-zn-val-wp':'7.7','st-zn-rating-wp':'OP',
-      'st-na-val-wp':'19','st-na-rating-wp':'SUFF',
-      'st-om-wp':'11.9',
-      'st-lime-rec':'0','st-lime-type':'Agricultural'
+      'st-cu-val-wp':'3.9','st-cu-rating-wp':'VH2',
+      'st-fe-val-wp':'469','st-fe-rating-wp':'VH2',
+      'st-mn-val-wp':'51','st-mn-rating-wp':'VH2',
+      'st-zn-val-wp':'11.5','st-zn-rating-wp':'VH2',
+      'st-na-val-wp':'25','st-na-rating-wp':'SUFF',
+      'st-om-wp':'6.5',
+      'st-enr-wp':'150',
+      'st-lime-rec':'0','st-lime-type':''
     };
+    // Report's own SOIL FERTILITY GUIDELINES targets (lbs/1,000 sq. ft.) — using the report's
+    // "Perennials" row (not the generic "Garden-Home" row) since this sample is specifically a
+    // perennial bed. Feeds the Nutrient Status panel's precise-amount calculation directly, same
+    // mechanism as 'veggie'.
+    gdnTargets = { p2o5:'1.5', k2o:'4.0', mg:'0', s:'0.11', b:'0', cu:'0', mn:'0', zn:'0', fe:'0' };
   } else if (type === 'veggie') {
     // Real Waypoint vegetable garden report, Sample "2-Vegetable Beds" (most recent report on
     // file). pH 7.0, CEC 23.0.
@@ -7202,6 +7288,7 @@ function prefillSampleReport(type) {
       'st-zn-val-wp':'26.2','st-zn-rating-wp':'VH2',
       'st-na-val-wp':'54','st-na-rating-wp':'SUFF',
       'st-om-wp':'13.4',
+      'st-enr-wp':'150',
       'st-lime-rec':'0','st-lime-type':''
     };
     // Report's own SOIL FERTILITY GUIDELINES targets (lbs/1,000 sq. ft.) — feeds the Nutrient
@@ -7226,6 +7313,7 @@ function prefillSampleReport(type) {
       'st-ca-val-wp':'885','st-ca-rating-wp':'ME',
       'st-mg-val-wp':'99','st-mg-rating-wp':'ME',
       'st-om-wp':'3.9',
+      'st-enr-wp':'',
       'st-lawn-n':'4.0',
       'st-lime-rec':'40','st-lime-type':'Dolomitic'
     };
@@ -7249,6 +7337,7 @@ function prefillSampleReport(type) {
       'st-ca-val-wp':'1047','st-ca-rating-wp':'OP',
       'st-mg-val-wp':'84','st-mg-rating-wp':'ME',
       'st-om-wp':'3.9',
+      'st-enr-wp':'',
       'st-lawn-n':'5.0',
       'st-lime-rec':'0','st-lime-type':'Agricultural'
     };
