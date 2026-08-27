@@ -5864,3 +5864,63 @@ without needing any changes to the two downstream read locations.
 | :-- | :-- |
 | `index.html` | `st-lawn-n` field now hidden (and cleared) for VCE reports, shown only for Waypoint lawn reports; simplified its hint text accordingly; added a VCE-alignment callout (matching real report Note 201 language) to both Cool-Season and Warm-Season Lawn tabs' N-rate guidance box instead (v10.1) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 15, 2026 (v10.2 / README v2.3: Waypoint confirmed the ENR plateau by email — "documented but unexplained" replaced with the real answer everywhere)
+
+User received a direct reply to the email drafted and sent earlier this session (to Waypoint's
+Richmond support address). Waypoint confirmed, in their own words: *"there is a linear relationship
+between organic matter content (%) and ENR, and that there is a plateau... high organic soils stop
+showing a crop response no matter how far above the plateau the OM percentage gets. The equation we
+use is not crop-specific... Our nitrogen recommendations do not factor it in, either."*
+
+This resolves three things the app had left open:
+1. **The plateau is real and intentional** — not app-side noise or misinterpretation.
+2. **It's not tied to the "Garden-Home" crop code** — confirmed not crop-specific, closing a
+   caveat the app had explicitly flagged (all 22 reviewed reports happened to use that one code).
+3. **New fact, not previously known**: ENR is purely informational on Waypoint's own reports — it
+   is NOT subtracted from or factored into Waypoint's own printed nitrogen fertilizer
+   recommendation.
+
+**Replaced "documented but unexplained" / "no published explanation" language in all four locations**
+that discussed this finding, now citing *"Correspondence with Waypoint Analytical, August 2026"*
+(generic, not naming the user, per a privacy-conscious default the user didn't object to):
+- `index.html` — About page's Single-Nutrient Amendment Philosophy write-up.
+- `index.html` — the ENR interpretation card (Soil Test tab).
+- `index.html` — `buildEnrCompareNote()` (Garden-tab comparison note), plus its preceding code
+  comment, which had explicitly called the pattern "UNEXPLAINED" in caps.
+- `README.md` — the "Organic matter nitrogen credit" subsection.
+
+**Process note:** `/home/claude` had reset to empty again at the start of this turn (same class of
+transient environment issue as earlier in the session) — confirmed via directory listing before
+touching anything, re-synced from `/mnt/user-data/outputs/` (last known-good, v10.1), and verified
+the version badge matched expectations before making any edits.
+
+**Verification:** syntax-checked; confirmed zero remaining instances of the old "unexplained"
+phrasing and three instances of the new citation in `index.html`; jsdom simulation reproducing the
+same Garden-tab comparison scenario used in earlier verification (OM 13.4%, ENR 150 lbs/acre)
+confirmed the new wording renders correctly end-to-end.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Replaced "documented but unexplained" framing with Waypoint's own confirmed explanation in all three locations (About page, ENR card, Garden-tab comparison note + its code comment), cited as correspondence with Waypoint Analytical (v10.2) |
+| `README.md` | Same replacement in the "Organic matter nitrogen credit" subsection; version badge bumped to 2.3 |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — August 27, 2026 (v10.3: "Two tabs need it" corrected to "Three tabs" in the Soil Test Ratings Explained card)
+
+User spotted a simple counting error: the "Understanding the Waypoint-to-VCE rating conversion"
+paragraph (About page, added v8.7/v8.8) said "Two tabs need it — Cool-Season Lawn and Warm-Season
+Lawn — plus Shrubs & Trees, because those three..." — naming three tabs while claiming two.
+Corrected to "Three tabs need it — Cool-Season Lawn, Warm-Season Lawn, and Shrubs & Trees" for
+consistency with the "those three" that follows immediately after.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | Fixed "Two tabs" → "Three tabs" miscount in the Soil Test Ratings Explained card's Waypoint-to-VCE conversion paragraph (v10.3) |
+| `CLAUDE.md` | this entry |
