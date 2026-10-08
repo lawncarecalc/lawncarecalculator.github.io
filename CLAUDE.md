@@ -5924,3 +5924,256 @@ consistency with the "those three" that follows immediately after.
 | :-- | :-- |
 | `index.html` | Fixed "Two tabs" → "Three tabs" miscount in the Soil Test Ratings Explained card's Waypoint-to-VCE conversion paragraph (v10.3) |
 | `CLAUDE.md` | this entry |
+
+---
+
+## Session Update — October 6, 2026 (v10.4 / README v2.4: lawn fertilizer entry is now source-aware — "WIN %" replaced; sources added)
+
+### Why
+User photographed 15 retail fertilizer bags at garden centers (brands withheld) and tabulated them. None
+describe the slow-release part as "WIN" the way the app assumed. Bags say "controlled release," "slow
+release," or "slowly available," and the *source* named after "from" varies: polymer-coated urea (6),
+methylene urea (4), stabilized urea (3: dicyandiamide + NBPT), nothing (2). Key finding: the same word,
+"slowly available," appears on coated-urea, methylene-urea AND stabilized bags, so the word cannot decide
+what counts. Spreadsheet: `Fertilizer_Bags_VCE_Analysis.xlsx` (15 bags; 9 Program 1, 5 Program 2, 1 Program 3
+under the VCE rule; trusting the footnote word alone misclassifies 5).
+
+### Sources that settled the rule (all read this session)
+- **VCE Lawn Fertilization in Virginia, CSES-135P (2015; the same publication as 430-011 in later editions)** —
+  methylene-urea products: slowly available portion "is listed on the bag as WIN"; no WIN listed = quickly
+  available unless sulfur-coated urea; polymer-/sulfur-coated urea provide slowly available N but aren't listed
+  as WIN; slowly available sources listed (stabilized urea NOT among them); "contains 50% organic" statements
+  don't count; thresholds <15% / 15–49% / >=50%; DCR defines slowly available as >=15% slow-release N.
+- **Penn State Extension, Turfgrass Fertilization: A Basic Guide (Landschoot, 2016)** — WIN / slowly available /
+  controlled-release are all label names for slow-release N; inhibitor ("stabilized") urea is quick-release;
+  some urea-formaldehyde products behave closer to urea; its own programs count by WIN or coated N.
+- **Penn State, Enhanced Efficiency Nitrogen Fertilizers for Turfgrasses (2025)** — release mechanisms.
+- A 1981 Weeds Trees & Turf article by a Virginia Tech specialist (UF release depends on microbes, slows below
+  ~55 F; short-chain methylene ureas release faster) was reviewed as background only — a trade magazine, not
+  cited in the app.
+User explicitly accepted: stabilized = Program 1. Position change recorded: an earlier recommendation to
+"use the footnote figure and ignore the small WIN line" for methylene urea was WRONG and retracted once the VCE
+text was read; methylene urea counts by its WIN line only.
+
+### What changed in `index.html`
+1. **Source-aware entry (auto plan, both lawn tabs)** — new `*-auto-src` dropdown (nothing / coated urea /
+   methylene urea / stabilized) with a relabeled figure input and a live "counts as" line, e.g. "6.3 ÷ 21 = 30%
+   of the nitrogen counts as slow-release → Program 2." The existing `*-auto-win` input still carries the figure
+   that COUNTS (% of bag), so `detectProgram()` and everything downstream is untouched. Stabilized/none disable
+   and clear the figure. A figure larger than total N shows a plain-language warning (guards against entering
+   a percent of N).
+2. **Custom plan slots** — same source dropdown per slot. **Fixed a pre-existing bug**: the slot template had
+   TWO inputs with the same id (`*-sN-win`), one labeled "WIN % (if listed)" and a second with a longer label;
+   now one input + one dropdown. `renderAppSlots()` now **preserves entered values** when slots are added or
+   removed (previously a re-render wiped every slot). `prePopulateCustom()` carries the source into each slot.
+3. **About page** — "Understanding WIN & Nitrogen Programs" rewritten around "read the words after 'from'":
+   what counts per source, the division formula, three worked examples from real bags (no brands), a short
+   "why the sources behave differently" paragraph (Penn State) with a cooler-climate caveat, and updated
+   program boxes. How-to step text updated.
+4. **"Help me choose a fertilizer" box** — slow-release explainer rewritten; table headers say "slow-release"
+   instead of WIN; **corrected the "25-0-5 / 32-0-10 / 39-0-0 → Program 3" row** (contradicted by the bag
+   survey: grade alone does not set the program) to "varies — read the bag"; caution paragraph rewritten.
+5. **Glossary** (WIN and slow-release entries), warning strings (Program 2/3 "% slow-release"), shrub azalea
+   product note updated.
+6. **Sources** — VCE 430-011 entry expanded (label-reading rules; CSES-135P also checked); two Penn State
+   turf articles added to Supplementary Regional Sources, each flagged as a cooler-climate source.
+
+### Verified (jsdom)
+Coated 6.3/21 → 30% P2; methylene 0.5/32 → 1.6% P1; stabilized disables+clears → P1; none → P1; entering 30 on a
+21% bag → warning; 31.9/40 → 80% P3; custom mode carries source+figure; adding a slot keeps slot 1's values;
+stabilized in a slot disables it; warm-season tab works; chooser text renders; **no duplicate ids in the
+document**; no JS errors; syntax clean.
+
+### Not done yet (agreed roadmap)
+- **v2: "What to look for" cards** — generated from lawn status, grass/season, soil type (adding a sandy/loam/clay
+  selector), and P/K ratings: grade range (N-only / starter ratio) + label check per program, with lb of product
+  per 1,000 sq ft from VCE Table 1. Programs shown "whichever fit the lawn and soil test"; Program 3 only for
+  sandy soil or when the user wants fewer applications; examples from VCE Table 1 only (no brands).
+- **v3: two-step layout** — "What to look for" then "Check my bag" (this entry is the check step).
+- **Verify before writing any rates in v2**: the 2015 VCE publication caps quick-release at 0.7 lb/application
+  for warm-season grasses too (Program 1 table), while `SPECIES_CONFIG` uses 0.9 for bermuda/St. Augustine (P1);
+  determine which edition governs.
+- README's "Grades by phosphorus need" tables still list generic profiles; v2 will replace them.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | v10.4 — source-aware slow-release entry (auto + custom), duplicate-id bug fixed, slot values preserved, About/chooser/glossary rewritten, one misleading table row corrected, sources added |
+| `README.md` | v2.4 — Nitrogen Programs section now explains counting by source; grade-table row corrected; Penn State sources added |
+| `Fertilizer_Bags_VCE_Analysis.xlsx` | New — 15-bag analysis with formulas and a Sources sheet |
+| `CLAUDE.md` | this entry |
+
+---
+
+## Research Note — October 6, 2026 (warm-season per-application N: which VCE document governs?) — NO CODE CHANGED
+
+Question: the app uses 0.9 lb N/application for bermuda/St. Augustine on quick-release (Program 1); the 2015 VCE
+CSES-135P Program 1 table shows 0.7. Read the two current VCE documents directly:
+
+| Source | Bermuda/St. Aug | Zoysia | Centipede |
+| :-- | :-- | :-- | :-- |
+| **Soil Test Note 18 (452-718, SPES-305P; first pub. Mar 2021, reviewed Aug 2026)** — the note the soil test report cites | water-soluble N "should never exceed 0.9 lb N/1,000 sq ft in a single application"; slowly available (>=15%) up to 1.0 | same | same ("centipedegrass and mature zoysiagrass perform best at 1–2 lb N/yr") |
+| **430-011 (SPES-334NP, June 21, 2021) Table 2 (P1, recommended per active growing month)** | Apr 0.5, May–Jul 0.7, Aug 0.5 | 0.7 each month | 0.7 each month |
+| 430-011 Table 3 (P2) | Apr 0.5, May–Jul 1.0, Aug 0.5 | 1.0 | 1.0 |
+| 430-011 Table 4 (P3) | Apr–Jul 1.0–1.5, Aug 1.0 | 1.0 | 1.0 |
+| **App `SPECIES_CONFIG.maxApp` (P1/P2/P3)** | 0.9 / 1.0 / 1.5 | 0.7 / 1.0 / 1.0 | **0.5 / 0.5 / 0.5** |
+
+Conclusions
+1. The two VCE documents are not contradictory: **0.9 is Note 18's hard ceiling** for any single water-soluble
+   application; **0.7 (0.5 in April/August for bermuda) is 430-011's recommended Program 1 monthly amount.** My
+   earlier statement that the 2015 table "caps" quick-release at 0.7 was only half right — those are recommended
+   amounts, and the ceiling is 0.9.
+2. The app is internally inconsistent: bermuda uses the Note 18 ceiling (0.9) while zoysia uses the 430-011
+   recommended amount (0.7).
+3. **Centipedegrass 0.5/0.5/0.5 has no VCE source.** The July 2026 source note (this file, "Source note: ...
+   grounded in agronomic principle") admits it is an app judgment call. VCE 430-011 treats centipede like zoysia
+   (0.7 / 1.0 / 1.0 recommended; Note 18 ceilings 0.9 / 1.0). Violates the "never make up a number" principle.
+4. 430-011 Table 2 footnote x: Program 1's rates are deliberately lower than the seasonal maximum "to encourage
+   the use of slowly available nitrogen sources" — a bermudagrass lawn on Program 1 reaches only ~3.1 lb N/yr
+   (0.5+0.7+0.7+0.7+0.5) against a 4.0 seasonal limit. Relevant to buying guidance (high N targets need Program 2+).
+5. Establishment (new lawn): VCE report comments cite "the 0.9 lb column" (warm) / "0.7 lb column" (cool) of
+   Table 2 in Notes 18/17 — an establishment rate, separate from maintenance programs.
+
+Recommendation (pending user decision): model two numbers per grass/program — "recommended per application"
+(430-011 tables; used to size the product amounts in the new "what to buy" cards) and "never exceed" (Note 18
+ceiling, used for warnings) — and correct centipede to match VCE.
+
+---
+
+## Session Update — October 6, 2026 (v10.5 / README v2.5: version 2, release 1 — recommended vs. never-exceed rates, centipedegrass fix, local-availability data)
+
+Decisions (user): deliver version 2 in two releases — (1) rates + data, (2) the "what to look for" cards, which
+REPLACE the existing "Help me choose a fertilizer at the garden center" box, name the specific brand-free grades seen
+locally under each range, and are built from the local survey. Purpose stated by user: the app should tell the user
+which fertilizer(s) to consider buying, as N-P-K ranges aligned with what is actually available locally.
+
+### Changes in `index.html`
+1. **`SPECIES_CONFIG` now has two numbers per program** — `recApp` (VCE 430-011 recommended amount; sizes plans) and
+   `maxApp` (Soil Test Note 17/18 ceiling; drives warnings). Warm-season: bermuda rec 0.7/1.0/1.5, ceiling
+   0.9/1.0/1.5; zoysia rec 0.7/1.0/1.0, ceiling 0.9/1.0/1.0; centipede rec 0.7/1.0/1.0, ceiling 0.9/1.0/1.0.
+   Cool-season unchanged (recommended = ceiling): verified identical output before/after (tall fescue 2.5 lb on
+   Program 1 = 4 applications of 0.63).
+2. **Centipedegrass fixed** — was a flat 0.5/0.5/0.5 with no VCE source (the source note admitted it was an app
+   judgment call); now matches VCE's combined zoysia/centipede column. `MAX_PRACTICAL_APPS` for centipede changed
+   from 2/2/2 to 3/3/2 (same as zoysia).
+3. **Plan sizing uses `recApp`** in `calcAutoplan()` and `prePopulateCustom()`. Effect: bermudagrass Program 1 at 3.0 lb
+   now plans 5 applications of 0.60 (was 4 of 0.75), which triggers the existing ">4 applications" advice to consider
+   slow-release; centipede/zoysia Program 2 at 1.5 lb = 2 applications of 0.75.
+4. **Custom planner** — a slot between the recommended amount and the ceiling shows an amber "Above VCE's recommended
+   X lb, but within the Y lb ceiling" note; above the ceiling is still an error.
+5. **`LOCAL_SURVEY` data table** (brand-free, 18 bags, "fall 2026") plus `localBagCounted()` / `localBagProgram()`.
+   Built from the user's spreadsheet; three rows have no photo IDs (18-0-3 coated, 18-24-12 coated, and a
+   32-0-10 that is BOTH stabilized and 100% polymer-coated — coated urea counts, so Program 3). Survey result under
+   the VCE rule: 9 Program 1, 7 Program 2, 2 Program 3. Phosphate-free bags: 9 (N 18–46, K 0–10). Two different
+   32-0-10 bags land in Program 1 (methylene urea) and Program 3 (coated) — grade alone cannot set the program.
+6. Bag-entry hints: a bag with both a coated-urea claim and a stabilizer should be entered as coated urea.
+7. About page program boxes and the warm-season reference table now show recommended amounts and the 0.9 ceiling;
+   warm-season VCE-report callout reworded (the report's "0.9 lb column" is the new-lawn / ceiling figure, not the
+   maintenance recommendation).
+
+### Deliberately NOT changed
+`maxDeliverable()` (the "can this N total be reached in the growing window" hard check) still uses the ceilings x
+practical applications. VCE 430-011 Table 2 footnote x says Program 1's recommended rates are kept low to encourage
+slow-release sources (bermudagrass Program 1 schedule reaches only ~3.1 lb vs a 4.0 seasonal limit). That point is
+for release 2's buying cards ("for a high N target, look for a coated-urea bag"), not an engine change.
+
+### Verified (jsdom)
+Bermuda P1 3.0 lb -> 5 applications of 0.60 with the recommended-amount wording; centipede and zoysia P2 1.5 lb ->
+2 x 0.75; tall fescue unchanged; custom slot 0.7 -> within, 0.8 -> amber note, 1.0 -> exceeds 0.9 ceiling; survey
+counts 9/7/2; no duplicate ids; no JS errors; syntax clean.
+
+### Next (release 2)
+"What to look for" cards replacing the "help me choose" box: situation from lawn status, grass/season, soil type
+(new sandy/loam/clay selector), P/K ratings; ranges of N-P-K derived from `LOCAL_SURVEY` per program; grades seen
+locally listed under each range; pounds of product per 1,000 sq ft at the recommended amount; "not seen locally —
+ask at the counter" when the soil test calls for something not in the survey (e.g., 0-0-50); target-ratio closeness
+ranking for starter fertilizers. Survey updates: user edits the spreadsheet, the table is regenerated.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | v10.5 — recommended vs. never-exceed rates, centipedegrass corrected, plan sizing on recommended amounts, soft slot note, `LOCAL_SURVEY` data, About/table text updated |
+| `README.md` | v2.5 — Nitrogen Programs table now shows per-application amounts by season; two-number explanation |
+| `CLAUDE.md` | this entry |
+
+
+## v10.6 · 2026-10-07 — "What to look for" cards (release 2)
+
+### Changed
+- Replaced the "Help me choose a fertilizer at the garden center" box (`fertChooserHTML`) with a visible "What to look for at the garden center" card on both lawn tabs. Per Program 1/2/3: N-P-K ranges, grades seen locally, lb of product per 1,000 sq ft at `recApp`, warning when the program cannot reach the annual N target (`maxDeliverable`). The label-reading explainers moved into a collapsible "How to read a bag label".
+- P and K soil test ratings narrow the grades (`lookForFilter`): P High/VH -> P=0; Medium -> P2O5 <= 0.5 N; Low or new lawn -> P2O5 >= 0.4 N; K Low -> K2O >= 0.25 N; K Medium <= 0.35 N; K High <= 0.2 N. Thresholds are app judgment applied to VCE guidance (1-2-1 new lawn, high/high N-only, P-only and K-only routes), not VCE numbers.
+- No soil-type selector (user decision: Chesterfield is mostly clay).
+- `LOCAL_SURVEY` now 19 bags: added 14-14-14 (coated urea 8.52 of 14 -> Program 3). Source note: photos come from a local distributor's in-stock listing. Three early bags still have `id:null` (no photo ID).
+- Intro text on both lawn tabs and the over-4-applications warning now point to the new card. README section rewritten (v2.6); generic grade tables removed.
+
+### Verified (jsdom)
+Tall fescue High P/Medium K; new lawn Low/Low; fine fescue Medium/High; bermuda VH/Low (Program 2 empty -> counter note; potash tip); zoysia with no ratings (all grades). Duplicate-grade dagger appears; syntax clean.
+
+### Files
+| Document | Status |
+| :-- | :-- |
+| `index.html` | v10.6 |
+| `README.md` | v2.6 |
+
+
+## v10.7 · 2026-10-07 — lawn tab rework (list built one change at a time with the user)
+
+### Changed
+- **"What to look for" card** moved above the "Application Plan" block (placeholder `{prefix}-fert-chooser`, now before the plan-mode toggle, visible in both modes). Lines now read "N: · P₂O₅: · K₂O:"; each "seen locally" grade lists its own lbs of product per 1,000 sq ft per application. Code split into `lookForCore(prefix, forPrint)`, `lookForTarget(prefix)`, `renderLookForPrint(prefix)`, `fertChooserHTML`.
+- **Warning boxes fixed**: `.warning-badge` is `display:flex`, so bare `<strong>`/text became columns; contents are now wrapped in one `<span>` (card, `calcAutoplan` warnings). Program 3 shortfall says "no program reaches it" instead of "choose a higher program."
+- **Card refresh bug fixed**: the card only re-rendered from `calcMulti` (custom mode), so it went stale in auto mode. New `refreshLookFor(prefix)` is called from `calcCool`/`calcWarm`.
+- **Virginia annual N cap (auto plan only)**: `calcAutoplan` builds at `species.maxN` if the entry is higher, shows a banner in `{prefix}-n-valid` and "(capped from X)" in the plan header; the card uses the capped target. **Custom mode is deliberately NOT capped** (warning only, as before).
+- **Lab-specific notes** on both lawn tabs: `.lab-note.lab-wp` / `.lab-vce`, toggled by `updateLawnLabNotes()` (called from `onReportTypeChange`). The per-application paragraph (source-aware slow-release counting, Program 1/2/3 amounts) was rewritten for both tabs and is shown for both labs.
+- **Printing**: print-only copy `{prefix}-lookfor-print` (hidden on screen, shown under `printing-cool/warm`); one button "Print shopping guide & plan" (always visible on lawn tabs). Prints the card, lime plan, and application plan if built. Placeholder text hidden in print (`.plan-placeholder`); timing card no longer prints in auto mode (`.plan-auto-hide`).
+- Bag spreadsheet updated to 19 bags (9 P1 / 7 P2 / 3 P3).
+
+### Not yet done (parking lot)
+Lime tab (Shrubs & Trees) lab-specific wording; Vegetable/Flower Garden hide the Waypoint ENR comparison field for VCE reports; garden lime hints that list both labs' units; Vegetable Garden seasonal N hint / VCE flat-rate wording. Print layout was not visually checked in a real print preview (jsdom only).
+
+
+## v10.8 · 2026-10-07 — methylene urea counting rule corrected; sample label added
+
+### Changed
+- **Rule**: methylene urea counts the Water Insoluble Nitrogen line PLUS the footnote "slowly available nitrogen from methylene urea" (added). Evidence: Goatley (Virginia Tech) slide, 5.6% WIN + 5.7% slowly available = 11.3, / 32 = 35%. Coated urea = footnote figure; stabilized or nothing listed = 0 (Program 1). This reverses the v10.4 rule (WIN line only), which was wrong; the earlier note that the footnote figure was "part of" WIN was also wrong. They are separate lines.
+- Auto plan and each custom slot have a second input for methylene urea (`*-auto-slow2`, `{prefix}-s{sid}-slow2`); `autoSlowCounted()`, `slowShareText()`, `applySlowSrc()`, `calcMulti` sum them. `detectProgram()` still takes one figure.
+- `LOCAL_SURVEY` methylene urea bags store `win` and `slow`; `localBagCounted()` adds them. Survey result is now 5 / 11 / 3 (Program 1/2/3) across 19 bags (was 9 / 7 / 3).
+- Text updated: lawn tab intros, About WIN card (bullet, 32-0-10 example now 0.5 + 6.8 = 7.3, 23%, Program 2; Program 2 box), 430-011 source note, glossary (WIN), "How to read a bag label" paragraph. Made-up sample label (EXAMPLE LAWN FOOD 28-0-6, 5.4 + 5.0 = 10.4, 37%, Program 2) embedded via `BAGDEMO_HTML` with `.bagdemo` CSS.
+- New About source: Goatley slide deck "The Primary Fertilizer Sources and Use Characteristics in Turfgrass Fertility Programs" (hosted by Virginia DCR, c. 2012); cites 4 VAC 5-15 (SAN definition).
+- Spreadsheets updated: Fertilizer_Bags_VCE_Analysis.xlsx, Methylene_Urea_Counting_Rule.xlsx. README v2.8.
+
+### Verified (jsdom)
+Auto plan 5.4 + 5.0 on 28 N = 37%, Program 2; stabilized hides and clears the second box; custom slot gives Program 2; survey 5/11/3; no duplicate ids; no JS errors; syntax clean.
+
+### Parking lot (unchanged)
+Lime tab (Shrubs & Trees) lab-specific wording; hide Waypoint ENR field for VCE reports on Vegetable/Flower Garden; garden lime hints listing both labs' units; Vegetable Garden seasonal N / VCE flat-rate wording; real print-preview check of the lawn print layout.
+
+
+## v10.9 · 2026-10-07 — lawn tab steps reordered
+
+### Changed
+- Cool and Warm Lawn tabs: new **step 6 "Determine the Fertilizer that meets your needs"** now holds the "What to look for at the garden center" card plus the Application Plan (Build a plan for me / Custom plan). **Lime is now step 7** (fields and ids unchanged). About-page Cool/Warm step lists renumbered to match. All ids, print copies and handlers untouched.
+- Verified (jsdom): no duplicate ids, chooser renders, plan-mode toggle works on both tabs; syntax clean.
+
+
+## v11.0 · 2026-10-07 — shade and clipping now count toward the VCE ceiling and the "What to look for" card
+
+- The annual N ceiling is compared to the EFFECTIVE rate (typed goal, then shade factor, then clipping credit), not the typed number. Reverses the June 10 rule "ceiling check stays on the raw target".
+- `calcAutoplan`, `calcMulti` (ceiling + seasonal-window checks) and `lookForTarget` (card, print copy) all use the effective rate; the cap still applies if the effective rate exceeds it. Examples (tall fescue, goal 4): full sun -> capped 3.5; heavy shade -> 2.0; clippings only -> 3.0.
+- Banners and plan headers show "from 4 after shade/clippings". Verified in jsdom (auto and custom); syntax clean; no duplicate ids.
+
+
+## v11.1 · 2026-10-07 — auto plan respects spring/November caps; no unlabeled applications
+
+- Reported: cool-season auto plan gave 0.60 lb N to "May (optional)" and a fifth unlabeled "App 5", exceeding the SPES-670 spring limit (0.25-0.5 lb water-soluble N per application).
+- Fix: new `buildAutoSlots(speciesKey, isCool, program, recAmt, target)` replaces the even split. It uses the fewest slots (from `AUTO_TIMING`, limited to `MAX_PRACTICAL_APPS`) whose caps reach the target, then spreads N evenly, giving capped slots their maximum and redistributing the rest. Cap = VCE recommended amount, except cool-season November and May slots held to 0.5 lb (VCE 430-011 Table 2 shows 0.5 optional November; SPES-670 spring limit). No December: 430-011 optimal fall window is mid-August through early November; Program 3 shows 0 for November.
+- If the target can't be reached in the allowed months, the plan delivers the most it can and shows a warning with what Program 2/3 could deliver. The old ">4 applications" note and the generic "App N" labels are gone. Table rows now carry per-slot amounts; the total line shows total N delivered.
+- Warm-season uses the same builder with recommended amounts per slot (no extra caps); bermuda Program 1 at 3.0 lb now delivers 2.8 with a warning (previously 5 applications).
+- Assumption to confirm: Program 2 November/May also held to 0.5 (430-011 text read only confirmed the Program 1 November rate and 0 for Program 3). Custom mode and `maxDeliverable` unchanged. DCR late-fall/winter turf-N restriction not verified.
+
+
+## v11.2 · 2026-10-07 — November follows VCE 430-520 "SON"; README v3.0
+
+- VCE 430-520 (Fall Lawn Care) states "SON" (Sept, Oct, Nov): up to 0.7 lb water-soluble N per application at ~4-week intervals; early-September controlled-release up to 1 lb; never on frozen soil; no stop date given. So the November slot is no longer held to 0.5 lb (that was the 430-011 Table 2 optional rate, stricter). Only the May slot keeps the 0.5 lb cap (SPES-670). Label is now "November (optional)". The plan note under the cool-season table cites SPES-670, 430-520 and the frozen-soil rule.
+- DCR checked: 2VAC5-405 and the nutrient management standards text give no fixed turf-N dates (only "actively growing crop", "as close to uptake as possible", no inorganic/liquid fertilizer on frozen ground). The Nov 15-Feb 15 range remembered earlier could not be confirmed and is not used.
+- Test results (1,000 sq ft, jsdom): tall fescue 46-0-0 at 3 lb -> Sep/Oct/Nov 0.70 + May 0.50 = 2.6, warning shown; 2 lb -> 3 x 0.67; fine fescue 2 lb -> 3 x 0.67; 32-0-10 methylene urea 3 lb -> 0.83 x3 + May 0.5, no warning.
+- Next steps agreed/open: parking-lot items (Lime tab lab wording; hide Waypoint ENR field for VCE reports on Vegetable/Flower Garden; garden lime hints listing both labs' units; Vegetable Garden seasonal N / VCE flat-rate wording; real print-preview check). Warm-season month list (AUTO_TIMING.warm) not yet re-verified against 430-011 Table 2.

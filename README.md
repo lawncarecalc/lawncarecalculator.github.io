@@ -1,6 +1,6 @@
 # 🌱 Soil Test Report Assistant
 
-![Version](https://img.shields.io/badge/version-2.1-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
+![Version](https://img.shields.io/badge/version-3.0-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
 
 > **No more guessing what to feed your lawn or garden.**
 
@@ -30,7 +30,7 @@ Tab bar order: **Soil Test Report, About & Instructions** (always visible), then
 | :-- | :-- | :-- |
 | 🩺 | **Soil Test Report** | Interprets every value — pH, Buffer Index, P, K, Ca, Mg, organic matter, salts, CEC, base saturation, lime, micronutrients — each with a plain-English card and rating pill. An "Action" box only appears where a lab actually issued a recommendation tied to that value (P, K, Lime, the N-vs-ceiling check) — pH, Buffer Index, Base Saturation, CEC, Organic Matter, and Soluble Salts are diagnostic/educational only, since neither VCE nor Waypoint ties an action to those readings directly; their substance (e.g. "see the Lime Recommendation card") lives in plain prose instead of a styled box. One combined question ("what is this report for?") determines lab, units, and which calculator tab appears. Waypoint's Base Saturation field can be calculated in-place from a %H (Hydrogen Saturation) entry when your report doesn't print Base Saturation by name. **Continue to [X] Calculator** pre-fills that tab. |
 | 📖 | **About & Instructions** | Universal on-ramp (how the gating works), a per-tab mini-guide for each calculator, a dedicated explainer for the Vegetable Garden tab's single-nutrient philosophy, source documentation, and the WIN/program guide. |
-| ❄️ | **Cool-Season Lawns** | Tall fescue, bluegrass, ryegrass, fine fescue. Up to 4 custom application slots, each with its own N-P-K and WIN%. Includes clipping-return and shade adjustments. Full CCE-adjusted lime math built in. |
+| ❄️ | **Cool-Season Lawns** | Tall fescue, bluegrass, ryegrass, fine fescue. Up to 4 custom application slots, each with its own N-P-K and slow-release source (coated urea, methylene urea, stabilized, or none). Includes clipping-return and shade adjustments. Full CCE-adjusted lime math built in. |
 | ☀️ | **Warm-Season Lawns** | Bermuda, St. Augustine, zoysia, centipede — distinct N ceilings per species. Clipping and shade controls; no nitrogen after August 15. Full CCE-adjusted lime math built in. |
 | 🪨 | **Lime** | For **Shrubs & Trees** reports only — Cool/Warm-Season Lawns, Vegetable Garden, and Flower Garden all calculate lime directly on their own tab now. Lime quantities adjusted by product CCE and bag size; schedules multiple applications; warns on gypsum. |
 | 🥬 | **Vegetable Garden** | Single-nutrient system: pick a crop to see feeding level, target pH, research-based N default, and sidedress timing together; choose a nitrogen source (organic or synthetic, never a blended N-P-K product); phosphorus, potassium, calcium, magnesium, sulfur, and micronutrients each get their own amendment — auto-filled from the Soil Test tab, with an organic/synthetic choice per nutrient and full CCE-adjusted lime math built in. |
@@ -76,58 +76,55 @@ Both lawn tabs now adjust the nitrogen plan for two real-world conditions, each 
 
 ---
 
-## 🛒 Choosing a Fertilizer at the Garden Center &nbsp; `expanded v1.7`
+## 🛒 What to Look For at the Garden Center &nbsp; `new in v10.6`
 
-The lawn tabs include a **brand-free** reference table that matches commercial grades to your soil's phosphorus rating. Read your P result (Low / Medium / High) and jump to the matching group, then match the N-P-K and WIN on any bag to the closest row. Full table in [`Fertilizer_Grades_Table.md`](Fertilizer_Grades_Table.md).
+The lawn tabs tell you **what to buy**, not just how to enter it. A "What to look for" card sits at the top of the plan section, before "Build a plan for me." For **Program 1, 2 and 3** it lists the N-P-K ranges to look for and the **grades seen locally** that fit, each with its own pounds of product per 1,000 sq. ft. per application at the VCE recommended amount (lb N ÷ N% × 100). In **auto mode** the annual nitrogen target is **capped at Virginia's limit** (3.5 lbs tall fescue/bluegrass/ryegrass, 2.0 fine fescue, 4.0 bermuda/St. Augustine, 2.0 zoysia/centipede) and the app says so; **Custom mode is not capped** and only warns. Lawn-tab notes show only the lab you chose (Waypoint or VCE). One **Print shopping guide & plan** button prints the card, the lime plan, and the application plan if one has been built.
 
-> ⚠️ **Reading WIN correctly** — Program is set by WIN as a **% of total nitrogen**, not % of bag weight: divide the label's WIN figure by the total N%. A bag with 24% N and "0.6% WIN" is 0.6 ÷ 24 = 2.5% of N → Program 1.
+**What narrows the list**
 
-<details>
-<summary>📊 <strong>Grades by phosphorus need</strong> (click to expand)</summary>
+| Input | Effect |
+| :-- | :-- |
+| P rating High / Very High | Phosphate-free grades only (middle number 0) |
+| P rating Medium | A little P is fine (P₂O₅ up to about half the N); phosphate-free also works |
+| P rating Low, or a new lawn | Starter-type grades with real P (P₂O₅ at least about 40% of the N); VCE suggests roughly 1-2-1 for new lawns, then maintenance after 6–8 weeks |
+| K rating Low | K₂O at least about a quarter of the N |
+| K rating Medium / High | Modest K (up to about a third of the N) / little or none (about a fifth or less) |
+| Grass type and annual N target | Sets the per-application amount; flags programs that cannot reach the target within the season |
 
-**If soil tests HIGH / VERY HIGH for P — choose zero-P (prevents runoff):**
+There is **no soil-type selector**. Chesterfield County soils are mostly clay, and sandy soils are farther east.
 
-| Grade | WIN (% of N) | Program |
-| :-- | :-- | :-- |
-| 28-0-3 to 32-0-4 | 0–14% | P1 |
-| 46-0-0 (urea) | 0% | P1 |
-| 32-0-6 (coated urea) | ~30% | P2 |
-| 24-0-12 / 24-0-11 | 25–49% | P2 |
-| 25-0-5 / 32-0-10 / 39-0-0 | 50–70%+ | P3 |
-| 9-0-9 (organic) | ~85%+ | P3 |
+**Where the grades come from.** `LOCAL_SURVEY` in `index.html` holds 19 bag labels (fall 2026) photographed from a local distributor's website listing of in-stock products. Each bag's program is worked out from its label by source (see Nitrogen Programs below). When the soil test needs something not in the survey (for example straight potash or 0-46-0) the card says so and suggests asking at the counter. Stock changes, so grades are "seen locally," never a guarantee. A grade that appears under two programs (marked †) was seen with different slow-release sources on different bags: read the bag's footnote.
 
-**If soil tests MEDIUM for P — a little P is fine:**
+> ⚠️ **Reading the bag correctly** — The program is set by how much of the nitrogen is slow-release, as a **% of total nitrogen** (not % of bag weight), and **what the slow-release nitrogen comes from decides what counts** (coated urea: footnote figure; methylene urea: the Water Insoluble Nitrogen line plus the "slowly available nitrogen from methylene urea" footnote, added together; stabilized or nothing listed: not slow-release). Once you have a bag, the **Check my bag** step builds the full plan from it.
 
-| Grade | WIN (% of N) | Program |
-| :-- | :-- | :-- |
-| 16-4-8 (or 20-5-10, 24-6-12) | varies | by WIN |
-| 12-4-8 / 15-5-10 | varies | by WIN |
-
-**If soil tests LOW for P, or NEW lawn — choose higher-P (starter):**
-
-| Grade | WIN (% of N) | Program |
-| :-- | :-- | :-- |
-| 10-10-10 / 12-12-12 | 0% | P1 |
-| 18-24-12 (starter) | 0–50% | by WIN |
-| 18-24-6 / 12-25-6 / 24-25-4 | 0–50% | by WIN |
-
-🌊 Apply P only when your soil test calls for it. Starter/high-P grades on High-P soil waste money and run off into waterways. No brands endorsed — the bag's guaranteed-analysis label is always the authority.
-
-</details>
+🌊 Apply P only when your soil test calls for it. No brands endorsed — the bag's guaranteed-analysis label is always the authority.
 
 ---
 
-## 🔢 Nitrogen Programs (WIN%)
+## 🔢 Nitrogen Programs (slow-release share)
 
 Per **VCE 430-011, Tables 2–4**. The full publication defines three programs; the condensed Soil Test Notes 17/18 describe only the first two.
 
-| Program | WIN% of total N | Per-app ceiling | Notes |
-| :-- | :-- | :-- | :-- |
-| 🟡 **Program 1** | < 15% | Lower (0.7 cool) | Quick-release; more applications needed |
-| 🟢 **Program 2** | 15–49% | Medium (0.9 / 1.0) | Slow-release component on the bag |
-| 🔵 **Program 3** | ≥ 50% | Higher | Majority slow-release; fewest applications |
+| Program | Slow-release % of total N | Cool-season, per application | Warm-season, per application | Notes |
+| :-- | :-- | :-- | :-- | :-- |
+| 🟡 **Program 1** | < 15% | 0.7 lb N | 0.7 lb N recommended (0.5 in April and August for bermudagrass / St. Augustine); never more than 0.9 lb in one application | Quick-release; more applications needed |
+| 🟢 **Program 2** | 15–49% | 0.9 lb N | 1.0 lb N (0.5 in April and August for bermudagrass / St. Augustine) | Slow-release component on the bag |
+| 🔵 **Program 3** | ≥ 50% | 1.0–1.5 lb N | Bermudagrass / St. Augustine 1.0–1.5; zoysiagrass / centipedegrass 1.0 | Majority slow-release; fewest applications |
 
-WIN is listed on the fertilizer bag. If no WIN is listed, assume Program 1 — unless the bag names sulfur- or polymer-coated urea, which counts as slowly available.
+**Cool-season auto plan timing (v11.1–11.2).** The plan uses the fewest applications that can reach your target, spread across September, October, November (VCE's "SON," about four weeks apart, 430-520) plus an optional May application. The May application is held to 0.5 lb N because spring water-soluble N is limited to 0.25–0.5 lb per application (SPES-670). There is no December slot, and fertilizer is never applied to frozen soil. If your target cannot be reached in those months at the recommended amounts, the plan delivers the most it can and says so, pointing to Program 2 or 3 grades. Warm-season plans use the same method with the recommended amount per month. No Virginia DCR rule giving fixed turf-nitrogen dates was found (checked 2VAC5-405 and the nutrient management standards).
+
+**Two numbers per application, kept separate.** The *recommended* amount (VCE 430-011, Tables 2–4) sizes the plan and the product quantities the app suggests. The *never-exceed* ceiling (Soil Test Notes 17 and 18) drives warnings — in the custom planner an amount between the two shows a soft "above VCE's recommended" note rather than an error. Centipedegrass follows VCE's combined zoysia/centipede column; an earlier flat 0.5 lb limit had no VCE source and was removed (Oct 2026).
+
+**How the calculator counts the slow-release part** (entered by *source*, because the same label word, "slowly available," appears on different kinds of bag):
+
+| Source named after "from" on the bag | Counts as | Example |
+| :-- | :-- | :-- |
+| Coated urea (polymer- or sulfur-coated) | The footnote figure | "6.3% controlled release urea nitrogen from polymer coated urea" → 6.3 |
+| Methylene urea / urea-formaldehyde | The *Water Insoluble Nitrogen* line **plus** the "slowly available … from methylene urea" footnote | 0.5% WIN + "6.8% slowly available" → 7.3 (÷ 32 = 23%, Program 2) |
+| Stabilized (dicyandiamide, NBPT) | Nothing — not slow-release | "28.9% stabilized nitrogen" → Program 1 |
+| Nothing listed | Nothing — assume quickly available | Program 1 |
+
+The counted figure is a percent of bag weight, so the calculator divides it by total N. Based on **VCE 430-011** (earlier edition CSES-135P), **Penn State Extension**, and M. Goatley's Virginia Tech slide deck (hosted by Virginia DCR), whose worked example adds the two methylene urea lines (5.6% + 5.7% on a 32% bag). *Changed in v2.8: earlier versions counted only the WIN line.* The "How to read a bag label" panel now includes a made-up sample label worked through step by step. Checked against 15 retail bags photographed at garden centers: nine land in Program 1, five in Program 2, and one in Program 3 — and trusting the footnote word alone would have misclassified five of them.
 
 ---
 
@@ -145,7 +142,7 @@ Lime quantities are adjusted by the product's **Calcium Carbonate Equivalent (CC
 
 ## 🥬 Vegetable Garden
 
-Based on **VCE 452-719 / SPES-687P (Soil Test Note 19)** and **VCE 426-323 / SPES-803P (Fertilizing the Vegetable Garden)**, supplemented by UMD Extension, Clemson HGIC, Rutgers NJAES FS626, NC State Extension, Ohio State University Extension, and NMSU Cooperative Extension (see Primary Sources below).
+Based on **VCE 452-719 / SPES-687P (Soil Test Note 19)** and **VCE 426-323 / SPES-803P (Fertilizing the Vegetable Garden)**, supplemented by UMD Extension, Clemson HGIC, Rutgers NJAES FS626, NC State Extension, Ohio State University Extension, Penn State Extension, and NMSU Cooperative Extension (see Primary Sources below).
 
 ### A single-nutrient system, not a blended fertilizer
 
@@ -178,6 +175,12 @@ Both synthetic and organic sources are available. Calcium nitrate (15.5-0-0) is 
 ### Volume estimates and bulk density
 
 Where a product's bulk density is backed by a source meeting this project's sourcing standard (see Primary Sources), the calculator shows both weight and a cups/tablespoons volume estimate. Where no such source exists, it shows weight only and invites you to enter your own product's bulk density (lbs/ft³ or kg/m³, from the label or technical data sheet) for an estimate — **not** the specific gravity from an MSDS/SDS, which reflects the pure crystal or absolute compound density rather than the packaged granular form (confirmed with a real product: a Sulfate of Potash SDS lists SG 2.66 ≈ 166 lbs/ft³ absolute crystal density, while the actual granular product is 75–81 lbs/ft³ loose — using the SDS figure would understate the correct volume by roughly half).
+
+### Organic matter nitrogen credit
+
+Soil rich in organic matter releases meaningful nitrogen on its own, and applying a full fertilizer recommendation on top of that can oversupply nitrogen. Both Vegetable Garden and Flower Garden credit this using a University of Maryland Extension formula — 0.4 lbs N per 1% organic matter per 1,000 sq. ft. per season — built from two figures independently confirmed across multiple land-grant universities: soil organic matter holds roughly 1,000 lbs of nitrogen per acre for every 1 percentage point (Penn State Extension, NC State Extension), and roughly 60–80 lbs of that per acre becomes plant-available in a typical season through microbial mineralization (Penn State Extension).
+
+If your report is from Waypoint, you'll also see their own printed "Estimated N Release" (ENR) figure, which can look different from this calculator's number. Comparing ENR against organic matter percentage across 22 real Waypoint reports showed why: below about 5.6% organic matter, Waypoint's ENR scales at close to the same rate as the university-sourced formula above (~18–19 lbs/acre per 1% OM), but at 5.6% and above it holds flat at exactly 150 lbs/acre regardless of how much higher organic matter actually goes — two reports at 6.5% and 13.4% OM both showed 150. We contacted Waypoint directly to ask about this, and they confirmed it: their model is linear up to a plateau, above which they attribute no further nitrogen-related crop response no matter how much higher organic matter climbs, and the guideline is not crop-specific (so it isn't unique to the "Garden-Home" crop code these reports happened to use). Waypoint also confirmed ENR is purely informational on their reports — it is not factored into their own printed nitrogen fertilizer recommendation. *(Correspondence with Waypoint Analytical, August 2026)* This calculator uses the UMD formula for every report, VCE or Waypoint, so the credit keeps scaling with your soil's actual organic matter instead of leveling off.
 
 ---
 
@@ -267,6 +270,7 @@ Plus the per-crop 426-series vegetable guides (tomatoes, potatoes, sweet corn, b
 **Supplementary regional sources** — used only where VCE is silent; all from land-grant Cooperative Extension programs and consistent with VCE on material points:
 
 - 🌿 **UMD Extension** — vegetable N rates by feeding level; organic-matter N credit; annual/perennial flower care; tree & shrub guidance; general water-soluble-fertilizer application method
+- 🌿 **Penn State Extension** — *Turfgrass Fertilization: A Basic Guide* and *Enhanced Efficiency Nitrogen Fertilizers for Turfgrasses* (P. Landschoot): label names for slow-release nitrogen, stabilized urea is quick-release, release mechanisms of coated vs. methylene-urea products `added v2.4`. Also independently confirms both halves of the organic-matter N credit formula: total N held per 1% organic matter ("Managing Soil Health: Concepts and Practices," C. White) and typical annual mineralization rate ("Nutrient Management to Improve Nitrogen Efficiency and Reduce Environmental Loss," D. Beegle) `added v2.2`
 - 🌿 **Clemson HGIC** — sidedress guidance; calcium nitrate; tree & shrub timing (ANSI A300)
 - 🌿 **Rutgers NJAES** — FS626 organic fertilizer N% and release rates (NPK content only — not a bulk-density source); FS1220 spring bulbs
 - 🌿 **NC State Extension** — calcium nitrate rationale; blossom-end-rot framing; spring bulb rates; pelletized-lime timing; manganese application rates and pH-availability guidance (Torres Quezada, 2024 — vegetable-crop-specific rate, cited as the closest sourced figure available, not separately validated for ornamentals)
