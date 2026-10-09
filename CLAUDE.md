@@ -6211,3 +6211,11 @@ Capacities above; tall 2.5 lb → P1 4 apps (0.667×3 + 0.5), P2 3 (0.9, 0.9, 0.
 - User asked to change "32-0-10 — about 2.8 lbs" to "you need to buy and apply ~X lbs". Since v11.3 shows two numbers (per application and season) and applications differ in size (Program 1 spring 0.5, November 0.7, or a target spread below the usual amount), agreed wording: "buy ~[season] lbs for the season; apply ~[x] lbs in [months], ~[y] lbs in [months]".
 - New `lookForMonthAmounts(plan, nPct)` and `joinAnd()`: per-month product amounts come from the auto plan's own `buildAutoSlots()` allocation (rounded to 0.1 lb), grouped by amount in order of first appearance; "(optional)" dropped from month names. With no annual target entered: "apply up to ~X lbs per application". Header line now says amounts follow the months used to reach the program's delivered N.
 - Same text in the print copy (shared `lookForCore`). Verified in headless Chromium: tall fescue 3.5 lb (46-0-0: buy 5.7, 1.5 Sep/Oct/Nov, 1.1 spring; 32-0-10 P2: buy 10.6, 2.8 Sep/Oct/spring, 2.2 Nov; 40-0-5 P3: buy 7.0, 2.3 each), 2.5 lb, blank target, bermuda 3.0; no page errors. README → v3.2.
+
+
+## v11.5 · 2026-10-09 — "What to look for" card amounts now scale to the lawn size
+
+- Reported: card purchase amounts were always per 1,000 sq. ft. Confirmed: `lookForCore` never read `{prefix}-lawn-size`, so a 5,000 sq. ft. tall fescue lawn on 32-0-10 showed "buy ~10.6 lbs" while the auto plan correctly showed 53.1 lbs (14.1 per 0.9 lb N application, 10.9 for November). Per-1,000 arithmetic itself was correct.
+- Fix: `lookForProgramBlock(..., area)` takes the lawn size (passed from `lookForCore`); `lookForMonthAmounts(plan, nPct, areaK)` scales by area/1000. Header reads "Seen locally, lbs of product for your 5,000 sq. ft. lawn". With no size entered it stays per 1,000 sq. ft. and adds "Enter your lawn size in step 1 to see amounts for your lawn". No-target line ("apply up to ~X lbs per application") scales too. Print copy follows (shared code).
+- User decisions: no per-1,000 parenthetical; no bag-count (would need a bag-weight input).
+- Verified in headless Chromium: 5,000 sq. ft. card matches the auto plan (53.1 / 14.1 / 10.9); blank size → per 1,000; no target; bermuda 2,500 sq. ft.; print copy; no page errors. README → v3.3.

@@ -1,6 +1,6 @@
 # 🌱 Soil Test Report Assistant
 
-![Version](https://img.shields.io/badge/version-3.2-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
+![Version](https://img.shields.io/badge/version-3.3-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
 
 > **No more guessing what to feed your lawn or garden.**
 
@@ -78,7 +78,7 @@ Both lawn tabs now adjust the nitrogen plan for two real-world conditions, each 
 
 ## 🛒 What to Look For at the Garden Center &nbsp; `new in v10.6`
 
-The lawn tabs tell you **what to buy**, not just how to enter it. A "What to look for" card sits at the top of the plan section, before "Build a plan for me." For **Program 1, 2 and 3** it lists the N-P-K ranges to look for and the **grades seen locally** that fit, each with how much to buy for the season and how much to apply in each month (lb N ÷ N% × 100). Months that get the same amount are grouped, so a lighter November or spring application shows its real size (for example "32-0-10 — buy ~10.6 lbs for the season; apply ~2.8 lbs in September, October and April or May, ~2.2 lbs in November"). Each program box also shows the months it allows, the amount per month, the most it can deliver in a year, and whether that reaches your target. In **auto mode** the annual nitrogen target is **capped at Virginia's limit** (3.5 lbs tall fescue/bluegrass/ryegrass, 2.0 fine fescue, 4.0 bermuda/St. Augustine, 2.0 zoysia/centipede) and the app says so; **Custom mode is not capped** and only warns. Lawn-tab notes show only the lab you chose (Waypoint or VCE). One **Print shopping guide & plan** button prints the card, the lime plan, and the application plan if one has been built.
+The lawn tabs tell you **what to buy**, not just how to enter it. A "What to look for" card sits at the top of the plan section, before "Build a plan for me." For **Program 1, 2 and 3** it lists the N-P-K ranges to look for and the **grades seen locally** that fit, each with how much to buy for the season and how much to apply in each month, for the lawn size entered in step 1 (lb N ÷ N% × 100 × lawn size ÷ 1,000; per 1,000 sq. ft. if no size is entered). Months that get the same amount are grouped, so a lighter November or spring application shows its real size (for example "32-0-10 — buy ~10.6 lbs for the season; apply ~2.8 lbs in September, October and April or May, ~2.2 lbs in November"). Each program box also shows the months it allows, the amount per month, the most it can deliver in a year, and whether that reaches your target. In **auto mode** the annual nitrogen target is **capped at Virginia's limit** (3.5 lbs tall fescue/bluegrass/ryegrass, 2.0 fine fescue, 4.0 bermuda/St. Augustine, 2.0 zoysia/centipede) and the app says so; **Custom mode is not capped** and only warns. Lawn-tab notes show only the lab you chose (Waypoint or VCE). One **Print shopping guide & plan** button prints the card, the lime plan, and the application plan if one has been built.
 
 **What narrows the list**
 
