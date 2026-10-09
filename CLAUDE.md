@@ -6177,3 +6177,37 @@ Lime tab (Shrubs & Trees) lab-specific wording; hide Waypoint ENR field for VCE 
 - DCR checked: 2VAC5-405 and the nutrient management standards text give no fixed turf-N dates (only "actively growing crop", "as close to uptake as possible", no inorganic/liquid fertilizer on frozen ground). The Nov 15-Feb 15 range remembered earlier could not be confirmed and is not used.
 - Test results (1,000 sq ft, jsdom): tall fescue 46-0-0 at 3 lb -> Sep/Oct/Nov 0.70 + May 0.50 = 2.6, warning shown; 2 lb -> 3 x 0.67; fine fescue 2 lb -> 3 x 0.67; 32-0-10 methylene urea 3 lb -> 0.83 x3 + May 0.5, no warning.
 - Next steps agreed/open: parking-lot items (Lime tab lab wording; hide Waypoint ENR field for VCE reports on Vegetable/Flower Garden; garden lime hints listing both labs' units; Vegetable Garden seasonal N / VCE flat-rate wording; real print-preview check). Warm-season month list (AUTO_TIMING.warm) not yet re-verified against 430-011 Table 2.
+
+
+## v11.3 · 2026-10-07 — one VCE month-by-month schedule drives the card, auto plan and custom warnings
+
+### Why
+The "What to look for" card computed each program's season maximum as ceiling × `MAX_PRACTICAL_APPS`, while the auto plan used `AUTO_TIMING` with recommended amounts, so they disagreed (tall fescue Program 2: card 3.6, plan 3.2; Program 3 card 3.0 vs VCE cap 2.8). The card also never said how many applications a program allows. VCE 430-011 Tables 2–4 were read from the PDF screenshots supplied by the user (merged cells): rates are per active growing month; seasonal totals' upper limits are hard caps (footnote x).
+
+### Decisions (user)
+- November (tall fescue) follows 430-520 "SON": up to 0.7 lb for Programs 1 and 2 (430-011 shows 0.5 optional). Program 3 has no November (430-011 shows 0; slow-release from Sep/Oct carries into Nov).
+- Each program's seasonal limit is a hard cap on card and plan.
+- Spring = one optional application: P1 0.5 (SPES-670), P2 0.9, P3 1.0 (430-011 "across the period").
+- Fine fescue: September + optional spring only (no Oct/Nov in 430-011). Zoysia/centipede: one April–June application + optional July. Bermuda: Apr (opt) – Aug (opt, by Aug 15); overseeding (yellow Sep–Nov cells) not modeled.
+
+### Changed in `index.html`
+- New `VCE_SCHEDULE` (species → program → {seasonCap, slots[{label, mon, cap, opt}]}), `vceSchedule()`, `slotLabel()`, `scheduleCapacity()`. Removed `AUTO_TIMING`, `MAX_PRACTICAL_APPS`, and `TIMING_GUIDANCE.p1apps/p2apps/p3apps`. `maxDeliverable()` now returns `scheduleCapacity()`.
+- `buildAutoSlots()` rebuilt on the schedule: required months first, then optional, fewest that reach the target, total held to the seasonal cap. Returns `mons` (custom month values) as well.
+- Season maxima: tall 2.6 / 3.4 / 2.8; fine 1.4 / 1.8 / 2.0; bermuda 3.1 / 4.0 / 3.2; zoysia & centipede 1.4 / 2.0 / 2.0. So no program reaches 3.5 for tall fescue, and zoysia/centipede Program 1 can't reach 2.0.
+- Card program boxes: "Applications allowed: up to N, one per month" with each month and amount, "Most this program can deliver in a year", a reach line or a warning naming which program can reach the target (or which comes closest), and per-grade lbs per application plus lbs for the season.
+- Auto plan: shortfall note now checks all other programs (not just Program 1 → 2/3); plan notes rewritten for cool and warm.
+- Custom plan: window warnings no longer assume P1 < P2 < P3; timing card lists the program's allowed months; `prePopulateCustom()` uses the schedule (months and per-slot amounts, effective/capped target); slot limit 4 → 5 (bermuda Program 1 can use 5); "up to 4" texts updated.
+- Warm-season intro paragraph (zoysia example) rewritten; bermuda higher-quality row min. applications 4 → 4–5.
+
+### Verified (headless Chromium via Playwright, file://)
+Capacities above; tall 2.5 lb → P1 4 apps (0.667×3 + 0.5), P2 3 (0.9, 0.9, 0.7), P3 2 (1.25×2); tall 3.5 → all short, card says Program 2 comes closest (3.4); zoysia 2.0 → P1 short, "Programs 2 and 3 can reach it"; custom pre-population gives Sep/Oct/Nov/May at 0.7/0.7/0.7/0.5; no duplicate ids; no page errors; syntax clean. README → v3.1 with the schedule table.
+
+### Open
+- Bermuda overseeding (yellow cells) not modeled. Cool-season "Min. applications" table row "3.0–3.5 lbs" still lists 3.5 although the schedule tops out at 3.4 (card flags it).
+
+
+## v11.4 · 2026-10-09 — card grade lines say what to buy and what to apply each month
+
+- User asked to change "32-0-10 — about 2.8 lbs" to "you need to buy and apply ~X lbs". Since v11.3 shows two numbers (per application and season) and applications differ in size (Program 1 spring 0.5, November 0.7, or a target spread below the usual amount), agreed wording: "buy ~[season] lbs for the season; apply ~[x] lbs in [months], ~[y] lbs in [months]".
+- New `lookForMonthAmounts(plan, nPct)` and `joinAnd()`: per-month product amounts come from the auto plan's own `buildAutoSlots()` allocation (rounded to 0.1 lb), grouped by amount in order of first appearance; "(optional)" dropped from month names. With no annual target entered: "apply up to ~X lbs per application". Header line now says amounts follow the months used to reach the program's delivered N.
+- Same text in the print copy (shared `lookForCore`). Verified in headless Chromium: tall fescue 3.5 lb (46-0-0: buy 5.7, 1.5 Sep/Oct/Nov, 1.1 spring; 32-0-10 P2: buy 10.6, 2.8 Sep/Oct/spring, 2.2 Nov; 40-0-5 P3: buy 7.0, 2.3 each), 2.5 lb, blank target, bermuda 3.0; no page errors. README → v3.2.
