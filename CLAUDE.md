@@ -6219,3 +6219,60 @@ Capacities above; tall 2.5 lb → P1 4 apps (0.667×3 + 0.5), P2 3 (0.9, 0.9, 0.
 - Fix: `lookForProgramBlock(..., area)` takes the lawn size (passed from `lookForCore`); `lookForMonthAmounts(plan, nPct, areaK)` scales by area/1000. Header reads "Seen locally, lbs of product for your 5,000 sq. ft. lawn". With no size entered it stays per 1,000 sq. ft. and adds "Enter your lawn size in step 1 to see amounts for your lawn". No-target line ("apply up to ~X lbs per application") scales too. Print copy follows (shared code).
 - User decisions: no per-1,000 parenthetical; no bag-count (would need a bag-weight input).
 - Verified in headless Chromium: 5,000 sq. ft. card matches the auto plan (53.1 / 14.1 / 10.9); blank size → per 1,000; no target; bermuda 2,500 sq. ft.; print copy; no page errors. README → v3.3.
+
+
+## Verification · 2026-10-09 — program card is the same for VCE/Waypoint and cool/warm (no code change)
+
+- Tested in headless Chromium through the real flow (report type → P/K in the lab's own block → lawn size → carry-over → N target). Cases: VCE cool, VCE warm (bermuda, zoysia), Waypoint cool, Waypoint warm (bermuda, centipede), plus Waypoint with the report's annual N carried over (5 lb warm, 4 lb cool).
+- Every case showed "Applications allowed", "Most this program can deliver", "buy ~X lbs for the season; apply ~Y lbs in [months]" scaled to 5,000 sq. ft., and the same text in the print copy. No page errors.
+- Why it works: `lookForCore` is shared by both lawn tabs and doesn't check the lab. Waypoint ratings reach the tab through `carryMap` (VH2→VH, ME→M), so the grade filter treats them like VCE ratings. The VCE-only difference is that a VCE report has no annual N figure, so the user types the goal on the lawn tab.
+
+
+## v11.6 · 2026-10-09 — red "enter your N goal" prompt on each program card when no goal is entered
+
+- Reported: warm-season cards showed no "buy" amount. Cause: the annual N rate box was blank; `lookForProgramBlock` then shows only "apply up to ~X lbs per application" (same on both tabs; VCE reports print no annual N figure, so the box often stays blank).
+- Fix (user's choice): when there's no goal, each program card ends with a red `.warning-badge`: "Enter your annual N rate in step 3 above to see how much to buy for the season and how much to apply each month." It goes away once a goal is entered. It also appears in the print copy.
+- Verified in headless Chromium: cool and warm, blank goal → 3 prompts, no "buy"; goal 3 → no prompts, buy lines shown; syntax clean; no page errors.
+
+
+## v11.7 · 2026-10-11 — Warm-Season step 3 "Choosing your annual N rate" paragraphs rewritten
+
+- Waypoint-only paragraph: Waypoint reports always give an N recommendation that often exceeds Virginia's limit (4.0 bermuda/St. Augustine; 1–2 zoysia/centipede, Note 18); the calculator checks it and uses the limit in its recommendations; "Please don't apply more than this. Excess nitrogen runoff is harmful to the James River watershed." User asked NOT to mention "Build a plan for me" here: that mode is meant for fertilizers not in the local survey, and the goal is to discourage exceeding the limit.
+- Shared paragraph: the three VCE programs as a list (per-application amounts), and why Programs 2/3 reach higher yearly totals (more N per application, not more applications; bermuda P1 3.1 vs P2 4.0; P3 tops at 3.2). Bag-label counting rules removed from this step (they live in step 6's "How to read a bag label").
+- Cool-Season tab not yet changed (pending user decision; limit 3.5, no program reaches it, P2 closest at 3.4).
+- Verified in headless Chromium: Waypoint paragraph shows for Waypoint, hidden for VCE; syntax clean; no page errors.
+
+
+## v11.8 · 2026-10-12 — Cool-Season step 3 paragraphs rewritten to match Warm-Season (v11.7)
+
+- Waypoint-only paragraph: limit 3.5 lbs tall fescue/bluegrass/ryegrass, 2.0 fine fescue (VCE 430-011); calculator uses the limit; "Please don't apply more than this. Excess nitrogen runoff is harmful to the James River watershed." No mention of "Build a plan for me".
+- Shared paragraph: program list (P1 0.7, spring 0.5; P2 0.9; P3 1.5 tall / 1.0 fine) and season maxima (tall 2.6 / 3.4 / 2.8, none reaches 3.5, P2 closest; fine 1.4 / 1.8 / 2.0). Bag-label rules removed (live in step 6).
+- VCE "About your VCE report" notes on both tabs: rewrite proposed, awaiting approval.
+- Verified in headless Chromium; syntax clean.
+
+
+## v11.9 · 2026-10-12 — VCE "About your VCE report" notes rewritten (both lawn tabs)
+
+- No Waypoint reference. Tells VCE users how to choose an annual N goal from VCE guidance: start from the tab's lawn-situation table ranges (cool: 1.0–1.5 low-maintenance, 2.0–2.5 average, 3.0–3.5 higher-quality/recovering, 0.7–1.0 fine fescue; warm: 1.0–2.0 zoysia/centipede, 2.0–3.0 average bermuda/St. Aug, 3.0–4.0 higher-quality), then reduce for heavy shade (1/2–2/3) and returned clippings (up to 1/3), using the checkbox/shade buttons under the N box.
+- Keeps: the report's "lb nitrogen column" is per application, not yearly (cool 0.7; warm 0.9 = most quick-release at one time); 1-2-1 ratio note for new lawns → step 6.
+- Ends with: calculator caps the goal at VCE's maximum (cool 3.5 / fine 2.0; warm 4.0 bermuda-St. Aug / 2.0 zoysia-centipede), "Please don't apply more than this. Excess nitrogen runoff is harmful to the James River watershed." Sources: VCE 430-011, SPES-384 (+ Soil Test Note 18 warm).
+- Verified in headless Chromium: shown for VCE, hidden for Waypoint, both tabs; syntax clean.
+
+
+## v12.0 · 2026-10-12 — VCE notes: confusing shade/clipping sentences replaced (both lawn tabs)
+
+- Replaced "Then lower it where it applies: in heavy shade... make those reductions for you." with ", and enter it in the box below. Then answer the questions about mulch-mowing and shade to further adjust the N goal." appended to the lawn-situation sentence. Cool and warm.
+- Verified in headless Chromium: shown for VCE, hidden for Waypoint; syntax clean.
+
+
+## v12.1 · 2026-10-12 — VCE note moved to the top of "Choosing your annual N rate" (both lawn tabs)
+
+- The white "About your VCE report" box now sits directly under the "Choosing your annual N rate" heading, before the program list, so VCE users read it first. Text unchanged. Waypoint layout unchanged (its note was already first).
+- Verified in headless Chromium: shown for VCE, hidden for Waypoint, both tabs; syntax clean.
+
+
+## v12.2 · 2026-10-12 — VCE note explains the report's "See Notes" box and its general fertilizer suggestion (both lawn tabs)
+
+- Based on a real VCE lawn report (no PII recorded): its "See Notes" box lists Soil Test Note numbers (1 = Explanation of Soil Tests; 17 cool / 18 warm), and its bottom fertilizer note is general ("use any phosphorus-free maintenance turf-type fertilizer... e.g., 25-0-7").
+- Replaced the "lb nitrogen column / 1-2-1 ratio" sentences with: the notes hold VCE's tables, which this tab already uses; step 6 turns the general suggestion into local bags fitting the P/K ratings, with buy/apply amounts; a "lb nitrogen column" figure is per application (cool 0.7; warm 0.9 = most quick-release at one time); a new-lawn 1-2-1 ratio is matched in step 6.
+- Verified in headless Chromium: shown for VCE, hidden for Waypoint, both tabs; syntax clean.
