@@ -81,7 +81,7 @@ numbers should never be reused or referenced as if they were valid.
 | **NMSU Cooperative Extension, Guide H-119** | *(Added July 26, 2026)* Determining Amounts of Fertilizer for Small Areas — direct oz/cup bulk density figures for Muriate of Potash (10.0 oz/cup loose), Elemental Sulfur (10.2 oz/cup loose), Langbeinite (11.1 oz/cup loose) |
 | **NC State Extension — Torres Quezada, 2024** | *(Added July 26, 2026)* "The Importance of Manganese in Vegetable Crop Nutrition in North Carolina" — Manganese Sulfate rates (20–25 lbs/acre broadcast, scaled to ~0.05 lbs/100 sq ft), pH-availability thresholds, chelated-Mn alkaline-soil guidance |
 
-**Source policy:** VCE always primary. UMD and Clemson co-primary for home garden where VCE is silent. Rutgers FS626 and NC State supporting. Mid-Atlantic Veg Guide principles only. Never cite OSU, UNH, or non-regional extensions. **Exception carved out July 26, 2026: Ohio State Ohioline and NMSU Cooperative Extension are accepted specifically for bulk-density/volume-conversion data, where no closer regional source could be found and the non-.edu sourcing rule's "other universities" allowance applies — this is a narrow exception for physical/density data, not a general policy change for agronomic recommendations.**
+**Source policy:** VCE always primary. **Where VCE publications disagree, the most recent one is the standard (user rule, Oct 22, 2026)** — e.g. 430-520 Fall Lawn Care (2025) over 430-011 Lawn Fertilization (2021) for fall timing and amounts. UMD and Clemson co-primary for home garden where VCE is silent. Rutgers FS626 and NC State supporting. Mid-Atlantic Veg Guide principles only. Never cite OSU, UNH, or non-regional extensions. **Exception carved out July 26, 2026: Ohio State Ohioline and NMSU Cooperative Extension are accepted specifically for bulk-density/volume-conversion data, where no closer regional source could be found and the non-.edu sourcing rule's "other universities" allowance applies — this is a narrow exception for physical/density data, not a general policy change for agronomic recommendations.**
 
 **Bulk density sourcing standard (added July 26, 2026):** a product's volume conversion (cups/lbs) is shown ONLY if backed by a named, checkable source meeting the non-.edu rule (VCE, another university Extension, a government agency, or peer-reviewed publication). Where no such source exists, the calculator shows weight only ("weigh for accuracy") rather than an estimated figure. Fabricated/vague citation labels ("Industry sources", "Est. bulk density", "FAO Database" with no specific document) are not acceptable and were purged from the codebase July 26, 2026 — see that session's notes for the full audit.
 
@@ -6276,3 +6276,64 @@ Capacities above; tall 2.5 lb → P1 4 apps (0.667×3 + 0.5), P2 3 (0.9, 0.9, 0.
 - Based on a real VCE lawn report (no PII recorded): its "See Notes" box lists Soil Test Note numbers (1 = Explanation of Soil Tests; 17 cool / 18 warm), and its bottom fertilizer note is general ("use any phosphorus-free maintenance turf-type fertilizer... e.g., 25-0-7").
 - Replaced the "lb nitrogen column / 1-2-1 ratio" sentences with: the notes hold VCE's tables, which this tab already uses; step 6 turns the general suggestion into local bags fitting the P/K ratings, with buy/apply amounts; a "lb nitrogen column" figure is per application (cool 0.7; warm 0.9 = most quick-release at one time); a new-lawn 1-2-1 ratio is matched in step 6.
 - Verified in headless Chromium: shown for VCE, hidden for Waypoint, both tabs; syntax clean.
+
+
+## v12.3 · 2026-10-22 — VCE Table 1 grades added to the fertilizer list; lawn calculation audit Parts A and B
+
+- New file `Lawn_Calculation_Audit_Plan.md`. Parts A (tables vs. VCE 430-011 / SPES-334, PDF supplied) and B (hand-checked math, `auditB.js` in scratchpad) are done; Parts C–E are pending.
+- Part B: all core math correct. `buildAutoSlots` allocations, shade/clippings, `detectProgram` boundaries (14.9/15.0/49.9/50.0), product lbs = N ÷ %N × 100. 40 of 45 Table 1 cells match exactly; the other 5 differ by 0.1 because VCE's own table rounds inconsistently (e.g. 32-0-10 @1.0 = 3.2 in VCE, exact 3.125).
+- Golden number correction: bermuda Program 1 at 3.0 lb now delivers 3.0 (5 applications, no warning), not 2.8. The 2.8 figure predates `VCE_SCHEDULE`.
+- Part A findings, none acted on (user gave no preference):
+  1. Tall fescue Nov 0.7 (430-520) vs. 0.5 (Tables 2–3). Raises the P2 max from 3.2 to 3.4.
+  2. Zoysia/centipede main slot is labeled "April–June", but the tables put it in May.
+  3. The fine fescue "0.7–1.0 lbs" (cool table + VCE note) has no source; Tables 2–4 say 1.0–2.0.
+  4. The "Higher quality" row says 3.0–3.5 / 4 applications, but no program reaches 3.5 and P3 allows at most 3.
+- `LOCAL_SURVEY`: added the 7 Table 1 grades not already present (6-2-0, 10-10-10, 16-4-8, 28-0-4, 20-0-0, 38-0-0, 45-0-0) with `vce:true`, `src:'none'`, so they count as Program 1 per 430-011. On the card they are marked ‡ with a footnote, and the header reads "Seen locally or VCE example grades (‡)". The count line separates the 19 local bags from the 7 VCE grades. Verified on cool and warm, with and without ratings, and in the print copy; no errors. README → v3.4.
+
+
+## v12.4 · 2026-10-22 — lawn audit Part A decisions applied (README v3.5)
+
+- **November (tall fescue, Programs 1 and 2) is now 0.5 lb, following VCE 430-011 Tables 2–3.** User decision: 430-011 (2021) is more recent than 430-520 (the user gives 2020; the Source table above lists VCE 2025 — verify). This replaces the v11.2/v11.3 rule of 0.7 lb per 430-520 "SON". Program 3 still has no November.
+  - New tall fescue yearly maximums: **P1 2.4, P2 3.2, P3 2.8**.
+  - The step 3 text, the auto-plan note and the README schedule table were updated to match.
+  - The "SON" window wording (September–November is the main window) is kept.
+- Spring Program 1 stays at 0.5 lb (SPES-670).
+- Zoysia/centipede main slot relabeled "May", matching all three VCE tables (was "April–June"). Updated in the schedule, the warm intro and the README.
+- Cool-season lawn table:
+  - Fine fescue now reads 1.0–2.0 lbs (was 0.7–1.0, which had no source).
+  - "Higher quality or recovering" now reads 3.0–3.2 lbs, "4 (Program 2 only)".
+  - The VCE note's ranges were changed to match.
+- **Golden numbers now:**
+  - 5,000 sq. ft. of 32-0-10 on Program 2, goal 3.4 → capped at 3.2: buy 50.0 lbs, 14.1 per Sep/Oct/spring application, 7.8 in November.
+  - Tall fescue P1 at 2.5 → 0.7, 0.7, 0.5, 0.5 (short at 2.4).
+- Audit Parts C–E are still pending.
+
+
+## v12.5 · 2026-10-22 — November back to 0.7 lb; "most recent VCE document wins" rule (README v3.6)
+
+- The user confirmed 430-520 is the 2025 edition; the "2020" date came from an older copy. **New standing rule: where VCE publications disagree, the most recent one is the standard.** Added to the Source policy above.
+- This reverses the v12.4 November change. Tall fescue November is back to up to 0.7 lb for Programs 1 and 2 (430-520 "SON"). Program 3 still has no November.
+  - Yearly maximums are back to **P1 2.6, P2 3.4, P3 2.8**.
+- The other v12.4 fixes stay, since they don't conflict with 430-520:
+  - Zoysia "May" label; fine fescue 1.0–2.0.
+  - The "Higher quality" row now reads **3.0–3.4 lbs**, 4 applications (Program 2 only), and the VCE note matches.
+- Golden numbers restored: 5,000 sq. ft. of 32-0-10 on Program 2 at 3.4 → buy 53.1, 14.1 per Sep/Oct/spring application, 10.9 in November. Verified in headless Chromium; syntax clean.
+- **Open, not changed:** 430-520 also allows controlled-release N up to 1 lb in early September (noted in v11.2). Program 2 September is still 0.9 (430-011 Table 3). Under the new rule this may need to change; it's waiting on the user.
+
+
+## v12.6 · 2026-10-22 — cool-season Program 2 early September up to 1.0 lb (430-520); README v3.7
+
+- User decision ("follow 430-520's guidance"): cool-season Program 2 September becomes "Early September" up to 1.0 lb (430-520 early-September controlled-release up to 1 lb; 430-011 Table 3 = 0.9). Tall and fine fescue. Cool-season P2 `maxApp` 0.9 → 1.0; `recApp` stays 0.9.
+- `calcMulti`: a slot whose month has a larger `VCE_SCHEDULE` amount uses it as the recommendation (so September 1.0 isn't amber).
+- Yearly maximums: tall 2.6 / **3.5** / 2.8 (Program 2 now reaches the limit); fine 1.4 / **1.9** / 2.0. Step 3 program text, cool table (3.0–3.5; 0.9–1.0 P2), VCE note range, About Program 2 box, auto-plan note, README tables updated.
+- Golden: tall P2 3.5 → 1.0 / 0.9 / 0.7 / 0.9; 5,000 sq. ft. 32-0-10 → buy 54.7, 15.6 early Sep, 14.1 Oct and spring, 10.9 Nov.
+- Verified in headless Chromium: capacities, allocations, card, custom pre-fill (Sep 1.0), slot 1.0 within / 1.1 exceeds; no duplicate ids; no page errors; syntax clean.
+- Open: whether 430-520's 1 lb controlled-release figure should also cap Program 3 (Sep/Oct 1.5 per 430-011 Table 4). Not changed.
+
+
+## v12.7 · 2026-10-22 — cool-season Program 3 at 1.0 lb per application (430-520); README v3.8
+
+- User decision. 430-520 (2025) defines controlled-release as >=15% water-insoluble N (Programs 2 and 3 alike) and allows up to 1 lb per application; nothing in it exceeds 1 lb. The 1.5 lb tall fescue Program 3 rate came only from 430-011 (2021) Table 4. 430-520 never names Programs 1/2/3.
+- Tall fescue P3 slots: Sep 1.0, Oct 1.0, Apr–Jun 1.0 (opt.); season cap 2.8 unchanged, so the yearly maximum stays 2.8 but needs three applications. Tall `recApp`/`maxApp` P3 1.5 → 1.0; cool-season fallback maps in `calcAutoplan`/`calcMulti` updated. Fine fescue already 1.0. Warm-season unchanged.
+- Text: step 3 program list, cool table P3 column, About Program 3 box (cool 1.0; seasonal-cap line rewritten), auto-plan note, README.
+- Verified in headless Chromium: capacities 2.6/3.5/2.8 tall, 1.4/1.9/2.0 fine, warm unchanged; P3 allocations; card; custom pre-fill; slot 1.0 within / 1.1 exceeds; no duplicate ids; no page errors.

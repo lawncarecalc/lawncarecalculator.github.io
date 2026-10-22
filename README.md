@@ -1,6 +1,6 @@
 # 🌱 Soil Test Report Assistant
 
-![Version](https://img.shields.io/badge/version-3.3-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
+![Version](https://img.shields.io/badge/version-3.8-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
 
 > **No more guessing what to feed your lawn or garden.**
 
@@ -45,8 +45,8 @@ Annual N ceilings and per-application limits follow **VCE 430-011 (Tables 2–4)
 
 | Grass | Annual N ceiling | P1 /app | P2 /app | P3 /app |
 | :-- | :-- | :-- | :-- | :-- |
-| Tall fescue / bluegrass / ryegrass | 3.5 lbs/1,000 sq. ft. | 0.7 | 0.9 | 1.5 |
-| Fine-leaf fescue | 2.0 lbs/1,000 sq. ft. | 0.7 | 0.9 | 1.0 |
+| Tall fescue / bluegrass / ryegrass | 3.5 lbs/1,000 sq. ft. | 0.7 | 0.9 (1.0 early Sep.) | 1.0 |
+| Fine-leaf fescue | 2.0 lbs/1,000 sq. ft. | 0.7 | 0.9 (1.0 early Sep.) | 1.0 |
 
 🍂 Primary fertilization window: **September through November**.
 
@@ -93,7 +93,7 @@ The lawn tabs tell you **what to buy**, not just how to enter it. A "What to loo
 
 There is **no soil-type selector**. Chesterfield County soils are mostly clay, and sandy soils are farther east.
 
-**Where the grades come from.** `LOCAL_SURVEY` in `index.html` holds 19 bag labels (fall 2026) photographed from a local distributor's website listing of in-stock products. Each bag's program is worked out from its label by source (see Nitrogen Programs below). When the soil test needs something not in the survey (for example straight potash or 0-46-0) the card says so and suggests asking at the counter. Stock changes, so grades are "seen locally," never a guarantee. A grade that appears under two programs (marked †) was seen with different slow-release sources on different bags: read the bag's footnote.
+**Where the grades come from.** `LOCAL_SURVEY` in `index.html` holds 19 bag labels (fall 2026) photographed from a local distributor's website listing of in-stock products. Each bag's program is worked out from its label by source (see Nitrogen Programs below). When the soil test needs something not in the survey (for example straight potash or 0-46-0) the card says so and suggests asking at the counter. Stock changes, so grades are "seen locally," never a guarantee. A grade that appears under two programs (marked †) was seen with different slow-release sources on different bags: read the bag's footnote. The list also includes the **7 example grades from VCE 430-011 Table 1** not already in the survey (6-2-0, 10-10-10, 16-4-8, 28-0-4, 20-0-0, 38-0-0, 45-0-0), marked ‡. VCE gives the grade only, not its slow-release content, so following 430-011 ("if water-insoluble nitrogen is not listed... assume it is all water-soluble") they count as quick-release (Program 1). *Added v3.4 (app v12.3).*
 
 > ⚠️ **Reading the bag correctly** — The program is set by how much of the nitrogen is slow-release, as a **% of total nitrogen** (not % of bag weight), and **what the slow-release nitrogen comes from decides what counts** (coated urea: footnote figure; methylene urea: the Water Insoluble Nitrogen line plus the "slowly available nitrogen from methylene urea" footnote, added together; stabilized or nothing listed: not slow-release). Once you have a bag, the **Check my bag** step builds the full plan from it.
 
@@ -108,19 +108,19 @@ Per **VCE 430-011, Tables 2–4**. The full publication defines three programs; 
 | Program | Slow-release % of total N | Cool-season, per application | Warm-season, per application | Notes |
 | :-- | :-- | :-- | :-- | :-- |
 | 🟡 **Program 1** | < 15% | 0.7 lb N | 0.7 lb N recommended (0.5 in April and August for bermudagrass / St. Augustine); never more than 0.9 lb in one application | Quick-release; more applications needed |
-| 🟢 **Program 2** | 15–49% | 0.9 lb N | 1.0 lb N (0.5 in April and August for bermudagrass / St. Augustine) | Slow-release component on the bag |
-| 🔵 **Program 3** | ≥ 50% | 1.0–1.5 lb N | Bermudagrass / St. Augustine 1.0–1.5; zoysiagrass / centipedegrass 1.0 | Majority slow-release; fewest applications |
+| 🟢 **Program 2** | 15–49% | 0.9 lb N (up to 1.0 in early September, VCE 430-520) | 1.0 lb N (0.5 in April and August for bermudagrass / St. Augustine) | Slow-release component on the bag |
+| 🔵 **Program 3** | ≥ 50% | 1.0 lb N (VCE 430-520) | Bermudagrass / St. Augustine 1.0–1.5; zoysiagrass / centipedegrass 1.0 | Majority slow-release; fewest applications |
 
 **Months and applications per program (v11.3).** Each grass and program has its own list of allowed months, one application per month, taken from VCE 430-011 Tables 2–4, plus that program's seasonal limit (a hard cap). The "What to look for" card and the auto plan both use this one table, so they always agree; Custom-plan warnings use it too.
 
 | Grass | Program 1 | Program 2 | Program 3 |
 | :-- | :-- | :-- | :-- |
-| Tall fescue / bluegrass / ryegrass | Sep 0.7, Oct 0.7, Nov 0.7 (opt.), Apr or May 0.5 (opt.) → 2.6 | Sep 0.9, Oct 0.9, Nov 0.7 (opt.), Apr or May 0.9 (opt.) → 3.4 | Sep 1.5, Oct 1.5, Apr–Jun 1.0 (opt.); capped at 2.8 |
-| Fine-leaf fescue | Sep 0.7, Apr 0.7 (opt.) → 1.4 | Sep 0.9, Apr 0.9 (opt.) → 1.8 | Sep 1.0, Apr or May 1.0 (opt.) → 2.0 |
+| Tall fescue / bluegrass / ryegrass | Sep 0.7, Oct 0.7, Nov 0.7 (opt.), Apr or May 0.5 (opt.) → 2.6 | Early Sep 1.0, Oct 0.9, Nov 0.7 (opt.), Apr or May 0.9 (opt.) → 3.5 | Sep 1.0, Oct 1.0, Apr–Jun 1.0 (opt.); capped at 2.8 |
+| Fine-leaf fescue | Sep 0.7, Apr 0.7 (opt.) → 1.4 | Early Sep 1.0, Apr 0.9 (opt.) → 1.9 | Sep 1.0, Apr or May 1.0 (opt.) → 2.0 |
 | Bermuda / St. Augustine | Apr 0.5 (opt.), May–Jul 0.7 each, Aug 0.5 (opt.) → 3.1 | Apr 0.5 (opt.), May–Jul 1.0 each, Aug 0.5 (opt.) → 4.0 | Apr–May 1.5, Jun–Jul 1.5, Aug 1.0 (opt.); capped at 3.2 |
-| Zoysia / centipede | Apr–Jun 0.7, Jul 0.7 (opt.) → 1.4 | Apr–Jun 1.0, Jul 1.0 (opt.) → 2.0 | Apr–Jun 1.0, Jul 1.0 (opt.) → 2.0 |
+| Zoysia / centipede | May 0.7, Jul 0.7 (opt.) → 1.4 | May 1.0, Jul 1.0 (opt.) → 2.0 | May 1.0, Jul 1.0 (opt.) → 2.0 |
 
-Amounts are lb N per 1,000 sq. ft.; the number after the arrow is the most the program can deliver in a year. November follows VCE 430-520's "SON" guidance (up to 0.7 lb) for Programs 1 and 2; Program 3 has none (430-011 shows 0). The Program 1 spring application is held to 0.5 lb (SPES-670). The plan uses the fewest applications that reach your target (required months first, then optional ones); if no program can reach it (tall fescue at 3.5 lbs, for example), the plan delivers the most it can and says which program comes closest. Never fertilize frozen soil; no warm-season nitrogen after August 15.
+Amounts are lb N per 1,000 sq. ft.; the number after the arrow is the most the program can deliver in a year. November allows up to 0.7 lb for Programs 1 and 2, following VCE 430-520's "SON" guidance (2025); Program 3 has none (430-011 shows 0). Where VCE publications differ, the calculator follows the most recent one; 430-011 (2021) shows 0.5 for November. The Program 1 spring application is held to 0.5 lb (SPES-670). The plan uses the fewest applications that reach your target (required months first, then optional ones); if no program can reach it (tall fescue at 3.5 lbs, for example), the plan delivers the most it can and says which program comes closest. Never fertilize frozen soil; no warm-season nitrogen after August 15.
 
 
 **Two numbers per application, kept separate.** The *recommended* amount (VCE 430-011, Tables 2–4) sizes the plan and the product quantities the app suggests. The *never-exceed* ceiling (Soil Test Notes 17 and 18) drives warnings — in the custom planner an amount between the two shows a soft "above VCE's recommended" note rather than an error. Centipedegrass follows VCE's combined zoysia/centipede column; an earlier flat 0.5 lb limit had no VCE source and was removed (Oct 2026).
