@@ -1,6 +1,6 @@
 # 🌱 Soil Test Report Assistant
 
-![Version](https://img.shields.io/badge/version-3.8-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
+![Version](https://img.shields.io/badge/version-4.0-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
 
 > **No more guessing what to feed your lawn or garden.**
 
@@ -19,6 +19,28 @@ The calculator accepts soil test reports from two labs. **One question** on the 
 > 🔬 **Waypoint Analytical** — reports in ppm (P, K, micronutrients), dS/m (salts), and lbs/1,000 sq. ft. (all lime). Rating bands use Waypoint's own published values from Agronomy Facts 8.
 
 **The tool is gated by design.** Only the Soil Test Report and About & Instructions tabs are visible when you first open it — every calculator tab is hidden until you've entered a report and disclosed its purpose. This reflects a deliberate philosophy: you shouldn't be able to apply fertilizer without a soil test telling you your starting point. Once you answer that one question, the single matching calculator tab appears (Lime appears alongside Lawn or Shrubs & Trees reports specifically, since lime math applies to either).
+
+---
+
+## 🌱 Two Ways to Use It: Compact Edition and Full Version &nbsp; `new in v3.9` · vegetable gardens `new in v4.0`
+
+When you open the plain address, the page asks which version you want. A button at the top right switches between them at any time, and what you've typed stays put.
+
+| | Compact Edition | Full version |
+| :-- | :-- | :-- |
+| **Reports** | Waypoint Analytical **lawn** reports (cool- and warm-season) and **vegetable garden** reports | Every report type: VCE or Waypoint; lawns, vegetable gardens, flower gardens, shrubs & trees |
+| **What you enter** | *Lawn:* grass, lawn size, the report's annual N, P and K ratings, and lime. New lawn and "More options" (shade, clippings, lime CCE and bag size) are optional. *Vegetable garden:* bed size, a crop and/or the report's N, synthetic or organic N products, each nutrient the report's Soil Fertility Guidelines lists above 0 (tick it, type its number, choose a product), and lime. | Every value on the report, then the calculator tab for your purpose |
+| **What you get** | *Lawn:* the "What to look for at the garden center" card (all three programs, grades seen locally, how much to buy and when to apply it) plus the lime plan. *Vegetable garden:* preplant and side-dress amounts for each nitrogen product, one amount and method per nutrient, and lime, in pounds and ounces. Both have a **Print shopping list** button. | Interpretation cards for every value, the same shopping card, a bag checker, custom application plans, and the garden and shrub calculators |
+
+**Same numbers.** The Compact Edition calls the same functions as the lawn tabs and the Vegetable Garden tab, so the same entries give the same capped N goal, program maximums, month-by-month amounts, grades, nitrogen plan, nutrient amounts and lime figures. It just asks fewer questions.
+
+**Why the garden form asks for the report's numbers, not ratings.** On three real Waypoint garden reports, the Soil Fertility Guidelines number was the lab's actual instruction and the rating bar didn't predict it: magnesium rated Medium got 0, sulfur and boron rated Optimum still got amounts, and the numbers changed with the crop code. So the Compact Edition sizes each nutrient straight from the report's number. Very small amounts (boron, manganese) come with a dissolve-in-water instruction, and sulfur is marked "covered" when the sulfate of potash or ammonium sulfate on the list already supplies it.
+
+**How the Compact Edition flows.** One page, no Next buttons. Each section appears once the one above it is answered, and a "Still needed" line lists what's missing until the shopping list can be shown. If you say your report is from VCE or is for a flower garden or shrubs, it tells you so and offers a button to open the full version. Three sample buttons fill in real Waypoint reports (cool-season lawn, warm-season lawn, vegetable garden) so you can see a finished example.
+
+**Sharing a link.** Add `?mode=ce` to the end of the page address to send someone straight to the Compact Edition, or `?mode=full` for the full version. **Start Over** keeps you in whichever version you're using.
+
+**Not in the Compact Edition (by design):** checking a bag you already have, custom application plans, soil test ratings for gardens, organic phosphorus and potassium products (their VCE rates are tied to a rating), VCE reports, flower gardens and shrubs. Flower gardens (Waypoint) are the next planned phase.
 
 ---
 
@@ -339,6 +361,8 @@ The calculator targets **WCAG 2.1 AA** conformance, the standard required by Vir
 - **Skip link** — hidden "Skip to main content" link appears on first Tab keypress.
 
 ### Testing
+
+**axe-core re-run (October 31, 2026, Compact Edition build v13.2):** 0 violations on the start screen, the Compact Edition (empty, filled with a sample, and the VCE "not covered" message), the full version, and the About tab at 1100 px and 380 px. A keyboard-only walk through the Compact Edition reaches only visible controls and can complete the form.
 
 Automated (July 6–7, 2026, predates the restructure — see warning above): **axe-core 4.x** via Puppeteer — 0 violations, 42 rules passing. **Lighthouse** — 100 Accessibility. See [`Accessibility_Testing_Checklist.md`](Accessibility_Testing_Checklist.md) for the full manual testing plan.
 

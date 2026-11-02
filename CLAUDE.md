@@ -6337,3 +6337,164 @@ Capacities above; tall 2.5 lb → P1 4 apps (0.667×3 + 0.5), P2 3 (0.9, 0.9, 0.
 - Tall fescue P3 slots: Sep 1.0, Oct 1.0, Apr–Jun 1.0 (opt.); season cap 2.8 unchanged, so the yearly maximum stays 2.8 but needs three applications. Tall `recApp`/`maxApp` P3 1.5 → 1.0; cool-season fallback maps in `calcAutoplan`/`calcMulti` updated. Fine fescue already 1.0. Warm-season unchanged.
 - Text: step 3 program list, cool table P3 column, About Program 3 box (cool 1.0; seasonal-cap line rewritten), auto-plan note, README.
 - Verified in headless Chromium: capacities 2.6/3.5/2.8 tall, 1.4/1.9/2.0 fine, warm unchanged; P3 allocations; card; custom pre-fill; slot 1.0 within / 1.1 exceeds; no duplicate ids; no page errors.
+
+
+## v12.8 · 2026-10-30 — Compact Edition build step 1: lawn helpers accept plain values (no visible change)
+
+- Groundwork for the Compact Edition (CE), which is built into this same app (`Compact_Edition_Plan.md` draft 5). CE has its own form, so the shared lawn functions can no longer read only the lawn tabs' fields.
+- New value-based functions. The old prefix-based names still exist and now just wrap them:
+  - `nRateAdjust(raw, shadeF, clipOn)`; `effectiveNRate(prefix, raw)` wraps it. Also new: `clipCreditV`, `clipOn(prefix)`.
+  - `lawnInputs(prefix)` returns `{season, speciesKey, typed, shadeF, clipOn, pRating, kRating, isNew, area}`.
+  - `lookForTargetV(v)`; `lookForCoreV(v, forPrint, ui)`; `lookForPrintHTML(v, ui)`.
+  - `lookForProgramBlock(..., area, ui)`.
+  - `limeLawnHTML({limeRec, lawnSize, cce, bagSize, limeType})`, which returns '' when there's no lime; `renderLimeForLawn(prefix)` wraps it.
+- `LOOKFOR_UI_FULL` holds the five card sentences that point at lawn-tab fields ("step 3 above", "fields 4 & 5", "plan section"…). CE will pass its own wording.
+- Verified: the 9-scenario snapshot (cool/warm, shade/clippings, new lawn, custom mode, lime, blank) is byte-identical to v12.7 in headless Chromium; no page errors; syntax clean.
+- Next: build step 2 (start screen, `?mode=ce|full`, header switch, Start Over keeps the mode).
+
+
+## v12.9 · 2026-10-31 — Compact Edition build step 2: start screen, `?mode=`, header switch
+
+- **Modes** are a class on `<body>`: `mode-choose` (start screen), `mode-full` (the app as before), `mode-ce` (Compact Edition). An inline script right after `<body>` reads `?mode=ce|full` and sets the class before anything renders. Any other or missing value shows the start screen. No browser storage is used.
+- **Start screen** (`#mode-start`): "How would you like to use this tool?", with two buttons (Compact Edition / Full version) and one line describing each.
+- **Header switch** (`#mode-switch`), shown in full and CE modes: "Switch to the Compact Edition" / "Switch to the full version". Switching is in place, with no reload: `setMode(mode, moveFocus)` updates the class, the URL (`history.replaceState`), the title and the focus. Entered values survive a round trip. Also new: `currentMode()`, `switchMode()`, `openAboutFromCE()`.
+- **CE mode** hides the tab bar and every `.tab-panel` and shows `#ce-panel`. The h1 adds "— Compact Edition" (D6). `#ce-panel` is a **placeholder** for now ("form is being built", plus buttons for Open the full version and About & Instructions). Build step 3 replaces it. **Don't deploy v12.9 alone**: plain-address visitors who pick CE would see the placeholder.
+- **Start Over** (`startNewReport`) now reloads to `?mode=<current>` (full or ce), not the bare path.
+- **Print:** the default Soil Test print rule now requires `body.mode-full`, so CE and start-screen prints don't fall back to the Soil Test tab (rule 30 territory). Step 4 adds `printing-ce`. `.mode-start` and `.mode-switch` are hidden in print.
+- **Phone header (≤640px):** the header wraps; the switch and version tag sit on their own row; the h1 is 1.35rem.
+- **Verified** in headless Chromium:
+  - the lawn-tab 9-scenario snapshot is still byte-identical to v12.7;
+  - plain, `?mode=ce`, `?mode=full` and `?mode=xyz` each open the right screen;
+  - choosing and switching both ways works, and focus moves;
+  - a value survives switching modes;
+  - Start Over keeps full and CE;
+  - print shows the Soil Test tab only in full mode;
+  - no duplicate ids, no page errors, syntax clean.
+
+
+## v13.0 · 2026-10-31 — Compact Edition build step 3: the CE form; preview-window URL fix
+
+- **Bug fix (reported in the Claude preview browser, not Safari):** `history.replaceState` threw a SecurityError inside an `about:srcdoc` preview frame.
+  - `setMode()` now calls it only on http/https/file pages, inside try/catch. Switching modes still works when the URL can't change.
+  - Start Over's navigation is also wrapped, falling back to `location.reload()`.
+  - Verified by forcing `replaceState` to throw: the switch still works.
+- **CE form** (`#ce-panel`, replaces the v12.9 placeholder). One page; sections appear in order and stay visible once shown (`ceReached` is sticky):
+  - step 0, "Which report do you have?" (pre-checked Waypoint lawn). Waypoint garden/shrub or VCE → plain message + "Open the full version" (plan 3.3);
+  - 1 grass (5 radios, grouped cool/warm);
+  - 2 lawn size, with "How to measure" (copy of the full version's text, new ids);
+  - 3 annual N + P and K ratings (Waypoint 5-level), with "Where do I find these?";
+  - 4 lime yes/no; if yes, amount and type;
+  - 5 new-lawn checkbox and 6 "More options" (shade, clippings, lime CCE, bag size) at full-version defaults; both appear once lime is answered.
+- "Still needed: …" (`#ce-status`, `role="status"`) lists the missing required fields. When everything is filled, `#ce-result` shows a placeholder ("All set. Your shopping list will appear here."). **Build step 4 replaces it with the real card and lime plan.** Still don't deploy alone.
+- New functions:
+  - `ceRead()`, `ceLookForInputs(c)` (same shape as `lawnInputs`), `ceMissing(c)`, `ceUpdate()`;
+  - `ceSample('cool'|'warm')`: the two real Waypoint lawn samples; 5,000 sq. ft. is an example size, since size isn't on a report;
+  - `wpRatingToVce(raw)`: the old local `carryMap` from carry-over, now global and shared. Behavior unchanged.
+- Global CSS `[hidden] { display:none !important }` added. No other element uses the `hidden` attribute.
+- **Pre-existing accessibility fix:** removed a stray `aria-level="2"` left on the Soil Test card header `div` when its `role="heading"` was removed (July 26). axe flagged `aria-allowed-attr`; it was present in v12.8 too.
+- **Verified** in headless Chromium:
+  - the lawn snapshot is byte-identical to v12.7;
+  - stepwise reveal and the Still-needed list update correctly;
+  - the lime fields toggle;
+  - clearing a field keeps its section visible;
+  - VCE hides the steps and shows the message;
+  - both samples fill everything;
+  - axe shows 0 violations for the start screen, CE (sample + open collapsibles), CE-VCE and full mode;
+  - no duplicate ids, no page errors, syntax clean.
+
+
+## v13.1 · 2026-10-31 — Compact Edition build step 4: real results, lime, print
+
+- When every required CE field is filled, `#ce-result` (now `aria-live="polite"`) shows one card, "What to buy and when to apply it". It contains:
+  - the fine-fescue heavy-shade warning (fine fescue + heavy shade only);
+  - `lookForCoreV(ceLookForInputs(c), false, LOOKFOR_UI_CE)`;
+  - `limeLawnHTML(...)`, which is empty when lime is "No".
+- New `LOOKFOR_UI_CE`: CE step numbers in the prompts, and bag-checking hints that point to the full version (CE has no bag checker, D4).
+- `#ce-actions` (shown only when results exist) holds a "Print shopping list" button (`printPlan('ce')`) and a CE survey prompt (`surveyDismissed.ce`, `#ce-survey-prompt`).
+- **Print:** `#ce-print-copy` holds `lookForPrintHTML` (with the lawn summary line) plus lime. In print, CE hides the form, toolbar, intro, status, on-screen result and footer, and shows the print copy. `:not(.printing-ce)` was added to the default Soil Test print rule (rule 30). Prints as 2 pages; program boxes don't split.
+- **Contrast fix (affects lawn tabs too):** `.prog2-badge` text #1e8449 → #196f3d. The old color was 4.36:1, below the 4.5:1 minimum; it was flagged once a card rendered during the axe scan.
+- **Verified** in headless Chromium:
+  - lawn snapshot byte-identical to v12.7;
+  - `ceLookForInputs` equals `lawnInputs('cool')` for the same entries, and every number in the card matches the lawn tab's card (5 grass/rating/shade/clipping cases);
+  - golden: 5,000 sq. ft. tall fescue at 3.5 lb → 32-0-10 buy 54.7 lbs;
+  - lime 40 lb × 5 → 200.0 lbs; fine/heavy-shade warning shows;
+  - incomplete form hides the print button and clears the print copy;
+  - print emulation shows only the shopping list and lime, with no tab panels;
+  - axe 0 violations (plain, CE sample, CE-VCE, full); no page errors; syntax clean.
+- Next: build step 5 (About & Instructions: "Two ways to use this tool", a CE how-to, shareable `?mode=ce` note). Still don't deploy until step 5–6 are done.
+
+
+## v13.2 · 2026-10-31 — Compact Edition build step 5: About & Instructions
+
+- The About tab's "How to Use This Calculator" card (open by default) now begins with three new sub-sections, each an `h4.about-sub-h`:
+  - **"Two ways to use this tool"** (`#about-two-ways`): side-by-side boxes, Compact Edition (Waypoint lawn reports only; shopping list) vs. full version (every report type; explains values, checks a bag, custom plan). A line says the header button switches modes and entries stay.
+  - **"Using the Compact Edition"**: six steps that follow the CE form, plus a pointer to the two CE sample reports.
+  - **Sharing:** add `?mode=ce` (or `?mode=full`) to the address; without either the page asks. On http(s) pages, `fillAboutCeLink()` (called on load) appends the exact address for this site. It's blank on `file://`.
+  - An "Open the Compact Edition" button (`setMode('ce', true)`).
+- The existing full-version steps follow under **"Using the full version"**. Their intro now says "In the full version, every calculator starts…". The steps themselves are unchanged.
+- New CSS: `.about-sub-h`, `.about-ways` / `.about-way` (one column at ≤640px), `.about-way-note`, `.about-ce-steps`, `.about-ce-switch`.
+- **Verified** in headless Chromium:
+  - lawn snapshot byte-identical to v12.7;
+  - axe 0 violations on the About tab at 1100 px and 380 px, with no horizontal scroll;
+  - the button switches to CE and moves focus to the CE heading;
+  - no page errors; syntax clean.
+- Next: build step 6 (tests 2–5 from the plan, README section, final CLAUDE.md entry), then it's ready to deploy.
+
+
+## Compact Edition build step 6 · 2026-10-31 — tests 2–5 run; README v3.9 (no `index.html` change, stays v13.2)
+
+- **Test 2 (CE vs. lawn tab)** passed. Each case was entered once in CE and once on the real lawn tab (fields set, then `calcCool`/`calcWarm`). Script: `scratchpad/ce/test2.js`. For each case, the capped-goal sentence, every number in the program cards, and the lime figures matched. Cases:
+  - both samples;
+  - bermuda heavy shade + clippings with 90% CCE lime;
+  - new lawn with P Low (only starter/balanced grades listed);
+  - fine fescue in some shade with dolomitic lime.
+- **Blank N:** the plan expected the card's "enter your N goal" prompt, but plan §4.1 makes N required, so CE shows "Still needed: annual nitrogen." and no card or print button. The lawn tab still shows its 3 prompts. **User confirmed (Oct 31): keep N required** — every Waypoint lawn report prints an N recommendation, so there's no real case for a blank N. CE's `nPrompt` text is unreachable in practice; the plan's test-list line is superseded.
+- **Test 3 (modes)** passed:
+  - plain address → start screen; `?mode=ce` / `?mode=full` skip it; `?mode=xyz` → start screen;
+  - the switch works both ways and keeps entries;
+  - Start Over keeps the mode;
+  - a VCE or Waypoint garden/shrub report in CE shows the message and the full-version button, and hides step 1.
+- **Test 4 (print)** passed:
+  - CE printing shows only `#ce-panel`'s print copy;
+  - the full version's printing-soil/cool/warm/lime/garden/flower/shrub show exactly the same panel as the v12.7 baseline;
+  - the start screen prints no panel.
+- **Test 5 (general)** passed:
+  - no page errors; no duplicate ids; syntax clean; axe 0 violations;
+  - in an empty CE, Tab reaches only: skip link, switch, the two sample buttons, Start Over, the report radios, the grass radios, About & Instructions. No hidden full-version fields are reachable;
+  - a keyboard-only fill reaches the golden result (54.7 lbs).
+- README v3.9: new "Two Ways to Use It" section (comparison table, same-numbers note, flow, `?mode=` sharing, what CE leaves out) and an October 31 axe line under Accessibility → Testing.
+- **Phase 1 of the Compact Edition is ready to deploy** (index.html v13.2).
+
+
+## v13.3 · 2026-11-01 — garden calculations given value-based cores (no visible change)
+
+- Phase 2a build step 1 (Compact_Edition_Plan.md section 10.5). New functions, called by `calcGarden()` and by the Compact Edition:
+  - `gardenNSource(key)` (and `NOTE19_FLAT_N`, now global) — nitrogen product key → N %, density, organic/Note 19 flags.
+  - `gardenNPlanHTML(v)` — preplant rows, OM note, sidedress table. Optional `v.wl` (weight formatter) and `v.ui` (step wording); the full version passes neither.
+  - `gardenLimeHTML(v)` — "Lime for Your Bed" (optional `v.wl`).
+  - `targetProductLbs(target100, hundredths, pct)` — used by `renderNutrientStatusPanel()`.
+- `buildEnrCompareNote()` stays in `calcGarden()`, called under the same condition as before.
+- Verified: new garden snapshot script (`scratchpad/ce/gsnap.js`, 11 cases: VCE + Waypoint vegetable, Waypoint/VCE flower, several crops, N sources incl. Note 19 flat rates, targets, choices, lime, OM, ENR) byte-identical to v13.2; lawn snapshot identical to v12.7; syntax clean.
+
+## v13.4 · 2026-11-01 — Compact Edition Phase 2a: Waypoint vegetable gardens; per-sq.-ft. ounce bug fixed
+
+- **Bug fixed (full version, Vegetable Garden tab):** the "Application rate per sq. ft." line showed ounces 16× too high when under 1 oz (`Math.round(oz * 160) / 10` — an extra ×16). E.g. calcium nitrate at 0.97 lb/100 sq. ft. showed "2.5 oz per sq. ft." (true 0.15); Note 19 fish meal showed 12.8 (true 0.80). Now 2 decimals. The tsp figure next to it was already right. Found while building CE. This is the only change to full-version output (garden snapshot diff = exactly that line in 6 cases; new baseline `gbase2.json`).
+- **CE step 0** gains "Waypoint Analytical, for a vegetable garden"; "for a garden, shrubs or trees" now reads "for a flower garden, shrubs or trees". Unsupported message updated.
+- **CE garden form** (`ce-g-*` ids, plan 10.2): 1 bed size; 2 crop (full list minus flowers, incl. Mixed bed) and/or report N (lbs/1,000); 3 N products synthetic/organic/both; 4 nutrients — checkbox per nutrient (P₂O₅, K₂O, Mg, S, B, Cu, Mn, Zn, Fe) → value box → product dropdown (only `calc:'target'` amendments; single-product nutrients shown directly) → amount + method in the row; 5 lime; 6 new bed; 7 More options (OM %, CCE, bag). Rows built once by `ceGBuild()` (not re-rendered, so focus is kept). No ratings (decision G2).
+- **Results** (plan 10.3): per-row results, plus "Your shopping list" card: each N product's `gardenNPlanHTML` plan (OM note on the first only), "Other nutrients" lines, `gardenLimeHTML`. Print copy = the card. Weights via new `fmtLbOz()` (under 1 oz → oz + g; under 1 lb → oz; else lb + oz).
+- **Methods:** P beside the row (Waypoint); K broadcast + mix (Waypoint); B and Mn dissolve in 1–2 gal and pour (Hood College FFSN; boron no band); Cu, Zn broadcast + mix (Waypoint quote already in the app's notes; Cu adds VCE's "not recommended" caution); Fe → VCE 426-323 no-rate note.
+- **Sulfur covered:** `ceGSulfur()` — sulfate of potash chosen for K supplies 17% S (Rutgers FS626 as cited in the app) → "Covered by your sulfate of potash" and no product required; if ammonium sulfate (24% S, GARDEN_PRODUCTS/VCE Note 19) is among listed N products and covers the target, a hint says it can replace the sulfur product.
+- Mg products keep the dolomitic-lime "already supplies this" rule.
+- **Sample:** "Vegetable garden" button = the real vegetable-bed report (N 1.5; K₂O 2.0, S 0.13, B 0.04, Mn 0.05; no lime; OM 13.4), 200 sq. ft. example size, first product preselected.
+- About & Instructions: Compact Edition box and a new "Using the Compact Edition for a vegetable garden" list. README v4.0.
+- **Verified** (headless Chromium): disclosure order and "Still needed" (incl. per-nutrient amount/product); hand-checked sample (K₂O 2.0 on 200 sq. ft. → 12.8 oz sulfate of potash; S need 0.4 oz vs 2.2 oz from SOP → covered; B 1.2 oz borax; Mn 0.5 oz (15 g); calcium nitrate 1 lb 15.0 oz = 1.94 lb); parity with the full Vegetable Garden tab (urea 0.65 lb = 10.4 oz; borax 0.07 lb = 1.2 oz; muriate 10.7 oz by hand); dolomitic lime suppresses Epsom salts; print shows only the list (3 pages); lawn CE golden 54.7 still; flower/shrub/VCE → message; Phase 1 tests 3–5 pass; lawn snapshot identical to v12.7; no duplicate ids; axe 0 (plain, CE lawn, CE VCE, CE garden with collapsibles open, full, About at 1100/380); no horizontal scroll at 380 px; no page errors.
+- **Still open (plan 10.9, not approved):** Waypoint targets deciding full-version garden amounts; Mn/B flat rates at Medium; pounds-and-ounces in the full version; flower sample's Mg rating; whether lawn amounts switch to lb/oz.
+
+## v13.5 · 2026-11-02 — Start Over fixed for Safari; expandable nitrogen plans in the CE garden list; More options header
+
+- **Start Over didn't work in Safari** (user report). Likely cause: WebKit restores typed form values when a page reloads to the same address, so the page came back filled in and `ceUpdate()` re-showed the results. Fix: new `resetAllFields()` puts every input/select/checkbox back to its default before leaving, and `startNewReport()` now uses `location.replace(...?mode=X&fresh=<time>)` so Safari loads a new page; `setMode()` strips `fresh` from the address on load. `autocomplete="off"` added to `#ce-form`. Verified in Chromium (fields empty, mode kept, address cleaned); **not testable in Safari here** (no WebKit in this environment) — user to confirm.
+- **Tabbing "stopped after Mg"** (user report, Safari). Not reproduced in Chromium: Tab runs K value → K product → Mg → S → S value → S product → B … → Fe → lime → More options. Probable cause: Safari's default Tab skips checkboxes, selects and buttons unless "Press Tab to highlight each item on a webpage" is on (see July 27 entry). Asked the user to confirm the setting and what happened.
+- **More options headers** now say "lime CCE adjustment and bag size" (lawn and garden CE forms). User wrote "CEC adjustment"; read as CCE (the lime bag's calcium carbonate equivalent).
+- **CE garden shopping list:** each nitrogen product is a collapsible card (`ceGToggleN(key)`, state in `ceGOpen` so it survives re-renders while typing). The button shows the product name and a summary ("Before planting: 1 lb 15.0 oz · then 1 side-dressing"); all start closed. `ceGListHTML(c, forPrint)` — the print copy shows every plan open, with no buttons.
+- **Hood College citation (user asked where it came from):** added July 27–28, 2026 as the source for dissolving tiny amounts in water instead of spreading dry — *Soil Amendments and Fertilizers*, Hood College Center for Coastal and Watershed Studies, Farm to Fork / FFSN school-garden curriculum (hood.edu PDF, in About > sources). It supports the general method only (water-soluble fertilizer dissolved and applied to soil), not a boron rate; it replaced a mis-attributed "Maryland Department of Agriculture" link that 404'd. The boron "don't band near plants" line is from the Waypoint report comments.
+- Verified: syntax clean; lawn snapshot identical to v12.7; garden snapshot identical to v13.4 (`gbase2.json`); Phase 1 tests 3–5 pass; Enter opens a card; axe 0 with a card open; no page errors.
