@@ -1,6 +1,6 @@
 # Soil Test Report Assistant — Compact Edition (CE): Plan
 
-Draft 9 · 2026-11-01 · Phase 1 built (v13.2); Phase 2a built (v13.3 refactor, v13.4 form); full-version garden findings in 10.9 still awaiting decisions
+Draft 11 · 2026-11-02 · Phase 1 built (v13.2); Phase 2a built (v13.3–v13.5); Phase 2b built (v13.6 schedule fixes, v13.7 flower form); 10.9 fixes built (v13.8)
 
 ## 1. What CE is
 
@@ -367,12 +367,79 @@ CE builds its own nutrient rows (no ratings), so `renderNutrientStatusPanel()` i
 4. **Decimal pounds** on the garden, flower and shrub tabs (e.g., "0.33 lbs") → pounds and ounces, grams under 1 oz (same formatter as CE). Lawn amounts (bags, spreader rates per 1,000 sq. ft.) stay in decimal pounds unless decided otherwise.
 5. **The Flower Garden – Waypoint sample's Mg rating.** The sample (built from the perennial-bed report) rates Mg Optimum from its 12.7% saturation; the report's bar is in Medium.
 
-Proposed fixes (awaiting approval):
-- **A. On Waypoint reports, an entered target governs.** Target above 0 → the target-sized product is the default (flat options stay in the dropdown when the rating is low). Target entered as 0 → "Waypoint's target is 0 — no addition needed," whatever the rating. Target left blank → the current rating rules. Needs blank and 0 to be told apart (today both mean "none").
+Fixes (approved Nov 2, built v13.8; A chosen as "blank counts as 0"):
+- **A. On Waypoint reports, the target decides.** Above 0 → only the target-sized products are offered. Blank or 0 → "nothing to add," whatever the rating. (Found while building: the sample reports wrote unprefixed target keys, so their targets had never shown; fixed with `sampleTargets()`.)
 - **B. Mn and B flat rates fire only at Very Low / Low** (and VCE "DEF"), not Medium. P, K, Mg keep Medium per Note 19.
 - **C. Pounds-and-ounces formatter** for garden/flower/shrub amounts.
 - **D. Re-rate the flower sample's Mg as Medium** (bar reading), or note why %saturation was used.
 
-## 11. Phase 2b outline (to be planned later)
+## 11. Phase 2b — Waypoint flower gardens (built v13.6–v13.7)
 
-**2b. Flower garden (Waypoint).** Adds flower type (annual/perennial/rose/bulb) and the Complete vs. Individual fertilizer modes.
+### 11.1 What changes from Phase 2a
+
+- Step 0 gets a working **"Waypoint Analytical, for a flower garden"** choice. Shrubs and trees (Waypoint) and all VCE reports still show the "not covered yet" message, now worded "for shrubs or trees."
+- The flower form reuses the vegetable garden form and code. Only step 2 and the nitrogen schedule are different. Steps 3–7 are the same: N product preference, nutrient rows (tick → amount → product), lime, new bed, More options.
+- **Individual nutrients only** (user decision, Nov 2). The full version's "Complete N-P-K fertilizer" mode isn't offered in CE.
+
+### 11.2 Inputs
+
+1. **Bed size**, as in Phase 2a.
+2. **Nitrogen.** At least one is required:
+   - **What kind of flower bed?** Annual, perennial, roses, or spring-flowering bulbs (the full version's four types). This sets the schedule. If no report N is entered, it also sets the research N rate.
+   - **Your report's N** (lbs per 1,000 sq. ft.). If entered, it's the amount for each application.
+3. **Nitrogen products**: Synthetic / Organic / Show both, with the same short list as vegetables.
+4. **Other nutrients**: same rows and products as Phase 2a. The "Where do I find these?" note adds one thing: **a Waypoint flower report can print more than one row** (for example, "Garden-Home" and "Perennials"). Use the row that matches the bed, because the amounts differ. On the sample report, K₂O is 2.0 on the Garden-Home row and 4.0 on the Perennials row.
+5. **Lime**, 6. **New bed?**, and 7. **More options**: as in Phase 2a. The organic-matter note uses the full version's flower wording ("excess nitrogen suppresses flowering, so lean low or skip").
+
+Sample button: **Flower garden**, the real perennial-bed report the full version's flower sample uses. It fills in the Perennials row targets, no lime, OM 6.5%, an example bed size, and flower type Perennial.
+
+### 11.3 Results
+
+Same layout as vegetables: a result in each row as you go, plus a printable "Your shopping list." Each nitrogen product gets a collapsible card, and weights are in pounds and ounces. The nitrogen card shows the flower schedule (11.4) instead of the crop side-dress table, and the bulb and rose "stop" rows read "No fertilizer."
+
+### 11.4 Flower nitrogen schedules — needs a decision (checked against VCE Soil Test Note 19, Nov 2)
+
+Note 19's Flowers section gives **no rates and no annual, perennial or bulb schedules.** It says three things:
+- Broadcast the recommended amount before planting.
+- Avoid excess fertilizer, which gives leafy growth and few flowers.
+- For roses: "Repeat the basic fertilizer application each month from March through August."
+
+The full version's flower tab doesn't match this in two places. It also doesn't match its own text:
+
+| Flower type | Full version now | Source says | Proposed (CE and full version) |
+| :-- | :-- | :-- | :-- |
+| Annual | Preplant, then a mid-season row showing the **full** preplant amount, while the row's own text says "half the preplant rate" | UMD: optional light mid-season application at half rate | Preplant amount; mid-season (optional) at **half** |
+| Perennial | One early-spring application | UMD, Rutgers: spring only | No change |
+| Roses | March, then one "after each bloom flush" row (full amount), then "Stop by August 15." Two amounts in total | **Note 19: the basic amount every month, March–August (6 applications)** | Six monthly rows (March–August) of the basic amount, then "Stop by August 15" |
+| Bulbs | At planting (fall), at emergence (spring), stop after flowering | NC State, Rutgers FS1220 | No change |
+
+The 0.10 lb N per 100 sq. ft. default for annuals and perennials is cited to "VCE Note 19; UMD Extension." Note 19 gives no flower rate, so the citation should be UMD only. The rose 0.20 rate is also cited only to Note 19, which gives no rate, so it has no source at all right now (F3). Fixing the annual/perennial citations is part of F1.
+
+**Decision F1:** fix the annual and rose schedules (and the citations) in both CE and the full version? If yes, the full-version change goes in Phase 2b build step 1. It will be the only difference in the snapshot test, limited to the annual mid-season row and the rose rows.
+
+### 11.5 Code changes
+
+- **`flowerNPlanHTML(v)`**: a value-based core taken out of `calcFlower()`, for the default-rate note, quantity rows and application-plan table. It takes `wl` and `ui` the way `gardenNPlanHTML` does. `calcFlower()` calls it, and so does CE.
+- The flower schedule data moves into `FLOWER_APP_PLAN` as per-step multipliers (1, 0.5 or 0), so the table can't show the wrong amount again.
+- CE: a `kind` flag (`veg` or `flower`) on the garden form decides step 2's options, the N plan core, the OM wording, the sample and the "Still needed" text. The nutrient rows, lime, print and survey code are shared unchanged.
+
+### 11.6 Tests
+
+1. Snapshot: the Vegetable Garden tab stays identical. On the Flower Garden tab, only the rows approved in F1 change (Complete and Individual modes).
+2. CE flower vs. the Flower Garden tab in Individual mode: same numbers for the same inputs, one hand-check per flower type.
+3. Step 0: flower opens the flower form, vegetable still opens the vegetable form, and shrub and VCE still show the message. Switching between vegetable and flower keeps bed size, nutrients and lime.
+4. Print, plus the general checks: page errors, duplicate ids, axe, keyboard, 380 px.
+
+### 11.7 Build steps
+
+1. `flowerNPlanHTML` and the schedule data, with the F1 fixes if approved. Snapshot test. Released as its own version.
+2. Step 0, the flower form (`kind` flag), the sample button and "Still needed."
+3. Results, print, About & Instructions (CE covers flower gardens), README and CLAUDE.md.
+
+### 11.8 Open decisions
+
+| # | Question | Default if not changed |
+| :-- | :-- | :-- |
+| F1 | Fix the annual mid-season (half) and rose (monthly March–August) schedules and the citations, in both versions | **Yes** (built v13.6; the Vegetable Garden tab's legacy rose entry was aligned too) |
+| F2 | Report N for roses: is it the amount for each monthly application? | **Yes** |
+| F3 | Rose default rate | **0.15 lb N per 100 sq. ft.** — NC State, *Roses for North Carolina* (1994): 1–2 lbs of 10-10-10 per 100 sq. ft. every 4 weeks = 0.10–0.20; middle used; six applications (0.9 lb) stay inside NC State's season total. Clemson's *Growing Roses* gives no rate (label rates only). |

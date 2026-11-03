@@ -6498,3 +6498,79 @@ Capacities above; tall 2.5 lb → P1 4 apps (0.667×3 + 0.5), P2 3 (0.9, 0.9, 0.
 - **CE garden shopping list:** each nitrogen product is a collapsible card (`ceGToggleN(key)`, state in `ceGOpen` so it survives re-renders while typing). The button shows the product name and a summary ("Before planting: 1 lb 15.0 oz · then 1 side-dressing"); all start closed. `ceGListHTML(c, forPrint)` — the print copy shows every plan open, with no buttons.
 - **Hood College citation (user asked where it came from):** added July 27–28, 2026 as the source for dissolving tiny amounts in water instead of spreading dry — *Soil Amendments and Fertilizers*, Hood College Center for Coastal and Watershed Studies, Farm to Fork / FFSN school-garden curriculum (hood.edu PDF, in About > sources). It supports the general method only (water-soluble fertilizer dissolved and applied to soil), not a boron rate; it replaced a mis-attributed "Maryland Department of Agriculture" link that 404'd. The boron "don't band near plants" line is from the Waypoint report comments.
 - Verified: syntax clean; lawn snapshot identical to v12.7; garden snapshot identical to v13.4 (`gbase2.json`); Phase 1 tests 3–5 pass; Enter opens a card; axe 0 with a card open; no page errors.
+
+## Verification · 2026-11-02 — Safari checks on the live copy (no `index.html` change, stays v13.5)
+
+- **Start Over works in Safari.** This confirms the v13.5 fix (`resetAllFields()` plus `location.replace` with `fresh=`).
+- **Tabbing in Safari is not a bug.** The "stopped after Mg" report and the "Tab from report N jumps to the address bar" report have the same cause: Safari's default Tab stops only on text boxes. On the CE garden form, report N is the last text box visible at that point, so Tab goes to the address bar.
+  - With "Press Tab to highlight each item on a webpage" turned on (Safari → Settings → Advanced), or with Option+Tab, Tab reaches every nutrient checkbox.
+- Radio groups and selects are one Tab stop each; the arrow keys change the choice. This is standard behavior.
+- User decision: no code change, and no Safari note added to About.
+
+## v13.6 · 2026-11-02 — flower schedules fixed to match VCE Note 19; rose rate 0.15 (NC State); `flowerNPlanHTML` core
+
+- **Checked VCE Soil Test Note 19 directly (Warren County PDF; pubs.ext.vt.edu blocks fetching).** Its Flowers section gives no rates and no annual, perennial or bulb schedules. For roses it says: "Repeat the basic fertilizer application each month from March through August."
+- **User decisions F1–F3 (Compact_Edition_Plan.md 11.8):**
+  - Fix the schedules in both versions.
+  - On a rose report, the N figure is the amount for each monthly application.
+  - Rose rate: searched UMD, Clemson and NC State. Clemson's *Growing Roses* gives label rates only. NC State's *Roses for North Carolina* (1994) gives 1–2 lbs of 10-10-10 per 100 sq. ft. every 4 weeks, which is 0.10–0.20 lb N. **The user chose 0.15**, the middle of that range; six applications total 0.9 lb, inside NC State's season total.
+- **`FLOWER_APP_PLAN` steps now carry `mult`** (1 full, 0.5 half, 0 none):
+  - Annual mid-season = 0.5. It used to show the full amount while saying "half."
+  - Roses = six monthly rows (March–early August) at 1, then "Stop by Aug 15." There used to be two amounts.
+  - Bulbs and perennials unchanged.
+- **New value-based cores:**
+  - `flowerOmNoteHTML(om, area)`.
+  - `flowerNPlanHTML(v)` takes `wl` and `ui`. `ui.firstLabel` is used for the rose, bulb and perennial labels. It adds a "For the season" total.
+  - `calcFlower()` calls both.
+- **Citations:** annual and perennial rates are now UMD (Note 19 gave no rate). Roses: schedule from VCE Note 19, rate from NC State. The NC State roses source was added to the About Flower Garden sources (URL fetched, resolves). The About Note 19 entry no longer lists the retired tomato/pepper split rule.
+- **Vegetable Garden tab's legacy flower entries aligned:** `CROP_FEEDING_LEVELS.rose` 0.15; `SIDEDRESS_GUIDE.rose` = five monthly 1.5 lb N/1,000 applications (April–early August); vegetable-tab rose timing text.
+- **Verified:** garden snapshot diff vs v13.5 limited to the perennial citation, the annual mid-season row (0.97 → 0.48 lb, season 1.45) and the rose rows (urea 200 sq. ft.: 0.65 lb × 6 = 3.91). Hand-checked. Lawn snapshot unchanged.
+
+## v13.7 · 2026-11-02 — Compact Edition Phase 2b: Waypoint flower gardens
+
+- **Step 0** gains "Waypoint Analytical, for a flower garden." The other Waypoint option now reads "for shrubs or trees."
+- **The flower form reuses the vegetable form** through a `ceGKind` flag ('veg' / 'flower'):
+  - Step 2 shows `ce-g-ftype` (annual / perennial / rose / bulb) instead of the crop list, with its own hints.
+  - The "Where do I find these?" box adds a note on two report rows (Garden-Home vs. Perennials).
+  - Results use `flowerNPlanHTML` (with `fmtLbOz`) and `flowerOmNoteHTML`.
+  - Each card summary gives the number of applications.
+  - The print title says "flower garden."
+- Individual nutrients only (user decision); no Complete N-P-K mode in CE.
+- **"Flower garden" sample:** the real perennial-bed report. Perennials row: P₂O₅ 1.5, K₂O 4.0, S 0.11, OM 6.5, no lime. 150 sq. ft. is an example size. That report has no N on file, so N is blank and the perennial default is used.
+- About & Instructions: the CE box now mentions flower gardens, plus a new "Using the Compact Edition for a flower garden" list.
+- **Verified:**
+  - Sample results: calcium nitrate 15.5 oz; triple superphosphate 7.8 oz; sulfate of potash 1 lb 3.2 oz; sulfur covered (3.3 oz supplied vs. 0.3 oz needed).
+  - Rose with report N 1.5 and urea: 7.8 oz × 6 (2 lb 15.0 oz), matching the full Flower tab (0.49 lb).
+  - Switching between vegetable and flower keeps entries; shrub and VCE reports show the message.
+  - axe 0; no duplicate ids; 380 px; print shows only the list.
+  - Lawn and garden snapshots unchanged; Phase 1 tests 3–5 pass.
+
+## v13.8 · 2026-11-02 — full-version garden fixes (plan 10.9): Waypoint targets decide, Mn/B Low only, pounds and ounces, flower sample Mg
+
+- **A. On Waypoint reports the target decides** (user chose "blank counts as 0"). In `renderNutrientStatusPanel`, `wpTargets`:
+  - Target above 0 → only `calc:'target'` products are offered.
+  - Blank or 0 → "No amount on your report's Soil Fertility Guidelines — nothing to add," whatever the rating.
+  - Target given but no target product (Fe) → no-rate note.
+  - The panel intro explains this for Waypoint. VCE is unchanged (flat rates by rating).
+- **Found while testing A:** the sample reports wrote unprefixed `gdnTargets` keys (`k2o`), but the panel reads `gdn:k2o` / `flr:k2o` (prefixed since July 28). So the sample targets had never shown. New `sampleTargets()` writes both prefixes.
+- **B.** `nutrientRatingStatus(rating, key)`: Medium counts as adequate for Mn and B. P, K and Mg keep Medium as low (VCE Note 19).
+- **C. Pounds and ounces (`fmtLbOz`) on the garden, flower and shrub tabs:**
+  - Default `wl` in `gardenNPlanHTML`, `gardenLimeHTML` and `flowerNPlanHTML`.
+  - Flower lime totals; nutrient-panel flat and target amounts; shrub per-application and annual amounts.
+  - Per-100-sq.-ft. lime rates and OM nitrogen figures stay decimal. Lawn and the Lime tab are unchanged.
+- **D.** Flower sample Mg rating OP → ME (the report's bar).
+- **Accessibility fixes found while scanning:**
+  - The bulk-density unit `<select>` had no name; it now has `aria-label`. This was pre-existing and showed up more now that more rows display it.
+  - `#st-toast` moved inside `<main>` with `role="status"`. It had been flagged by the axe `region` rule since before this session.
+- **Verified:**
+  - Hand checks: Waypoint vegetable 870 sq. ft. P₂O₅ 1.5 → 2 lb 13.4 oz triple superphosphate; K₂O 2.0 → 2 lb 14.4 oz muriate; Mn 0.05 on 100 sq. ft. → 0.3 oz (8 g); VCE Mn DEF still gets amendments; shrub 200 sq. ft. → 6 lb.
+  - Lawn snapshot unchanged; print matrix unchanged.
+  - axe 0 on the start screen, CE (lawn, vegetable, flower), full, and the full garden and flower tabs with results.
+- **Effect to keep in mind:** a Waypoint user who doesn't type the report's numbers into the nutrient rows now sees "nothing to add" for every nutrient. That follows from the decision, but the rows carry a hint to enter the number.
+
+## Plan written · 2026-11-02 — `Full_Version_Progressive_Disclosure_Plan.md` (draft 1, for review)
+
+- Reveal steps in order on the Soil Test tab and the lawn tabs first; gardens and shrubs after; the Lime tab not at all.
+- Steps stay visible once shown. Carry-over and samples reveal what they fill. A per-tab "Show all steps" link is offered for volunteers.
+- Shade, clippings and the plan builder move into "More options."
+- Decisions P1–P5 are open.

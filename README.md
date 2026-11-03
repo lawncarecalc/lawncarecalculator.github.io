@@ -1,6 +1,6 @@
 # 🌱 Soil Test Report Assistant
 
-![Version](https://img.shields.io/badge/version-4.0-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
+![Version](https://img.shields.io/badge/version-4.1-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
 
 > **No more guessing what to feed your lawn or garden.**
 
@@ -22,25 +22,27 @@ The calculator accepts soil test reports from two labs. **One question** on the 
 
 ---
 
-## 🌱 Two Ways to Use It: Compact Edition and Full Version &nbsp; `new in v3.9` · vegetable gardens `new in v4.0`
+## 🌱 Two Ways to Use It: Compact Edition and Full Version &nbsp; `new in v3.9` · vegetable gardens `new in v4.0` · flower gardens `new in v4.1`
 
 When you open the plain address, the page asks which version you want. A button at the top right switches between them at any time, and what you've typed stays put.
 
 | | Compact Edition | Full version |
 | :-- | :-- | :-- |
-| **Reports** | Waypoint Analytical **lawn** reports (cool- and warm-season) and **vegetable garden** reports | Every report type: VCE or Waypoint; lawns, vegetable gardens, flower gardens, shrubs & trees |
+| **Reports** | Waypoint Analytical **lawn** reports (cool- and warm-season), **vegetable garden** and **flower garden** reports | Every report type: VCE or Waypoint; lawns, vegetable gardens, flower gardens, shrubs & trees |
 | **What you enter** | *Lawn:* grass, lawn size, the report's annual N, P and K ratings, and lime. New lawn and "More options" (shade, clippings, lime CCE and bag size) are optional. *Vegetable garden:* bed size, a crop and/or the report's N, synthetic or organic N products, each nutrient the report's Soil Fertility Guidelines lists above 0 (tick it, type its number, choose a product), and lime. | Every value on the report, then the calculator tab for your purpose |
-| **What you get** | *Lawn:* the "What to look for at the garden center" card (all three programs, grades seen locally, how much to buy and when to apply it) plus the lime plan. *Vegetable garden:* preplant and side-dress amounts for each nitrogen product, one amount and method per nutrient, and lime, in pounds and ounces. Both have a **Print shopping list** button. | Interpretation cards for every value, the same shopping card, a bag checker, custom application plans, and the garden and shrub calculators |
+| **What you get** | *Lawn:* the "What to look for at the garden center" card (all three programs, grades seen locally, how much to buy and when to apply it) plus the lime plan. *Vegetable or flower garden:* preplant and side-dress (or flower-schedule) amounts for each nitrogen product, one amount and method per nutrient, and lime, in pounds and ounces. Both have a **Print shopping list** button. | Interpretation cards for every value, the same shopping card, a bag checker, custom application plans, and the garden and shrub calculators |
 
-**Same numbers.** The Compact Edition calls the same functions as the lawn tabs and the Vegetable Garden tab, so the same entries give the same capped N goal, program maximums, month-by-month amounts, grades, nitrogen plan, nutrient amounts and lime figures. It just asks fewer questions.
+**Same numbers.** The Compact Edition calls the same functions as the lawn tabs and the Vegetable and Flower Garden tabs, so the same entries give the same capped N goal, program maximums, month-by-month amounts, grades, nitrogen plan, nutrient amounts and lime figures. It just asks fewer questions.
 
 **Why the garden form asks for the report's numbers, not ratings.** On three real Waypoint garden reports, the Soil Fertility Guidelines number was the lab's actual instruction and the rating bar didn't predict it: magnesium rated Medium got 0, sulfur and boron rated Optimum still got amounts, and the numbers changed with the crop code. So the Compact Edition sizes each nutrient straight from the report's number. Very small amounts (boron, manganese) come with a dissolve-in-water instruction, and sulfur is marked "covered" when the sulfate of potash or ammonium sulfate on the list already supplies it.
 
-**How the Compact Edition flows.** One page, no Next buttons. Each section appears once the one above it is answered, and a "Still needed" line lists what's missing until the shopping list can be shown. If you say your report is from VCE or is for a flower garden or shrubs, it tells you so and offers a button to open the full version. Three sample buttons fill in real Waypoint reports (cool-season lawn, warm-season lawn, vegetable garden) so you can see a finished example.
+**How the Compact Edition flows.** One page, no Next buttons. Each section appears once the one above it is answered, and a "Still needed" line lists what's missing until the shopping list can be shown. If you say your report is from VCE or is for shrubs and trees, it tells you so and offers a button to open the full version. Four sample buttons fill in real Waypoint reports (cool-season lawn, warm-season lawn, vegetable garden, flower garden) so you can see a finished example.
 
 **Sharing a link.** Add `?mode=ce` to the end of the page address to send someone straight to the Compact Edition, or `?mode=full` for the full version. **Start Over** keeps you in whichever version you're using.
 
-**Not in the Compact Edition (by design):** checking a bag you already have, custom application plans, soil test ratings for gardens, organic phosphorus and potassium products (their VCE rates are tied to a rating), VCE reports, flower gardens and shrubs. Flower gardens (Waypoint) are the next planned phase.
+**Not in the Compact Edition (by design):** checking a bag you already have, custom application plans, soil test ratings for gardens, organic phosphorus and potassium products (their VCE rates are tied to a rating), the Complete N-P-K mode for flower gardens, VCE reports, and shrubs and trees.
+
+**Flower gardens in the Compact Edition** (v4.1) use the vegetable garden form with one change: step 2 asks for the kind of flower bed (annuals, perennials, roses or spring-flowering bulbs), which sets the schedule. A Waypoint flower report often prints two rows (for example "Garden-Home" and "Perennials"); use the row for your bed.
 
 ---
 
@@ -180,7 +182,7 @@ Based on **VCE 452-719 / SPES-687P (Soil Test Note 19)** and **VCE 426-323 / SPE
 
 Vegetable crops vary widely in how much nitrogen they need — a heavy feeder like tomatoes or corn requires several times more than a light feeder like beans or carrots — but a complete N-P-K fertilizer locks all three nutrients into one fixed ratio, so applying enough of it to meet a crop's nitrogen need almost always over- or under-supplies phosphorus and potassium at the same time. Rather than recommending one N-P-K product for the whole bed, this tab addresses each nutrient that's actually low on its own — VCE Note 19's own approach. Pick a crop and one merged panel shows its feeding level, target soil pH, research-based nitrogen default, and sidedress timing together. Choose a nitrogen source (organic or synthetic, always single-nutrient). Phosphorus, potassium, calcium, magnesium, sulfur, and every micronutrient (zinc, manganese, copper, iron, boron) then each get their own row in the results — rating and amount pulled automatically from the Soil Test tab, with a choice between an organic and a synthetic source wherever both exist, so you're never forced to over-apply one nutrient to correct another. Lime is calculated on this same tab, CCE and bag size included.
 
-If you have a Waypoint report, its "SOIL FERTILITY GUIDELINES" numeric target for any nutrient can be entered directly in that nutrient's own row for a precise amount — sized even when the rating comes back adequate, since Waypoint's target is a maintenance figure, not just a deficiency flag. VCE reports don't print an equivalent number, so those fall back to VCE Note 19's rating-based flat rates instead.
+If you have a Waypoint report, enter its "SOIL FERTILITY GUIDELINES" number for each nutrient in that nutrient's own row. **On a Waypoint report the number decides, not the rating** `changed v4.1`: above 0, the product is sized to it; blank or 0, nothing is added, whatever the rating. (On real reports the numbers didn't follow the ratings: Medium got 0 for magnesium but amounts for sulfur and boron.) VCE reports don't print an equivalent number, so they use VCE Note 19's rating-based flat rates. Medium counts as low only for phosphorus, potassium and magnesium (Note 19); the manganese and boron flat rates apply only at Low. Amounts on the garden, flower and shrub tabs are in pounds and ounces (grams under 1 oz) `changed v4.1`.
 
 > ⚖️ **Tomatoes and peppers always get the full preplant nitrogen amount, regardless of P/K test level.** VCE Note 19 calls for splitting a *complete fertilizer* in half when soil already tests High/Very High in phosphorus or potassium — the only way to avoid over-applying P/K from a blended product is to reduce the whole dose, nitrogen included. That constraint doesn't exist here: nitrogen is its own separate product, and phosphorus/potassium are each already sized independently (and skipped entirely when adequate) by this tab's own single-nutrient system. So the preplant amount is never split — every crop gets the full amount, then the standard Rutgers FS626 sidedress schedule on top, same as every other crop on this tab.
 
@@ -222,12 +224,14 @@ For annual beds, perennial borders, rose gardens, and spring-flowering bulbs. Th
 
 | Type | Default N rate | Key timing rule |
 | :-- | :-- | :-- |
-| Annual flowers | 0.10 lbs/100 sq. ft. preplant | Optional half-rate mid-season |
-| Perennial flowers | 0.10 lbs/100 sq. ft. spring only | Compost often sufficient once established |
-| Roses | 0.20 lbs/100 sq. ft. monthly | March–August; stop by August 15 |
+| Annual flowers | 0.10 lbs/100 sq. ft. preplant | Optional mid-season application at half the preplant amount (UMD) |
+| Perennial flowers | 0.10 lbs/100 sq. ft. spring only | Compost often sufficient once established (UMD) |
+| Roses | 0.15 lbs/100 sq. ft. each month `changed v4.1` | Six applications, March–August (VCE Note 19); stop by August 15. Rate: middle of NC State's 0.10–0.20 |
 | Spring-flowering bulbs | 0.40 lbs/100 sq. ft. | At planting + at emergence; **never after flowering** |
 
 > 🌼 **Avoid excess nitrogen** — it produces lush foliage at the direct expense of blooms.
+
+**Sources, corrected in v4.1:** VCE Soil Test Note 19 gives flower *timing* (preplant; roses every month March–August) but no flower *rates*. The annual and perennial rate is from University of Maryland Extension; the rose rate from NC State Extension's *Roses for North Carolina*. Earlier versions showed the full amount for the annual mid-season application and only two rose applications; both were fixed.
 
 ### Choose how you fertilize
 
@@ -305,7 +309,7 @@ Plus the per-crop 426-series vegetable guides (tomatoes, potatoes, sweet corn, b
 - 🌿 **Penn State Extension** — *Turfgrass Fertilization: A Basic Guide* and *Enhanced Efficiency Nitrogen Fertilizers for Turfgrasses* (P. Landschoot): label names for slow-release nitrogen, stabilized urea is quick-release, release mechanisms of coated vs. methylene-urea products `added v2.4`. Also independently confirms both halves of the organic-matter N credit formula: total N held per 1% organic matter ("Managing Soil Health: Concepts and Practices," C. White) and typical annual mineralization rate ("Nutrient Management to Improve Nitrogen Efficiency and Reduce Environmental Loss," D. Beegle) `added v2.2`
 - 🌿 **Clemson HGIC** — sidedress guidance; calcium nitrate; tree & shrub timing (ANSI A300)
 - 🌿 **Rutgers NJAES** — FS626 organic fertilizer N% and release rates (NPK content only — not a bulk-density source); FS1220 spring bulbs
-- 🌿 **NC State Extension** — calcium nitrate rationale; blossom-end-rot framing; spring bulb rates; pelletized-lime timing; manganese application rates and pH-availability guidance (Torres Quezada, 2024 — vegetable-crop-specific rate, cited as the closest sourced figure available, not separately validated for ornamentals)
+- 🌿 **NC State Extension** — calcium nitrate rationale; blossom-end-rot framing; spring bulb rates; pelletized-lime timing; manganese application rates and pH-availability guidance (Torres Quezada, 2024 — vegetable-crop-specific rate, cited as the closest sourced figure available, not separately validated for ornamentals); rose rate (*Roses for North Carolina*, 1994: 0.10–0.20 lb N per 100 sq. ft. every 4 weeks) `added v4.1`
 - 🌿 **Cornell Nutrient Management Spear Program, University of Maryland Extension, Michigan State University Extension** — independently corroborate the manganese pH-availability threshold (~6.5) as general soil chemistry, not tied to any one crop
 - 🌿 **UT Extension** — Program 3 (>50% WIN) application-rate corroboration
 - 🌿 **Waypoint Agronomy Facts 8** — rating labels, units, Buffer pH terminology, K optimum bands by CEC
