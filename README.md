@@ -1,6 +1,6 @@
 # 🌱 Soil Test Report Assistant
 
-![Version](https://img.shields.io/badge/version-4.7-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
+![Version](https://img.shields.io/badge/version-4.8-2c5f3e) ![Build](https://img.shields.io/badge/build-single%20HTML%20file-3d8b5f) ![Sources](https://img.shields.io/badge/built%20from-VCE%20publications-b8862f) ![Region](https://img.shields.io/badge/region-Virginia%20%C2%B7%20Zone%207b-33688f)
 
 > **No more guessing what to feed your lawn or garden.**
 
@@ -18,7 +18,7 @@ The calculator accepts soil test reports from two labs. **One question** on the 
 
 > 🔬 **Waypoint Analytical** — reports in ppm (P, K, micronutrients), dS/m (salts), and lbs/1,000 sq. ft. (all lime). Rating bands use Waypoint's own published values from Agronomy Facts 8.
 
-**The tool is gated by design.** Only the Soil Test Report and About & Instructions tabs are visible when you first open it — every calculator tab is hidden until you've entered a report and disclosed its purpose. This reflects a deliberate philosophy: you shouldn't be able to apply fertilizer without a soil test telling you your starting point. Once you answer that one question, the single matching calculator tab appears (Lime appears alongside Lawn or Shrubs & Trees reports specifically, since lime math applies to either).
+**The tool is gated by design.** Only the Soil Test Report and About & Instructions tabs are visible when you first open it — every calculator tab is hidden until you've entered a report and disclosed its purpose. This reflects a deliberate philosophy: you shouldn't be able to apply fertilizer without a soil test telling you your starting point. Once you answer that one question, the single matching calculator tab appears (Lime appears alongside Shrubs & Trees reports only; every other tab calculates lime itself).
 
 ---
 
@@ -59,7 +59,7 @@ Tab bar order: **Soil Test Report, About & Instructions** (always visible), then
 | 🪨 | **Lime** | For **Shrubs & Trees** reports only — Cool/Warm-Season Lawns, Vegetable Garden, and Flower Garden all calculate lime directly on their own tab now. Lime quantities adjusted by product CCE and bag size; schedules multiple applications; warns on gypsum. |
 | 🥬 | **Vegetable Garden** | `new in README v4.5` Uses the same form as the Compact Edition, with the full version's extras. Seven steps that appear as you fill them in (**Show all steps** shows the whole form): bed size; crop and/or the report's nitrogen (with "About this crop": feeding level, target pH, side-dress timing); nitrogen products to compare (synthetic, organic, both, or one product from the full list including VCE Note 19 fixed rates); other nutrients, ticked from the Soil Test ratings — on a Waypoint report each amount comes from the report's Soil Fertility Guidelines number, on a VCE report from VCE's amendment for the rating; lime; new bed; More options (organic matter, lime CCE and bag size, Estimated N Release comparison). The shopping list gives each nitrogen product's full plan, every other nutrient's amount and how to apply it, and lime, in pounds and ounces, with a collapsed "Source and notes" and bulk-density box per product. Calcium is handled by lime. Values from the Soil Test tab fill in. |
 | 🌸 | **Flower Garden** | `new in README v4.6` Uses the same form as Vegetable Garden and the Compact Edition: bed size; flower bed (annual, perennial, rose, bulb) and/or the report's nitrogen; nitrogen products (synthetic, organic, both, one product from the full list, or **one complete N-P-K fertilizer**, whose P and K rows then say they're covered); other nutrients ticked from the Soil Test ratings; lime (type checked against the magnesium rating); new bed; More options. Shopping list in pounds and ounces with the flower timing card. |
-| 🌳 | **Shrubs & Trees** | Six plant types. Fertilize only on signs of deficiency. Application area = twice the canopy. P and K ratings come from the Soil Test tab. Lime, when needed, uses the standalone Lime tab. |
+| 🌳 | **Shrubs & Trees** | Six plant types. Fertilize only on signs of deficiency. Steps appear one at a time. Application area = twice the canopy. P and K ratings come from the Soil Test tab. Lime, when needed, uses the standalone Lime tab. |
 
 ---
 
@@ -261,6 +261,8 @@ Based on **VCE Soil Test Note 20 (SPES-336P)** and **VCE 430-018 (HORT-120P)**.
 🌲 **Area:** enter canopy diameter or L×W — fertilizer is applied to twice the canopy area, since feeder roots extend well past the drip line (Note 20). **Turf adjacency:** overlap with a fertilized lawn caps each application at 1.5 lbs N/1,000 sq. ft. (430-018).
 
 **Changes in `README v4.7` (app v15.0):** phosphorus and potassium ratings now come from the Soil Test tab instead of being asked again on this tab. Products are listed by grade and type, without brand names. Cups per pound are shown only where sourced (ammonium sulfate, urea and calcium nitrate, VCE Note 19); other products and a typed grade show weight, with a box for your product's bulk density. If no nitrogen is entered, the low end of VCE's range for the plant type is used, and the field says which number.
+
+**Changes in `README v4.8` (app v15.1):** the steps appear one at a time, as on the lawn and garden tabs. Plant type comes first; the size step appears once a type is chosen; the lawn-nearby, nitrogen and fertilizer steps appear once there is an application area. A step stays visible once shown, a step holding a value is always shown, and **Show all steps** shows everything. Results and amounts are unchanged.
 
 ---
 
