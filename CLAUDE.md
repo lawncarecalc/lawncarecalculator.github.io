@@ -6574,3 +6574,100 @@ Capacities above; tall 2.5 lb → P1 4 apps (0.667×3 + 0.5), P2 3 (0.9, 0.9, 0.
 - Steps stay visible once shown. Carry-over and samples reveal what they fill. A per-tab "Show all steps" link is offered for volunteers.
 - Shade, clippings and the plan builder move into "More options."
 - Decisions P1–P5 are open.
+
+## Decisions · 2026-11-02 — progressive disclosure plan P1–P5 (no `index.html` change, stays v13.8)
+
+- P1–P4: the suggested defaults (Soil Test and lawn tabs first, then gardens and shrubs, not the Lime tab; per-tab "Show all steps"; shade/clippings and the plan builder in "More options"; Soil Test values split with "Everything else" open).
+- P5: no volunteer consultation first. User: Help Desk volunteers have been reluctant to use the app because of its complexity, and simplifying in this direction should help.
+- Plan updated to draft 2. Build order: Soil Test tab, then lawn tabs, then gardens and shrubs, each its own version.
+
+## v13.9 · 2026-11-02 — progressive disclosure, step 1: Soil Test Report tab (README v4.2)
+
+- The Soil Test tab now has three steps, each wrapped in an element using the `hidden` attribute:
+  - Step A: report type, always shown.
+  - Step B, `#st-step-b`: size, plus `st-crop-field` and `st-lawn-status-field`, which moved here from the lime grid. The heading (`#st-step-b-label`) reads "Lawn Size and Grass Type" or "Garden Size".
+  - Step C, `#st-step-c`: "Main values from your report", then an "Everything else on your report" collapsible (`st-more`, open by default), then the hidden canonical fields.
+    - Main values use `#st-main-vce` (P, K, pH) and `#st-main-waypoint` (pH, P, K), with pH full-width, plus `#st-main-common` (lime rec, lime type, `st-lawn-n-field`).
+    - The remaining fields stay in `#st-block-vce` / `#st-block-waypoint` inside the collapsible.
+  - Field ids are unchanged.
+  - `onReportTypeChange()` toggles the main blocks and pushes both main and block fields to the canonical fields.
+- `stRevealSteps()` sets what is shown. It is called from `interpretSoilTest()` (so `onReportTypeChange` and `stSync` run it too) and from the size box's `oninput`.
+  - B appears once a report type is chosen. C appears once the size is above 0 and, for a lawn, a grass type is chosen.
+  - Once shown, a step stays (`stReached` never goes down).
+  - A step that already holds a value is always shown (`stStepHasValue`, compared against each field's default). This covers samples and values Safari restores.
+  - `#st-next` (`role="status"`) says what's needed next.
+  - "Show all steps" (`#st-showall-btn`, `aria-pressed`, `stToggleShowAll()`, `stShowAll`) lasts for the page visit only; Start Over resets it.
+- About step 1 explains the steps and the "Main values" split.
+- Two pre-existing contrast failures fixed:
+  - The carry-over "size not entered" warning: #b8892a changed to #7a6518 (was 2.54:1).
+  - The Micronutrients card's "display only" text: opacity 0.7 changed to #5f6b6b (was 4.41:1).
+- Verified (headless Chromium):
+  - Lawn and garden snapshots match v12.7/v13.8 byte for byte; print matrix unchanged; t345 passes (keyboard result 54.7).
+  - Reveal works in order; clearing a value keeps its step shown; Show all works.
+  - All six samples show B and C with no filled field hidden; carry-over still fills Flower Garden.
+  - Tab order after grass type: lawn status, pH, P, K, lime, lime type, N, "Everything else", the rest.
+  - axe 0 violations: fresh, revealed, sample, Show all. No horizontal scroll at 380 px; no duplicate ids; no page errors.
+- Next: progressive disclosure step 2, the lawn tabs.
+
+## v14.0 · 2026-11-02 — "Everything else" values line up with their ratings (Waypoint)
+
+- Reported: in the Waypoint "Everything else on your report" grid, each nutrient's ppm box sat on a different row from its rating. Cause: Buffer pH, CEC and Base Saturation filled three cells of the two-column grid, so every nutrient pair after them started in the right column.
+- Fix: Waypoint Base Saturation field (with its %H helper) is now full-width (`st-field-wide`), so each ppm box and its rating share a row. VCE block was already aligned.
+- Verified (headless Chromium): every Waypoint and VCE nutrient's value and rating boxes are on the same row; lawn snapshot unchanged.
+
+## Verification · 2026-11-02 — lawn calculation audit Parts C–E (no `index.html` change, stays v14.0)
+
+- Script `scratchpad/ce/cde.js`: Soil Test tab → carry-over → lawn tab, VCE and Waypoint, cool and warm. Results in `Lawn_Calculation_Audit_Plan.md`.
+- **Part C:** card, auto plan, pre-filled custom plan (slots, slot pounds, season total) and print copy agree in all 6 cases. Golden 54.7 still holds.
+- **One bug found (C-1, not fixed yet, awaiting approval):** `calcMulti`'s timing card picks its program from the first slot's `win` only and ignores `slow2`. A methylene-urea Program 2 bag gets Program 1's month list. Plan numbers are unaffected.
+- **Part D:** all edge cases behave. The capped goal is always reachable by some program, so the "no program reaches it" wording is unreachable. Minor text: "in Early September" capitalized mid-sentence on the card (D-1).
+- **Part E:** lime golden 44.4 / 355.6 / 1 / 9 confirmed; the over-limit, CCE-below-50, no-size and zero-lime cases are correct, and cool and warm match.
+
+## v14.1 · 2026-11-02 — lawn audit fixes C-1 and D-1
+
+- `calcMulti` timing card: the first slot's program now adds `slow2` when its source is methylene urea (same figure as the slot badge). Before, a methylene-urea Program 2 bag got Program 1's month list.
+- `lookForMonthAmounts`: "Early September" becomes "early September" mid-sentence.
+- Verified: `cde.js` (comparison now case-insensitive) 0 failures; lawn snapshot differs from v14.0 only by that word (new baseline `scratchpad/ce/base141.json`); garden snapshot unchanged.
+
+## v14.2 · 2026-11-02 — progressive disclosure, step 2: Cool and Warm Lawn tabs (README v4.3)
+
+- Wrappers with the `hidden` attribute (field ids unchanged): `{p}-step3` (N goal), `{p}-step45` (P/K), `{p}-step6` (shopping card + plan builder), `{p}-step7` (lime). Steps 1–2 always shown.
+- `lawnRevealSteps(p)` (called first in `calcCool`/`calcWarm`): 3 after size > 0; 4–5 after N > 0; 6 and 7 together after both P and K. Sticky (`lawnReached`), data presence shows a step (`stStepHasValue`; custom slots/custom mode count for step 6), `lawnShowAll` + `lawnToggleShowAll(p)` (`{p}-showall-btn`). `{p}-next` (`role="status"`, after step 7) says what's next.
+- Step 3 rebuilt: label "What is your annual nitrogen (N) goal?" (`<label for="{p}-n-rate">`); the guidance box is now the collapsible `{p}-nhelp` ("Help me choose my N goal"), open by default for VCE reports and closed for Waypoint, set in `updateLawnLabNotes()` unless the user has toggled it (`lawnHelpTouched`, `lawnToggleHelp`); clippings + shade moved into collapsible `{p}-nmore` ("More options"). New helper `setCollapsibleOpen(baseId, open)`.
+- The Application Plan block is now collapsible `{p}-plan` ("Plan my applications (optional)…"), closed by default. `{p}-nmore` and `{p}-plan` open themselves when they hold a value (and `{p}-plan` in custom mode), so nothing entered is hidden; print is unaffected (input card isn't printed; an empty auto result was the only thing the closed plan hides).
+- About Cool/Warm step lists rewritten (reveal, Help/More options, plan builder); README v4.3; plan doc marks 4.2 built.
+- Note: the lawn tab only unlocks once a P or K rating is entered on the Soil Test tab (existing behavior), so a real first visit usually arrives with P/K carried over.
+- Verified (headless Chromium): lawn snapshot identical to v14.1; garden identical; `cde.js` 0 failures; t345 (print matrix unchanged, keyboard golden 54.7); new `scratchpad/ce/pdlawn.js` — reveal order both tabs, clearing keeps steps, Show all, More options/plan auto-open, VCE help open / Waypoint closed, all three lawn samples leave no filled field hidden; axe 0 (revealed, show-all, About at 1100/380); 380 px; no duplicate ids; no page errors.
+- Next: progressive disclosure step 3 — Vegetable Garden, Flower Garden, Shrubs & Trees (one version each).
+
+## v14.3 · 2026-11-03 — progressive disclosure, step 3a: Vegetable Garden tab (README v4.4)
+
+- Wrappers with the `hidden` attribute (field ids unchanged): `gdn-step-n` (step 1, nitrogen: crop list and/or N rate, ENR comparison) and `gdn-step-src` (step 2 bed status + nitrogen source, and step 3 lime). Bed size is always shown.
+- **Lime moved after nitrogen** (was step 1; now step 3, shown together with step 2), so the order matches the lawn tabs and the plan (bed size → nitrogen → source → lime). Step numbers renumbered: N 1, source 2, lime 3.
+- `gdnRevealSteps()` (first line of `calcGarden()`): step 1 after area > 0 (rect or direct mode); steps 2–3 after a crop or an N rate. Sticky (`gdnReached`); a step holding a value is shown (`stStepHasValue`); `gdnShowAll` + `gdnToggleShowAll()` (`gdn-showall-btn`); `gdn-next` (`role="status"`) says what's next, including "choose a nitrogen source" until one is picked.
+- The results card (Nutrient Application Plan, nutrient rows with Waypoint targets) is not gated.
+- About Vegetable Garden step list rewritten; README row updated (also dropped the stale "calcium" from the nutrient list — Ca is handled by lime since v3.7).
+- Verified (headless Chromium): garden snapshot identical to `gnew8b.json`; lawn snapshot identical to `base141.json`; t345 (print matrix unchanged, keyboard golden 54.7); new `scratchpad/ce/pdgarden.js` — reveal order, sticky after clearing, direct-area + N-rate path, Show all, both vegetable samples + carry-over leave no filled field hidden; axe 0 (show all, both samples); 380 px; no duplicate ids; no page errors.
+- Next: Flower Garden (plan 4.4), then Shrubs & Trees (4.5).
+
+## v14.4–v14.6 · 2026-11-05 — one Vegetable Garden form for both editions (README v4.5)
+
+- User decisions: the Compact Edition's garden form becomes the full version's Vegetable Garden tab (one form, collapsible sections, every full-version feature kept); checkboxes start ticked from the Soil Test ratings; Vegetable first, Flower Garden later (Claude chose this as the lower-risk path). Plan: `Vegetable_Garden_Unified_Form_Plan.md`.
+- **One form.** `#vg-form` (the `ce-g-*` steps) moves between `#vg-ce-anchor` in the CE panel and `#gdn-vg-host` in the Vegetable tab (`vgPlace(mode)`, called from `setMode`). In full mode `ceUpdate()` goes straight to `ceUpdateGarden()` with `ceGKind='veg'`. `vgIsFull()`, `vgLab()` ('vce' only in full mode with a VCE report). CSS: `.vg-full` shows only in full mode, `.vg-ce` only in the CE.
+- **Outputs in full mode:** `#gdn-vg-status`, `#gdn-vg-result`, `#gdn-vg-print` (print copy; `printing-garden` shows it and hides the form card), `#gdn-timing` (`vgTimingHTML`), `#gdn-print-btn-wrap`, survey `gdn`. N product toggles use `gdn-vg-n-` ids in full mode (`ce-g-n-` in the CE) so both lists can exist without duplicate ids.
+- **Full-version parts:**
+  - VCE reports: N and lime in lbs/100 sq. ft. (`c.unitDiv` 1 vs 10); nutrient rows by rating (`vgVceRowHTML`, ported from `renderNutrientStatusPanel`'s VCE rules: flat Note 19 rates, liquid borax, chelated Mn, no-rate notes for S/Zn/Cu, lime-conditional Mg) with a product select per nutrient (`ce-g-vprod-*`); no sulfur row; "Where do I find these?" hidden.
+  - Waypoint: amounts from the report numbers (target products only, as v13.8); a ticked row left blank shows "blank counts as 0" and doesn't block the list.
+  - "One product from the full list" (`ce-g-pref` = `pick`, `ce-g-nsel`) incl. VCE Note 19 fixed rates; `vgNName`, `vgNNoteHTML` (product note + density box).
+  - "About this crop" (`cropInfoHTML`, split out of the old `renderCropInfoPanel`); length × width helper (`vgDims`); N "not a soil test" note; ENR comparison in More options (`ce-g-enr`, Waypoint only).
+  - Volume estimates and bulk-density boxes in the shopping list (`vgVol`), inside a collapsed "Source and notes" `<details>` (`vgNoteHTML`).
+  - Show all steps (`vg-showall-btn`, `vgShowAll`). In full mode a step holding a typed value is shown; auto-ticks don't count (they'd skip ahead).
+- **Carry-over / ticking:** `vgCarryOver(area, lime, enr)` fills size, lime yes/no + amount + type, organic matter, ENR, then `vgAutoTick()` (Low ratings, plus Waypoint numbers already in `gdnTargets`, first product preselected). `vgOnShow()` (from `activateTab('garden')`) ticks on a first visit without carry-over unless rows are already ticked.
+- **v14.6 removed** the old Vegetable form markup and `calcGarden`, `gdnRevealSteps`/`gdnToggleShowAll`, `setGardenSizeMode`/`gardenSizeMode`, `calcGardenDimensions`, `onCropTypeChange`, `renderCropInfoPanel`. `gdnSetNutrientChoice`/`gdnSetTarget`/`gdnSetDensity` now call `ceUpdate()` for non-flower keys. Glossary watches `gdn-vg-result`. `renderNutrientStatusPanel` remains for Flower Garden only.
+- **Verified (headless Chromium):**
+  - CE garden snapshot (`scratchpad/ce/cegsnap.js`, baseline `ceg143.json`) identical after every step; lawn snapshot identical to `base141.json`; Flower cases of the garden snapshot (`fsnap.js`) identical to `gnew8b.json`; t345 (print matrix, keyboard golden 54.7) passes.
+  - Parity (`vgparity.js`, 9 cases, old tab vs new form, before removal): all amounts match, except the intended sulfur-covered-by-sulfate-of-potash message.
+  - New-form snapshot (`vgsnap.js`, `vg145.json`) identical before and after the removal.
+  - `pdvg.js` / `pdvg2.js`: form placement both ways, Waypoint and VCE samples + carry-over (no filled field hidden), fresh step order, auto-tick, print layout, axe 0 (Waypoint, VCE, Show all), 380 px, no duplicate ids, no page errors.
+- Superseded scripts: `pdgarden.js` and the Vegetable cases of `gsnap.js` drive the removed form.
+- Next: Flower Garden the same way (its Complete N-P-K mode is the open design question), then Shrubs & Trees progressive disclosure.
