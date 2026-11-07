@@ -6706,3 +6706,10 @@ Capacities above; tall 2.5 lb → P1 4 apps (0.667×3 + 0.5), P2 3 (0.9, 0.9, 0.
 - About Shrubs & Trees steps rewritten; fixed a stale line saying Lawn still uses the Lime tab (it stopped July 31). README line 21 had the same stale claim, fixed.
 - Verified (headless Chromium): `shsnap.js` identical to v15.0 (`sh150.json` vs `sh151.json`); lawn (`base141.json`), CE (`ceg146.json`), vegetable (`vg146b.json`) and flower (`fs150.json` fields) snapshots unchanged; t345 (print matrix, golden 54.7), pdvg, pdvg2 pass; new `scratchpad/ce/pdsh.js` — order, sticky after clearing, Show all + aria-pressed, a value shows its step; axe 0; 380 px; no duplicate ids; no page errors.
 - Progressive disclosure plan now complete for every tab except the Lime tab (excluded by decision P1).
+
+## v15.2 · 2026-11-06 — Compact Edition opens with no report pre-selected
+
+- User request: "Waypoint Analytical, for a lawn" was pre-checked in the CE's "Which report do you have?" (a holdover from when the CE covered lawns only), nudging garden users toward the lawn steps. Removed the `checked` attribute.
+- New `#ce-choose` line ("Choose your report to begin.", `role="status"`) shows until a report is picked. `ceUpdate()` now shows `#ce-unsupported` only for `wp-other` or `vce` (with nothing picked it would otherwise have shown the "use the full version" message).
+- Samples still pick their report; Start Over / `resetAllFields()` returns to the blank question.
+- Verified (headless Chromium, `scratchpad/ce/ce152.js`): fresh page shows only the question + prompt; each of the five choices shows the right steps or message; sample + reset; axe 0. `t345.js` keyboard test now picks the report first (golden 54.7 holds; print matrix SAME). CE garden (`ceg146.json`) and lawn (`base141.json`) snapshots unchanged; pdvg/pdvg2 pass; `test2.js` same as v14.6 (its one FAIL is the known blank-N case, N required by decision).
